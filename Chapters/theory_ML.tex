@@ -12,19 +12,24 @@ Machine Learning is a subfield of Artificial Intelligence (AI) and is used in a 
 
 Broadly speaking, ML algorithms can be divided into two categories: Supervised and Unsupervised learning. The supervised learning approach uses labeled data, where each input is linked to a desired output. Typical examples of supervised learning are regression or classification tasks. The unsupervised approach deals with unlabeled data, where only the inputs are given, and aims to find structure in the data, like clustering the data points.
 
-ML is an umbrella term for many different algorithms, such as Kernel methods, decision trees or Artificial Neural Networks (ANNs), but in this work we will focus on the latter. 
+ML is an umbrella term for many different algorithms, such as Kernel methods, decision trees or Artificial Neural Networks (ANNs). In this work we will focus on the latter. 
 
 
-\section{Articial Neural Networks}
+\section{Artificial Neural Networks}
 
-The human brain consists of a large number ($\sim 10^{11}$) of interconnected cells, called neurons. While a single neuron is a very simple processing unit, many neurons wired together become a complex neural network with the designation to process information: Signals from the environment captured by sensory cells are encoded and processed by this network to create an appropriate response. 
+Nervous systems have the fascinating ability to organize themself and learn from experience. This has motivated researchers over the past century to develop artificial models of its biological counterpart.
+The history of ANNs began in 1943 with the creation of the first computational model of a neural network by Warren McCulloch and Walter Pitts based on algorithms called threshold logits. The next milestone was taken by F. Rosenblatt in 1958 with the invention of the perceptron: A two-layer neural network able to perform pattern recognition. The publication of the book 'perceptron' by Marvin Minsky and Seymour Papert in 1969 lead to the AI winter and research in the field stagnated as they stated that basic two-layer networks are incapable of solving the exclusive or circuit (non-linearly separable data). Larger networks were needed to solve the problem but could not be realized because of a lack of computational processing power and efficient algorithms at that time. Fortunately, the research field was not completely abandonned and ANNS were revived in the early 1980s due to the increased computational processing power and the introducing of the backpropagation algorithm in 1975 by Werbos that made it possible to train multi-layer networks. Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.
 
-ANNs are an attempt to built an artificial model of its biological counterpart and are strongly inspired by the visual cortex. 
+%The outstanding ability of nervous systems to organize themself and learn from experience have fascinated researchers for the last century and motivat developing an artificial model of its biological counterpart.
 
+\subsection{A Neuron}
+
+Nervous systems are built up from a large number of interconnected cells, called neurons. The human brain, as an example, consists of $\sim 10^{11}$ neurons. A single neuron is a very simple processing unit, but a network of neurons becomes a powerful information processing system: Signals from the environment captured by sensory cells are encoded and processed by the network to create an appropriate response. 
+
+An illustration of a biological and an artificial neuron is shown in Fig.\ref{fig_neuron}. Both neurons can receive, process and transmit signals. The main parts of a biological neuron are the dendrites, the cell body and the axon. Dendrites are thin fibers connected via synapses with the axons of thousands of other neurons. Signals captured at the dendrites are weighted by the synapses and can either increase or decrease the electrical cell potential. If a specific threshold potential is reached the axon fires a signal. Similarly, an artificial neuron works:
 
 
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
 %It focuses on computer algorithms that construct statistical models based on training data:
 
 \section{Generative model}
-
