@@ -24,9 +24,23 @@ The history of ANNs began in 1943 with the creation of the first computational m
 
 \subsection{A Neuron}
 
-Nervous systems are built up from a large number of interconnected cells, called neurons. The human brain, as an example, consists of $\sim 10^{11}$ neurons. A single neuron is a very simple processing unit, but a network of neurons becomes a powerful information processing system: Signals from the environment captured by sensory cells are encoded and processed by the network to create an appropriate response. 
+Nervous systems are built up from a large number of interconnected cells, called neurons. The human brain, as an example, consists of $\sim 10^{11}$ neurons. 
+The main task of a neuron is to receive, process and transmit signals. To achieve this, a biological neuron is equiped with dendrites (receiver), a cell body (processor) and an axon (transmitter). Dendrites are thin fibers connected via synapses with the axons of thousands of other neurons. Signals captured by the dendrites are weighted by the synapses and can either increase or decrease the electrical cell potential. If a specific threshold potential is reached the axon fires a signal. 
 
-An illustration of a biological and an artificial neuron is shown in Fig.\ref{fig_neuron}. Both neurons can receive, process and transmit signals. The main parts of a biological neuron are the dendrites, the cell body and the axon. Dendrites are thin fibers connected via synapses with the axons of thousands of other neurons. Signals captured at the dendrites are weighted by the synapses and can either increase or decrease the electrical cell potential. If a specific threshold potential is reached the axon fires a signal. Similarly, an artificial neuron works:
+An artificial neuron works similarly to this: An input tensor $x$ is weighted by a weight tensor $w$ and the result is accumulated. Afterwards, a threshold value $\psi$ is subtracted and a lon-linear function, called activation function, $a()$ is applied to derive the output $y$.
+
+\begin{equation}
+  y = a( \sum_i x_i a_i - \psi )
+\end{equation}
+
+In this example $x$ and $w$ are vectors but higher rank tensors are common as well.
+
+\subsection{Layer}
+
+A single neuron is a very simple processing unit, but a network of neurons becomes a powerful information processing system: Signals from the environment captured by sensory cells are encoded and processed by the network to create an appropriate response. 
+
+To explain the mechanism of information processing we can turn to visual object recognition: Our retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond, which can be described as a response vector. The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefor, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors. The object identity manifold for different objects might be highly tangled and introducing an accurate decision boundary for object recognition becomes impossible.
+This is where the special structure of the visual cortex plays an important role: Neurons are grouped into subsequent layers and the further the signals are processed the more flattened and seperated the manifolds become.
 
 
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
