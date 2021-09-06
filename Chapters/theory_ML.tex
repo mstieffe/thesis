@@ -41,8 +41,13 @@ In this example $x$ and $w$ are vectors but higher rank tensors are common as we
 
 A single neuron is a very simple processing unit, but a network of neurons becomes a powerful information processing system: Signals from the environment captured by sensory cells are encoded and processed by the network to create an appropriate response. 
 
-To explain the mechanism of information processing we can turn to visual object recognition: Our retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond, which can be described as a response vector. The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefor, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors. The object identity manifold for different objects might be highly tangled and introducing an accurate decision boundary for object recognition becomes impossible.
+To explain the mechanism of information processing we can turn to visual object recognition: Our retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond, which can be described as a response vector. The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefor, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors. At early stages of processing, the object identity manifolds for different objects might be highly tangled and introducing an accurate decision boundary for object recognition becomes impossible.
 This is where the special structure of the visual cortex plays an important role: Neurons are grouped into subsequent layers and the further the signals are processed the more flattened and seperated the manifolds become.
+
+The same idea is used in modern ANNs that are refered to as Deep Neural Networks (DNN) or Deep Learning (DL): Multiple layers are arranged subsequently and each layer learns to transform its input into a more abstract and composite representation. While the first layer might learn very basic features, like the positions of edges, subsequent layer can learn more high-level features composed of the preceding features. 
+
+\subsubsection{Dense Layer}
+
 
 
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
