@@ -6,8 +6,9 @@
 \contentsline {chapter}{\numberline {1}Machine Learning}{1}{chapter.14}% 
 \contentsline {section}{\numberline {1.1}Artificial Neural Networks}{1}{section.15}% 
 \contentsline {subsection}{\numberline {1.1.1}A Neuron}{2}{subsection.16}% 
-\contentsline {subsection}{\numberline {1.1.2}Layer}{2}{subsection.18}% 
-\contentsline {subsubsection}{Dense Layer}{2}{section*.19}% 
-\contentsline {section}{\numberline {1.2}Generative model}{2}{section.20}% 
-\contentsline {chapter}{\numberline {A}Frequently Asked Questions}{3}{appendix.21}% 
-\contentsline {section}{\numberline {A.1}How do I change the colors of links?}{3}{section.22}% 
+\contentsline {subsection}{\numberline {1.1.2}Deep Neural Network}{2}{subsection.18}% 
+\contentsline {subsubsection}{Dense Layer}{3}{section*.19}% 
+\contentsline {subsubsection}{Convolutional Layer}{3}{section*.21}% 
+\contentsline {section}{\numberline {1.2}Generative model}{3}{section.23}% 
+\contentsline {chapter}{\numberline {A}Frequently Asked Questions}{5}{appendix.24}% 
+\contentsline {section}{\numberline {A.1}How do I change the colors of links?}{5}{section.25}% 
