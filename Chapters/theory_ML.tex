@@ -18,7 +18,7 @@ While ML is an umbrella term for many different algorithms, such as Kernel metho
 \section{Artificial Neural Networks}
 
 ANNs are inspired by nervous systems, such as our human brain.
-Their fascinating ability to organize themself and learn from experience has motivated researchers over the past century to develop artificial models of its biological counterpart.
+Their ability to organize themself and learn from experience has fascinated researchers over the past century and has motivated them to develop artificial models of its biological counterpart.
 
 The history of ANNs began in 1943 with the creation of the first computational model of a neural network by Warren McCulloch and Walter Pitts based on algorithms called threshold logits. The next milestone was taken by F. Rosenblatt in 1958 with the invention of the perceptron: A two-layer neural network able to perform pattern recognition. The publication of the book 'perceptron' by Marvin Minsky and Seymour Papert in 1969 lead to the AI winter and research in the field stagnated as they stated that basic two-layer networks are incapable of solving the exclusive or circuit (non-linearly separable data). Larger networks were needed to solve the problem but could not be realized because of a lack of computational processing power and efficient algorithms at that time. Fortunately, the research field was not completely abandonned and ANNS were revived in the early 1980s due to the increased computational processing power and the introducing of the backpropagation algorithm in 1975 by Werbos that made it possible to train multi-layer networks. Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.
 
@@ -32,7 +32,7 @@ The main task of a neuron is to receive, process and transmit signals. To achiev
 An artificial neuron works similarly to this: An input tensor $x$ is weighted by a weight tensor $w$ and the result is accumulated. Afterwards, a threshold value $\psi$ is subtracted and a non-linear function, called activation function, $a()$ is applied to derive the output $y$.
 
 \begin{equation}
-  y = a( \sum_i x_i a_i - \psi )
+  y = a( \sum_i x_i w_i - \psi )
 \end{equation}
 
 In this example $x$ and $w$ are vectors but higher rank tensors are common as well.
@@ -60,19 +60,42 @@ A dense layer (also fully-connected layer) is the simplest and most common layer
   \vec{y} = a( A \vec{x})
 \end{equation}
 
-where $A$ is a matrix containing the weights and thresholds. This type of layer is well suited to detect global pattern in its input, since the receptive field is not limited as it is the case for convolutional layer. 
+where $A$ is a matrix containing the weights and thresholds. The full-connectivity of each neuron makes it capable to detect global pattern in the data, but it also makes it impractical for large inputs as $A$ grows with the size of $\vec{x}$
 
 \subsubsection{Convolutional Layer}
 
-Another idea originating from our understading of the visual cortex is local connectivity: Neurons are only locally connected to neurons of a finite area of the previous layer limitting their receptive field. Therefore, neurons located at the buttom of the hierachy will only learn to recognize local pattern and neurons located higher in the hierachy will have a bigger receptive field to recognize higher level pattern.
+Another idea originating from our understading of the visual cortex is local connectivity: Neurons are only locally connected to neurons in a restricted area of the previous layer known as the receptive field of the neuron. This architecture is perfectly suited to learn hierchacical pattern in the data as the receptive field of the neurons become bigger the higher they are placed in the hierachy of the network. 
 
-A convolutional layer consists of a bank of parameterized filters that are slized over the input. At each position the descrete convolution of the filter with the segment of the image it overlaps is computed and stored into a so called feature map. Convolutional layer can be applied to tensors of arbitrary rank. In the following we consider the two dimensional case where the input are images $X_j \in \mathbb{R}^{N_x \times N_y}$ with $N_x$ the width, $N_y$ the height of the image and $j \in \{0, .., N_c\}$ is the index for the $N_c$ feature channels. The different feature channels provide different views on the data, such as the different colour channels for a RGB image. The bank of filters is denoted with $K_{i,j} \in \mathbb{R}^{m_x \times m_y}$, where $m_x$ is the width, $m_y$ is the height, connecting the $j$th feature channel of the input with the $i$th feature channel of the output. The $i$th feature map $Y_i$ of the output can be computed as
+A convolutional layer consists of a bank of parameterized filters that are slized over the input. At each position the descrete convolution of the filter with the segment of the image it overlaps is computed and stored into a so called feature map. Convolutional layer can be applied to tensors of arbitrary rank. In the following we consider the two dimensional case where the input are images $X_j \in \mathbb{R}^{N_x \times N_y}$ with $N_x$ the width, $N_y$ the height of the image and $j \in \{0, .., N_c\}$ is the index for the $N_c$ feature channels. The different feature channels provide different views on the data, such as the different colour channels for a RGB image. The bank of filters is denoted with $K_{i,j} \in \mathbb{R}^{m_x \times m_y}$, where $m_x$ is the width, $m_y$ is the height, connecting the $j$th feature channel of the input with the $i$th feature channel of the output. The $i$th feature map $Y_i \in \mathbb{R}^{n_x \times n_y}$ of the output can be computed as
 
 \begin{equation}
   Y_i = a(\Phi + \sum_j^{N_c} K_{i,j} * X_j)
 \end{equation}
 
-where $\Phi$ is a bias matrix.
+where $\Phi$ is a bias matrix. The size of the output $(n_x, n_y)$ can be derived as:
+
+\begin{equation}
+  (n_x, n_y) = (N_x - m_x + 1, N_y - m_y + 1)
+\end{equation}
+
+Furthermore, the size of the output can also dependent on zero-padding and slicing:
+
+\begin{itemize}
+  \item zero-padding: the size of the input tensor can be artificially extended by adding zeros at the border or between input units. $P$ denots the number of zeros concatenated at each side.
+  \item strides: While the filter is sliced over the input the step size $S$, called stride, for the translation can be greater than one effectively reducing the output size.
+\end{itemize}
+
+In summary, the output size can be computed as
+
+\begin{equation}
+  (n_x, n_y) = (\frac{N_x - m_x + 2P}{S}+1, \frac{N_y - m_y + 2P}{S}+1)
+\end{equation}
+
+Note that depending on the choice of zero-padding and strides the size of the output can either decrease (downsample) or increase (upsample) compared to the size of the input. The latter one is often referred to as transposed (or fractionally-strided) convolution and is typically used in a decoder architecture as it introduces a concept to learn the upsampling transformation. While this concept correctly describes the concept of upsampling, it incolves many useless multiplcations with zero which are typically avoided by efficient implementations in real-world applications by efficient implementions.
+
+Typically, a convolutional layer needs less parameters than a dense layer as the size of the filters are independent from the size of the input. Additionally, a convolutional layer is equivariant with respect to translations as the same filters are applied over the hole input. 
+
+
  
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
 %It focuses on computer algorithms that construct statistical models based on training data:

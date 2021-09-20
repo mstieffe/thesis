@@ -9,6 +9,6 @@
 \contentsline {subsection}{\numberline {1.1.2}Deep Neural Network}{2}{subsection.18}% 
 \contentsline {subsubsection}{Dense Layer}{3}{section*.19}% 
 \contentsline {subsubsection}{Convolutional Layer}{3}{section*.21}% 
-\contentsline {section}{\numberline {1.2}Generative model}{3}{section.23}% 
-\contentsline {chapter}{\numberline {A}Frequently Asked Questions}{5}{appendix.24}% 
-\contentsline {section}{\numberline {A.1}How do I change the colors of links?}{5}{section.25}% 
+\contentsline {section}{\numberline {1.2}Generative model}{4}{section.25}% 
+\contentsline {chapter}{\numberline {A}Frequently Asked Questions}{5}{appendix.26}% 
+\contentsline {section}{\numberline {A.1}How do I change the colors of links?}{5}{section.27}% 
