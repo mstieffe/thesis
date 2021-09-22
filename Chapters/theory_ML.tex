@@ -17,17 +17,20 @@ While ML is an umbrella term for many different algorithms, such as Kernel metho
 
 \section{Artificial Neural Networks}
 
-ANNs are inspired by nervous systems, such as our human brain.
-Their ability to organize themself and learn from experience has fascinated researchers over the past century and has motivated them to develop artificial models of its biological counterpart.
+ANNs are inspired by nervous systems, such as our human brain. A nervous system is a information processing system capable to perform extremely complex tasks: It coordinates incoming signals, such as information about the environment captured by sensory cells, and creates actions accordingly. The ability to organize themself and learn from experience distinguishes them from conventionel computers and has led to the development of artificial models of its biological counterpart.
 
 The history of ANNs began in 1943 with the creation of the first computational model of a neural network by Warren McCulloch and Walter Pitts based on algorithms called threshold logits. The next milestone was taken by F. Rosenblatt in 1958 with the invention of the perceptron: A two-layer neural network able to perform pattern recognition. The publication of the book 'perceptron' by Marvin Minsky and Seymour Papert in 1969 lead to the AI winter and research in the field stagnated as they stated that basic two-layer networks are incapable of solving the exclusive or circuit (non-linearly separable data). Larger networks were needed to solve the problem but could not be realized because of a lack of computational processing power and efficient algorithms at that time. Fortunately, the research field was not completely abandoned and ANNS were revived in the early 1980s due to the increased computational processing power and the introducing of the backpropagation algorithm in 1975 by Werbos that made it possible to train multi-layer networks. Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.
 
 %The outstanding ability of nervous systems to organize themself and learn from experience have fascinated researchers for the last century and motivat developing an artificial model of its biological counterpart.
+%ANNs are inspired by nervous systems, such as our human brain. Their ability to organize themself and learn from experience has fascinated researchers over the past century and has motivated them to develop artificial models of its biological counterpart.
 
-\subsection{A Neuron}
+\subsection{General concept}
 
-Nervous systems are built up from a large number of interconnected cells, called neurons. The human brain, as an example, consists of $\sim 10^{11}$ neurons. 
-The main task of a neuron is to receive, process and transmit signals. To achieve this, a biological neuron is equipped with dendrites (receiver), a cell body (processor) and an axon (transmitter). Dendrites are thin fibers connected via synapses with the axons of thousands of other neurons. Signals captured by the dendrites are weighted by the synapses and can either increase or decrease the electrical cell potential. If a specific threshold potential is reached the axon fires a signal. 
+Nervous systems are built up from a large number of interconnected cells, called neurons. The human brain, as an example, consists of $\sim 10^{11}$ neurons. While a single neuron is very simple processing unit, the power and complexity of nervous systems arises from the interplay of the neurons composing the network.
+
+\subsubsection{Neurons}
+ 
+The main task of a neuron is to receive, process and transmit signals. To achieve this, a biological neuron is equipped with dendrites (receiver), a cell body (processor) and an axon (transmitter). Dendrites are thin fibers connected via synapses with the axons of thousands of other neurons. Synapses are crucial for the flow of information inside the network as they weight incoming signals captured by the dendrites: Depending on the synapse the signal can either increase or decrease the electrical potential of the cell. If a specific threshold potential is reached, the axon will fire a signal to all the dendrites it is connected to. 
 
 An artificial neuron works similarly to this: An input tensor $x$ is weighted by a weight tensor $w$ and the result is accumulated. Afterwards, a threshold value $\psi$ is subtracted and a non-linear function, called activation function, $a()$ is applied to derive the output $y$.
 
@@ -37,11 +40,9 @@ An artificial neuron works similarly to this: An input tensor $x$ is weighted by
 
 In this example $x$ and $w$ are vectors but higher rank tensors are common as well.
 
-\subsection{Deep Neural Network}
+\subsubsection{Deep Learning}
 
-A single neuron is a very simple processing unit, but a network of neurons becomes a powerful information processing system: Signals from the environment captured by sensory cells are encoded and processed by the network to create an appropriate response. 
-
-To explain the mechanism of information processing we can turn to visual object recognition: Our retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond, which can be described as a response vector. The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefor, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors. At early stages of processing, the object identity manifolds for different objects might be highly tangled and introducing an accurate decision boundary for object recognition becomes impossible.
+To explain the mechanism of information processing in a Neural Network we can turn to visual object recognition: Our retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond, which can be described as a response vector. The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefor, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors. At early stages of processing, the object identity manifolds for different objects might be highly tangled and introducing an accurate decision boundary for object recognition becomes impossible.
 This is where the special structure of the visual cortex plays an important role: Neurons are grouped into subsequent layers and the further the signals are processed the more flattened and seperated the manifolds become.
 
 The same idea is applied in modern ANNs that are refered to as Deep Neural Networks (DNN) or Deep Learning (DL): Multiple layers are arranged subsequently and each layer learns to transform its input into a more abstract and composite representation. While the first layer might learn very basic features, like the positions of edges, subsequent layer can learn more high-level features composed of the preceding features. 
@@ -49,6 +50,10 @@ The same idea is applied in modern ANNs that are refered to as Deep Neural Netwo
 Formally, the layer between the input layer and the output layer are referred to as hidden layer. In The simplest case information only flows forward in the network (feedforawrd neural network), from the input layer through the hidden layers to the output layer. In more complex network architectures the connections between the layer can form cycles (recurrent neural network), such that a layer can receive information from subsequent layer as well.
 
 The mathematical foundation for DNNs is given by the universal function approximation theorem that was first proven by George Cybenko in 1989. In its classical formulation it states that any continuous function $f$ on a compact set $K$ can be approximated by a feedforward neural network $F$ with just one hidden layer within arbitrary accuracy $|F(x) - f(x)| < \epsilon$, where $\epsilon > 0$ and $x \in K$. Importantly, the width of the hidden layer (number of neurons) needs to be unbound in this formulation of the theorem. A dual formulation states that the theorem holds true for bounded width but arbitrary depth (number of layer) as well. While both cases guarantee the existence of an appropriately tuned network capable to approximate any continuous function, practice has shown that DNNs perform better in many applications and suffer less from training issues, such as overfitting. 
+
+%A single neuron is a very simple processing unit, but a network of neurons becomes a powerful information processing system: Signals from the environment captured by sensory cells are encoded and processed by the network to create an appropriate response. 
+
+\subsection{Layer architectures}
 
 Modern ANNs are built up from various different layer architectures. In following, we want o give an overview over some of the most commonly used.
 
@@ -91,15 +96,50 @@ In summary, the output size can be computed as
   (n_x, n_y) = (\frac{N_x - m_x + 2P}{S}+1, \frac{N_y - m_y + 2P}{S}+1)
 \end{equation}
 
-Note that depending on the choice of zero-padding and strides the size of the output can either decrease (downsample) or increase (upsample) compared to the size of the input. The latter one is often referred to as transposed (or fractionally-strided) convolution and is typically used in a decoder architecture as it introduces a concept to learn the upsampling transformation. While this concept correctly describes the concept of upsampling, it incolves many useless multiplcations with zero which are typically avoided by efficient implementations in real-world applications by efficient implementions.
+Note that depending on the choice of zero-padding and strides the size of the output can either decrease (downsample) or increase (upsample) compared to the size of the input. The latter one is often referred to as transposed (or fractionally-strided) convolution and is typically used in a decoder architecture as it introduces a concept to learn the upsampling transformation. While this concept correctly describes the concept of upsampling, it incolves many useless multiplcations with zero which are avoided by efficient implementations in real-world applications.
 
 Typically, a convolutional layer needs less parameters than a dense layer as the size of the filters are independent from the size of the input. Additionally, a convolutional layer is equivariant with respect to translations as the same filters are applied over the hole input. 
 
-\subsection{Loss-function}
+\subsubsection{composition of layer}
 
+
+
+\subsection{Training}
+
+A NN can be regarded as a parametrized function $F(x;W)$ with parameters $W$ (the weights) that maps samples $x$ from a domain $X$ to a codomain $Y$.
+
+\begin{equation}
+  F(W): X \rightarrow Y
+\end{equation}
+
+Training of a NN refers to tuning the weights such that a desired output is produced. To achieve this, a measurement for the error the network makes is needed as well as an efficient optimization algorithm.
+
+\subsubsection{Loss-Function}
+
+The Loss-function $C$ (or cost-function, error-function) maps the output of the network to a real number representing the error. In the supervised approach, it measures the difference of the estimated and target value for an instant of the data. In this case, the loss-function is a function of both, the networks output $F(x;W)$ as well as the target value $y$. 
+
+The loss-function has to fulfill two requirements: Firstly, it has be differentiable in order to be used for the optimization of the weights. Secondly, it has be written as an average
+
+\begin{equation}
+  C = \frac{1}{n} \sum_{t} C_t
+\end{equation}
+
+over loss-functions $C_t$ for individual instances $t \in T$ of the training bach $T = \{(x_1, y_1, .., x_n, y_n)\}$. This is crucial to generalize the gradient of the error computed for a single example to the overall error of the training batch.
+
+The actual choice for the functional form of the loss-function is problem dependent. A typical choice is the mean-squared-error (MSE):
+
+\begin{equation}
+  C(T;W) = \frac{1}{n} \sum_{(x,y) \in T} (F(x;W) - y)^2
+\end{equation}
+
+The MSE is widely used for regression tasks as it guarentees the existence of a global minimum. However, it overemphasizes outliers and therefore should not be used for data that is prone to many outliers.
+
+\subsubsection{Backpropagation}
 
  
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
 %It focuses on computer algorithms that construct statistical models based on training data:
 
-\section{Generative model}
+\subsection{Generative vs discriminative models}
+
+\subsubsection{Generative adversarial network}
