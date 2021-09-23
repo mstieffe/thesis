@@ -102,7 +102,7 @@ Typically, a convolutional layer needs less parameters than a dense layer as the
 
 \subsubsection{composition of layer}
 
-
+An ANN consisting of multiple layer is a nested function. Denoting each leyer with $y^l$, where $l$ is the layer number, we ca
 
 \subsection{Training}
 
@@ -134,9 +134,50 @@ The actual choice for the functional form of the loss-function is problem depend
 
 The MSE is widely used for regression tasks as it guarentees the existence of a global minimum. However, it overemphasizes outliers and therefore should not be used for data that is prone to many outliers.
 
+The goal for classification tasks is typically to predict a probability distribution over the class labels. In this case the output layer of the network is normalized to unity using a softmax activation function, such that known measurements for the difference of two probability distributions can be applied. A standard choice is the cross-entropy
+
+\begin{equation}
+    C(T;W) = \frac{1}{n} \sum_{(x,y) \in T} - \sum_{i} y_i log(F_i(x;W))
+\end{equation}
+
+but other common choices include the Kullback-Leibler divergence, Jensen-Shannon divergence or the Wasserstein distance.
+
 \subsubsection{Backpropagation}
 
- 
+During training of the network the weights of the network are adjusted such that the loss-function will be minimized. This is achieved using gradient methods like gradient descent on the loss-function for single input output pairs $(x,y)$ in the weight space,
+
+\begin{eqnarray}
+  W \rightarrow W + \nu \frac{\partial C(F(x;W), y)}{\partial W}
+\end{eqnarray}
+
+where $\nu$ is the learning rate.
+
+Naive direct computation of the gradients with respect to each weight individually is computationally expensive. Backpropagation is an algorithm to compute the gradients efficiently enabling the application of gradient methods for DNNs. It is based on ther chain rule and benefits from the nested structure of the network allowing to compute the gradients layer by layer: Starting from the last layer it iterates backward through the network avoiding duplicate and unneccessary intermediate calculations.
+
+To explain the backpropagation algorithm we consider a feed-forward NN with $L$ layer
+
+\begin{equation}
+  F(x) = y^L(...y^1(y^0(x;w^0);w^1)...;w^L)
+\end{equation}
+
+where $y^l$ is the $l$'th layer and $w^l$ contains the corresponding weights. In the following we assume that each layer is a fully connected layer such that we can write for a single node in the network
+
+\begin{equation}
+  y^l_j = a ( \underbrace{ \sum_i w^l_{i,j} y^{l-1}_i } {z^l_j}) 
+\end{equation}
+
+where $a()$ is the activation function. Note that convolutional layer can technically also be expressed as a fully-connected layer (however, it is not done in real-world applications). 
+
+The gradient of the loss-function for each weight can be written recursively 
+
+\begin{equation}
+  \delta_j^l =
+\begin{cases}
+C'a'(z_j^l), \text{for } l=L\\
+a'(z_j^l)\sum_i{w^l_{i,j}\delta_j^{l+1}}, \text{for } l<L\\
+\end{cases}
+\end{equation}
+
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
 %It focuses on computer algorithms that construct statistical models based on training data:
 
