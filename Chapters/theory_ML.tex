@@ -102,11 +102,23 @@ Typically, a convolutional layer needs less parameters than a dense layer as the
 
 \subsubsection{composition of layer}
 
-An ANN consisting of multiple layer is a nested function. Denoting each leyer with $y^l$, where $l$ is the layer number, we ca
+A DNN is composed of multiple layer and therefore can be described as a nested function. For a simple feed-forward DNN $F$ with $L$ layer we can write
+
+\begin{equation}
+  F(x;W) = y^L(...y^1(y^0(x;W^0);W^1)...;W^L)
+\end{equation}
+
+where $y^l$ is the $l$'th layer in the network with the corresponding weights $W^l$ and the collection of all weights is denoted with $W=(W^0, W^1,..,W^L)$.
+
+A recurrent NN also allows feedback loops by introducing cyclic connections between the layers, such that the output of subsequent layer can be reused as input for preceding layer. This is often necessarry for sequential data, like text or video, where the current state has a dependence on past states. A recurrent network can be described as a recursive process where a recurring function is called in each iteration. Unrolling the recursive process let us write the recurrent process as a nested function as well. For example consider a network $F$ that takes a current input as well as previous output as arguments. The unrolled network $G$ for an input sequence $(x_1, x_2, .., x_n)$ can be written as
+
+\begin{equation}
+  G((x_1, x_2, .., n_n);W) = F((x_n, ..F((x_2,F((x_1, 0);W));W)..);W).
+\end{equation}
 
 \subsection{Training}
 
-A NN can be regarded as a parametrized function $F(x;W)$ with parameters $W$ (the weights) that maps samples $x$ from a domain $X$ to a codomain $Y$.
+A NN is a parametrized function $F(x;W)$ with parameters $W$ that maps samples $x$ from a domain $X$ to a codomain $Y$.
 
 \begin{equation}
   F(W): X \rightarrow Y
@@ -129,7 +141,7 @@ over loss-functions $C_t$ for individual instances $t \in T$ of the training bac
 The actual choice for the functional form of the loss-function is problem dependent. A typical choice is the mean-squared-error (MSE):
 
 \begin{equation}
-  C(T;W) = \frac{1}{n} \sum_{(x,y) \in T} (F(x;W) - y)^2
+  C(F(x;W), y) = (F(x;W) - y)^2
 \end{equation}
 
 The MSE is widely used for regression tasks as it guarentees the existence of a global minimum. However, it overemphasizes outliers and therefore should not be used for data that is prone to many outliers.
@@ -137,7 +149,7 @@ The MSE is widely used for regression tasks as it guarentees the existence of a 
 The goal for classification tasks is typically to predict a probability distribution over the class labels. In this case the output layer of the network is normalized to unity using a softmax activation function, such that known measurements for the difference of two probability distributions can be applied. A standard choice is the cross-entropy
 
 \begin{equation}
-    C(T;W) = \frac{1}{n} \sum_{(x,y) \in T} - \sum_{i} y_i log(F_i(x;W))
+    C(F(x;W), y) = - \sum_{i} y_i log(F_i(x;W))
 \end{equation}
 
 but other common choices include the Kullback-Leibler divergence, Jensen-Shannon divergence or the Wasserstein distance.
@@ -147,36 +159,38 @@ but other common choices include the Kullback-Leibler divergence, Jensen-Shannon
 During training of the network the weights of the network are adjusted such that the loss-function will be minimized. This is achieved using gradient methods like gradient descent on the loss-function for single input output pairs $(x,y)$ in the weight space,
 
 \begin{eqnarray}
-  W \rightarrow W + \nu \frac{\partial C(F(x;W), y)}{\partial W}
+  W \rightarrow W + \eta \frac{\partial C(F(x;W), y)}{\partial W}
 \end{eqnarray}
 
-where $\nu$ is the learning rate.
+where $\eta$ is the learning rate.
 
 Naive direct computation of the gradients with respect to each weight individually is computationally expensive. Backpropagation is an algorithm to compute the gradients efficiently enabling the application of gradient methods for DNNs. It is based on ther chain rule and benefits from the nested structure of the network allowing to compute the gradients layer by layer: Starting from the last layer it iterates backward through the network avoiding duplicate and unneccessary intermediate calculations.
 
-To explain the backpropagation algorithm we consider a feed-forward NN with $L$ layer
+To explain the backpropagation algorithm we consider a feed-forward NN with $L$ layer. In the following we assume that each layer is a fully connected layer such that we can write for a single node in the network
 
 \begin{equation}
-  F(x) = y^L(...y^1(y^0(x;w^0);w^1)...;w^L)
-\end{equation}
-
-where $y^l$ is the $l$'th layer and $w^l$ contains the corresponding weights. In the following we assume that each layer is a fully connected layer such that we can write for a single node in the network
-
-\begin{equation}
-  y^l_j = a ( \underbrace{ \sum_i w^l_{i,j} y^{l-1}_i } {z^l_j}) 
+  y^l_j = a ( \underbrace{ \sum_i w^l_{i,j} y^{l-1}_i }_{z^l_j}) 
 \end{equation}
 
 where $a()$ is the activation function. Note that convolutional layer can technically also be expressed as a fully-connected layer (however, it is not done in real-world applications). 
 
-The gradient of the loss-function for each weight can be written recursively 
+Since the output of nodes placed lower in the hierachy will have an impact on the output of nodes placed higher in the hierachy, the chain rule has to be applied to derive the gradients for each weight. The backpropagation algorithm conveniently introduces a recursive notation to derive the gradients,
 
 \begin{equation}
-  \delta_j^l =
-\begin{cases}
-C'a'(z_j^l), \text{for } l=L\\
-a'(z_j^l)\sum_i{w^l_{i,j}\delta_j^{l+1}}, \text{for } l<L\\
-\end{cases}
+  \frac{\partial C(F(x;W)}{\partial w_{i,j}^l} = \delta_j^l y_i^{l-1}
 \end{equation}
+
+where $\delta_j^l$ is refered to as the delta-error or error at the level $l$. It is computed as
+
+\begin{equation}
+\delta_j^l =
+\begin{cases} 
+  C'a'(z_j^l), & \text{for } l=L\\
+  a'(z_j^l)\sum_i{w^l_{i,j}\delta_j^{l+1}}, & \text{for } l<L
+   \end{cases}.
+\end{equation}
+
+where $C'$ and $a'$ are the derivatives of the loss-function $C$ and the activation function $a$. The recursive notation for the delta-error makes it possible to compute the gradient from back to front and reuse the delta-error from subsequent layers.
 
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
 %It focuses on computer algorithms that construct statistical models based on training data:
