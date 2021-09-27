@@ -8,12 +8,21 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-Machine Learning is a subfield of Artificial Intelligence (AI) and is used in a wide range of applications, such as computer vision, speech recognition, drug discovery or medical image analysis. It is a study of computer algorithms that construct statistical models trained to perform some specific task. The models improve their performance automatically by learning from examples instead of relying on static program instructions. Importantly, learning in this context does not mean to memorize examples but to extract patterns or rules from the training data such that the model can make reasonable predictions for data points absent from the training examples too. 
+Machine Learning is a subfield of Artificial Intelligence (AI) and is used in a wide range of applications, such as computer vision, speech recognition, drug discovery or medical image analysis. It is a study of computer algorithms that construct statistical models trained to perform some specific task. The models improve their performance automatically by learning from examples instead of relying on static program instructions. Importantly, learning in this context does not mean to memorize examples but to extract patterns or rules from the training data such that the model can make reasonable predictions even for data points absent from the training examples. 
 
-Broadly speaking, ML algorithms can be divided into two categories: Supervised and Unsupervised learning. The supervised learning approach uses labeled data, where each input is linked to a desired output. Typical examples of supervised learning are regression or classification tasks. The unsupervised approach deals with unlabeled data, where only the inputs are given, and aims to find structure in the data, like clustering the data points.
+ML is an umbrella term for many different algorithms, such as Kernel methods, decision trees or Artificial Neural Networks (ANNs). Throughout this work, ANNs are the main ML method used. Therefore, the main body of this chapter focuses on an introduction of ANNs. The rest of this chapter is structured as follows: Firstly, some general remarks important to distinguish ML models will be made, then ANNs are explained in detail and finally the clustering algorithm Sketch-Map is introduced.
 
-While ML is an umbrella term for many different algorithms, such as Kernel methods, decision trees or Artificial Neural Networks (ANNs), we will focus on the latter in this work. 
+\section{General remarks}
 
+ML algorithms can be divided into many different categories. First of all, they can be split into supervised and unsupervised learning approaches. The supervised learning approach uses labeled data, where each input is linked to a desired output. Typical examples of supervised learning are regression or classification tasks. The unsupervised approach deals with unlabeled data, where only the inputs are given, and aims to find structure in the data, like clustering the data points.
+
+Another common distinction is made between generative and discriminative ML models. While the former learns a probability distribution over all variables in the data, the latter learns decision boundaries between different classes of the data for regression or classification. 
+
+Formally, consider a set of labelled data $\{(x,y)\}$ drawn from a joint propability distribution $p(x,y)$, where $x$ is an observation and $y$ the corresponding class label. A discriminative model learns the conditional probability of the class labels given the obersavation $p(y|x)$ or directly maps oberservations $x$ to a class label $y$. Therefore, a discriminative model does not need to learn about the depencies of all the variables in the system but focuses only on those variables important to label the observations.
+
+Generative approaches on the other hand model the joint probability $p(x,y)$. They are framed generative as the probability $p(x,y)$ can be used to generate new instances of the underlying system. However, it is straighforward to compute marginalized distributions $p(x) = \sum_y p(x,y)$ or conditional distributions $p(y|x) = \frac{p(x,y)}{p(x)}$. Therefore, generative models can be used for classification as well. Generative models also include implicit models that do not model $p(x,y)$ directly but introduce a generator to create new samples that represent the underlying distribution of the training data. 
+
+Due to the higher complexity of the task, a generative model typically needs more parameters than a discriminative model. Regarding logistic regression (discriminative approach) and Gaussian Naive Bayes (generative approach), experiments have shown that discriminative approaches lead to lower asymptotic errors compared to generative models. However, Gaussian Naive Bayes outperforms logistic regression in a low data regime.
 
 \section{Artificial Neural Networks}
 
@@ -110,7 +119,7 @@ A DNN is composed of multiple layer and therefore can be described as a nested f
 
 where $y^l$ is the $l$'th layer in the network with the corresponding weights $W^l$ and the collection of all weights is denoted with $W=(W^0, W^1,..,W^L)$.
 
-A recurrent NN also allows feedback loops by introducing cyclic connections between the layers, such that the output of subsequent layer can be reused as input for preceding layer. This is often necessarry for sequential data, like text or video, where the current state has a dependence on past states. A recurrent network can be described as a recursive process where a recurring function is called in each iteration. Unrolling the recursive process let us write the recurrent process as a nested function as well. For example consider a network $F$ that takes a current input as well as previous output as arguments. The unrolled network $G$ for an input sequence $(x_1, x_2, .., x_n)$ can be written as
+A recurrent NN also allows feedback loops by introducing cyclic connections between the layers, such that the output of subsequent layer can be reused as input for preceding layer in the next iteration. This is often necessarry for sequential data, like text or video, where the current state has a dependence on past states. A recurrent network can be described as a recursive process where a recurring function is called in each iteration. Unrolling the recursive process let us write the recurrent process as a nested function as well. For example consider a network $F$ that takes a current input as well as previous output as arguments. The unrolled network $G$ for an input sequence $(x_1, x_2, .., x_n)$ can be written as
 
 \begin{equation}
   G((x_1, x_2, .., n_n);W) = F((x_n, ..F((x_2,F((x_1, 0);W));W)..);W).
@@ -195,6 +204,6 @@ where $C'$ and $a'$ are the derivatives of the loss-function $C$ and the activat
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
 %It focuses on computer algorithms that construct statistical models based on training data:
 
-\subsection{Generative vs discriminative models}
+\subsection{Generative adversarial network}
 
-\subsubsection{Generative adversarial network}
+\section{The Sketch-Map algorithm}
