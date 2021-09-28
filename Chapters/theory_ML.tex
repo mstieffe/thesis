@@ -20,7 +20,7 @@ Another common distinction is made between generative and discriminative ML mode
 
 Formally, consider a set of labelled data $\{(x,y)\}$ drawn from a joint propability distribution $p(x,y)$, where $x$ is an observation and $y$ the corresponding class label. A discriminative model learns the conditional probability of the class labels given the obersavation $p(y|x)$ or directly maps oberservations $x$ to a class label $y$. Therefore, a discriminative model does not need to learn about the depencies of all the variables in the system but focuses only on those variables important to label the observations.
 
-Generative approaches on the other hand model the joint probability $p(x,y)$. They are framed generative as the probability $p(x,y)$ can be used to generate new instances of the underlying system. However, it is straighforward to compute marginalized distributions $p(x) = \sum_y p(x,y)$ or conditional distributions $p(y|x) = \frac{p(x,y)}{p(x)}$. Therefore, generative models can be used for classification as well. Generative models also include implicit models that do not model $p(x,y)$ directly but introduce a generator to create new samples that represent the underlying distribution of the training data. 
+Generative approaches on the other hand model the joint probability $p(x,y)$. They are framed generative as the probability $p(x,y)$ can be used to generate new instances of the underlying system. However, it is straighforward to compute marginalized distributions $p(x) = \sum_y p(x,y)$ or conditional distributions $p(y|x) = \frac{p(x,y)}{p(x)}$. Therefore, generative models can be used for classification as well. Generative models also include implicit models that do not model $p(x,y)$ explicitly but introduce a generator to create new samples that infer the underlying probability distribution of the training data. 
 
 Due to the higher complexity of the task, a generative model typically needs more parameters than a discriminative model. Regarding logistic regression (discriminative approach) and Gaussian Naive Bayes (generative approach), experiments have shown that discriminative approaches lead to lower asymptotic errors compared to generative models. However, Gaussian Naive Bayes outperforms logistic regression in a low data regime.
 
@@ -205,5 +205,18 @@ where $C'$ and $a'$ are the derivatives of the loss-function $C$ and the activat
 %It focuses on computer algorithms that construct statistical models based on training data:
 
 \subsection{Generative adversarial network}
+
+A Generative adversarial network (GAN) is a ML algorithm designed for generative modeling. It was introduced by Ian Goodfellow et. al in 2014 and has become one of the most successful implicit generative models known in ML community. In its core, a GAN concists of two competing models trained in a game: A generator $G$ produces samples with the goal to generate samples as realistic as possible. A second model, the discriminator $C$, has access to a pool of real training examples and the synthetic examples from the generator. While the discriminator $C$ is trained to distinguish synthetic from real samples, the generator $G$ is trained to fool the discriminator $C$. 
+
+Both, the generator and the discriminator are typically implemented as NNs. In the basic version of GANs, the generator $G$ is defined as a function over samples $z \in \mathrm{R}^{|z|}$ from a prior distribution $p(z)$,
+
+\begin{equation}
+  G(\Theta): \mathrm{R}^{|z|} \rightarrow \mathrm{R}^{|x|}
+\end{equation}
+
+where $\Theta$ are the parameters of the generator, $|z|$ is the dimension of the prior sample $z$ and $|x|$ is the dimension of the training examples $x$. The prior distribution $p(z)$ is typically defined as a high-dimensional Gaussian distribution or uniform distribution over a hypercube. The samples $z$ are used a source of randomness for the model and $G(z;\Theta)$ transforms the given noise $z$ into synthetic samples $x'$.
+
+The main goal of GANs is then make the distribution of synthetic samples $p(x')$ implicitly defined by the generator $G(z;\Theta)$ converge to the real distribution of the training examples $p(x)$. Naive approaches would continue to define an objective for the generator that minimizes the difference between the two probability distributions $p(x)$ and $p(x')$, such as the cross entropy, or apply a direct maximum likelihood training, where the model’s parameters are tuned such that the likelihood of observing the data given the model is optimized. Unfortunately, in many cases we do not have direct access to the explicit probability densities $p(x)$ and $p(x')$ because the high dimensionality of the data makes computing the normalization factor (the partition function) unfeasible.
+
 
 \section{The Sketch-Map algorithm}
