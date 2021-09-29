@@ -10,19 +10,51 @@
 
 Machine Learning is a subfield of Artificial Intelligence (AI) and is used in a wide range of applications, such as computer vision, speech recognition, drug discovery or medical image analysis. It is a study of computer algorithms that construct statistical models trained to perform some specific task. The models improve their performance automatically by learning from examples instead of relying on static program instructions. Importantly, learning in this context does not mean to memorize examples but to extract patterns or rules from the training data such that the model can make reasonable predictions even for data points absent from the training examples. 
 
-ML is an umbrella term for many different algorithms, such as Kernel methods, decision trees or Artificial Neural Networks (ANNs). Throughout this work, ANNs are the main ML method used. Therefore, the main body of this chapter focuses on an introduction of ANNs. The rest of this chapter is structured as follows: Firstly, some general remarks important to distinguish ML models will be made, then ANNs are explained in detail and finally the clustering algorithm Sketch-Map is introduced.
+ML algorithms can be split into supervised and unsupervised learning approaches. The supervised learning approach uses labeled data, where each input is linked to a desired output. Typical examples of supervised learning are regression or classification tasks. The unsupervised approach does not explicitly use labels to train the ML model. It aims to learn the underlying structure of the data, for example for clustering the data points or for generative tasks.
 
-\section{General remarks}
+ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods, decision trees or Artificial Neural Networks (ANNs). Throughout this work, ANNs are the main ML method used. Therefore, the main body of this chapter focuses on an introduction of ANNs. The rest of this chapter is structured as follows: Firstly, some general remarks important to distinguish ML models will be made, then ANNs are explained in detail and finally the clustering algorithm Sketch-Map is introduced.
 
-ML algorithms can be divided into many different categories. First of all, they can be split into supervised and unsupervised learning approaches. The supervised learning approach uses labeled data, where each input is linked to a desired output. Typical examples of supervised learning are regression or classification tasks. The unsupervised approach deals with unlabeled data, where only the inputs are given, and aims to find structure in the data, like clustering the data points.
+\section{Generative modelling}
 
-Another common distinction is made between generative and discriminative ML models. While the former learns a probability distribution over all variables in the data, the latter learns decision boundaries between different classes of the data for regression or classification. 
+The vast amount of ML models makes a clear classification for each of them challenging. However, two major branches of ML can be named generative and discriminative models. While the former learns about the dependencies of all the variables in a system, the latter learns to introduce decision boundaries between different classes the instances of the data can be divided into. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
 
-Formally, consider a set of labelled data $\{(x,y)\}$ drawn from a joint propability distribution $p(x,y)$, where $x$ is an observation and $y$ the corresponding class label. A discriminative model learns the conditional probability of the class labels given the obersavation $p(y|x)$ or directly maps oberservations $x$ to a class label $y$. Therefore, a discriminative model does not need to learn about the depencies of all the variables in the system but focuses only on those variables important to label the observations.
+Formally, consider a set of labelled data $\{(x,y)\}$ drawn from a joint propability distribution $p(x,y)$, where $x$ is an observation and $y$ the corresponding class label. A discriminative model learns the conditional probability of the class labels given the obsersvation $p(y|x)$. This can be achieved either explicitly or implicitly by directly mapping the oberservations $x$ to a class label $y$. Therefore, a discriminative model does not need to learn about the depencies of all the variables in the system but focuses only on those variables important to label the observations.
 
-Generative approaches on the other hand model the joint probability $p(x,y)$. They are framed generative as the probability $p(x,y)$ can be used to generate new instances of the underlying system. However, it is straighforward to compute marginalized distributions $p(x) = \sum_y p(x,y)$ or conditional distributions $p(y|x) = \frac{p(x,y)}{p(x)}$. Therefore, generative models can be used for classification as well. Generative models also include implicit models that do not model $p(x,y)$ explicitly but introduce a generator to create new samples that infer the underlying probability distribution of the training data. 
+Generative approaches on the other hand aim to model the joint probability $p(x,y)$ (or simply $p(x)$ if no labels are given). They are framed generative as the probability $p(x,y)$ can be used to generate new instances of the underlying system. However, it is straighforward to compute marginalized distributions $p(x) = \sum_y p(x,y)$ or conditional distributions $p(y|x) = \frac{p(x,y)}{p(x)}$. Therefore, generative models can be used for classification as well. 
 
-Due to the higher complexity of the task, a generative model typically needs more parameters than a discriminative model. Regarding logistic regression (discriminative approach) and Gaussian Naive Bayes (generative approach), experiments have shown that discriminative approaches lead to lower asymptotic errors compared to generative models. However, Gaussian Naive Bayes outperforms logistic regression in a low data regime.
+Obviously, the underlying task for generative models is more complex compared to the discriminative task and thus generative models typically require more parameters. Furthermore, experiments comparing logistic regression (discriminative model) with Gaussian Naive Bayes (generative model) have shown that the former outperforms the latter in terms of asymptotic error. However, in a low data regime generative models can give superior performance. 
+
+While both approaches can be used for classification, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach.
+
+\subsection{Explicit vs implicit generative models}
+
+A common method to train a generative model is to maximize the data likelihood: A model with parameters $\Theta$ provides an estimate for the probability $p_{M}(x;Theta)$ for a given oberservation $x$. The likelihood $L$ for the data under the parametric model can be written as
+
+\begin{equation}
+  L = \prod_i^N p_{M}(x;\Theta) ,
+\end{equation}
+
+where $N$ is the number of examples in the training data $\{x\}$. The goal of maximum likelihood approaches is to tune the models parameters $\Theta$ such that the likelihood $L$ of observing the data is maximized:
+
+\begin{equation}
+  \Theta^{*} = \underset{\Theta}{\text{argmax}} \; L
+\end{equation}
+
+Note that typically the negative logarithm of the likelihood is minimized to avoid numerical issues.
+
+\begin{equation}
+  \underset{\Theta}{\text{argmax}} \; \prod_i^{\inf} p_{M}(x;\Theta) = \underset{\Theta}{\text{argmax}} \; - \sum_i^N log ( p(x;\Theta) )
+\end{equation}
+
+In the limit for infinite data $N \rightarrow \inf$ the maximum likelihood approach is equivalent to minimizing the cross-entropy $H(p_{D}(x), p_{M}(x;\Theta))$, where $p_{D}(x)$ is the true probability distribution of the data, as it can be shown 
+
+\begin{equation}
+ \underset{N \rightarrow \inf}{\text{lim}} \underset{\Theta}{\text{argmin}} \; \sum_i^N log ( p(x;\Theta) ) 
+ = \underset{N \rightarrow \inf}{\text{lim}} \underset{\Theta}{\text{argmin}} \; \sum_i^N log ( p(x;\Theta) ) 
+ .
+\end{equation}
+
+Generative models also include implicit models that do not model $p(x,y)$ explicitly but introduce a generator to create new samples that infer the underlying probability distribution of the training data. 
 
 \section{Artificial Neural Networks}
 
