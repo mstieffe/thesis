@@ -8,40 +8,82 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-Machine Learning is a subfield of Artificial Intelligence (AI) and is used in a wide range of applications, such as computer vision, speech recognition, drug discovery or medical image analysis. It is a study of computer algorithms that construct statistical models trained to perform some specific task. The models improve their performance automatically by learning from examples instead of relying on static program instructions. Importantly, learning in this context does not mean to memorize examples but to extract patterns or rules from the training data such that the model can make reasonable predictions for data points absent from the training examples too. 
+Machine Learning is a subfield of Artificial Intelligence (AI) and is used in a wide range of applications, such as computer vision, speech recognition, drug discovery or medical image analysis. It is a study of computer algorithms that construct statistical models trained to perform some specific task. The models improve their performance automatically by learning from examples instead of relying on static program instructions. Importantly, learning in this context does not mean to memorize examples but to extract patterns or rules from the training data such that the model can make reasonable predictions even for data points absent from the training examples. 
 
-Broadly speaking, ML algorithms can be divided into two categories: Supervised and Unsupervised learning. The supervised learning approach uses labeled data, where each input is linked to a desired output. Typical examples of supervised learning are regression or classification tasks. The unsupervised approach deals with unlabeled data, where only the inputs are given, and aims to find structure in the data, like clustering the data points.
+ML algorithms can be split into supervised and unsupervised learning approaches. The supervised learning approach uses labeled data, where each input is linked to a desired output. Typical examples of supervised learning are regression or classification tasks. The unsupervised approach does not explicitly use labels to train the ML model. It aims to learn the underlying structure of the data, for example for clustering the data points or for generative tasks.
 
-While ML is an umbrella term for many different algorithms, such as Kernel methods, decision trees or Artificial Neural Networks (ANNs), we will focus on the latter in this work. 
+ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods, decision trees or Artificial Neural Networks (ANNs). Throughout this work, ANNs are the main ML method used. Therefore, the main body of this chapter focuses on an introduction of ANNs. The rest of this chapter is structured as follows: Firstly, some general remarks important to distinguish ML models will be made, then ANNs are explained in detail and finally the clustering algorithm Sketch-Map is introduced.
 
+\section{Generative modelling}
+
+The vast amount of ML models makes a clear classification for each of them challenging. However, two major branches of ML can be named generative and discriminative models. While the former learns about the dependencies of all the variables in a system, the latter learns to introduce decision boundaries between different classes the instances of the data can be divided into. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
+
+Formally, consider a set of labelled data $\{(x,y)\}$ drawn from a joint propability distribution $p(x,y)$, where $x$ is an observation and $y$ the corresponding class label. A discriminative model learns the conditional probability of the class labels given the obsersvation $p(y|x)$. This can be achieved either explicitly or implicitly by directly mapping the oberservations $x$ to a class label $y$. Therefore, a discriminative model does not need to learn about the depencies of all the variables in the system but focuses only on those variables important to label the observations.
+
+Generative approaches on the other hand aim to model the joint probability $p(x,y)$ (or simply $p(x)$ if no labels are given). They are framed generative as the probability $p(x,y)$ can be used to generate new instances of the underlying system. However, it is straighforward to compute marginalized distributions $p(x) = \sum_y p(x,y)$ or conditional distributions $p(y|x) = \frac{p(x,y)}{p(x)}$. Therefore, generative models can be used for classification as well. 
+
+Obviously, the underlying task for generative models is more complex compared to the discriminative task and thus generative models typically require more parameters. Furthermore, experiments comparing logistic regression (discriminative model) with Gaussian Naive Bayes (generative model) have shown that the former outperforms the latter in terms of asymptotic error. However, in a low data regime generative models can give superior performance. 
+
+While both approaches can be used for classification, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach.
+
+\subsection{Explicit vs implicit generative models}
+
+A common method to train a generative model is to maximize the data likelihood: A model with parameters $\Theta$ provides an estimate for the probability $p_{M}(x;Theta)$ for a given oberservation $x$. The likelihood $L$ for the data under the parametric model can be written as
+
+\begin{equation}
+  L = \prod_i^N p_{M}(x;\Theta) ,
+\end{equation}
+
+where $N$ is the number of examples in the training data $\{x\}$. The goal of maximum likelihood approaches is to tune the models parameters $\Theta$ such that the likelihood $L$ of observing the data is maximized:
+
+\begin{equation}
+  \Theta^{*} = \underset{\Theta}{\text{argmax}} \; L
+\end{equation}
+
+Note that typically the negative logarithm of the likelihood is minimized to avoid numerical issues.
+
+\begin{equation}
+  \underset{\Theta}{\text{argmax}} \; \prod_i^{\inf} p_{M}(x;\Theta) = \underset{\Theta}{\text{argmax}} \; - \sum_i^N log ( p(x;\Theta) )
+\end{equation}
+
+In the limit for infinite data $N \rightarrow \inf$ the maximum likelihood approach is equivalent to minimizing the cross-entropy $H(p_{D}(x), p_{M}(x;\Theta))$, where $p_{D}(x)$ is the true probability distribution of the data, as it can be shown 
+
+\begin{equation}
+ \underset{N \rightarrow \inf}{\text{lim}} \underset{\Theta}{\text{argmin}} \; \sum_i^N log ( p(x;\Theta) ) 
+ = \underset{N \rightarrow \inf}{\text{lim}} \underset{\Theta}{\text{argmin}} \; \sum_i^N log ( p(x;\Theta) ) 
+ .
+\end{equation}
+
+Generative models also include implicit models that do not model $p(x,y)$ explicitly but introduce a generator to create new samples that infer the underlying probability distribution of the training data. 
 
 \section{Artificial Neural Networks}
 
-ANNs are inspired by nervous systems, such as our human brain.
-Their fascinating ability to organize themself and learn from experience has motivated researchers over the past century to develop artificial models of its biological counterpart.
+ANNs are inspired by nervous systems, such as our human brain. A nervous system is a information processing system capable to perform extremely complex tasks: It coordinates incoming signals, such as information about the environment captured by sensory cells, and creates actions accordingly. The ability to organize themself and learn from experience distinguishes them from conventionel computers and has led to the development of artificial models of its biological counterpart.
 
-The history of ANNs began in 1943 with the creation of the first computational model of a neural network by Warren McCulloch and Walter Pitts based on algorithms called threshold logits. The next milestone was taken by F. Rosenblatt in 1958 with the invention of the perceptron: A two-layer neural network able to perform pattern recognition. The publication of the book 'perceptron' by Marvin Minsky and Seymour Papert in 1969 lead to the AI winter and research in the field stagnated as they stated that basic two-layer networks are incapable of solving the exclusive or circuit (non-linearly separable data). Larger networks were needed to solve the problem but could not be realized because of a lack of computational processing power and efficient algorithms at that time. Fortunately, the research field was not completely abandonned and ANNS were revived in the early 1980s due to the increased computational processing power and the introducing of the backpropagation algorithm in 1975 by Werbos that made it possible to train multi-layer networks. Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.
+The history of ANNs began in 1943 with the creation of the first computational model of a neural network by Warren McCulloch and Walter Pitts based on algorithms called threshold logits. The next milestone was taken by F. Rosenblatt in 1958 with the invention of the perceptron: A two-layer neural network able to perform pattern recognition. The publication of the book 'perceptron' by Marvin Minsky and Seymour Papert in 1969 lead to the AI winter and research in the field stagnated as they stated that basic two-layer networks are incapable of solving the exclusive or circuit (non-linearly separable data). Larger networks were needed to solve the problem but could not be realized because of a lack of computational processing power and efficient algorithms at that time. Fortunately, the research field was not completely abandoned and ANNS were revived in the early 1980s due to the increased computational processing power and the introducing of the backpropagation algorithm in 1975 by Werbos that made it possible to train multi-layer networks. Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.
 
 %The outstanding ability of nervous systems to organize themself and learn from experience have fascinated researchers for the last century and motivat developing an artificial model of its biological counterpart.
+%ANNs are inspired by nervous systems, such as our human brain. Their ability to organize themself and learn from experience has fascinated researchers over the past century and has motivated them to develop artificial models of its biological counterpart.
 
-\subsection{A Neuron}
+\subsection{General concept}
 
-Nervous systems are built up from a large number of interconnected cells, called neurons. The human brain, as an example, consists of $\sim 10^{11}$ neurons. 
-The main task of a neuron is to receive, process and transmit signals. To achieve this, a biological neuron is equiped with dendrites (receiver), a cell body (processor) and an axon (transmitter). Dendrites are thin fibers connected via synapses with the axons of thousands of other neurons. Signals captured by the dendrites are weighted by the synapses and can either increase or decrease the electrical cell potential. If a specific threshold potential is reached the axon fires a signal. 
+Nervous systems are built up from a large number of interconnected cells, called neurons. The human brain, as an example, consists of $\sim 10^{11}$ neurons. While a single neuron is very simple processing unit, the power and complexity of nervous systems arises from the interplay of the neurons composing the network.
+
+\subsubsection{Neurons}
+ 
+The main task of a neuron is to receive, process and transmit signals. To achieve this, a biological neuron is equipped with dendrites (receiver), a cell body (processor) and an axon (transmitter). Dendrites are thin fibers connected via synapses with the axons of thousands of other neurons. Synapses are crucial for the flow of information inside the network as they weight incoming signals captured by the dendrites: Depending on the synapse the signal can either increase or decrease the electrical potential of the cell. If a specific threshold potential is reached, the axon will fire a signal to all the dendrites it is connected to. 
 
 An artificial neuron works similarly to this: An input tensor $x$ is weighted by a weight tensor $w$ and the result is accumulated. Afterwards, a threshold value $\psi$ is subtracted and a non-linear function, called activation function, $a()$ is applied to derive the output $y$.
 
 \begin{equation}
-  y = a( \sum_i x_i a_i - \psi )
+  y = a( \sum_i x_i w_i - \psi )
 \end{equation}
 
 In this example $x$ and $w$ are vectors but higher rank tensors are common as well.
 
-\subsection{Deep Neural Network}
+\subsubsection{Deep Learning}
 
-A single neuron is a very simple processing unit, but a network of neurons becomes a powerful information processing system: Signals from the environment captured by sensory cells are encoded and processed by the network to create an appropriate response. 
-
-To explain the mechanism of information processing we can turn to visual object recognition: Our retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond, which can be described as a response vector. The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefor, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors. At early stages of processing, the object identity manifolds for different objects might be highly tangled and introducing an accurate decision boundary for object recognition becomes impossible.
+To explain the mechanism of information processing in a Neural Network we can turn to visual object recognition: Our retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond, which can be described as a response vector. The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefor, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors. At early stages of processing, the object identity manifolds for different objects might be highly tangled and introducing an accurate decision boundary for object recognition becomes impossible.
 This is where the special structure of the visual cortex plays an important role: Neurons are grouped into subsequent layers and the further the signals are processed the more flattened and seperated the manifolds become.
 
 The same idea is applied in modern ANNs that are refered to as Deep Neural Networks (DNN) or Deep Learning (DL): Multiple layers are arranged subsequently and each layer learns to transform its input into a more abstract and composite representation. While the first layer might learn very basic features, like the positions of edges, subsequent layer can learn more high-level features composed of the preceding features. 
@@ -49,6 +91,10 @@ The same idea is applied in modern ANNs that are refered to as Deep Neural Netwo
 Formally, the layer between the input layer and the output layer are referred to as hidden layer. In The simplest case information only flows forward in the network (feedforawrd neural network), from the input layer through the hidden layers to the output layer. In more complex network architectures the connections between the layer can form cycles (recurrent neural network), such that a layer can receive information from subsequent layer as well.
 
 The mathematical foundation for DNNs is given by the universal function approximation theorem that was first proven by George Cybenko in 1989. In its classical formulation it states that any continuous function $f$ on a compact set $K$ can be approximated by a feedforward neural network $F$ with just one hidden layer within arbitrary accuracy $|F(x) - f(x)| < \epsilon$, where $\epsilon > 0$ and $x \in K$. Importantly, the width of the hidden layer (number of neurons) needs to be unbound in this formulation of the theorem. A dual formulation states that the theorem holds true for bounded width but arbitrary depth (number of layer) as well. While both cases guarantee the existence of an appropriately tuned network capable to approximate any continuous function, practice has shown that DNNs perform better in many applications and suffer less from training issues, such as overfitting. 
+
+%A single neuron is a very simple processing unit, but a network of neurons becomes a powerful information processing system: Signals from the environment captured by sensory cells are encoded and processed by the network to create an appropriate response. 
+
+\subsection{Layer architectures}
 
 Modern ANNs are built up from various different layer architectures. In following, we want o give an overview over some of the most commonly used.
 
@@ -60,21 +106,149 @@ A dense layer (also fully-connected layer) is the simplest and most common layer
   \vec{y} = a( A \vec{x})
 \end{equation}
 
-where $A$ is a matrix containing the weights and thresholds. This type of layer is well suited to detect global pattern in its input, since the receptive field is not limited as it is the case for convolutional layer. 
+where $A$ is a matrix containing the weights and thresholds. The full-connectivity of each neuron makes it capable to detect global pattern in the data, but it also makes it impractical for large inputs as $A$ grows with the size of $\vec{x}$
 
 \subsubsection{Convolutional Layer}
 
-Another idea originating from our understading of the visual cortex is local connectivity: Neurons are only locally connected to neurons of a finite area of the previous layer limitting their receptive field. Therefore, neurons located at the buttom of the hierachy will only learn to recognize local pattern and neurons located higher in the hierachy will have a bigger receptive field to recognize higher level pattern.
+Another idea originating from our understanding of the visual cortex is local connectivity: Neurons are only locally connected to neurons in a restricted area of the previous layer known as the receptive field of the neuron. This architecture is perfectly suited to learn hierchacical pattern in the data as the receptive field of the neurons become bigger the higher they are placed in the hierachy of the network. 
 
-A convolutional layer consists of a bank of parameterized filters that are slized over the input. At each position the descrete convolution of the filter with the segment of the image it overlaps is computed and stored into a so called feature map. Convolutional layer can be applied to tensors of arbitrary rank. In the following we consider the two dimensional case where the input are images $X_j \in \mathbb{R}^{N_x \times N_y}$ with $N_x$ the width, $N_y$ the height of the image and $j \in \{0, .., N_c\}$ is the index for the $N_c$ feature channels. The different feature channels provide different views on the data, such as the different colour channels for a RGB image. The bank of filters is denoted with $K_{i,j} \in \mathbb{R}^{m_x \times m_y}$, where $m_x$ is the width, $m_y$ is the height, connecting the $j$th feature channel of the input with the $i$th feature channel of the output. The $i$th feature map $Y_i$ of the output can be computed as
+A convolutional layer consists of a bank of parameterized filters that are sliced over the input. At each position the descrete convolution of the filter with the segment of the image it overlaps is computed and stored into a so called feature map. Convolutional layer can be applied to tensors of arbitrary rank. In the following we consider the two dimensional case where the input are images $X_j \in \mathbb{R}^{N_x \times N_y}$ with $N_x$ the width, $N_y$ the height of the image and $j \in \{0, .., N_c\}$ is the index for the $N_c$ feature channels. The different feature channels provide different views on the data, such as the different colour channels for a RGB image. The bank of filters is denoted with $K_{i,j} \in \mathbb{R}^{m_x \times m_y}$, where $m_x$ is the width, $m_y$ is the height, connecting the $j$th feature channel of the input with the $i$th feature channel of the output. The $i$th feature map $Y_i \in \mathbb{R}^{n_x \times n_y}$ of the output can be computed as
 
 \begin{equation}
   Y_i = a(\Phi + \sum_j^{N_c} K_{i,j} * X_j)
 \end{equation}
 
-where $\Phi$ is a bias matrix.
- 
+where $\Phi$ is a bias matrix. The size of the output $(n_x, n_y)$ can be derived as:
+
+\begin{equation}
+  (n_x, n_y) = (N_x - m_x + 1, N_y - m_y + 1)
+\end{equation}
+
+Furthermore, the size of the output can also dependent on zero-padding and slicing:
+
+\begin{itemize}
+  \item zero-padding: the size of the input tensor can be artificially extended by adding zeros at the border or between input units. $P$ denots the number of zeros concatenated at each side.
+  \item strides: While the filter is sliced over the input the step size $S$, called stride, for the translation can be greater than one effectively reducing the output size.
+\end{itemize}
+
+In summary, the output size can be computed as
+
+\begin{equation}
+  (n_x, n_y) = (\frac{N_x - m_x + 2P}{S}+1, \frac{N_y - m_y + 2P}{S}+1)
+\end{equation}
+
+Note that depending on the choice of zero-padding and strides the size of the output can either decrease (downsample) or increase (upsample) compared to the size of the input. The latter one is often referred to as transposed (or fractionally-strided) convolution and is typically used in a decoder architecture as it introduces a concept to learn the upsampling transformation. While this concept correctly describes the concept of upsampling, it incolves many useless multiplcations with zero which are avoided by efficient implementations in real-world applications.
+
+Typically, a convolutional layer needs less parameters than a dense layer as the size of the filters are independent from the size of the input. Additionally, a convolutional layer is equivariant with respect to translations as the same filters are applied over the hole input. 
+
+\subsubsection{composition of layer}
+
+A DNN is composed of multiple layer and therefore can be described as a nested function. For a simple feed-forward DNN $F$ with $L$ layer we can write
+
+\begin{equation}
+  F(x;W) = y^L(...y^1(y^0(x;W^0);W^1)...;W^L)
+\end{equation}
+
+where $y^l$ is the $l$'th layer in the network with the corresponding weights $W^l$ and the collection of all weights is denoted with $W=(W^0, W^1,..,W^L)$.
+
+A recurrent NN also allows feedback loops by introducing cyclic connections between the layers, such that the output of subsequent layer can be reused as input for preceding layer in the next iteration. This is often necessarry for sequential data, like text or video, where the current state has a dependence on past states. A recurrent network can be described as a recursive process where a recurring function is called in each iteration. Unrolling the recursive process let us write the recurrent process as a nested function as well. For example consider a network $F$ that takes a current input as well as previous output as arguments. The unrolled network $G$ for an input sequence $(x_1, x_2, .., x_n)$ can be written as
+
+\begin{equation}
+  G((x_1, x_2, .., n_n);W) = F((x_n, ..F((x_2,F((x_1, 0);W));W)..);W).
+\end{equation}
+
+\subsection{Training}
+
+A NN is a parametrized function $F(x;W)$ with parameters $W$ that maps samples $x$ from a domain $X$ to a codomain $Y$.
+
+\begin{equation}
+  F(W): X \rightarrow Y
+\end{equation}
+
+Training of a NN refers to tuning the weights such that a desired output is produced. To achieve this, a measurement for the error the network makes is needed as well as an efficient optimization algorithm.
+
+\subsubsection{Loss-Function}
+
+The Loss-function $C$ (or cost-function, error-function) maps the output of the network to a real number representing the error. In the supervised approach, it measures the difference of the estimated and target value for an instant of the data. In this case, the loss-function is a function of both, the networks output $F(x;W)$ as well as the target value $y$. 
+
+The loss-function has to fulfill two requirements: Firstly, it has be differentiable in order to be used for the optimization of the weights. Secondly, it has be written as an average
+
+\begin{equation}
+  C = \frac{1}{n} \sum_{t} C_t
+\end{equation}
+
+over loss-functions $C_t$ for individual instances $t \in T$ of the training bach $T = \{(x_1, y_1, .., x_n, y_n)\}$. This is crucial to generalize the gradient of the error computed for a single example to the overall error of the training batch.
+
+The actual choice for the functional form of the loss-function is problem dependent. A typical choice is the mean-squared-error (MSE):
+
+\begin{equation}
+  C(F(x;W), y) = (F(x;W) - y)^2
+\end{equation}
+
+The MSE is widely used for regression tasks as it guarentees the existence of a global minimum. However, it overemphasizes outliers and therefore should not be used for data that is prone to many outliers.
+
+The goal for classification tasks is typically to predict a probability distribution over the class labels. In this case the output layer of the network is normalized to unity using a softmax activation function, such that known measurements for the difference of two probability distributions can be applied. A standard choice is the cross-entropy
+
+\begin{equation}
+    C(F(x;W), y) = - \sum_{i} y_i log(F_i(x;W))
+\end{equation}
+
+but other common choices include the Kullback-Leibler divergence, Jensen-Shannon divergence or the Wasserstein distance.
+
+\subsubsection{Backpropagation}
+
+During training of the network the weights of the network are adjusted such that the loss-function will be minimized. This is achieved using gradient methods like gradient descent on the loss-function for single input output pairs $(x,y)$ in the weight space,
+
+\begin{eqnarray}
+  W \rightarrow W + \eta \frac{\partial C(F(x;W), y)}{\partial W}
+\end{eqnarray}
+
+where $\eta$ is the learning rate.
+
+Naive direct computation of the gradients with respect to each weight individually is computationally expensive. Backpropagation is an algorithm to compute the gradients efficiently enabling the application of gradient methods for DNNs. It is based on ther chain rule and benefits from the nested structure of the network allowing to compute the gradients layer by layer: Starting from the last layer it iterates backward through the network avoiding duplicate and unneccessary intermediate calculations.
+
+To explain the backpropagation algorithm we consider a feed-forward NN with $L$ layer. In the following we assume that each layer is a fully connected layer such that we can write for a single node in the network
+
+\begin{equation}
+  y^l_j = a ( \underbrace{ \sum_i w^l_{i,j} y^{l-1}_i }_{z^l_j}) 
+\end{equation}
+
+where $a()$ is the activation function. Note that convolutional layer can technically also be expressed as a fully-connected layer (however, it is not done in real-world applications). 
+
+Since the output of nodes placed lower in the hierachy will have an impact on the output of nodes placed higher in the hierachy, the chain rule has to be applied to derive the gradients for each weight. The backpropagation algorithm conveniently introduces a recursive notation to derive the gradients,
+
+\begin{equation}
+  \frac{\partial C(F(x;W)}{\partial w_{i,j}^l} = \delta_j^l y_i^{l-1}
+\end{equation}
+
+where $\delta_j^l$ is refered to as the delta-error or error at the level $l$. It is computed as
+
+\begin{equation}
+\delta_j^l =
+\begin{cases} 
+  C'a'(z_j^l), & \text{for } l=L\\
+  a'(z_j^l)\sum_i{w^l_{i,j}\delta_j^{l+1}}, & \text{for } l<L
+   \end{cases}.
+\end{equation}
+
+where $C'$ and $a'$ are the derivatives of the loss-function $C$ and the activation function $a$. The recursive notation for the delta-error makes it possible to compute the gradient from back to front and reuse the delta-error from subsequent layers.
+
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
 %It focuses on computer algorithms that construct statistical models based on training data:
 
-\section{Generative model}
+\subsection{Generative adversarial network}
+
+A Generative adversarial network (GAN) is a ML algorithm designed for generative modeling. It was introduced by Ian Goodfellow et. al in 2014 and has become one of the most successful implicit generative models known in ML community. In its core, a GAN concists of two competing models trained in a game: A generator $G$ produces samples with the goal to generate samples as realistic as possible. A second model, the discriminator $C$, has access to a pool of real training examples and the synthetic examples from the generator. While the discriminator $C$ is trained to distinguish synthetic from real samples, the generator $G$ is trained to fool the discriminator $C$. 
+
+Both, the generator and the discriminator are typically implemented as NNs. In the basic version of GANs, the generator $G$ is defined as a function over samples $z \in \mathrm{R}^{|z|}$ from a prior distribution $p(z)$,
+
+\begin{equation}
+  G(\Theta): \mathrm{R}^{|z|} \rightarrow \mathrm{R}^{|x|}
+\end{equation}
+
+where $\Theta$ are the parameters of the generator, $|z|$ is the dimension of the prior sample $z$ and $|x|$ is the dimension of the training examples $x$. The prior distribution $p(z)$ is typically defined as a high-dimensional Gaussian distribution or uniform distribution over a hypercube. The samples $z$ are used a source of randomness for the model and $G(z;\Theta)$ transforms the given noise $z$ into synthetic samples $x'$.
+
+The main goal of GANs is then make the distribution of synthetic samples $p(x')$ implicitly defined by the generator $G(z;\Theta)$ converge to the real distribution of the training examples $p(x)$. Naive approaches would continue to define an objective for the generator that minimizes the difference between the two probability distributions $p(x)$ and $p(x')$, such as the cross entropy, or apply a direct maximum likelihood training, where the model’s parameters are tuned such that the likelihood of observing the data given the model is optimized. Unfortunately, in many cases we do not have direct access to the explicit probability densities $p(x)$ and $p(x')$ because the high dimensionality of the data makes computing the normalization factor (the partition function) unfeasible.
+
+
+\section{The Sketch-Map algorithm}

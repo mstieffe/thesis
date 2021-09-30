@@ -34,25 +34,25 @@ A common method to train a generative model is to maximize the data likelihood: 
   L = \prod_i^N p_{M}(x;\Theta) ,
 \end{equation}
 
-where $N$ is the number of examples in the training data $\{x\}$. The goal of maximum likelihood approaches is to tune the models parameters $\Theta$ such that the likelihood $L$ of observing the data is maximized:
+where $N$ is the number of examples in the training data $\{x\}$. The goal of maximum likelihood approaches is to find the optimal set of paramters $\Theta^{*}$ such that the likelihood $L$ of observing the data is maximized:
 
 \begin{equation}
   \Theta^{*} = \underset{\Theta}{\text{argmax}} \; L
 \end{equation}
 
-Note that typically the negative logarithm of the likelihood is minimized to avoid numerical issues.
+Instead of maximizing the likelihood, it is common practice to minimize the negative logarithm of the likelihood to avoid numerical issues
 
 \begin{equation}
-  \underset{\Theta}{\text{argmax}} \; \prod_i^{\inf} p_{M}(x;\Theta) = \underset{\Theta}{\text{argmax}} \; - \sum_i^N log ( p(x;\Theta) )
+  \underset{\Theta}{\text{argmax}} \; \prod_i^{N} p_{M}(x;\Theta) = \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{M}(x;\Theta) ) .
 \end{equation}
 
-In the limit for infinite data $N \rightarrow \inf$ the maximum likelihood approach is equivalent to minimizing the cross-entropy $H(p_{D}(x), p_{M}(x;\Theta))$, where $p_{D}(x)$ is the true probability distribution of the data, as it can be shown 
+In the limit for infinite data $N \rightarrow \infty$ the maximum likelihood approach is equivalent to minimizing the cross-entropy $H(p_{D}(x), p_{M}(x;\Theta))$, where $p_{D}(x)$ is the true probability distribution of the data, as it can be shown 
 
-\begin{equation}
- \underset{N \rightarrow \inf}{\text{lim}} \underset{\Theta}{\text{argmin}} \; \sum_i^N log ( p(x;\Theta) ) 
- = \underset{N \rightarrow \inf}{\text{lim}} \underset{\Theta}{\text{argmin}} \; \sum_i^N log ( p(x;\Theta) ) 
- .
-\end{equation}
+\begin{align}
+ \underset{N \rightarrow \infty}{\text{lim}} \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{M}(x;\Theta) ) 
+ &= \underset{\Theta}{\text{argmin}} \; \mathbb{E}_{x \sim p_{D}(x)} log ( \frac{1}{ p_{M}(x;\Theta) }) \\
+ &= H(p_{D}(x), p_{M}(x;\Theta)).
+\end{align}
 
 Generative models also include implicit models that do not model $p(x,y)$ explicitly but introduce a generator to create new samples that infer the underlying probability distribution of the training data. 
 
