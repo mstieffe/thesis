@@ -16,7 +16,7 @@ ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods
 
 \section{Generative modelling}
 
-The vast amount of ML models makes a clear classification for each of them challenging. However, two major branches of ML can be named generative and discriminative models. While the former learns about the dependencies of all the variables in a system, the latter learns to introduce decision boundaries between different classes the instances of the data can be divided into. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
+Two major branches of ML can be named generative and discriminative models. While the former learns about the dependencies of all the variables in a system, the latter learns to introduce decision boundaries between different classes the instances of the data can be divided into. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
 
 Formally, consider a set of labelled data $\{(x,y)\}$ drawn from a joint propability distribution $p(x,y)$, where $x$ is an observation and $y$ the corresponding class label. A discriminative model learns the conditional probability of the class labels given the obsersvation $p(y|x)$. This can be achieved either explicitly or implicitly by directly mapping the oberservations $x$ to a class label $y$. Therefore, a discriminative model does not need to learn about the depencies of all the variables in the system but focuses only on those variables important to label the observations.
 
@@ -24,14 +24,14 @@ Generative approaches on the other hand aim to model the joint probability $p(x,
 
 Obviously, the underlying task for generative models is more complex compared to the discriminative task and thus generative models typically require more parameters. Furthermore, experiments comparing logistic regression (discriminative model) with Gaussian Naive Bayes (generative model) have shown that the former outperforms the latter in terms of asymptotic error. However, in a low data regime generative models can give superior performance. 
 
-While both approaches can be used for classification, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach.
+While both approaches can be used for classification, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to Deep Generative Models (DGMs) for simplicity.
 
-\subsection{Explicit vs implicit generative models}
+\subsection{Maximum likelihood approach}
 
-A common method to train a generative model is to maximize the data likelihood: A model with parameters $\Theta$ provides an estimate for the probability $p_{M}(x;Theta)$ for a given oberservation $x$. The likelihood $L$ for the data under the parametric model can be written as
+The major route to train a DGM is to maximize the data likelihood. The underlying idea of this approach is to find a model that best explains the oberserved data . A model with parameters $\Theta$ provides an estimate for the probability $p_{M}(x;Theta)$ for a given oberservation $x$. The likelihood $L$ for the data under the parametric model can be written as
 
 \begin{equation}
-  L = \prod_i^N p_{M}(x;\Theta) ,
+  \mathcal{L} = \prod_i^N p_{M}(x;\Theta) ,
 \end{equation}
 
 where $N$ is the number of examples in the training data $\{x\}$. The goal of maximum likelihood approaches is to find the optimal set of paramters $\Theta^{*}$ such that the likelihood $L$ of observing the data is maximized:
@@ -54,7 +54,45 @@ In the limit for infinite data $N \rightarrow \infty$ the maximum likelihood app
  &= H(p_{D}(x), p_{M}(x;\Theta)).
 \end{align}
 
-Generative models also include implicit models that do not model $p(x,y)$ explicitly but introduce a generator to create new samples that infer the underlying probability distribution of the training data. 
+The cross-entropy takes a minimum when the two distributions match, that is $p_{M}(x;\Theta) = p_{D}(x)$. Therefore, an ideal model trained with the maximum likehood approach yields a model that perfectly reproduces the true data distribution.
+
+\subsection{Explicit vs implicit generative models}
+
+Generative models are further distinguished between those that define the models probability distribution $p_{M}(x;\Theta))$ explicitly through some functional form and those that define it implicitly through a sampler that allows to draw samples from it. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straigh-forward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{M}(x;\Theta))$, which often becomes a bottleneck for the expressive power of the model. Therefore, designing an explicit model is often a trade-off between capturing the complexity of the true data distribution and still being tractable.
+
+The various variants of explicit DGMs fall into two categories: Models that carefully construct a tractable functional form for the likelihood $\mathcal{L}$ and models that use a tractable approximation. Two major examples for tractable explicit models are autoregressive models and normalizing flow models. The most famous example for an explicit model that requires approximation is the variational auto encoder.
+
+\subsubsection{Autoregressive Modelling}
+
+The autoregressive approach uses the chain rule for probabilities to rewrite the joint probability $p(x)$ of an n-dimensional vector $\mathbf{x}$ into a product of conditional probabilities that are easy to access
+
+\begin{equation}
+  p_{M}(\mathbf{x}) = \prod_i^n p(x_i | x_1, x_2, .., x_{i-1}) .
+\end{equation}
+
+Splitting up the problem into conditional probailities allows for a tractable explicit model. The drawback of such autoregressive models is that they can only generate one entry at a time prohibiting parallel computation. However, this approach is well suited for data that is sequential in nature, such as human speech.
+
+\subsubsection{Normalizing Flow}
+
+Normalizing Flow (NF) models make use of the change of variables formula for invertable transformations $g$ that map from one space $\mathrm{X}$ (the data space) to another $\mathrm{Z}$ (the latent space). Given a function $g: \mathrm{R}^n \rightarrow \mathrm{R}^n$ that is invertible and both $g$ and $g^{-1}$ are continuously differentiable, as well as orientation-preserving ($ \nabla g > 0 $), then the change of variables formula can be used to express the likelihood of a data point $x \sim \mathrm{X}$ in terms of another, potentially simpler, density function in the latent space
+
+\begin{equation}
+  p_{\mathrm{X}} (\mathbf{x}) = p_{\mathrm{Z}} (g^{-1}(\mathbf{x})) \Big| \text{det} \left( \frac{\partial g^{-1}(\mathbf{x})}{\partial \mathbf{x}} \right) \Big| .
+\end{equation}
+
+NF models have the advantage that they allow for direct optimization and evaluation of the likelihood. The major drawback of NF models are the required restrictions on the transformation $g$ (especially the equality of the dimensions of the latent and the data space) that are difficult to fulfill in practice limiting their applicability.
+
+\subsubsection{Variational Autoencoder}
+
+The goal of a Variational Autoencoder (VAE) is to introduce a map $g$ from a latent space $\mathrm{Z}$ to the data space $\mathrm{X}$, but unlike NF models the dimensions of latent and data space do not have to match. Typically the dimension of the latent space is much smaller than the dimension of the data space. As a consequence the map $g$ is not invertable anymore and thus the likelihood can not be computed directly. 
+
+Using Bayes's rule the likelihood for a data point $x$ can be written as
+
+\begin{equation}
+  p_{\Theta} = \frac{p_{\Theta}(x|z)p_{\mathrm{Z}(z)}}{p_{\Theta}(z|x)} .
+\end{equation}
+
+While it is straigh
 
 \section{Artificial Neural Networks}
 
