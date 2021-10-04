@@ -22,13 +22,13 @@ Formally, consider a set of labelled data $\{(x,y)\}$ drawn from a joint propabi
 
 Generative approaches on the other hand aim to model the joint probability $p(x,y)$ (or simply $p(x)$ if no labels are given). They are framed generative as the probability $p(x,y)$ can be used to generate new instances of the underlying system. However, it is straighforward to compute marginalized distributions $p(x) = \sum_y p(x,y)$ or conditional distributions $p(y|x) = \frac{p(x,y)}{p(x)}$. Therefore, generative models can be used for classification as well. 
 
-Obviously, the underlying task for generative models is more complex compared to the discriminative task and thus generative models typically require more parameters. Furthermore, experiments comparing logistic regression (discriminative model) with Gaussian Naive Bayes (generative model) have shown that the former outperforms the latter in terms of asymptotic error. However, in a low data regime generative models can give superior performance. 
+Obviously, the underlying task for generative models is more complex compared to the discriminative task as the generative model has to be more informative. Therefore, generative models typically require more parameters than discriminative models. Furthermore, experiments comparing logistic regression (discriminative model) with Gaussian Naive Bayes (generative model) for a binary classification task have shown that the former outperforms the latter in terms of asymptotic error. However, in a low data regime generative models can give superior performance. 
 
 While both approaches can be used for classification, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to Deep Generative Models (DGMs) for simplicity.
 
 \subsection{Maximum likelihood approach}
 
-The major route to train a DGM is to maximize the data likelihood. The underlying idea of this approach is to find a model that best explains the oberserved data . A model with parameters $\Theta$ provides an estimate for the probability $p_{M}(x;Theta)$ for a given oberservation $x$. The likelihood $L$ for the data under the parametric model can be written as
+The major route to train a DGM is to maximize the data likelihood. The underlying idea of this approach is to find a model that best explains the oberserved data . A model with parameters $\Theta$ provides an estimate for the probability $p_{M}(x;\Theta)$ for a given oberservation $x$. The likelihood $L$ for the data under the parametric model can be written as
 
 \begin{equation}
   \mathcal{L} = \prod_i^N p_{M}(x;\Theta) ,
@@ -56,9 +56,33 @@ In the limit for infinite data $N \rightarrow \infty$ the maximum likelihood app
 
 The cross-entropy takes a minimum when the two distributions match, that is $p_{M}(x;\Theta) = p_{D}(x)$. Therefore, an ideal model trained with the maximum likehood approach yields a model that perfectly reproduces the true data distribution.
 
+\subsection{Latent Variables and the Manifold Hypothesis}
+
+Latent variable models (LVM) assume that real-world data is generally structured and therefore can be described through a lower-dimensional representation. This assumption is known as the manifold hypothesis, which states that examples $x \in \mathbb{R}^D$ lie on a low-dimensional manifold $\mathcal{M} \subset \mathbb{R}^D$ embedded in the high-dimensional space $\mathbb{R}^D$. Therefore, real-world data is assumed to have an intrinsic lower dimensionality $d$ and our oberservations $x$ can be explained through some hidden variables $z \in \mathbb{R}^d$. The high-dimensional space $\mathbb{R}^D$ is called ambient space and the low-dimensional space $\mathbb{R}^d$ is referred to as latent space.
+
+The idea of LVM is to decompose the generative process for new samples that are consistent with the training set $\{x | x \in \mathbb{R}^D\}$ into two steps: (1) Draw a sample $z \in \mathbb{R}^d$ from the prior distribution $p(z)$. (2) Use the conditional probability $p(x|z)$ to generate a new sample. This can be summarized as 
+
+\begin{equation}
+  x \sim p(x|z) \; , \; \; z \sim p(z)  .
+\end{equation}
+
+A key problem of LVM is to infer the posterior distribution of the latent variables $p(z|x)$. Using Bays's rule we can write
+
+\begin{equation}
+  p(z|x) = \frac{p(x|z)p(z)}{p(x)}  ,
+\end{equation}
+
+where the denominator
+
+\begin{equation}
+  p(x) = \int p(x|z)p(z) dz
+\end{equation}
+
+is intractable for most of the real-world applications.
+
 \subsection{Explicit vs implicit generative models}
 
-Generative models are further distinguished between those that define the models probability distribution $p_{M}(x;\Theta))$ explicitly through some functional form and those that define it implicitly through a sampler that allows to draw samples from it. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straigh-forward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{M}(x;\Theta))$, which often becomes a bottleneck for the expressive power of the model. Therefore, designing an explicit model is often a trade-off between capturing the complexity of the true data distribution and still being tractable.
+Generative models can be further distinguished between those that define the models probability distribution $p_{M}(x;\Theta))$ explicitly through some functional form and those that define it implicitly through a sampler that allows to draw samples from it. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straigh-forward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{M}(x;\Theta))$, which often becomes a bottleneck for the expressive power of the model. Therefore, designing an explicit model is often a trade-off between capturing the complexity of the true data distribution and still being tractable.
 
 The various variants of explicit DGMs fall into two categories: Models that carefully construct a tractable functional form for the likelihood $\mathcal{L}$ and models that use a tractable approximation. Two major examples for tractable explicit models are autoregressive models and normalizing flow models. The most famous example for an explicit model that requires approximation is the variational auto encoder.
 
@@ -80,20 +104,49 @@ Normalizing Flow (NF) models make use of the change of variables formula for inv
   p_{\mathrm{X}} (\mathbf{x}) = p_{\mathrm{Z}} (g^{-1}(\mathbf{x})) \Big| \text{det} \left( \frac{\partial g^{-1}(\mathbf{x})}{\partial \mathbf{x}} \right) \Big| .
 \end{equation}
 
-NF models have the advantage that they allow for direct optimization and evaluation of the likelihood. The major drawback of NF models are the required restrictions on the transformation $g$ (especially the equality of the dimensions of the latent and the data space) that are difficult to fulfill in practice limiting their applicability.
+NF models have the advantage that they allow for direct optimization and evaluation of the likelihood. The major drawback of NF models are the required restrictions on the transformation $g$ that are difficult to fulfill in practice limiting their applicability. The most important restriction to be named is the equality of the dimensions of the latent and the data space.
 
 \subsubsection{Variational Autoencoder}
 
-The goal of a Variational Autoencoder (VAE) is to introduce a map $g$ from a latent space $\mathrm{Z}$ to the data space $\mathrm{X}$, but unlike NF models the dimensions of latent and data space do not have to match. Typically the dimension of the latent space is much smaller than the dimension of the data space. As a consequence the map $g$ is not invertable anymore and thus the likelihood can not be computed directly. 
+The goal of a Variational Autoencoder (VAE) is to introduce a map $g_{\Theta}$ (decoder) from a latent space $\mathrm{Z}$ to the data space $\mathrm{X}$, but unlike NF models the dimensions of latent and data space do not have to match. Typically the dimension of the latent space is much smaller than the dimension of the data space. As a consequence the map $g_{\Theta}$ is not invertable anymore and thus the likelihood can not be computed directly. 
 
 Using Bayes's rule the likelihood for a data point $x$ can be written as
 
 \begin{equation}
-  p_{\Theta} = \frac{p_{\Theta}(x|z)p_{\mathrm{Z}(z)}}{p_{\Theta}(z|x)} .
+  p_{\Theta}(x) = \frac{p_{\Theta}(x|z)p_{\mathrm{Z}}(z)}{p_{\Theta}(z|x)},
 \end{equation}
 
-While it is straigh
+where $p_{\mathrm{Z}(z)}$ is prior distribution for the latent variables. The posterior distribution $p_{\Theta}(z|x)$ is typically intractable and VAE approach continues to approximate it within a family of parameterized probability distributions that are tractable. This is achieved using a NN $e_{\Psi}(z|x)$ (encoder) that predicts the parameters for the approximate posterior,
 
+\begin{equation}
+  e_{\Psi}(z|x) \approx p_{\Theta}(z|x) ,
+\end{equation}
+  
+where $\Psi$ are the parameters for the NN. 
+
+To train both, the decoder $g_{\Theta}$ and the encoder $e_{\Psi}$, a tractable lower bound for the evidence (ELBO) can be derived
+
+\begin{align}
+  log(p_{\Theta}(x)) &\geq \mathbb{E}_{e_{\Psi}(z|x)} \Big[ log \big( \frac{p_{\Theta}(x,z)}{e_{\Psi}(z|x)} \big) \Big] \\
+    &=  \mathbb{E}_{e_{\Psi}(z|x)} \Big[ log \big( p_{\Theta}(x|z)\big) \Big] - \text{KL}(e_{\Psi}(z|x)||p_{\mathrm{Z}(z)})  
+\end{align}
+  
+and maximized. The first term reduces the approximation error in ambient space (reconstruction error) that arises due to the restriction for the dimensionality of the latent space and the approximation error for the posterior. The second term acts as a regularizer that biases the the approximate posterior towars the assumend prior distribution $p_{\mathrm{Z}(z)}$. Note that both terms might be in a conflict with each other. 
+
+The main drawback of VAEs is that the gap between the ELBO used for optimization and the actual likelihood might be very big resulting in a model that is very different from the true distribution. Empically, vanilla VAEs have a tendency to ignore some of the latent variables and produce blurred samples in ambient space.
+  
+\subsubsection{Markov Chain approximation}
+  
+Some generative models generate samples using a markov chain technique: A sample $x$ is repeatly updated according to according to some transition operator $x' \sim q(x'|x)$. 
+
+An example for such a model is the Boltzmann machine (BM): A BM concists of binary units connected with each other. The weights $\Theta$ of the network are the parameters of an energy function $E(\Theta)$ which is used to define the probability distribution over binary patterns of the units. During training, the weights are updated such the likelihood for the given training data is maximized. To sample a new state the units are repeatly updated stochastically until an equilibrium state is reached. 
+  
+The convergence of such model might be very slow in practice and there is not a clear criterion whether a chain has converged or not. BMs and its variants are barely used nowadays, because they do not scale well to high dimensional data.
+  
+  
+\subsection{Implicit generative models: The Generative Adversarial Network}
+
+  
 \section{Artificial Neural Networks}
 
 ANNs are inspired by nervous systems, such as our human brain. A nervous system is a information processing system capable to perform extremely complex tasks: It coordinates incoming signals, such as information about the environment captured by sensory cells, and creates actions accordingly. The ability to organize themself and learn from experience distinguishes them from conventionel computers and has led to the development of artificial models of its biological counterpart.
