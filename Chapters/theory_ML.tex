@@ -200,125 +200,125 @@ where $C'$ and $a'$ are the derivatives of the loss-function $C$ and the activat
 
 \section{Generative modeling}
 
-Generative models are designed to learn an esitimate for a distribution $\mathcal{X}$ defined over $\mathbb{R}^D$, where the dimension $D$ is typically large. In general, the distribution $\mathcal{X}$ is complicated and intractable. In practice, models are trained using a set of indipendently and identically distributed training samples $\{x\}$, where the samples $x \sim \mathcal{X}$. The probability for a sample $x$ is denoted with $p_{\mathcal{X}}(x)$ and the probability defined by the model is $p_{\Theta}(x)$, where $\Theta$ refers to the parameters of the model. The overall goal of a generative model is to optimize the parameters such the model probability $p_{\Theta}(x)$ converges to the true probability $p_{\mathcal{X}}(x)$. 
+Generative modeling refers to designing a model that learns an esitimate for a distribution $\mathcal{X}$ defined over $\mathbb{R}^D$, where the dimension $D$ is typically large. In general, the distribution $\mathcal{X}$ is complicated and intractable. In practice, models are trained using a set of indipendently and identically distributed training samples $\{x\}$, where the samples $x \sim \mathcal{X}$. The probability for a sample $x$ is denoted with $p_{\mathcal{X}}(x)$ and the probability defined by the model is $p_{\Theta}(x)$, where $\Theta$ refers to the parameters of the model. The overall goal of a generative model is find the set of optimal parameters $\Theta^{*}$ such that the model probability $p_{\Theta^{*}}(x)$ converges to the true probability $p_{\mathcal{X}}(x)$. 
 
 \subsection{Discriminative vs generative models}
 
-The definition for generative models is often opposed to discriminative models. While the former aims to learn about the dependencies of all the variables in a system, the latter learns to introduce decision boundaries for different classes. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
+The definition for generative models is often opposed to discriminative models. While the former aims to learn about the dependencies of all the variables in a system, the goal of the latter is to introduce decision boundaries for different classes. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
 
-Formally, consider a set of labelled data $\{(x,y)\}$ following the joint probability distribution $p(x,y)$, where $x$ is an observation and $y$ the corresponding class label. A discriminative model learns the conditional probability $p(y|x)$ of the class labels $y$ given the obsersvation $x$. This can be achieved either explicitly or implicitly by directly mapping the oberservations $x$ to a class label $y$. Therefore, a discriminative model does not necessarily have to learn about the depencies of all the variables in the system but only on those variables important to label the observations.
+Formally, consider a set of labelled data $\{(x,y)\}$ following the joint probability distribution $p(x,y)$, where $x$ is an observation and $y$ the corresponding class label. The goal of a discriminative model is to learn the conditional probability $p(y|x)$ of the class labels $y$ given the obsersvation $x$. This can be achieved either explicitly or implicitly by directly mapping the oberservations $x$ to a class label $y$. To fullfil this goal, a discriminative model does not necessarily have to learn about the depencies of all the variables in the system as it only has to make use of the variables that are important for labeling the observations.
 
-Generative approaches on the other hand aim to model the joint probability $p(x,y)$ (or simply $p(x)$ if no labels are given). They are framed generative as the probability $p(x,y)$ can be used to generate new instances of the underlying system. However, it is straighforward to compute marginalized probabilities $p(x) = \sum_y p(x,y)$ or conditional probabilities $p(y|x) = \frac{p(x,y)}{p(x)}$. Therefore, generative models can be used for classification as well. 
+Generative approaches on the other hand aim to model the joint probability $p(x,y)$ (or simply $p(x)$ if no labels are given). They are framed generative as the probability $p(x,y)$ can be used to generate new instances of the underlying distribution. However, it is straighforward to compute marginalized probabilities $p(x) = \sum_y p(x,y)$ or conditional probabilities $p(y|x) = \frac{p(x,y)}{p(x)}$. Therefore, generative models can be used for classification as well. 
 
-Obviously, the underlying task for generative models is more complex compared to the discriminative task as the generative model has to be more informative. Therefore, generative models typically require more parameters than discriminative models. Furthermore, experiments comparing logistic regression (discriminative model) with Gaussian Naive Bayes (generative model) for a binary classification task have shown that the former outperforms the latter in terms of asymptotic error. However, in a low data regime generative models can give superior performance. 
+Obviously, the underlying task for generative models is more complex compared to the discriminative task as the generative model has to be more informative. Therefore, generative models typically require more parameters than discriminative models. Regarding experiments for a binary classification task, logistic regression, which is a discriminative model, outperforms Gaussian Naive Bayes, which is a generative model, in terms of asymptotic errors. However, in a low data regime generative models can give superior performance. 
 
 While both approaches can be used for classification, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to Deep Generative Models (DGMs) for simplicity.
 
 \subsection{Maximum likelihood approach}
 
-The major route to train a DGM is to maximize the data likelihood. The underlying idea of this approach is to find a model that best explains the oberserved data . A model with parameters $\Theta$ provides an estimate for the probability $p_{M}(x;\Theta)$ for a given oberservation $x$. The likelihood $L$ for the data under the parametric model can be written as
+The major route to train a DGM is to maximize the data likelihood. The underlying idea of this approach is to find a model that best explains the oberserved data . A model with parameters $\Theta$ provides an estimate for the probability $p_{\Theta}(x)$ for a given oberservation $x$. The likelihood $\mathcal{L}$ for the data under the parametric model can be written as
 
 \begin{equation}
-  \mathcal{L} = \prod_i^N p_{M}(x;\Theta) ,
+  \mathcal{L} = \prod_i^N p_{\Theta}(x) ,
 \end{equation}
 
 where $N$ is the number of examples in the training data $\{x\}$. The goal of maximum likelihood approaches is to find the optimal set of paramters $\Theta^{*}$ such that the likelihood $L$ of observing the data is maximized:
 
 \begin{equation}
-  \Theta^{*} = \underset{\Theta}{\text{argmax}} \; L
+  \Theta^{*} = \underset{\Theta}{\text{argmax}} \; \mathcal{L}
 \end{equation}
 
 Instead of maximizing the likelihood, it is common practice to minimize the negative logarithm of the likelihood to avoid numerical issues
 
 \begin{equation}
-  \underset{\Theta}{\text{argmax}} \; \prod_i^{N} p_{M}(x;\Theta) = \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{M}(x;\Theta) ) .
+  \underset{\Theta}{\text{argmax}} \; \prod_i^{N} p_{\Theta}(x) = \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{\Theta}(x) ) .
 \end{equation}
 
-In the limit for infinite data $N \rightarrow \infty$ the maximum likelihood approach is equivalent to minimizing the cross-entropy $H(p_{D}(x), p_{M}(x;\Theta))$, where $p_{D}(x)$ is the true probability distribution of the data, as it can be shown 
+In the limit for infinite data $N \rightarrow \infty$ the maximum likelihood approach is equivalent to minimizing the cross-entropy $H(p_{\mathcal{X}}(x), p_{\Theta}(x))$, where $p_{\mathcal{X}}(x)$ is the true probability distribution of the data, as it can be shown 
 
 \begin{align}
- \underset{N \rightarrow \infty}{\text{lim}} \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{M}(x;\Theta) ) 
- &= \underset{\Theta}{\text{argmin}} \; \mathbb{E}_{x \sim p_{D}(x)} log ( \frac{1}{ p_{M}(x;\Theta) }) \\
- &= H(p_{D}(x), p_{M}(x;\Theta)).
+ \underset{N \rightarrow \infty}{\text{lim}} \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{\Theta}(x) ) 
+ &= \underset{\Theta}{\text{argmin}} \; \mathbb{E}_{x \sim p_{\mathcal{X}}(x)} log ( \frac{1}{ p_{\Theta}(x) }) \\
+ &= H(p_{\mathcal{X}}(x), p_{\Theta}(x)).
 \end{align}
 
-The cross-entropy takes a minimum when the two distributions match, that is $p_{M}(x;\Theta) = p_{D}(x)$. Therefore, an ideal model trained with the maximum likehood approach yields a model that perfectly reproduces the true data distribution.
+The cross-entropy takes a minimum when the two distributions match, that is $p_{\Theta}(x) = p_{\mathcal{X}}(x)$. Therefore, an ideal model trained with the maximum likehood approach yields a model that perfectly reproduces the true data distribution.
 
 \subsection{Latent variables}
 
-Latent variable models (LVM) assume that real-world data is generally structured and therefore can be described through a lower-dimensional representation. This assumption is known as the manifold hypothesis, which states that examples $x \in \mathbb{R}^D$ lie on a low-dimensional manifold $\mathcal{M} \subset \mathbb{R}^D$ embedded in the high-dimensional space $\mathbb{R}^D$. Therefore, real-world data is assumed to have an intrinsic lower dimensionality $d$ and our oberservations $x$ can be explained through some hidden variables $z \in \mathbb{R}^d$. The high-dimensional space $\mathbb{R}^D$ is called ambient space and the low-dimensional space $\mathbb{R}^d$ is referred to as latent space.
+The key assumption of Latent variable models (LVMs) is that real-world data is generally structured and therefore it can be described through a lower-dimensional distribution $\mathcal{Z}$ supported in $\mathbb{R}^d$. This assumption is known as the manifold hypothesis, which states that high-dimensional data $x \in \mathbb{R}^D$ tends to lie on a low-dimensional manifold $\mathcal{M} \subset \mathbb{R}^D$ embedded in the high-dimensional space $\mathbb{R}^D$. Therefore, real-world data is assumed to have an intrinsic lower dimensionality $d < D$ and our oberservations $x$ can be explained through some hidden variables $z \in \mathbb{R}^d$. 
 
-The idea of LVM is to decompose the generative process for new samples that are consistent with the training set $\{x | x \in \mathbb{R}^D\}$ into two steps: (1) Draw a sample $z \in \mathbb{R}^d$ from the prior distribution $p(z)$. (2) Use the conditional probability $p(x|z)$ to generate a new sample. This can be summarized as 
+In general, the point $z$ that maps to a point $x$ is unknown and therefore $z$ is refered to as a latent variable and $\mathcal{Z}$ is the latent distribution. The high-dimensional space $\mathbb{R}^D$ that supports the actual distribution $\mathcal{X}$ is often called ambient space and the low-dimensional space $\mathbb{R}^d$ that supports the latent distribution $\mathcal{Z}$ is refered to as the latent space. Note that the actual dimension $d$ of the latent space is often unknown. It is common to assume a tractable distribution like a Gaussian distribution to resemble the latent distribution.
 
-\begin{equation}
-  x \sim p(x|z) \; , \; \; z \sim p(z)  .
-\end{equation}
-
-A key problem of LVM is to infer the posterior distribution of the latent variables $p(z|x)$. Using Bays's rule we can write
+A common idea of LVM is to decompose the generative process for new samples $x' \sim \mathcal{X}$ into two steps: (1) Draw a sample $z \sim \mathcal{Z}$ from the latent distribution with probability $p_{\mathcal{Z}}(z)$. (2) Introduce a parametrized mapping function 
 
 \begin{equation}
-  p(z|x) = \frac{p(x|z)p(z)}{p(x)}  ,
+  g_{\Theta}: \mathbb{R}^d \rightarrow \mathbb{R}^D ,
 \end{equation}
 
-where the denominator
+where $\Theta$ are the parameters of the mapping, that transforms points from $\mathcal{Z}$ to the (intractable) distribution $\mathcal{X}$. The mapped distribution is denoted with $g(\mathcal{Z})$ and the overall goal is that the mapped distribution resembles the actual data distribution $g(\mathcal{Z}) \approx \mathcal{X}$ .
 
-\begin{equation}
-  p(x) = \int p(x|z)p(z) dz
-\end{equation}
-
-is intractable for most of the real-world applications.
+Note that the applied latent distribution $\mathcal{Z}$ might be very different from the actual manifold the data resides. Therefore, the transformation $g_{\Theta}$ has to be highly nonlinear to be able to deform the latent distribution $\mathcal{Z}$ such that it resembles the distribution $\mathcal{X}$. In general, deriving $g_{\Theta}$ from first principled is infeasible for most real-world applications. This motivates the use of DNNs for the transformation, as they are highly nonlinear and have the ability to approximate functions in high dimensions effeciently. 
 
 \subsection{Explicit generative models: An overview}
 
-Generative models can be further distinguished between those that define the models probability distribution $p_{M}(x;\Theta))$ explicitly through some functional form and those that define it implicitly through a sampler. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straigh-forward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{M}(x;\Theta))$, which often becomes a bottleneck for the expressive power of the model. Therefore, designing an explicit model is often a trade-off between capturing the complexity of the true data distribution and still being tractable. Implicit models on the other hand do not require direct access to the likelihood function but define a stochastic procedure to directly generate new samples. 
+Generative models can be further distinguished between those that access the models probability distribution $p_{\Theta}(x)$ explicitly through some functional form and those that define it implicitly through a sampler. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straigh-forward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{\Theta}(x))$, which often becomes a bottleneck for the expressive power of the model. Therefore, designing an explicit model is often a trade-off between capturing the complexity of the true data distribution and still being tractable. Implicit models on the other hand do not require direct access to the likelihood function but define a stochastic procedure to directly generate new samples. 
 
 The various variants of explicit DGMs fall into two categories: Models that carefully construct a tractable functional form for the likelihood $\mathcal{L}$ and models that use a tractable approximation. Two major examples for tractable explicit models are autoregressive models and normalizing flow models. Examples for explicit models that require approximation are the variational auto encoder and the Boltzmann machine. The most prominent member of implicit generative models is the generative adversarial approach.
 
 \subsubsection{Autoregressive Modelling}
 
-The autoregressive approach uses the chain rule for probabilities to rewrite the joint probability $p(x)$ of an n-dimensional vector $\mathbf{x}$ into a product of conditional probabilities that are easy to access
+The autoregressive approach applies the chain rule for probabilities to rewrite the joint probability $p(\mathbf{x})$ of an n-dimensional vector $\mathbf{x}$ into a product of conditional probabilities that are easy to access
 
 \begin{equation}
-  p_{M}(\mathbf{x}) = \prod_i^n p(x_i | x_1, x_2, .., x_{i-1}) .
+  p_{\Theta}(\mathbf{x}) = \prod_i^n p_{\Theta}(x_i | x_1, x_2, .., x_{i-1}) .
 \end{equation}
 
-Splitting up the problem into conditional probailities allows for a tractable explicit model. The drawback of such autoregressive models is that they can only generate one entry at a time prohibiting parallel computation. However, this approach is well suited for data that is sequential in nature, such as human speech.
+Splitting up the problem into conditional probailities often allows for a tractable explicit model. The drawback of such autoregressive models is that they can only generate one entry at a time prohibiting parallel computation. However, this approach is well suited for data that is sequential in nature, such as human speech.
 
 \subsubsection{Normalizing Flow}
 
-Normalizing Flow (NF) models are LVM models that make use of the change of variables formula for invertable transformations $g$ that map from one space $\mathrm{X}$ (the data space) to another $\mathrm{Z}$ (the latent space). Given a function $g: \mathrm{R}^n \rightarrow \mathrm{R}^n$ that is invertible and both $g$ and $g^{-1}$ are continuously differentiable, as well as orientation-preserving ($ \nabla g > 0 $), then the change of variables formula can be used to express the likelihood of a data point $x \sim \mathrm{X}$ in terms of another, potentially simpler, density function in the latent space
+Normalizing Flow (NF) models are LVMs that make use of the change of variables formula for invertable transformations $g$ that map from the data distribution $\mathcal{X}$ to the latent distribution $\mathcal{Z}$. Given a transformation
 
 \begin{equation}
-  p_{\mathrm{X}} (\mathbf{x}) = p_{\mathrm{Z}} (g^{-1}(\mathbf{x})) \Big| \text{det} \left( \frac{\partial g^{-1}(\mathbf{x})}{\partial \mathbf{x}} \right) \Big| .
+  g: \mathrm{R}^D \rightarrow \mathrm{R}^D
 \end{equation}
 
-NF models have the advantage that they allow for direct optimization and evaluation of the likelihood. The major drawback of NF models are the required restrictions on the transformation $g$ that are difficult to fulfill in practice limiting their applicability. The most important restriction to be named is the equality of the dimensions of the latent and the data space.
+that is invertible and both $g$ and $g^{-1}$ are continuously differentiable, as well as orientation-preserving ($ \nabla g > 0 $), then the change of variables formula can be used to express the likelihood of a data point $x \sim \mathcal{X}$ in terms of another, potentially simpler, density function in the latent space
+
+\begin{equation}
+  p_{\mathcal{X}} (\mathbf{x}) = p_{\mathcal{Z}} (g^{-1}(\mathbf{x})) \Big| \text{det} \left( \frac{\partial g^{-1}(\mathbf{x})}{\partial \mathbf{x}} \right) \Big| .
+\end{equation}
+
+NF models have the advantage that they allow for direct optimization and evaluation of the likelihood. The major drawback of NF models are the required restrictions on the transformation $g$ that are difficult to fulfill in practice and limit their applicability. The most important restriction to be named is the equality of the dimensions of the latent and the data space.
 
 \subsubsection{Variational Autoencoder}
 
-A Variational Autoencoder (VAE) is a LVM consisting of two parts: An encoder $e_{\Psi}(z|x)$ compresses a given input $x$ into a constraint distribution in the latent space $\mathrm{Z}$ and a decoder $p_{\Theta}(x|z)$ reconstructs a distribution in the ambient space $\mathrm{X}$. Typically, $e_{\Psi}(z|x)$ and $p_{\Theta}(x|z)$ are NNs with parameters $\Psi$ and $\Theta$ respectively that predict parameters for a family of parametrized distributions. Importantly, unlike NF models the dimensions of latent and ambient space do not have to match. Typically the dimension of the latent space is much smaller than the dimension of the data space and a simple Gaussian distribution is used as a prior distribution $p_{\mathrm{Z}}(z)$. As a consequence the mapping between the spaces is not invertable anymore and thus the likelihood can not be computed directly.
+A Variational Autoencoder (VAE) is a LVM consisting of two parts: An encoder $e_{\Psi}(z|x)$ compresses a given input $x$ into a constraint distribution in the latent space $\mathbb{R}^d$ and a decoder $p_{\Theta}(x|z)$ reconstructs a distribution in the ambient space $\mathbb{R}^D$. 
+
+Typically, $e_{\Psi}(z|x)$ and $p_{\Theta}(x|z)$ are represented as a family of parametrized distributions, such as multivariate Gaussian distributions $\mathcal{N}(\boldsymbol{\mu}_{\Psi}, \boldsymbol{\Sigma}_{\Psi})$ and $\mathcal{N}(\boldsymbol{\mu}_{\Theta}, \boldsymbol{\Sigma}_{\Theta})$ with means $\boldsymbol{\mu}$ and variances $\boldsymbol{\Sigma}$ as parameters. Those parameters are then learned by DNNs with weights $\Psi$ and $\Theta$ respectively. Importantly, unlike NF models the dimensions of latent and ambient space do not have to match and the dimension of the latent space $d$ is generally chosen much smaller than the dimension of the data space $D$. As a consequence, the mapping between the spaces is not invertable anymore and thus the likelihood can not be computed directly.
 %The goal of a Variational Autoencoder (VAE) is to introduce a map $g_{\Theta}$ (decoder) from a latent space $\mathrm{Z}$ to the data space $\mathrm{X}$, but unlike NF models the dimensions of latent and data space do not have to match. Typically the dimension of the latent space is much smaller than the dimension of the data space. As a consequence the map $g_{\Theta}$ is not invertable anymore and thus the likelihood can not be computed directly. 
 
-Using Bayes's rule the likelihood for a data point $x$ can be written as
+Typically, a standard normal distribution is used as a prior distribution $p_{\mathcal{Z}}(z)$ for the latent variables. Using Bayes's rule, the likelihood for a data point $x$ can be written as
 
 \begin{equation}
-  p_{\Theta}(x) = \frac{p_{\Theta}(x|z)p_{\mathrm{Z}}(z)}{p_{\Theta}(z|x)} .
+  p_{\Theta}(x) = \frac{p_{\Theta}(x|z)p_{\mathcal{Z}}(z)}{p_{\Theta}(z|x)} .
 \end{equation}
 
-The posterior distribution $p_{\Theta}(z|x)$ is typically intractable and the VAE approach aims to approximate it with the encoder $e_{\Psi}(z|x)$,
+Unfortunately, the posterior distribution $p_{\Theta}(z|x)$ is typically intractable. Therefore, the VAE approach aims to approximate it with the encoder $e_{\Psi}(z|x)$,
 
 \begin{equation}
   e_{\Psi}(z|x) \approx p_{\Theta}(z|x) .
 \end{equation}
 
-Using Jensen's inequlity a variational lower bound also called evidence lower bound (ELBO) can be derived to train both, the encoder $e_{\Psi}$ and the decoder $p_{\Theta}(z|x)$:
+Using Jensen's inequlity, a variational lower bound, also called evidence lower bound (ELBO), can be derived to train both, the encoder $e_{\Psi}$ and the decoder $p_{\Theta}(z|x)$:
 
 \begin{align}
   log(p_{\Theta}(x)) &\geq \mathbb{E}_{e_{\Psi}(z|x)} \Big[ log \big( \frac{p_{\Theta}(x,z)}{e_{\Psi}(z|x)} \big) \Big] \\
-    &= \underbrace{ \mathbb{E}_{e_{\Psi}(z|x)} \Big[ log \big( p_{\Theta}(x|z)\big) \Big] } _\text{reconstruction} -  \underbrace{  \text{KL}(e_{\Psi}(z|x)||p_{\mathrm{Z}(z)})  }_\text{regularization}
+    &= \underbrace{ \mathbb{E}_{e_{\Psi}(z|x)} \Big[ log \big( p_{\Theta}(x|z)\big) \Big] } _\text{reconstruction} -  \underbrace{  \text{KL}(e_{\Psi}(z|x)||p_{\mathcal{Z}}(z))  }_\text{regularization}
 \end{align}
   
-The negative ELBO is then minimized. The first term reduces the approximation error in ambient space (reconstruction error) that arises due to the restriction for the dimensionality of the latent space and the approximation error for the posterior. The second term acts as a regularizer that biases the the approximate posterior towars the prior distribution $p_{\mathrm{Z}}(z)$. Note that both terms might be in a conflict with each other. 
+The negative ELBO is then minimized. The first term reduces the approximation error in ambient space (reconstruction error) that arises due to the restriction for the dimensionality of the latent space and the approximation error for the posterior. The second term acts as a regularizer that biases the the approximate posterior towars the prior distribution $p_{\mathcal{Z}}(z)$. Note that both terms might be in a conflict with each other. 
 
 The main drawback of VAEs is that the gap between the ELBO used for optimization and the actual likelihood might be very big resulting in a model that is very different from the true distribution. Empirically, vanilla VAEs have a tendency to ignore some of the latent variables and produce blurred samples in ambient space.
   
@@ -326,27 +326,46 @@ The main drawback of VAEs is that the gap between the ELBO used for optimization
   
 Some generative models generate samples using a markov chain technique: A sample $x$ is repeatly updated according to some transition operator $x' \sim q(x'|x)$. 
 
-An example for such a model is the Boltzmann machine (BM): A BM concists of binary units connected with each other. The weights $\Theta$ of the network are the parameters of an energy function $E(\Theta)$ which is used to define the probability distribution over binary patterns of the units. During training, the weights are updated such that the likelihood for the given training data is maximized. To sample a new state the units are repeatly updated stochastically until an equilibrium state is reached. 
+An example for such a model is the Boltzmann machine (BM): A BM is a LVM that concists of binary units connected with each other. The units of a BM are divided into visible units receicing information from the environment and hidden (latent) units. The weights $\Theta$ of the network are the parameters of an energy function $E(\Theta)$ which is used to define the probability distribution over binary patterns of the units. During training, the weights are updated such that the likelihood for the given training data is maximized. To sample a new state the units are repeatly updated stochastically until an equilibrium state is reached. 
   
 The convergence of such model might be very slow in practice and there is not a clear criterion whether a chain has converged or not. BMs and its variants are barely used nowadays, because they do not scale well to high dimensional data.
   
   
 \subsection{Implicit generative models: The Generative Adversarial Network}
 
-Generative adversarial networks (GANs) were introduced by Ian Goodfellow et. al in 2014. They have become one of the most successful implicit generative models known in ML community. In its core, a GAN concists of two competing models trained in a game: A generator $G$ produces samples $x'$ aiming to reproduce the distribution $p(x)$ of a training set $\{x\}$. A second model, the discriminator $C$, has to distinguish between synthetic samples from the generator and real samples from the training set. Thereby, the discriminator $C$ acts as a distance measure for the real distribution $p(x)$ and the distribution of synthetic samples $p(x')$. While the discriminator $C$ is trained as a classifier in a supervised manner, the generator $G$ is trained fool the discriminator $C$. Therefore, the generator $G$ is indirectly pushed towards minimizing the difference between $p(x)$ and $p(x')$.
-The whole process of training a GAN is concidered a likelihood-free method as neither the likelihood of sample itself nor a lower bound of it is used. 
+Generative adversarial networks (GANs) were introduced by Ian Goodfellow et al. in 2014. They have become one of the most successful implicit generative models known in ML community. A GAN is a LVM, but unlike VAEs or NF models they are not aiming to infer the distribution of latent variables underlie the samples, but learn a transformation from a given prior distribution $\mathcal{Z}$ to $\mathcal{X}$.
 
-A GAN is a LVM, but unlike VAEs or NF models they are not aiming to infer the distribution of latent variables underlie the samples, but learn a transformation from a given prior distribution $p(z)$ to $p(x)$.
-Both, the generator and the discriminator are typically implemented as DNNs. The generator $G$ is defined as a function over latent samples $z \in \mathrm{R}^{d}$ from a prior distribution $p(z)$,
+In its core, a GAN concists of two competing models trained in a game: A generator $g_{\Theta}$ maps samples $z \sim \mathcal{Z}$ into the ambient space $\mathbb{R}^D$. A second model, the discriminator $c$, has to distinguish between synthetic samples $g_{\Theta}(z)$ from the generator and real samples $x$ from the training set $\{x\}$, where $x \sim \mathcal X$. Thereby, the discriminator $c_{\Psi}$ acts as a distance measure in ambient space for the real distribution $\mathcal{X}$ and the distribution of synthetic samples $g_{\Theta}(\mathcal{Z})$. While the discriminator $c_{\Psi}$ is trained as a classifier in a supervised manner, the generator $g_{\Theta}$ is trained fool the discriminator $c_{\Psi}$. Therefore, the generator $g_{\Theta}$ is indirectly pushed towards minimizing the difference between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$.
+The whole training process of a GAN is concidered a likelihood-free method as neither the likelihood of sample $p_{\mathcal{X}}(x)$ itself nor a lower bound of it is used explicitly. 
+
+Both, the generator $g_{\Theta}$ and the discriminator $c_{\Psi}$ are typically implemented as DNNs with weights $\Theta$ and $\Psi$ respectively. The generator is a function
 
 \begin{equation}
-  G(\Theta): \mathrm{R}^{d} \rightarrow \mathrm{R}^{D}
+  g_{\Theta}: \mathbb{R}^d \rightarrow \mathbb{R}^D,
 \end{equation}
 
-where $\Theta$ are the parameters of the generator, $d$ is the dimension of the latent variable $z$ and $D$ is the dimension of the ambient space for observations $x$. The prior distribution $p(z)$ is typically defined as a high-dimensional Gaussian distribution or uniform distribution over a hypercube. The latent samples $z$ are used a source of randomness for the model and $G(z;\Theta)$ transforms the given noise $z$ into synthetic samples $x'$.
+of latent samples $z$. The prior distribution $\mathcal{Z}$ is typically defined as a high-dimensional Gaussian distribution or uniform distribution over a hypercube. Intuitively, the latent samples $z$ provide a source of randomness for the model.
 
-The main goal of GANs is to converge the distribution of synthetic samples $p(x')$ implicitly defined by the generator $G(z;\Theta)$ towards the real distribution of the training examples $p(x)$. 
+In the seminal work of Ian Goodfellow et al. the GAN training is set up as a binary classification problem, where the discriminator $c_{\Psi}$ is a function
 
-%Naive approaches would continue to define an objective for the generator that minimizes the difference between the two probability distributions $p(x)$ and $p(x')$, such as the cross entropy, or apply a direct maximum likelihood training, where the model’s parameters are tuned such that the likelihood of observing the data given the model is optimized. Unfortunately, in many cases we do not have direct access to the explicit probability densities $p(x)$ and $p(x')$ because the high dimensionality of the data makes computing the normalization factor (the partition function) unfeasible.
+\begin{equation}
+  c_{\Psi}: \mathbb{R}^D \rightarrow [0,1],
+\end{equation}
+  
+aiming to predict the probability whether a given sample is drawn from the training data set $\{x\}$ or not. In this spirit, an optimal discriminator $c_{\Psi^{*}}$ is supposed to predict $c_{\Psi^{*}}(x) \approx 1$ and $c_{\Psi^{*}}(g(z)) \approx 0$. Obviously, the training of both networks is coupled, since the goal of the generator is to reproduce the data distribution and therefore the samples it produces are supposed to be indistinguishable from the training set.
+
+The natural choice for the loss function for a binary-classification problem is the cross entropy and therefore the original GAN loss $J(\Theta, \Psi)$ is defined as
+
+\begin{equation}
+  J(\Theta, \Psi) = \mathbb{E}_{x \sim \mathcal{X}} [log(c_{\Psi}(x))] + \mathbb{E}_{z \sim \mathcal{Z}} [log(1 - c_{\Psi}(g_{\Theta}(z)))] .
+\end{equation}
+  
+As a result, the GAN training becomes a minimax game, where the discriminator aims at maximizing $J(\Theta, \Psi)$ while the generator tries to minimize $J(\Theta, \Psi)$:
+
+\begin{equation}
+  \Psi^{*} = \underset{\Psi}{\text{arg max}} \; J(\Theta, \Psi) \;\; \text{and} \;\; \Theta^{*} = \underset{\Theta}{\text{arg min}} \; J(\Theta, \Psi)
+\end{equation}
+  
+This refers to a zero-sum game where the gain of one player is the loss of the other. The training of a GAN converges when a saddle point $(\Psi^{*}, \Theta^{*})$ is reached, which is also called Nash equilibrium in game theory: For both networks the loss can not be optimized any further given the weights of the other.
   
 \section{The Sketch-Map algorithm}
