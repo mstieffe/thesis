@@ -196,6 +196,7 @@ where $C'$ and $a'$ are the derivatives of the loss-function $C$ and the activat
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
 %It focuses on computer algorithms that construct statistical models based on training data:
 
+\subsubsection{Stochastic Optimization}
 
 
 \section{Generative modeling}
@@ -346,6 +347,8 @@ Both, the generator $g_{\Theta}$ and the discriminator $c_{\Psi}$ are typically 
 
 of latent samples $z$. The prior distribution $\mathcal{Z}$ is typically defined as a high-dimensional Gaussian distribution or uniform distribution over a hypercube. Intuitively, the latent samples $z$ provide a source of randomness for the model.
 
+\subsubsection{Vanilla Approach: Discriminator as Binary Classifier}
+
 In the seminal work of Ian Goodfellow et al. the GAN training is set up as a binary classification problem, where the discriminator $c_{\Psi}$ is a function
 
 \begin{equation}
@@ -368,4 +371,13 @@ As a result, the GAN training becomes a minimax game, where the discriminator ai
   
 This refers to a zero-sum game where the gain of one player is the loss of the other. The training of a GAN converges when a saddle point $(\Psi^{*}, \Theta^{*})$ is reached, which is also called Nash equilibrium in game theory: For both networks the loss can not be optimized any further given the weights of the other.
   
+  
+\subsubsection{Wasserstein Distance: Discriminator Estimates Transport Cost}
+  
+  
+\subsubsection{Learning Conditional Distributions}
+
+
+\subsubsection{Limitations}
+
 \section{The Sketch-Map algorithm}

@@ -1,0 +1,13 @@
+% Chapter Template
+
+\chapter{Methology of DeepBM} % Main chapter title
+
+\label{methology} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+\section{Notation and Problem formulation}
+
+\section{Autoregressive Reconstruction}
+
+\section{Representation}
+
+\section{Conditional GAN}
