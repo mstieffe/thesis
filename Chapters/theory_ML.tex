@@ -360,6 +360,7 @@ aiming to predict the probability whether a given sample is drawn from the train
 The natural choice for the loss function for a binary-classification problem is the cross entropy and therefore the original GAN loss $J(\Theta, \Psi)$ is defined as
 
 \begin{equation}
+\label{gan_loss_binary}
   J(\Theta, \Psi) = \mathbb{E}_{x \sim \mathcal{X}} [log(c_{\Psi}(x))] + \mathbb{E}_{z \sim \mathcal{Z}} [log(1 - c_{\Psi}(g_{\Theta}(z)))] .
 \end{equation}
   
@@ -369,7 +370,15 @@ As a result, the GAN training becomes a minimax game, where the discriminator ai
   \Psi^{*} = \underset{\Psi}{\text{arg max}} \; J(\Theta, \Psi) \;\; \text{and} \;\; \Theta^{*} = \underset{\Theta}{\text{arg min}} \; J(\Theta, \Psi)
 \end{equation}
   
-This refers to a zero-sum game where the gain of one player is the loss of the other. The training of a GAN converges when a saddle point $(\Psi^{*}, \Theta^{*})$ is reached, which is also called Nash equilibrium in game theory: For both networks the loss can not be optimized any further given the weights of the other.
+This refers to a zero-sum game where the gain of one player is the loss of the other. The training of a GAN converges when a saddle point $(\Psi^{*}, \Theta^{*})$ is reached, which is also called Nash equilibrium in game theory: For both networks the loss can not be optimized any further given the weights of the other. However, being a saddle point makes it difficult to find the Nash equiibrium numerically.
+
+Using the loss defined in \ref{gan_loss_binary} it can be shown the optimal discriminator $c_{\Psi^{*}, \Theta}$ for a fixed generator $g_{\Theta}$ is given by
+
+\begin{equation}
+  c_{\Psi^{*}, \Theta} (x) = \frac{p_{\mathcal{X}}(x)}{p_{\mathcal{X}}(x) + p_{\Theta}(x)}
+\end{equation}
+
+In practice, the minimax game is tackled iteratively with an alternating approach where the discriminator $c_{\Psi}$ is trained for $k$ steps followed by one training step for $g_{\Theta}$.
   
   
 \subsubsection{Wasserstein Distance: Discriminator Estimates Transport Cost}
