@@ -1,0 +1,18 @@
+Max likelihood:
+https://towardsdatascience.com/mse-is-cross-entropy-at-heart-maximum-likelihood-estimation-explained-181a29450a0b
+https://medium.com/konvergen/cross-entropy-and-maximum-likelihood-estimation-58942b52517a
+
+GAN:
+https://ml-lectures.org/docs/unsupervised_learning/ml_unsupervised-4.html
+https://cacm.acm.org/magazines/2020/11/248222-generative-adversarial-networks/fulltext
+
+VAE:
+http://ruishu.io/2018/03/14/vae/
+https://towardsdatascience.com/deep-latent-variable-models-unravel-hidden-structures-a5df0fd32ae2
+https://jaan.io/what-is-variational-autoencoder-vae-tutorial/
+
+RNN:
+https://machinelearningmastery.com/rnn-unrolling/
+
+Manifold hypothesis:
+https://deepai.org/machine-learning-glossary-and-terms/manifold-hypothesis

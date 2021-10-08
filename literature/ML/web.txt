@@ -16,3 +16,6 @@ https://machinelearningmastery.com/rnn-unrolling/
 
 Manifold hypothesis:
 https://deepai.org/machine-learning-glossary-and-terms/manifold-hypothesis
+
+Dimensionality:
+https://www.quora.com/What-algorithms-perform-as-well-or-better-than-neural-networks-on-high-dimensional-datasets
