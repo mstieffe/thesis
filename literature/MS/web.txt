@@ -1,5 +1,9 @@
 Stat Mech
 https://web.stanford.edu/~peastman/statmech/statisticaldescription.html
 
+Molecular Dynamics
+https://sites.engineering.ucsb.edu/~shell/che210d/assignments.html
+
+
 PMF
 https://physics.stackexchange.com/questions/442211/what-is-the-potential-of-mean-force
