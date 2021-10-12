@@ -8,30 +8,67 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-Machine Learning is a subfield of Artificial Intelligence (AI) and is used in a wide range of applications, such as computer vision, speech recognition, drug discovery or medical image analysis. It is a study of computer algorithms that construct statistical models trained to perform some specific task. The models improve their performance automatically by learning from examples instead of relying on static program instructions. Importantly, learning in this context does not mean to memorize examples but to extract patterns or rules from the training data such that the model can make reasonable predictions even for data points absent from the training examples. 
+Machine Learning is a subfield of Artificial Intelligence (AI) that is already used in a wide range of applications, such as computer vision, speech recognition or medical image analysis.\cite{voulodimos2018deep, nassif2019speech, fatima2017survey} Moreover, it is becoming increasingly important in many fields of modern science, for example molecular simulation, drug discovery or particle physics.\cite{noe2020machine, vamathevan2019applications, radovic2018machine} 
 
-ML algorithms can be split into supervised and unsupervised learning approaches. The supervised learning approach uses labeled data, where each input is linked to a desired output. Typical examples of supervised learning are regression or classification tasks. The unsupervised approach does not explicitly use labels to train the ML model. It aims to learn the underlying structure of the data, for example for clustering the data points or for generative tasks.
+ML is a study of computer algorithms that use data to construct statistical models trained to perform some specific task. The models improve their performance automatically by learning from examples instead of relying on static program instructions. Importantly, learning in this context aims at extracting patterns or rules from the training data that generalize rather than simply memorizing specific examples.
 
-ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods, decision trees or Artificial Neural Networks (ANNs). Throughout this work, ANNs are the main ML method used. Therefore, the main body of this chapter focuses on an introduction of ANNs. The rest of this chapter is structured as follows: Firstly, some general remarks important to distinguish ML models will be made, then ANNs are explained in detail and finally the clustering algorithm Sketch-Map is introduced.
+The growing interest for ML algorithms in modern science is pushed by the availability of large data sets. The massive amount of raw data collected in experiments or computer simulations demands for efficient algorithms to analyse and learn from it. Self-learning algorithms are therefore very appealing and help to automate processes that traditionally require a significant amount of human effort. ML is especially helpful when the data is high-dimensional, as ML algorithms can spot complex patterns or reduce the dimensionality for further processing. Moreover, ML algorithms tend to improve their performance with increased training set size, as stated by the bias-variance tradeoff (see ref..).
 
+Analysing data is also a hallmark of classical statistics. Indead, ML and classical statistics are related and many techniques and concepts used in ML have their origin is physics, such as variational methods or simulated annealing. A famous example is the Boltzmann Machine that has a direct analogy to a spin-glas model known from statistical mechanics. A difference between ML and classical statistics can be found in the type of problems tackled and the overall goal. While ML algorithms typically use data to built a model to make predictions for new observations, classical statistics aims at understanding the data by building a model to express dependencies. Therefore, statisticians are perhaps more concerned with the accuracy of the model.
+
+ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods, decision trees or Deep Neural Networks (DNNs). Giving an overview of all existing ML algorithms is out of the scope of this work. Instead, this chapters focuses on generative modeling using DNNs, as this is the main method used in this thesis. The rest of this chapter is structured as follows: Firstly, some basic concepts of ML will be introduced. Secondly, DNNs are explained in detail and thridly, the purpose and methods of generative modeling is outlined. Finally, a brief introduction about clustering is given.
 
 \section{Basics}
 
+Most problems in ML are tackled by a common scheme: The first step is to collect a data set $\mathcal{D} = \{ \mathbf{x} \}$ consisting of a set of indipendent and identically disitributed variables $\mathbf{x}$. Typically, $\mathbf{x} \in \mathrm{R}^D$ is a vector with dimension $D$ or a tensor of even higher rank, such as an image. The second step is to introduce a model $f_{\Theta}(\mathbf{x}) \coloneqq f(\mathbf{x};\Theta) = \mathbf{y}$ as a function
+
+\begin{equation}
+  f_{\Theta}: \mathrm{R}^D \rightarrow \mathrm{R}^S
+\end{equation}
+
+ with parameters $\Theta$ mapping the input $\mathbf{x}$ to some output $\mathbf{y} \in \mathrm{R}^S$. The last ingredient is a cost function $\mathcal{C}(f_{\Theta}(\mathbf{x}))$
+ 
+\begin{equation}
+  \mathcal{C}: \mathrm{R}^S \rightarrow \mathrm{R}
+\end{equation}
+
+that maps the output $\mathbf{y}$ of $f_{\Theta}(\mathbf{x})$ to a real number representing the error the model has made on $\mathbf{x}$. That is, $\mathcal{C}$ is used to judge the performance of the model. During training the model is fit by finding the set of parameters $\Theta^{*}$ that minimizes the cost function.
+
 \subsection{Supervised vs Unsupervised}
+
+Broadly speaking, ML algorithms can be split into supervised and unsupervised learning approaches. The supervised learning approach uses labeled data $\mathcal{D} = \{ \mathbf{(x, y)} \}$, where each input variable $\mathbf{x}$ is linked to a dependent output variable $\mathbf{y}$. In this case, the model $f_{\Theta}(\mathbf{x})$ is trained to predict the desired output $\mathbf{y}$. If $\mathbf{y}$ is a discrete variable the learning problem will be classification and otherwise, when $\mathbf{y}$ is a continues variable, the problem is regression. In the supervised approach, the cost function $\mathcal{C}(\mathbf{y}, f_{\Theta}(\mathbf{x}))$ becomes a function of both, the output of $f_{\Theta}(\mathbf{x})$ as well as the actual label $\mathbf{y}$. 
+
+The unsupervised approach does not use labels explicitly to train the ML model. It aims at learning the underlying structure of the data or spotting pattern. Example for the unsupervised approach include generative modeling, clustering and dimensionality reduction. 
+
+In some ML algorithms the distinction between supervised and unsupervised learning becomes fuzzy. Such approaches are often refered to as semi-supervised. An example for semi-supervised learning is the generative adversarial approach that will be explained in section \ref{}.
 
 \subsection{Discriminative vs Generative}
 
-The definition for generative models is often opposed to discriminative models. While the former aims to learn about the dependencies of all the variables in a system, the goal of the latter is to introduce decision boundaries for different classes. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
+Another distinction for ML algorithm is made between generative and discriminative models. While the former aims to learn about the dependencies of all the variables in a system, the goal of the latter is to learn decision boundaries. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
 
-Formally, consider a set of labelled data $\{(x,y)\}$ following the joint probability distribution $p(x,y)$, where $x$ is an observation and $y$ the corresponding class label. The goal of a discriminative model is to learn the conditional probability $p(y|x)$ of the class labels $y$ given the obsersvation $x$. This can be achieved either explicitly or implicitly by directly mapping the oberservations $x$ to a class label $y$. To fullfil this goal, a discriminative model does not necessarily have to learn about the depencies of all the variables in the system as it only has to make use of the variables that are important for labeling the observations.
+Formally, consider a set of labelled data $\mathcal{D} = \{ \mathbf{(x, y)} \}$ following the joint probability distribution $\mathbf{x}$. The goal of a discriminative model is to learn the conditional probability $p \mathbf{(y|x)}$ of the class labels $\mathbf{y}$ given the obsersvation $\mathbf{x}$. To fulfill this goal, a discriminative model does not necessarily have to learn about the depencies of all the variables in the system as it only has to make use of the variables that are important for labeling the observations.
 
-Generative approaches on the other hand aim to model the joint probability $p(x,y)$ (or simply $p(x)$ if no labels are given). They are framed generative as the probability $p(x,y)$ can be used to generate new instances of the underlying distribution. However, it is straighforward to compute marginalized probabilities $p(x) = \sum_y p(x,y)$ or conditional probabilities $p(y|x) = \frac{p(x,y)}{p(x)}$. Therefore, generative models can be used for classification as well. 
+On the other hand, generative approaches aim to model the joint probability $p \mathbf{(x,y)}$ (or simply $p \mathbf{(x)}$ if no labels are given). They are framed generative as the probability $p \mathbf{(x,y)}$ can be used to generate new instances of the underlying distribution. However, it is straighforward to compute marginalized probabilities 
+
+\begin{equation}
+  p \mathbf{(x)} = \sum_{\mathbf{y}} p \mathbf{(x,y)}
+\end{equation}
+
+or conditional probabilities 
+
+\begin{equation}
+  p \mathbf{(y|x)} = \frac{p \mathbf{(x,y)}}{p \mathbf{(x)}} .
+\end{equation}
+
+Therefore, generative models can be used for classification and regression as well. 
 
 Obviously, the underlying task for generative models is more complex compared to the discriminative task as the generative model has to be more informative. Therefore, generative models typically require more parameters than discriminative models. Regarding experiments for a binary classification task, logistic regression, which is a discriminative model, outperforms Gaussian Naive Bayes, which is a generative model, in terms of asymptotic errors. However, in a low data regime generative models can give superior performance. 
 
-While both approaches can be used for classification, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to Deep Generative Models (DGMs) for simplicity.
+While both approaches can be used for classification and regression, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to Deep Generative Models (DGMs) for simplicity.
 
 \subsection{Baysian vs Frequentist}
+
+In the field of statistical inference two different interpretations of probability can be found, known as the bayesian and the frequentist paradigm. In the frequentist view, probabilities are 
 
 \subsection{Bias-Variance Tradeoff}
 
