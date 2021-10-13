@@ -34,7 +34,7 @@ Most problems in ML are tackled by a common scheme: The first step is to collect
 
 that maps the output $\mathbf{y}$ of $f_{\Theta}(\mathbf{x})$ to a real number representing the error the model has made on $\mathbf{x}$. That is, $\mathcal{C}$ is used to judge the performance of the model. During training the model is fit by finding the set of parameters $\Theta^{*}$ that minimizes the cost function.
 
-\subsection{Supervised vs Unsupervised}
+\subsection{Supervised vs Unsupervised Learning}
 
 Broadly speaking, ML algorithms can be split into supervised and unsupervised learning approaches. The supervised learning approach uses labeled data $\mathcal{D} = \{ \mathbf{(x, y)} \}$, where each input variable $\mathbf{x}$ is linked to a dependent output variable $\mathbf{y}$. In this case, the model $f_{\Theta}(\mathbf{x})$ is trained to predict the desired output $\mathbf{y}$. If $\mathbf{y}$ is a discrete variable the learning problem will be classification and otherwise, when $\mathbf{y}$ is a continues variable, the problem is regression. In the supervised approach, the cost function $\mathcal{C}(\mathbf{y}, f_{\Theta}(\mathbf{x}))$ becomes a function of both, the output of $f_{\Theta}(\mathbf{x})$ as well as the actual label $\mathbf{y}$. 
 
@@ -42,7 +42,7 @@ The unsupervised approach does not use labels explicitly to train the ML model. 
 
 In some ML algorithms the distinction between supervised and unsupervised learning becomes fuzzy. Such approaches are often refered to as semi-supervised. An example for semi-supervised learning is the generative adversarial approach that will be explained in section \ref{}.
 
-\subsection{Discriminative vs Generative}
+\subsection{Discriminative vs Generative Models}
 
 Another distinction for ML algorithm is made between generative and discriminative models. While the former aims to learn about the dependencies of all the variables in a system, the goal of the latter is to learn decision boundaries. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
 
@@ -66,15 +66,27 @@ Obviously, the underlying task for generative models is more complex compared to
 
 While both approaches can be used for classification and regression, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to Deep Generative Models (DGMs) for simplicity.
 
-\subsection{Baysian vs Frequentist}
+\subsection{Interpretation of Probability: Baysian vs Frequentist}
 
-In the field of statistical inference two different interpretations of probability can be found, known as the bayesian and the frequentist paradigm. In the frequentist view, probabilities are 
+In the field of statistical inference two different interpretations of probability can be found, known as the bayesian and the frequentist paradigm. The debate over the different views of probability is going on for more than 250 years and dates back to a puplication of Thomas Bayes titled "An Essay towards solving a Problem in the Doctrine of Chances".
+
+In the frequentist view, the probability of an event is its relative frequency with which it occurs in many trials. For frequentists, probabilities are only discussed for well defined random-experiments. As the relative frequency of an event can vary for different experiments, probabilities are regarded as the limit for relative frequencies where the change of relative frequencies will diminish,
+
+\begin{equation}
+p = \underset{N \rightarrow \infty}{\text{lim}} \frac{K}{N}
+\end{equation}
+
+where $N$ is the number of trials and $K$ the number of occurences of the event of interest.
+
+The frequentist view is often associated with a deductive approach: The data is regarded as a random variable and the question frequentists are concerned is how well does the data fit to a given distribution. Therefore, the frequentist approach focuses on the likelihood $p(\mathcal{D} | \Theta)$ of observing the data given the model parameters.
+
+
 
 \subsection{Bias-Variance Tradeoff}
 
 \subsection{Curse of Dimensionality}
 
-\subsection{Latent variables}
+\subsection{Latent Variables}
 
 The key assumption of Latent variable models (LVMs) is that real-world data is generally structured and therefore it can be described through a lower-dimensional distribution $\mathcal{Z}$ supported in $\mathbb{R}^d$. This assumption is known as the manifold hypothesis, which states that high-dimensional data $x \in \mathbb{R}^D$ tends to lie on a low-dimensional manifold $\mathcal{M} \subset \mathbb{R}^D$ embedded in the high-dimensional space $\mathbb{R}^D$. Therefore, real-world data is assumed to have an intrinsic lower dimensionality $d < D$ and our oberservations $x$ can be explained through some hidden variables $z \in \mathbb{R}^d$. 
 
@@ -275,7 +287,7 @@ where $C'$ and $a'$ are the derivatives of the loss-function $C$ and the activat
 \subsubsection{Stochastic Optimization}
 
 
-\section{Generative modeling}
+\section{Generative Modeling}
 
 Generative modeling refers to designing a model that learns an esitimate for a distribution $\mathcal{X}$ defined over $\mathbb{R}^D$, where the dimension $D$ is typically large. In general, the distribution $\mathcal{X}$ is complicated and intractable. In practice, models are trained using a set of indipendently and identically distributed training samples $\{x\}$, where the samples $x \sim \mathcal{X}$. The probability for a sample $x$ is denoted with $p_{\mathcal{X}}(x)$ and the probability defined by the model is $p_{\Theta}(x)$, where $\Theta$ refers to the parameters of the model. The overall goal of a generative model is find the set of optimal parameters $\Theta^{*}$ such that the model probability $p_{\Theta^{*}}(x)$ converges to the true probability $p_{\mathcal{X}}(x)$. 
 
@@ -311,7 +323,7 @@ In the limit for infinite data $N \rightarrow \infty$ the maximum likelihood app
 The cross-entropy takes a minimum when the two distributions match, that is $p_{\Theta}(x) = p_{\mathcal{X}}(x)$. Therefore, an ideal model trained with the maximum likehood approach yields a model that perfectly reproduces the true data distribution.
 
 
-\subsection{Explicit generative models: An overview}
+\subsection{Explicit Generative Models: An Overview}
 
 Generative models can be further distinguished between those that access the models probability distribution $p_{\Theta}(x)$ explicitly through some functional form and those that define it implicitly through a sampler. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straigh-forward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{\Theta}(x))$, which often becomes a bottleneck for the expressive power of the model. Therefore, designing an explicit model is often a trade-off between capturing the complexity of the true data distribution and still being tractable. Implicit models on the other hand do not require direct access to the likelihood function but define a stochastic procedure to directly generate new samples. 
 
@@ -382,7 +394,7 @@ An example for such a model is the Boltzmann machine (BM): A BM is a LVM that co
 The convergence of such model might be very slow in practice and there is not a clear criterion whether a chain has converged or not. BMs and its variants are barely used nowadays, because they do not scale well to high dimensional data.
   
   
-\subsection{Implicit generative models: The Generative Adversarial Network}
+\subsection{Implicit Generative Model: The Generative Adversarial Network}
 
 Generative adversarial networks (GANs) were introduced by Ian Goodfellow et al. in 2014. They have become one of the most successful implicit generative models known in ML community. A GAN is a LVM, but unlike VAEs or NF models they are not aiming to infer the distribution of latent variables underlie the samples, but learn a transformation from a given prior distribution $\mathcal{Z}$ to $\mathcal{X}$.
 
@@ -441,4 +453,4 @@ In practice, the minimax game is tackled iteratively with an alternating approac
 
 \section{Clustering}
 
-\subsection{The Sketch-Map algorithm}
+\subsection{The Sketch-Map Algorithm}
