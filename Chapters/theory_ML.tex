@@ -18,6 +18,8 @@ Analysing data is also a hallmark of classical statistics. Indead, ML and classi
 
 ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods, decision trees or Deep Neural Networks (DNNs). Giving an overview of all existing ML algorithms is out of the scope of this work. Instead, this chapters focuses on generative modeling using DNNs, as this is the main method used in this thesis. The rest of this chapter is structured as follows: Firstly, some basic concepts of ML will be introduced. Secondly, DNNs are explained in detail and thridly, the purpose and methods of generative modeling is outlined. Finally, a brief introduction about clustering is given.
 
+difference of in-sample and out-of-sample error represents the difference between fitting and prediction.
+
 \section{Basics}
 
 Most problems in ML are tackled by a common scheme: The first step is to collect a data set $\mathcal{D} = \{ \mathbf{x} \}$ consisting of a set of indipendent and identically disitributed variables $\mathbf{x}$. Typically, $\mathbf{x} \in \mathrm{R}^D$ is a vector with dimension $D$ or a tensor of even higher rank, such as an image. The second step is to introduce a model $f_{\Theta}(\mathbf{x}) \coloneqq f(\mathbf{x};\Theta) = \mathbf{y}$ as a function
@@ -33,6 +35,47 @@ Most problems in ML are tackled by a common scheme: The first step is to collect
 \end{equation}
 
 that maps the output $\mathbf{y}$ of $f_{\Theta}(\mathbf{x})$ to a real number representing the error the model has made on $\mathbf{x}$. That is, $\mathcal{C}$ is used to judge the performance of the model. During training the model is fit by finding the set of parameters $\Theta^{*}$ that minimizes the cost function.
+
+\subsection{Bias-Variance Tradeoff}
+
+The general relationship between the training error $E_{in}$ and the generalization error $E_{out}$ is summarized in Fig. \ref{}, where both errors are plotted as a function of training set size. The following consideration is based on the assumption that the underlying data distribution is sufficiently complex such that the model will not be able to perfectly reproduce it. Therefore, after an initial drop (excluded in the figure), the in-sample error $E_{in}$ will increase with the amount of training data as the model is not powerful enough to capture all the regularities of the training set accurately. On the other hand, the out-of-sample error $E_{out}$ will decrease with the training set size as the sampling noise decreases and the training set becomes more representative of the true data distribution. Consequently, both errors will converge to the same value in the limit of inifite training set size. The error in the inifit data limit is called the bias and the fluctuation of $E_{out}$ due to a finite training set size is refered to as the variance of the model.
+
+The out-of-sample error $E_{out}$ is a combination of both, the bias and the variance. Given a regression model trained with mean-square-error (MSE), an exact decomposition for the expectation of $E_{out}$ can be derived: Consider a dataset $\mathcal{D} = \{(\mathbf{x}, \mathbf{y})\}$ sampled from a noisy model
+
+\begin{equation}
+ \mathbf{y} = f(\mathbf{x}) + \epsilon ,
+\end{equation}
+
+where $\epsilon$ is normaly distributed with zero mean and standard deviation $\sigma_{\epsilon}$. The model parameters $\Theta_{\mathcal{D}}^{*}$ are obtained by minimizing the squared error for the data set $\mathcal{D}$. Since $\mathcal{D}$ is finite, the parameters $\Theta_{\mathcal{D}}^{*}$ found will vary for different data sets. Denoting the expectation over all possible data sets (i.e. the asymptotic value in the limit of inifite data) with $\mathrm{E}_{\mathcal{D}}$ and the expectation over the noise with $\mathrm{E}_{\epsilon}$, the expected out-out-sample error $\mathrm{E}_{\mathcal{D}, \epsilon} [E_{out}]$ can be decomposed as
+
+\begin{align}
+\ref{bias_var_decomp}
+ \mathrm{E}_{\mathcal{D}, \epsilon} [E_{out}] &= \mathrm{E}_{\mathcal{D}, \epsilon} \Big[ \sum_{(\mathbf{x}, \mathbf{y}) \in \mathcal{D}_{out}} (\mathbf{y} - f_{\Theta_{\mathcal{D}}^{*}}(\mathbf{x}))^2 \Big] \\
+ &= \sum_{(\mathbf{x}, \mathbf{y}) \in \mathcal{D}_{out}} \sigma_{\epsilon}^2 
+ + \Big( f(\mathbf{x}) - \mathrm{E}_{\mathcal{D}} [ f_{\Theta_{\mathcal{D}}^{*}}(\mathbf{x}) ] \Big)^2 
+ + \mathrm{E}_{\mathcal{D}} \Big[ \Big(f_{\Theta_{\mathcal{D}}^{*}}(\mathbf{x}) - \mathrm{E}_{\mathcal{D}} [ f_{\Theta_{\mathcal{D}}^{*}}(\mathbf{x}) ] \Big)^2 \Big] \\
+ &= \textit{noise} + \textit{bias}^2 + \textit{variance} .
+\end{align}
+
+While trained to minize the in-sample error, the ultimate goal for a predictor is to achieve a low out-of-sample error. All three terms in Eq. \ref{} are positive and therefore each of them has to be minimized. The noise term is not affected by the model and therefore irreducible. The other two terms, the bias and the variance, are reducible. Unfortunately, minimizing both of them simultaneously poses challenges, known as the bias-variance tradeoff.
+
+The bias term 
+
+\begin{equation}
+ \textit{bias}^2 = \sum_{(\mathbf{x}, \mathbf{y}) \in \mathcal{D}_{out}} \Big( f(\mathbf{x}) - \mathrm{E}_{\mathcal{D}} [ f_{\Theta_{\mathcal{D}}^{*}}(\mathbf{x}) ] \Big)^2
+\end{equation}
+
+is the deviation of the models estimate in the limit of inifite data from the true value. A model with high bias is said to underfit the data. On the other hand, the variance
+
+\begin{equation}
+ \textit{variance} = \sum_{(\mathbf{x}, \mathbf{y}) \in \mathcal{D}_{out}} \mathrm{E}_{\mathcal{D}} \Big[ \Big(f_{\Theta_{\mathcal{D}}^{*}}(\mathbf{x}) - \mathrm{E}_{\mathcal{D}} [ f_{\Theta_{\mathcal{D}}^{*}}(\mathbf{x}) ] \Big)^2 \Big]
+\end{equation}
+
+describes how much the model is expected to fluctuate around the estimate in the infinite data limit. The fluctuations occur due to finit size effects of the training set and a model with high variance is said to overfit the data set. 
+
+Both errors depend on the complexity of the model, which is related to the number of degrees of freedom in the model (i.e. the number of parameters). A tradeoff occurs because the bias always decreases with the model complexity while the variance might increases instead, as illustrated in Fig \ref{}. The reason for this is the ability of a very complex model to not only learn the regularities of the training data but also the sample noise. Essentially, if the training set becomes too small, a complex model can simply remember every detail of the training examples. Therefore, the generalization will suffer from overemphasizing particular details in the training set leading to a large discrepancy between the in-sample and out-of-sample error. Consequently, a less-complex model with low variance but high bias can be superior in cases where the data set size is small.
+
+The bias-variance tradeoff explains the importance of large data sets for ML, as it offers the ability to train more complex models. Beside increasing the training set size, generalization can be enforced using regularization. In the bayesian view, regularization refers to a prior distribution on the model parameters. In practice, this is realized using an additional term in the loss function penalizing over-specialized models. 
 
 \subsection{Supervised vs Unsupervised Learning}
 
@@ -70,7 +113,7 @@ While both approaches can be used for classification and regression, only the ge
 
 In the field of statistical inference two different interpretations of probability can be found, known as the bayesian and the frequentist paradigm. The debate over the different views of probability is going on for more than 250 years and dates back to a puplication of Thomas Bayes titled "An Essay towards solving a Problem in the Doctrine of Chances".
 
-In the frequentist view, the probability of an event is its relative frequency with which it occurs in many trials. For frequentists, probabilities are only discussed for well defined random-experiments. As the relative frequency of an event can vary for different experiments, probabilities are regarded as the limit for relative frequencies where the change of relative frequencies will diminish,
+In the frequentist view, the probability of an event is its relative frequency with which it occurs in many trials. For frequentists, probabilities are only discussed for well defined random-experiments. As the relative frequency of an event can vary for different experiments, true probabilities can only be found in the limit of infinit trials where the difference in the relative frequencies diminish,
 
 \begin{equation}
 p = \underset{N \rightarrow \infty}{\text{lim}} \frac{K}{N}
@@ -78,11 +121,20 @@ p = \underset{N \rightarrow \infty}{\text{lim}} \frac{K}{N}
 
 where $N$ is the number of trials and $K$ the number of occurences of the event of interest.
 
-The frequentist view is often associated with a deductive approach: The data is regarded as a random variable and the question frequentists are concerned is how well does the data fit to a given distribution. Therefore, the frequentist approach focuses on the likelihood $p(\mathcal{D} | \Theta)$ of observing the data given the model parameters.
+The frequentist view is often associated with a deductive approach: The data is regarded as a random variable and the question frequentists are concerned with is how well does the data fit to a given distribution. Therefore, the frequentist approach focuses on the likelihood $p(\mathcal{D} | \Theta)$ of observing the data given the model parameters.
 
+In the bayesian view, probability quantifies uncertanity or the degree of personal belief. In this regard, bayesians do not seek a point estimate for the parameters of a model but a distribution over the model parameters $p(\Theta | \mathcal{D})$, called posterior distribution. The bayesian view is often associated with an inductive approach: Starting from the observations the model is built. Therefore, the parameters $/Theta$ are treated as a random variable and the question bayesians are concerned with is how well does the porposed model fit to the data.
 
+To evaluate the posterior probability, a prior probability $p(/Theta)$ is introduced that expresses the belief in the models parameters prior to observing any data. The data is then used to update this belief usig the likelihood $p(\mathcal{D} | \Theta)$. Using Bayes theorem, the posterior can be computed as
 
-\subsection{Bias-Variance Tradeoff}
+\begin{equation}
+ p(\Theta | \mathcal{D}) = \frac{p(\mathcal{D} | \Theta) p(\Theta)}{p(\mathcal{D})} ,
+\end{equation}
+
+where $p(\mathcal{D}) = \int p(\mathcal{D} | \Theta) p(\Theta) d \Theta$ is the evidence or marginal likelihood. 
+
+The incorporation of prior knowledge makes the bayesian approach more data efficient than the frequentist approach and helps to improve generalizability. On the other hand, the bayesian approach is computationally more challenging as computing the evidence $p(\Theta)$ is very expensive. Therefore, the frequentist approach was more dominant in the past century. Nowadays, both interpretations are commonly used and many ML algorithms incorporate both ideas.
+
 
 \subsection{Curse of Dimensionality}
 
