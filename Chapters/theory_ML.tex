@@ -138,6 +138,13 @@ The incorporation of prior knowledge makes the bayesian approach more data effic
 
 \subsection{Curse of Dimensionality}
 
+The increase of computational power makes it possible to collect large data sets $\{ \mathbf{x} \}$ and the use of \textit{big data} is a hallmark of modern ML. Often, the data sets do not only contain a large number of observations $\mathbf{x} = (x_1, x_2, .., x_D)$ but also the observations become high dimensional, i.e. $D$ becomes very large. Various phenomena occuring when dealing with high-dimensional spaces are counter intuitive and provide challenges as well as opportunities for modern ML. Depending on the point of view, such phenomenas are refered to as \textit{curse} or \textit{blessing of dimensionality}.
+
+When dimensionality is increased the volume of the space increases exponentially. Therefore, the data becomes sparse as 
+
+The expression \textit{curse of dimensionality} was coined by R. Belleman
+
+
 \subsection{Latent Variables}
 
 The key assumption of Latent variable models (LVMs) is that real-world data is generally structured and therefore it can be described through a lower-dimensional distribution $\mathcal{Z}$ supported in $\mathbb{R}^d$. This assumption is known as the manifold hypothesis, which states that high-dimensional data $x \in \mathbb{R}^D$ tends to lie on a low-dimensional manifold $\mathcal{M} \subset \mathbb{R}^D$ embedded in the high-dimensional space $\mathbb{R}^D$. Therefore, real-world data is assumed to have an intrinsic lower dimensionality $d < D$ and our oberservations $x$ can be explained through some hidden variables $z \in \mathbb{R}^d$. 
