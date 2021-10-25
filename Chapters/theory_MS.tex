@@ -13,7 +13,24 @@
 
 \subsection{Microstates vs Macrostates}
 
-\cite{shell2015thermodynamics}
+Classical thermodynamics describes the behaviour of bulk, macroscopic systems in terms of a few macroscopic quantities, such as the total internal energy $E$, the total volume $V$, and the number of particles $N$. Typically, the system is considered at the thermodynamic equilibrium, where its properties do not change with time and the actual state is hostory-independent. The basic concepts of classical thermodynamics were developed before the molecular nature of matter was generally accepted. Therefore, it is not surprising that classical thermodynamics is concerned with laws and relationships exclusively for macroscopic quantities without referencing to a more fundamental description on the molecular level. In fact, the laws of classical thermodynamics are based only on a few postulates.\cite{shell2015thermodynamics}
+
+The molecular basis of thermodynamics was developed in the field of statistical mechanics, also called statistical thermodynamics, where microscopic properties of individual molecules are considered. For example, in the classical picture, a list of positions $\mathbf{r} \in \mathrm{R}^{3N}$ and momenta $\mathbf{p} \in \mathrm{R}^{3N}$ of the atoms are considered, whereas a quantum mechanical description uses qantum states. In the following, the classical picture is used for simplicity and a microscopic state $m = (\mathbf{r}, \mathbf{p})$ is characterized by its $6N$ degrees of freedom, i.e. a point in the $6N$ dimensional \textit{phase space}.
+
+\subsection{The Mircrocanonical Ensemble and the Principle of Equal a Priori Probabilities}
+
+In statistical mechanics, macroscopic quantities measured at equilibrium are described as the average behaviour of many particles. For an isolated system, a macrostate is completely specified by $(E, V, N)$, which do not change throughout molecular motion. Note that the temperature $T$ and pressure $P$ are not necessary to specify the macroscopic state, as their values can be derived once the vales for $(E, V, N)$ are set. For each macrostate $(E, V, N)$, a collection of possible microstates can be found, i.e. a surface in the phase space of $N$ atoms with constant total energy $E$ at a volume $V$. This collection is called the \textit{microcanonical ensemble}.
+
+The positions and velocities of the atoms constantly vary under the influence of their mutual interactions. Therefore, the microstate changes constantly, while the macrostate stays fixed. The likelihood that a microstate will be visited by the system is denoted with $p_m$. Note that at equilibrium, the microstate probabilities do not change with time. A fundamental rule in statistical mechanics is principle of equal a priori probabilities: As the system has no preference for a certain microstate, each microstate is equally likely. Therefore, the likelihood in the canonical ensemble can be written as
+
+\begin{equation}
+  p_m = \begin{cases}
+    \frac{1}{\Omega(E,V,N)} \;\;\;\; & \text{if} \; E_m \neq E \\
+    0 \;\;\;\; & \text{if} \; E_m \neq E
+  \end{cases} ,
+\end{equation}
+
+where the $\Omega(E,V,N)$, called the \textit{density of states}, is a function describing the number of compatible microstates for particular $(E,N,V)$.\cite{shell2015thermodynamics}
 
 \subsection{The Boltzmann Distribution and the Partition Function}
 
