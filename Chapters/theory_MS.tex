@@ -13,15 +13,15 @@
 
 \subsection{Microstates vs Macrostates}
 
-Classical thermodynamics describes the behaviour of bulk, macroscopic systems in terms of a few macroscopic quantities, such as the total internal energy $E$, the total volume $V$, and the number of particles $N$. Typically, the system is considered at the thermodynamic equilibrium, where its properties do not change with time and the actual state is hostory-independent. The basic concepts of classical thermodynamics were developed before the molecular nature of matter was generally accepted. Therefore, it is not surprising that classical thermodynamics is concerned with laws and relationships exclusively for macroscopic quantities without referencing to a more fundamental description on the molecular level. In fact, the laws of classical thermodynamics are based only on a few postulates.\cite{shell2015thermodynamics}
+Classical thermodynamics describes the behaviour of bulk, macroscopic systems in terms of a few macroscopic quantities, such as the total internal energy $E$, the total volume $V$, and the number of particles $N$. Typically, the system is considered at the thermodynamic equilibrium, where its properties do not change with time and the actual state is history-independent. The basic concepts of classical thermodynamics were developed before the molecular nature of matter was generally accepted. Therefore, it is not surprising that classical thermodynamics is concerned with laws and relationships exclusively for macroscopic quantities without referencing to a more fundamental description on the molecular level. In fact, the laws of classical thermodynamics are based only on a few postulates.\cite{shell2015thermodynamics}
 
-The molecular basis of thermodynamics was developed in the field of statistical mechanics, also called statistical thermodynamics, where microscopic properties of individual molecules are considered. For example, in the classical picture, a list of positions $\mathbf{r} \in \mathrm{R}^{3N}$ and momenta $\mathbf{p} \in \mathrm{R}^{3N}$ of the atoms are considered, whereas a quantum mechanical description uses qantum states. In the following, the classical picture is used for simplicity and a microscopic state $m = (\mathbf{r}, \mathbf{p})$ is characterized by its $6N$ degrees of freedom, i.e. a point in the $6N$ dimensional \textit{phase space}.
+The molecular underpinning of thermodynamics was developed in the field of statistical mechanics, also called statistical thermodynamics, where all the microscopic details of individual molecules are taken into account. For example, in the classical picture, a list of positions $\mathbf{r} \in \mathrm{R}^{3N}$ and momenta $\mathbf{p} \in \mathrm{R}^{3N}$ of the atoms are considered, whereas a quantum mechanical description uses quantum states. In the following, the classical picture is used for simplicity and a microscopic state $m = (\mathbf{r}, \mathbf{p})$ is characterized by its $6N$ degrees of freedom, i.e. a point in the $6N$ dimensional \textit{phase space}.
 
 \subsection{The Mircrocanonical Ensemble and the Principle of Equal a Priori Probabilities}
 
-In statistical mechanics, macroscopic quantities measured at equilibrium are described as the average behaviour of many particles. For an isolated system, a macrostate is completely specified by $(E, V, N)$, which do not change throughout molecular motion. Note that the temperature $T$ and pressure $P$ are not necessary to specify the macroscopic state, as their values can be derived once the vales for $(E, V, N)$ are set. For each macrostate $(E, V, N)$, a collection of possible microstates can be found, i.e. a surface in the phase space of $N$ atoms with constant total energy $E$ at a volume $V$. This collection is called the \textit{microcanonical ensemble}.
+In statistical mechanics, macroscopic quantities measured at equilibrium are described as the average behaviour of many particles. For an isolated system, i.e. a system that can not exchange energy or particles with its surrounding at fixed volume, a macrostate is completely specified by $(E, V, N)$, which remain constant throughout molecular motion. Note that the temperature $T$ and pressure $P$ are not necessary to specify the macroscopic state, as their values can be derived once the vales for $(E, V, N)$ are set. For each macrostate $(E, V, N)$, a collection of possible microstates can be found, i.e. a surface in the phase space of $N$ atoms with constant total energy $E$ at a volume $V$. This collection of microstates together with their associated probabilities is called the \textit{microcanonical ensemble}.
 
-The positions and velocities of the atoms constantly vary under the influence of their mutual interactions. Therefore, the microstate changes constantly, while the macrostate stays fixed. The likelihood that a microstate will be visited by the system is denoted with $p_m$. Note that at equilibrium, the microstate probabilities do not change with time. A fundamental rule in statistical mechanics is principle of equal a priori probabilities: As the system has no preference for a certain microstate, each microstate is equally likely. Therefore, the likelihood in the canonical ensemble can be written as
+The positions and velocities of the atoms constantly vary under the influence of their mutual interactions. Therefore, the microstate changes constantly even if the macrostate stays fixed. The likelihood that a microstate will be visited by the system is denoted with $p_m$ and the microstate probabilities do not change with time at equilibrium. A cornerstone of statistical mechanics is the statement that the system has no preference for a certain microstate and hence, each microstate is equally likelily. This fundamental rule is called the \textit{principle of equal a priori probabilities}. It allows to write the likelihood in the canonical ensemble as
 
 \begin{equation}
   p_m = \begin{cases}
@@ -30,9 +30,63 @@ The positions and velocities of the atoms constantly vary under the influence of
   \end{cases} ,
 \end{equation}
 
-where the $\Omega(E,V,N)$, called the \textit{density of states}, is a function describing the number of compatible microstates for particular $(E,N,V)$.\cite{shell2015thermodynamics}
+where the $\Omega(E,V,N)$, called the \textit{density of states}, is a function describing the number of accessible microstates for particular $(E,N,V)$.\cite{shell2015thermodynamics}
 
-\subsection{The Boltzmann Distribution and the Partition Function}
+\subsection{Different views on the Entropy}
+
+A central theme common for thermodynamics, statistical mechanics as well as information theory is the concept of entropy.
+In classical thermodynamics, the entropy $S$ is regarded as a non-conserved state-function that emerges naturally for systems in equilibrium. It is a function
+
+\begin{equation}
+  S = S(E,V,N)
+\end{equation}
+
+dependent on the macroscopic quantities $E$, $V$ and $N$. Allowing for heat, volume or mass transfer, the system can change its equilibrium macrostate to another macrostate. This is called a thermodynamic process. Historically, entropy was introduced to explain why some thermodynamic processes are irreversible, i.e. the process occurs spontaneously in one direction whereas the reverse does not, although both directions obey the conversation of energy. The reason for this is that thermodynamic systems tend to progress towards states with increasing entropy. This is stated in the second law of thermodynamics: The entropy of an isolated system can not decrease as it always evolves to an equilibrium state where the entropy is highest. 
+
+While the specific form of the entropy function is different for every system, all entropy functions have some shared properties. A very important one is the total differential
+
+\begin{equation}
+  dS = \frac{1}{T}dE + \frac{P}{T}dV - \frac{\mu}{T}dN ,
+\end{equation}
+
+which relates the temperature $T$, the pressure $P$ and the chemical potential $\mu$ to derivatives of the same function and therefore defines a relationships between these variables.
+
+The above definition for the entropy $S$ is exclusively based on macroscopic properties. Boltzmann was the first who gave a definition for the entropy based on microscopic considerations and therefore introduced a connection of thermodynamics to the molecular nature of matter. His famous formula reads
+
+\begin{equation}
+\label{boltzmann_entropy}
+  S = k_B ln( \Omega(E,V,N) ) ,
+\end{equation}
+
+where $k_B$ is proportionality constant, called \textit{Boltzmann's constant}. Eq. \ref{boltzmann_entropy} links the entropy $S$ to the number of accessible microstates for given macrostate. Therefore, the second law of thermodynamics can be interpreted as the tendency of a system to evolve to a state that maximizes the number compatible microstates.
+
+Based on Boltzmann's equation, Gibbs introduced a more general form of the entropy 
+
+\begin{equation}
+\label{gibbs_entropy}
+  S = k_B \sum p_m ln( p_m )  ,
+\end{equation}
+
+which is equivalent, up to the Boltzmann constant, to the definition of the information entropy by Shannon. Note, that upon application of the principle of equal a priori probailities, i.e. $p_m = \frac{1}{\Omega(E,V,N)}$, Gibbs formulation of the entropy recovers Boltzmann's equation. 
+
+In this regard, the entropy can interpreted as a measure of uncertainty. Moreover, according to Jayne, the thermodynamic entropy can be regarded as an application of Shannon's information theory: The entropy $S$ expresses the missing information needed to determine the specific microstate of a system that remains uncommunicated due to a description of the system solely in terms of macroscopic quantities. From this point of view, the principle of equal a priori probabilities expresses our ignorance about the microscopic details of the system as it chooses the distribution that maximizes the entropy. 
+
+\subsection{The Canonical Ensemble and the Boltzmann Distribution}
+
+Central to the previous considerations was the ensemble for an isolated system, i.e. the microcanonical ensemble for fixed $(E,V,N)$. In the following, the \textit{canonical ensemble} is introduced describing a system that is not isolated but at constant temperature. To this end, the system is considered to be in contact with an infinitely large heat bath with a fixed temperature $T$. Therefore, the fixed macroscopic quanties of the system are $(T,V,N)$, while the total energy $E$ is allowed to fluctuate. The composite of the system and the heat bath is again considered to be an isolated system. However, the probabilities for the microstate $m$ of the system alone are no longer equal but depend on their total energy $E_m$. More specifically, the microstate probabilities can be written as
+
+\begin{equation}
+\label{boltzmann_dstr}
+  p_m = \frac{e^{- \frac{E_m}{k_B T}}}{Z} ,
+\end{equation}
+
+where the normalization constant 
+
+\begin{equation}
+  Z = \sum_{\text{all }\, m \, \text{at}\, V,N} e^{- \frac{E_m}{k_B T}}
+\end{equation}
+
+is called the \textit{canonical partition function} and the probability distribution in Eq. \ref{boltzmann_dstr} is refered to as \textit{Boltzmann distribution}.
 
 \cite{shell2015thermodynamics}
 
