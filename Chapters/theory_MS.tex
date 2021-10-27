@@ -67,13 +67,13 @@ Based on Boltzmann's equation, Gibbs introduced a more general form of the entro
   S = k_B \sum p_m ln( p_m )  ,
 \end{equation}
 
-which is equivalent, up to the Boltzmann constant, to the definition of the information entropy by Shannon. Note, that upon application of the principle of equal a priori probailities, i.e. $p_m = \frac{1}{\Omega(E,V,N)}$, Gibbs formulation of the entropy recovers Boltzmann's equation. 
+which is equivalent, up to the Boltzmann constant, to the definition of the information entropy by Shannon. Note, that upon application of the principle of equal a priori probailities, i.e. $p_m = \frac{1}{\Omega(E,V,N)}$, the entropy is maximized and Gibbs formulation of the entropy recovers Boltzmann's equation. 
 
-In this regard, the entropy can interpreted as a measure of uncertainty. Moreover, according to Jayne, the thermodynamic entropy can be regarded as an application of Shannon's information theory: The entropy $S$ expresses the missing information needed to determine the specific microstate of a system that remains uncommunicated due to a description of the system solely in terms of macroscopic quantities. From this point of view, the principle of equal a priori probabilities expresses our ignorance about the microscopic details of the system as it chooses the distribution that maximizes the entropy. 
+%In this regard, the entropy can interpreted as a measure of uncertainty. Moreover, according to Jayne, the thermodynamic entropy can be regarded as an application of Shannon's information theory: The entropy $S$ expresses the missing information needed to determine the specific microstate of a system that remains uncommunicated due to a description of the system solely in terms of macroscopic quantities. From this point of view, the principle of equal a priori probabilities expresses our ignorance about the microscopic details of the system as it chooses the distribution that maximizes the entropy. 
 
 \subsection{The Canonical Ensemble and the Boltzmann Distribution}
 
-Central to the previous considerations was the ensemble for an isolated system, i.e. the microcanonical ensemble for fixed $(E,V,N)$. In the following, the \textit{canonical ensemble} is introduced describing a system that is not isolated but at constant temperature. To this end, the system is considered to be in contact with an infinitely large heat bath with a fixed temperature $T$. Therefore, the fixed macroscopic quanties of the system are $(T,V,N)$, while the total energy $E$ is allowed to fluctuate. The composite of the system and the heat bath is again considered to be an isolated system. However, the probabilities for the microstate $m$ of the system alone are no longer equal but depend on their total energy $E_m$. More specifically, the microstate probabilities can be written as
+Central to the previous considerations was the ensemble for an system in isolation, i.e. the microcanonical ensemble for fixed $(E,V,N)$. In the following, the \textit{canonical ensemble} is introduced describing a system that is not isolated but at constant temperature. To this end, the system is considered to be in thermal contact with an infinitely large heat bath with a fixed temperature $T$. Therefore, the fixed macroscopic quanties of the system are $(T,V,N)$, while the total energy $E$ is allowed to fluctuate. The composite of the system and the heat bath is again considered to be an isolated system. However, summing over all the microstates of the heat bath allows to derive the probabilities for the microstates $m$ of the system of interest. Importantly, these microstate probabilities are no longer equal but depend on their total energy $E_m$. More specifically, the microstate probabilities can be written as
 
 \begin{equation}
 \label{boltzmann_dstr}
@@ -86,9 +86,37 @@ where the normalization constant
   Z = \sum_{\text{all }\, m \, \text{at}\, V,N} e^{- \frac{E_m}{k_B T}}
 \end{equation}
 
-is called the \textit{canonical partition function} and the probability distribution in Eq. \ref{boltzmann_dstr} is refered to as \textit{Boltzmann distribution}.
+is called the \textit{canonical partition function} and the probability distribution in Eq. \ref{boltzmann_dstr} is refered to as \textit{Boltzmann distribution}. Note, that similarly to the microcanonical distribution, the Boltzmann distribution maximizes the entropy for a given macrocospic state $(T,V,N)$. In general, the canonical ensemble is more useful than the microcanonical ensemble in practice, since in most cases systems in thermal equilibrium with their surroundings are considered.
+
+\subsection{Thermodynamic Limit and Statistical Equivalence of Ensembles}
+
+The canonical approach provides an alternative, in addition to the microcanonical approach, to determine the behaviour of a system at a microscopic level. While there are rigorously no fluctuations in the energy in the microcanonical ensemble, energy fluctuates in the canonical ensemble but the temperature is rigorously constant. However, in the thermodynamic limit, i.e. when the number of particles and the volume of the system go to inifinity $N \rightarrow \infty$, $V \rightarrow \infty$ while the particle density is held fixed $\frac{N}{V} = \text{constant}$, the differences in macroscopic properties for both ensembles vanish. 
+
+This can be seen clearly considering the distribution of the energy in the canonical ensemble. Using Eq. \ref{boltzmann_dstr} and \ref{boltzmann_entropy} the propability for a specific energy $E$ can be written as
+
+\begin{equation}
+  p(E) \propto \Omega(E,V,N) e^{- \frac{E_m}{k_B T}} \propto e^{\frac{1}{k_B} ( S(E,V,N) - \frac{E_m}{T} ) } .
+\end{equation}
+
+This equation shows that two competing terms have to be considered for the probability of energy levels: The first term is the entropy $S$, which is a concave, increasing function of $E$. The second term $-\frac{E}{T}$ decreases linearly with the energy $E$. Therefore, the probability distribution for the energy levels has a maximum at an intermidiate energy $E^*$. Both terms, $S$ and $E$, are extensive quantities, i.e. they scale as $N$. Since the competing terms are within the exponential, the probability distribution becomes sharply peaked at the maximum $p(E^*)$. Therefore, $p(E^*)$ becomes the most dominant term and the impact of microstates with different energies $E \neq E^*$ vanishes.
+
+Another way to view this, is that fluctuations in the total energy $E$ become extremely small in the thermodynamic limit. The variance of the total energy $\sigma_E^2 = <E^2> - <E>^2$ can be linked to the heat capacity, which is an extensive quantity. Therefore, the relative magnitude of energy fluctuations scales as
+
+\begin{eqnarray}
+  \frac{\sqrt{\sigma_E^2}}{E} \propto N^{-1/2} .
+\end{eqnarray}
+
+As a consequence, a macroscopic systems appear to have constant energies.
 
 \cite{shell2015thermodynamics}
+
+\subsection{Information-theoretic View on Statistical Mechanics}
+
+In 1957 Jaynes published two papers emphazising the correspondence between information theory and statistical mechanics. According to Jaynes, Gibbs entropy in statistical mechanics and Shannons information entropy are identical except for the Boltzmann constant. Consequently, statistical mechanics can be viewed from the perpespective of information theory and the seek for microscopic distributions can be treated as an inference problem. 
+
+Jaynes adapted a bayesian perpective (see Sec. \ref{}) and treated the testable information, i.e. the macroscopic observables, as prior information. Obviously, information is missing that is needed to determine the specific microstate of a system that remains uncommunicated due to a description of the system solely in terms of macroscopic quantities. Consequently, finding the microscopic probability distribution amounts to assign probabilities to microstates that avoid bias while still aggreeing with the observed macroscopic quantities. In other words, out of all possible distributions the one has to be chosen which is the least-informative to avoid arbitrary assumptions.
+
+Shannon has showed, that the entropy written in Eq. \ref{} (without the Boltzmann constant) is a quantity that increases with increasing uncertainty. Consequently, the distribution that maximizes the entropy has to be found under the constraints of the given prior information. From this point of view, the principle of equal a priori probabilities is a consequence of the our ignorance about the microscopic details of the system. In practice, the problem is solved introducing Lagrange multiplier to impose the constraints. For the microcanonical ensemble, the constraint renders to a zero probability for all microstates with different total energy than the observed one. In the canonical ensemble, the constraint amounts to having a fixed expectation value for the energy.
 
 % -----------------------------------
 %   Molecular Dynamics Simulation
