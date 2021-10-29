@@ -124,26 +124,43 @@ Shannon has showed, that the entropy written in Eq. \ref{gibbs_entropy} (without
 \section{Molecular Dynamics Simulation: Sampling from the Thermodynamic Ensembles}
 
 In many cases, it is possible to express the basic laws of nature in terms of relatively simple equations. Unfortunately, solving such equations analytically, such as the equations of motion for more than two interacting bodies, becomes impossible in many cases. However, it is central to the statistical mechanics view on thermodynamics to consider systems with an extremely large number of interacting particles. 
+Fortunately, Computer simulations can circumvent these issues. The two main branches of computer simulation techniques for molecular systems are molecular dynamics (MD) and Monte Carlo (MC), but a whole range of hybrid techniques exists as well. In the following, the focus is set on MD simulations.
 
-\textit{Molecular Dynamics} (MD) simulation circumvents these issues by numerically intergrating Newtons equations of motion allowing to analyze the physical movement of atoms or molecules. To this end, it is common to introduce forcefields that determine the interactions between the particles, initialize the system and use algorithms to evolve the system in time. After the system is equilibrated, i.e. it has evolved for a sufficient amount of time such that macroscopic proties do not change anymore, the actual measurement of the observable quantity of interest can be performed. However, the algorithm and parameters for the numerical intergration have to be taken with great care in order to minimize the effects of cumulative errors.
+\textit{Molecular Dynamics} (MD) simulation numerically integrats Newtons equations of motion allowing to analyze the physical movement of atoms or molecules and predict bulk properties. The starting point for every MD simulation is to set up a model for the molecular interactions, i.e. the forcefield, and to select initial positions and velocities for the particles. Afterwards, the system is evolved in time using descrete timesteps repeatly updating the particle positions and velocities. To this end, the forces have to be calculated at every step. However, the algorithm and parameters for the numerical intergration have to be taken with great care in order to minimize the effects of cumulative errors. After the system is equilibrated, i.e. it has evolved for a sufficient amount of time such that macroscopic proties do not change anymore, snapshots or whole trajectories of the system can be extracted and the actual measurement of the observable quantity of interest can be performed. In this regard, MD simulation builts a bridge between theory and experiment, as it allows to test a model and compare it with experimental results. 
 
 \cite{shell2019lecturenotes}, \cite{frenkel2001understanding}
 
 \subsection{Molecular Force Fields}
 
-Calculating forced acting on the particles is crucial to evolve the system in time. To this end, a definition for the potential energy function is required describing the interactions between the particles. These potentials can be defined on vary different levels of resolution. In the following, the classical description is used, which ignores the motion of the electrons and focuses solely on the motion of the nuclei. In this regard, the classical description approximates the effect of electrons as a potential energy surface representing the quantum ground-state. This description is reasonable in cases where the Born-Oppenheimer approximation is valid and the electronic structure is not of interest. Furthermore, bond breaking or forming is prohebitted. 
+Calculating forces acting on the particles is crucial to evolve the system in time. To this end, a definition for the potential energy function is required describing the interactions between the particles. These potentials can be defined on vary different levels of resolution. In the following, the classical description is used, which ignores the motion of the electrons and focuses solely on the motion of the nuclei. In this regard, the classical description approximates the effect of electrons as a potential energy surface representing the quantum ground-state. This description is reasonable in cases where the Born-Oppenheimer approximation is valid and the electronic structure is not of interest. Furthermore, bond breaking or forming is prohebitted. 
 
 Given the potential energy function $U(\mathbf{r})$ the forces $\frac{d \mathbf{p}}{d \mathbf{t}}$ are calculated taking the derivative with respect to the particle positions $\mathbf{r}$
 
 \begin{equation}
-  \frac{d \mathbf{p}}{d \mathbf{t}} = \frac{d U (\mathbf{r})}{d \mathbf{r}} .
+  \frac{d \mathbf{p}}{d \mathbf{t}} = - \frac{d U (\mathbf{r})}{d \mathbf{r}} .
 \end{equation}
 
 Typically, the potential $U (\mathbf{r})$ is divided into a term representing the bonded interactions and a term for the nonbonded interactions
 
 \begin{equation}
-  U = U_{\text{bonded}} + U_{\text{nonbonded}}
+  U = U_{\text{bonded}} + U_{\text{nonbonded}} .
 \end{equation}
+
+Most of the forcefields used in classic MD are emperical and are obtained by fitting simple analytic functions against experimental data or detailed electronic calculations, such as density-functional theory (DFT). Bonded interactions are associated with chemical bonds, bond angles and bond dihedrals. A typical choice is to deploy harmonic and cosine potentials to model the bonded interactions, such as
+
+\begin{equation}
+  U_{\text{bonded}} = \sum_{\text{bonds}} a(d - d_0)^2 + \sum_{\text{angles}} b(\Phi - \Phi_0)^2 + \sum_{\text{dihedrals}} \Big( \sum_{n} c_n cos(\omega)^n \Big) ,
+\end{equation}
+
+where $d$ and $d_0$ are the calculated and the equilibrium bond length respectively, $\Phi$ and $\Phi_0$ the calculated and equilibrium bond angles and $\omega$ is the calculated dihedral angle. The parameters $a$, $b$ and $c_n$ are the strength for the harmonic and the cosine series potential repectively. 
+
+The nonbonded potential is associated with van der Waals attraction, pauli repulsion and electrostatic interactions. The van der Waals attraction arises due to the correlation between instantaneous dipoles between electron clouds of the atoms. The Pauli repulsion occurs upon the overlap of electron clouds and is a consequence of the Pauli principle, which forbids any two electrons from having the same quantum numbers. Both, the van der Waals attraction and the Pauli repulsion, are often combined into a single expression, such as the Lennard-Jones potential. The electrostatic forced arise due to partial or formal charges of the atoms and are taken into account through Coulomb's law. In combination, a typical nonbonded potential is modeled as
+
+\begin{equation}
+  U_{\text{nonbonded}} = \sum_{\text{pairs}} \Big( \underbrace{ 4 \epsilon \bigg[ \big( \frac{r_{ij}}{\sigma} \big)^{-12} - \big( \frac{r_{ij}}{\sigma} \big)^{-6} \bigg] }_{\text{Lennard-Jones}} + \underbrace{ \frac{q_i q_j}{4 \pi \epsilon_0 r_{ij}} }_{\text{Coulomb}} \Big) , 
+\end{equation}
+
+where $r_{ij}$ is the pairwise distance, $q_i$ is the net (partial) charge, and $\epsilon$ and $\sigma$ are the Lennard-Jones parameters, which depend on the particular atom types.  
 
 \subsection{Numerical Integration}
 
