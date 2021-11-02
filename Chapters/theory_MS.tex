@@ -134,12 +134,6 @@ Fortunately, Computer simulations can circumvent these issues. The two main bran
 
 Calculating forces acting on the particles is crucial to evolve the system in time. To this end, a definition for the potential energy function is required describing the interactions between the particles. These potentials can be defined on vary different levels of resolution. In the following, the classical description is used, which ignores the motion of the electrons and focuses solely on the motion of the nuclei. In this regard, the classical description approximates the effect of electrons as a potential energy surface representing the quantum ground-state. This description is reasonable in cases where the Born-Oppenheimer approximation is valid and the electronic structure is not of interest. Furthermore, bond breaking or forming is prohebitted. 
 
-Given the potential energy function $U(\mathbf{r})$ the forces $\frac{d \mathbf{p}}{d \mathbf{t}}$ are calculated taking the derivative with respect to the particle positions $\mathbf{r}$
-
-\begin{equation}
-  \frac{d \mathbf{p}}{d \mathbf{t}} = - \frac{d U (\mathbf{r})}{d \mathbf{r}} .
-\end{equation}
-
 Typically, the potential $U (\mathbf{r})$ is divided into a term representing the bonded interactions and a term for the nonbonded interactions
 
 \begin{equation}
@@ -165,6 +159,50 @@ where $r_{ij}$ is the pairwise distance, $q_i$ and $q_j$ are the net (partial) c
 Obviously, calculating the nonbonded interactions is computationally more expensive compared to the bonded interactions, since the number of terms in the pairwise atomic sum scales as $N^2$, while the other scale as $N$. To reduce the computational overhead, the Lennard-Jones potential is often truncated as its contribution becomes minimal for large distances. To this end, a cutoff distance of $r_c \approx 2.5 \sigma$ is typically used where the energy is only a few percent of the minimum energy ($U_{\text{LJ}}(r_c) \approx -0.016 \epsilon$). In addition, it is common practice to shift to potential to avoid discontinuities, i.e. subtracting the value of the potential at the cutoff. However, the truncated contributions can become significant for the total energy and pressure of the system. To this end, a correction to the total potential can be introduced, which can be derived analytically for isotropic systems. On the other hand, the long-range Coulomb interaction need a special treadment, as a a a tail correction can not be derived directly. Therefore, Ewald summation is typically used to reduce the computational effort. In this case, the potential is split into a short-range and long-range contribution. The short-range contributions are computed in real space, while the long-range contributions are computed in Fourier space. 
 
 \subsection{Numerical Integration}
+
+The time evolution of the molecular system is described by Newton's equations of motion, i.e. given the potential energy function $U(\mathbf{r})$ the forces $m \frac{d^2 \mathbf{r}}{d t^2}$ acting on the $N$ atoms are computed as
+
+\begin{equation}
+\label{newtons_eq_motion}
+  m \frac{d^2 \mathbf{r}}{d t^2} = - \frac{d U (\mathbf{r})}{d \mathbf{r}} .
+\end{equation}
+
+Starting from initial positions and velocities, the time-evolution of the system traces a path in phase space, called trajectory. This trajectory is a set of states compatible with the starting condition. For classical systems, the phase space trajectory lies on a surface of constant energy, as Newton's equations conserve energy. For ergodic systems, the trajectory will eventually visit all points in phase space compatible with the given total energy, whereas systems that are non-ergodic have areas in phase space that are inacessible. Obviously, it is not possible to sample all states of the trajectory. However, MD simulations aim at sampling the accessible phase space representatively.
+
+Note that Eq. \ref{newtons_eq_motion} is a set of $3N$ second-order, nonlinear, coupled partial differential equations, which can not be solved analytically. Therefore, numerical integration is used to evolve the system in time. Here, the basic idea is to introduce a small timestep $\delta t$ and find the positions of the atoms at consecutive time steps, i.e. 
+
+\begin{equation}
+  \mathbf{r}(0), \mathbf{r}(\delta t), \mathbf{r}(2 \delta t), ..
+\end{equation}
+
+Many different algorithms exist to progate the system forward in time. As an example, the Verlet algorithm is explained in the following.
+
+\subsubsection{Verlet Algorithm}
+
+Using a Taylor expansion, the position at time $t + \delta t$ can be written as
+
+\begin{equation}
+\label{verlet_taylor1}
+  \mathbf{r}(t + \delta t) = \mathbf{r}(t) + \frac{d \mathbf{r}(t)}{d t} \delta t + \frac{d^2 \mathbf{r}(t)}{d t^2} \frac{ \delta t^2}{2} + \frac{d^3 \mathbf{r}(t)}{d t^3} \frac{ \delta t^3}{6} + \mathcal{O}(\delta t^4) .
+\end{equation}
+
+Similarly, the position at the previous time step can be written as
+
+\begin{equation}
+\label{verlet_taylor2}
+  \mathbf{r}(t - \delta t) = \mathbf{r}(t) - \frac{d \mathbf{r}(t)}{d t} \delta t + \frac{d^2 \mathbf{r}(t)}{d t^2} \frac{ \delta t^2}{2} - \frac{d^3 \mathbf{r}(t)}{d t^3} \frac{ \delta t^3}{6} + \mathcal{O}(\delta t^4) .
+\end{equation}
+
+Adding Eq. \ref{verlet_taylor1} and \ref{verlet_taylor2} and rearranging leads to
+
+\begin{equation}
+\label{verlet}
+  \mathbf{r}(t + \delta t) = 2 \mathbf{r}(t) - \mathbf{r}(t - \delta t) + \frac{d^2 \mathbf{r}(t)}{d t^2} \frac{ \delta t^2}{2} + \mathcal{O}(\delta t^4) .
+\end{equation}
+
+Eq. \ref{verlet} allows to compute the positions at the next time step from the positions at the two previous timesteps and the forces, which can be calculated using Eq. \ref{newtons_eq_motion}. The error of this algorithm is of order $\mathcal{O}(\delta t^4)$ and therefore decreases with the time step.
+
+Note that the Verlet algorithm has two important features: It is time-reversible and symplectic, i.e. volume in phase space is preserved. Those features are crucial to maintain correct statistical sampling and stability, because they assure that a drift of the total energy on a long time scale is avoided. 
 
 % -----------------------------------
 %   Coarse-Graining
