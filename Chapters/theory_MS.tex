@@ -111,11 +111,11 @@ As a consequence, a macroscopic systems appear to have constant energies.\cite{s
 
 \subsection{Information-theoretic View on Statistical Mechanics}
 
-In 1957 Jaynes published two papers emphazising the correspondence between information theory and statistical mechanics.\cite{jaynes1957information,jaynes1957information2} According to Jaynes, Gibbs entropy in statistical mechanics and Shannons information entropy are identical except for the Boltzmann constant.\cite{jaynes1957information} Consequently, statistical mechanics can be viewed from the perpespective of information theory and the seek for microscopic distributions can be treated as an inference problem.\cite{jaynes1957information} 
+In 1957 Jaynes published two papers emphazising the correspondence between information theory and statistical mechanics.\cite{jaynes1957information,jaynes1957information2} According to Jaynes, Gibbs' entropy in statistical mechanics and Shannon's information entropy are identical except for the Boltzmann constant.\cite{jaynes1957information} Consequently, statistical mechanics can be viewed from the perpespective of information theory and the seek for microscopic distributions can be treated as an inference problem.\cite{jaynes1957information} 
 
 Jaynes adapted a bayesian perpective (see Sec. \ref{bayes_vs_frequentist}) and treated the testable information, i.e. the macroscopic observables, as prior information.\cite{jaynes1957information} Obviously, information is missing that is needed to determine the specific microstate of a system that remains uncommunicated due to a description of the system solely in terms of macroscopic quantities. Consequently, finding the microscopic probability distribution amounts to assign probabilities to microstates that avoid bias while still aggreeing with the observed macroscopic quantities.\cite{jaynes1957information} In other words, out of all possible distributions the one has to be chosen which is the least-informative to avoid arbitrary assumptions.
 
-Shannon has showed, that the entropy written in Eq. \ref{gibbs_entropy} (without the Boltzmann constant) is a quantity that increases with increasing uncertainty.\cite{shannon1948mathematical} Consequently, the distribution that maximizes the entropy has to be found under the constraints of the given prior information. From this point of view, the principle of equal a priori probabilities is a consequence of our ignorance about the microscopic details of the system. In practice, the problem is solved introducing Lagrange multiplier to impose the constraints. For the microcanonical ensemble, the constraint renders to a zero probability for all microstates with different total energy than the observed one. In the canonical ensemble, the constraint is a fixed expectation value for the energy.\cite{jaynes1957information}
+Shannon has showed, that the entropy written in Eq. \ref{gibbs_entropy} (without the Boltzmann constant) is a quantity that increases with increasing uncertainty.\cite{shannon1948mathematical} Consequently, the distribution that maximizes the entropy has to be found under the constraints of the given prior information. From this point of view, the principle of equal a priori probabilities is a consequence of our ignorance about the microscopic details of the system. In practice, the problem is solved introducing Lagrange multiplier to impose the constraints. For the microcanonical ensemble, the constraint renders to a zero probability for all microstates with different total energy than the observed one. In the canonical ensemble, the constraint is a fixed expectation value for the energy.\cite{jaynes1957information} In both cases, the well known results from statistical mechanics are reproduced, i.e. the uniform distribution for the microcanonical ensemble and the boltzmann distribution for the canonical ensemble.
 
 % -----------------------------------
 %   Molecular Dynamics Simulation
@@ -211,7 +211,7 @@ Eq. \ref{verlet} allows to compute the positions at the next time step from the 
 
 Note that the Verlet algorithm has two important features: It is time-reversible and symplectic, i.e. volume in phase space is preserved.\cite{allen2004introduction} Those features are crucial to maintain correct statistical sampling and stability, as those are properties of the true Hamiltonian dynamics.\cite{shell2019lecturenotes} Algorithms that do not preserve the volume in phase space can dramatically expand the initial volume, such that it eventually covers areas of phase space that are not compatible with the starting condition and might violate energy conservation. Although reversiblity and the conservation of phase space volume does not automatically guarantee that there is no drift of the total energy on a long time scale, it is at least a reasonable requirement.\cite{frenkel2001understanding} In practice, the Verlet algorithm does not exactly conserve the total energy, but it exhibits little long energy drifts.\cite{frenkel2001understanding} Note, that there a many different algorithm that can be derived from the Verlet algorithm yielding identical trajectories, such as the leap frog or the velocity Verlet algorithm.\cite{frenkel2001understanding}
 
-\subsection{Thermostat and Barostat}
+\subsection{Thermostats and Barostats: Controlling Temperature and Pressure}
 
 The numerical integration scheme described in Sec. \ref{numerical_integration} allows to sample from the microcanonical ensemble, i.e. maintain a constant total energy. However, it is often desirable to sample from different ensembles, such as the canonical ensemble (NVT) or the isothermal-isobaric ensemble (NPT). Modifications on the MD algorithm that allow to control the temperature or pressure are called thermostat or barostat algorithms respectively. They are important for many reasons, for example to match experimental conditions, study temperature dependent processes or enhance the efficiency of conformational search.\cite{Huenenberger2005} Several methods exist to control temperature and pressure during the simulation. In the following, some of the popular techniques are introduced.
 
@@ -255,7 +255,7 @@ The Hamiltonien in Eq. \ref{nose_hamiltonian} can then be used to derive the equ
 However, scaling of the particle momenta using the position of the imaginary heat bath also implies scaling of the timescale in the extended system.\cite{shell2019lecturenotes} Since the position $s$ is variable, the implied timescale also changes making it difficult to implement the Nose thermostat. To solve this issue, Hoover proposed an alternative by replacing the heat bath momentum $p_s$ with a friction coefficient $\xi = \frac{d ln(s)}{dt}$:
 
 \begin{equation}
- H_{\text{Nosé}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{\xi^2 Q}{2} + 3N k_B T ln(s)
+ H_{\text{Nosé-Hoover}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{\xi^2 Q}{2} + 3N k_B T ln(s)
 \end{equation}
 
 This approach is known as the Nosé-Hoover thermostat and the modified Hamiltonian yields equations of motion that no longer require a scaling of the time step but still enables to correctly generate a canonical ensemble through MD simulation.\cite{shell2019lecturenotes}
@@ -286,7 +286,13 @@ Typically, The Nosé-Hoover thermostat and the Parinello-Rahman barostat are use
 
 \section{Coarse-Graining}
 
+Coarse-Graining is the process of building a simplified model of a complex system. To this end, a coarse-grained model represents the system at a lower level of resolution, i.e. it reduces the number of degrees of freedom. Obviously, the goal is to keep essential features while ignoring or averaging over less important details. In other words, the coarse-grained model has to maintain the correct physical behaviour with fewer degrees of freedom. The benefits of coarse-grained models are twofold: Firstly, the reduced representation allows to access longer length an time scales, as the computational cost is reduced as well. Secondly, coarse-graining helps to put the essential features driving the emergend phenomena of interest into the spot light, as disturbing and unimportant details are removed.
+
 \subsection{Top-down vs Bottom-up}
+
+Once the representation of the coarse-grained model is defined, the forcefield has to be determined. For this task, a wide range of different schemes have been developed and two schools of thoughts have been established, refered to as bottom-up and top-down approaches. Note, that while a distinction between those two approaches is instructive, a clear classification is not always possible as many coarse-graining schemes incorporate both ideas.
+
+%While a coarse-grained model implies the existence of more fundamental, higher resolution model, the question of how the coarse-grained model is built upon this fine-grained 
 
 \cite{noid2013perspective}
 
