@@ -126,7 +126,7 @@ Shannon has showed, that the entropy written in Eq. \ref{gibbs_entropy} (without
 In many cases, it is possible to express the basic laws of nature in terms of relatively simple equations. Unfortunately, solving such equations analytically, such as the equations of motion for more than two interacting bodies, becomes impossible in many cases. However, it is central to the statistical mechanics view on thermodynamics to consider systems with an extremely large number of interacting particles. 
 Fortunately, Computer simulations can circumvent these issues. The two main branches of computer simulation techniques for molecular systems are molecular dynamics (MD) and Monte Carlo (MC), but a whole range of hybrid techniques exists as well. In the following, the focus is set on MD simulations.
 
-\textit{Molecular Dynamics} (MD) simulation numerically integrats Newtons equations of motion allowing to analyze the physical movement of atoms or molecules and predict bulk properties. The starting point for every MD simulation is to set up a model for the molecular interactions, i.e. the forcefield, and to select initial positions and velocities for the particles. Afterwards, the system is evolved in time using descrete timesteps repeatly updating the particle positions and velocities. To this end, the forces have to be calculated at every step. However, the algorithm and parameters for the numerical intergration have to be taken with great care in order to minimize the effects of cumulative errors.\cite{frenkel2001understanding} After the system is equilibrated, i.e. it has evolved for a sufficient amount of time such that macroscopic proties do not change anymore, snapshots or whole trajectories of the system can be extracted and the actual measurement of the observable quantity of interest can be performed. In this regard, MD simulation builts a bridge between theory and experiment, as it allows to test a model and compare it with experimental results.\cite{allen2004introduction}
+\textit{Molecular Dynamics} (MD) simulation numerically integrats Newtons equations of motion allowing to analyze the physical movement of atoms or molecules and predict bulk properties. The starting point for every MD simulation is to set up a model for the molecular interactions, i.e. the forcefield, and to select initial positions and velocities for the particles. Afterwards, the system is evolved in time using descrete timesteps where the particle positions and velocities are repeatly updated. To this end, the forces have to be calculated at every step. However, the algorithm and parameters for the numerical intergration have to be taken with great care in order to minimize the effects of cumulative errors.\cite{frenkel2001understanding} After the system is equilibrated, i.e. it has evolved for a sufficient amount of time such that macroscopic proties do not change anymore, snapshots or whole trajectories of the system can be extracted and the actual measurement of the observable quantity of interest can be performed. In this regard, MD simulation builts a bridge between theory and experiment, as it allows to test a model and compare it with experimental results.\cite{allen2004introduction}
 
 The following introducting to MD is based on the book by Frenkel and Smit and the lecture notes of M. Scott Shell, which are excellent sources providing the interested reader with more detailed explanations on this topic.\cite{shell2019lecturenotes, frenkel2001understanding}
 
@@ -162,7 +162,7 @@ The nonbonded potential is associated with van der Waals attraction, pauli repul
 
 where $r_{ij}$ is the pairwise distance, $q_i$ and $q_j$ are the net (partial) charges, $\epsilon$ and $\sigma$ are the Lennard-Jones parameters, which depend on the particular atom types and $\epsilon_0$ is the electric permitivity in vacuum.\cite{shell2019lecturenotes} 
 
-Obviously, calculating the nonbonded interactions is computationally more expensive compared to the bonded interactions, since the number of terms in the pairwise atomic sum scales as $N^2$, while the other scale as $N$. To reduce the computational overhead, the Lennard-Jones potential is often truncated as its contribution becomes minimal for large distances. To this end, a cutoff distance of $r_c \approx 2.5 \sigma$ is typically used where the energy is only a few percent of the minimum energy ($U_{\text{LJ}}(r_c) \approx -0.016 \epsilon$). In addition, it is common practice to shift to potential to avoid discontinuities, i.e. subtracting the value of the potential at the cutoff. However, the truncated contributions can become significant for the total energy and pressure of the system. To this end, a correction to the total potential can be introduced, which can be derived analytically for isotropic systems. On the other hand, the long-range Coulomb interaction need a special treadment, as a a a tail correction can not be derived directly. Therefore, Ewald summation is typically used to reduce the computational effort. In this case, the potential is split into a short-range and long-range contribution. The short-range contributions are computed in real space, while the long-range contributions are computed in Fourier space. 
+Obviously, calculating the nonbonded interactions is computationally more expensive compared to the bonded interactions, since the number of terms in the pairwise atomic sum scales as $N^2$, while the other scale as $N$. To reduce the computational overhead, the Lennard-Jones potential is often truncated as its contribution becomes minimal for large distances. To this end, a cutoff distance of $r_c \approx 2.5 \sigma$ is typically used where the energy is only a few percent of the minimum energy ($U_{\text{LJ}}(r_c) \approx -0.016 \epsilon$).\cite{shell2019lecturenotes} In addition, it is common practice to shift to potential to avoid discontinuities, i.e. subtracting the value of the potential at the cutoff. However, the truncated contributions can become significant for the total energy and pressure of the system. To this end, a correction to the total potential can be introduced, which is derived analytically for isotropic systems.\cite{shell2019lecturenotes, frenkel2001understanding}  On the other hand, the long-range Coulomb interaction need a special treadment, as a a a tail correction can not be derived directly.\cite{shell2019lecturenotes} Therefore, Ewald summation is typically used to reduce the computational effort. In this case, the potential is split into a short-range and long-range contribution. The short-range contributions are computed in real space, while the long-range contributions are computed in Fourier space. 
 
 \subsection{Numerical Integration}
 \label{numerical_integration}
@@ -174,9 +174,9 @@ The time evolution of the molecular system is described by Newton's equations of
   m \frac{d^2 \mathbf{r}}{d t^2} = - \frac{d U (\mathbf{r})}{d \mathbf{r}} .
 \end{equation}
 
-Starting from initial positions and velocities, the time-evolution of the system traces a path in phase space, called trajectory. This trajectory is a set of states compatible with the starting condition. For classical systems, the phase space trajectory lies on a surface of constant energy, as Newton's equations conserve energy. For ergodic systems, the trajectory will eventually visit all points in phase space compatible with the given total energy, whereas systems that are non-ergodic have areas in phase space that are inacessible. Obviously, it is not possible to sample all states of the trajectory. However, MD simulations aim at sampling the accessible phase space representatively.
+Starting from initial positions and velocities, the time-evolution of the system traces a path in phase space, called trajectory. This trajectory is a set of states compatible with the starting condition. For classical systems, the phase space trajectory lies on a surface of constant energy, as Newton's equations conserve energy.\cite{shell2019lecturenotes} For ergodic systems, the trajectory will eventually visit all points in phase space compatible with the given total energy, whereas systems that are non-ergodic have areas in phase space that are inacessible. Obviously, it is not possible to sample all states of the trajectory. However, MD simulations aim at sampling the accessible phase space representatively.
 
-Note that Eq. \ref{newtons_eq_motion} is a set of $3N$ second-order, nonlinear, coupled partial differential equations, which can not be solved analytically. Therefore, numerical integration is used to evolve the system in time. Here, the basic idea is to introduce a small timestep $\delta t$ and find the positions of the atoms at consecutive time steps, i.e. 
+Note that Eq. \ref{newtons_eq_motion} is a set of $3N$ second-order, nonlinear, coupled partial differential equations, which can not be solved analytically.\cite{shell2019lecturenotes} Therefore, numerical integration is used to evolve the system in time. Here, the basic idea is to introduce a small timestep $\delta t$ and find the positions of the atoms at consecutive time steps, i.e. 
 
 \begin{equation}
   \mathbf{r}(0), \mathbf{r}(\delta t), \mathbf{r}(2 \delta t), ..
@@ -223,7 +223,7 @@ The simplest approach to control the temperature is the velocity rescaling algor
  T = \frac{2 <K>}{k_B n_{DOF}} ,
 \end{equation}
 
-where $K$ is the kinetic energy and $n_{DOF}$ are the degrees of freedom. Therefore, the velocities can be rescaled at each time step to fix the temperature to a desired value. Despite its simplicity, this algorithm does not reproduce the correct thermodynamic properties of the canonical ensemble, since the fluctuations in the kinetic energy are not captured. 
+where $K$ is the kinetic energy and $n_{DOF}$ are the degrees of freedom.\cite{shell2019lecturenotes} Therefore, the velocities can be rescaled at each time step to fix the temperature to a desired value. Despite its simplicity, this algorithm does not reproduce the correct thermodynamic properties of the canonical ensemble, since the fluctuations in the kinetic energy are not captured.\cite{shell2019lecturenotes} 
 
 \subsubsection{Anderson Thermostat}
 
@@ -233,31 +233,32 @@ The Anderson thermostat introduces random collision of the molecules with an ima
  p(\vec{v}) = \Big( \frac{m}{2 \pi k_B T} \Big)^{3/2} \text{exp} \Big[- \frac{m |\vec{v}|^2}{2 k_B T} \Big]
 \end{equation}
 
-Although this approach generates the correct canonical ensemble propabliities, the molecular kinetics are not reproduced correctly, because the random collisions decorrelate the system.
+Although this approach generates the correct canonical ensemble propabliities, the molecular kinetics are not reproduced correctly, because the random collisions decorrelate the system.\cite{shell2019lecturenotes}
 
-\subsubsection{Nose Thermostat}
+\subsubsection{Nosé-Hoover Thermostat}
 
-Nose augmented the Hamiltonian with two extra degrees of freedom representing an imaginary heat bath:
+Nosé augmented the Hamiltonian with two extra degrees of freedom representing an imaginary heat bath:
 
 \begin{equation}
+\label{nose_hamiltonian}
  H_{\text{Nosé}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{p_s^2}{2Q} + (3N + 1) \frac{ln(s)}{k_b T}
 \end{equation}
 
-Here, $s$ is the position and $p_s$ is the momentum of the heat bath. The parameter $Q$ is an effective mass associated with $s$, i.e. $p_s = Q \frac{ds}{dt}$ and its magnitude determines the coupling between the heat bath and the original system. It has to be chosen carefully by the user, as it influences the temperature fluctuations. Using the Lagrangian, it can be shown that the particles are coupled to the heat bath by scaling the momenta:
+Here, $s$ is the position and $p_s$ is the momentum of the heat bath.\cite{frenkel2001understanding} The parameter $Q$ is an effective mass associated with $s$, i.e. $p_s = Q \frac{ds}{dt}$ and its magnitude determines the coupling between the heat bath and the original system. It has to be chosen carefully by the user, as it influences the temperature fluctuations.\cite{Huenenberger2005} Using the Lagrangian, it can be shown that the particles are coupled to the heat bath by scaling the momenta:
 
 \begin{equation}
  p_i = m_i v_i \times s
 \end{equation}
 
-The Hamiltonien in Eq. \ref{} can then be used to derive the equations of motions for the extended system, i.e. for both, the heat bath and the original system. Note, that this approach is deterministic as no stochastic element is present. This thermostat generates the correct thermodynamics for the canonical ensemble.
+The Hamiltonien in Eq. \ref{nose_hamiltonian} can then be used to derive the equations of motions for the extended system, i.e. for both, the heat bath and the original system. Note, that this approach is deterministic as no stochastic element is present. This thermostat generates the correct thermodynamics for the canonical ensemble.\cite{shell2019lecturenotes}
 
-However, scaling of the particle momenta using the position of the imaginary heat bath also implies scaling of the timescale in the extended system. Since the position $s$ is variable, the implied timescale also changes making it difficult to implement the Nose thermostat. To solve this issue, Hoover proposed an alternative by replacing the heat bath momentum $p_s$ with a friction coefficient $\xi = \frac{d ln(s)}{dt}$:
+However, scaling of the particle momenta using the position of the imaginary heat bath also implies scaling of the timescale in the extended system.\cite{shell2019lecturenotes} Since the position $s$ is variable, the implied timescale also changes making it difficult to implement the Nose thermostat. To solve this issue, Hoover proposed an alternative by replacing the heat bath momentum $p_s$ with a friction coefficient $\xi = \frac{d ln(s)}{dt}$:
 
 \begin{equation}
  H_{\text{Nosé}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{\xi^2 Q}{2} + 3N k_B T ln(s)
 \end{equation}
 
-This modified Hamiltonian yields equations of motion that no longer require a scaling of the time step but still enables to correctly generate a canonical ensemble through MD simulation.
+This approach is known as the Nosé-Hoover thermostat and the modified Hamiltonian yields equations of motion that no longer require a scaling of the time step but still enables to correctly generate a canonical ensemble through MD simulation.\cite{shell2019lecturenotes}
 
 \subsubsection{Parinello-Rahman Barostat}
 
@@ -269,13 +270,13 @@ In its core, the Parinello-Rahman barostat is similar to the Nose-Hoover thermos
  H_{\text{Parinello-Rahman}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i} \Big) + U(\mathbf{r}) + \sum_j \mathbf{P}_jj V + \sum_{j,k} \frac{1}{2} \mathbf{W}_{jk} \Big( \frac{d b_{jk}}{dt} \Big) .
 \end{equation}
 
-Here, $\mathbf{b}$ is a matrix containing the box vectors and $V$ is the volume of the simulation box, $\mathbf{P}$ is the instantenous pressure tensor and $\mathbf{W}$ is the mass parameter matrix. The vector of the simulatiin box $b$ is coupled to the pressure bath with the relationships
+Here, $\mathbf{b}$ is a matrix containing the box vectors and $V$ is the volume of the simulation box, $\mathbf{P}$ is the instantenous pressure tensor and $\mathbf{W}$ is the mass parameter matrix.\cite{abraham2014gromacs} The vector of the simulatiin box $b$ is coupled to the pressure bath with the relationships
 
 \begin{equation}
  \frac{db^2}{dt^2} = V \mathbf{W}^{-1 }\mathbf{b}^{'-1}(\mathbf{P}-\mathbf{P}_{ref}) ,
 \end{equation}
 
-where $\mathbf{P}_{ref}$ is the reference pressure.
+where $\mathbf{P}_{ref}$ is the reference pressure.\cite{abraham2014gromacs}
 
 Typically, The Nosé-Hoover thermostat and the Parinello-Rahman barostat are used simultaneously yielding a Hamiltonien that includes both, a coupling to a heat bath and a pressure bath. Therefore, the resulting equations of motions allow to sample from the isothermal-isobaric ensemble (NPT).
 

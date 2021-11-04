@@ -134,7 +134,7 @@ The following introducting to MD is based on the book by Frenkel and Smit and th
 
 Calculating forces acting on the particles is crucial to evolve the system in time. To this end, a definition for the potential energy function is required describing the interactions between the particles. These potentials can be defined on vary different levels of resolution. In the following, the classical description is used, which ignores the motion of the electrons and focuses solely on the motion of the nuclei. However, MD simulations including electronic degrees of freedom are also possible.\cite{marx2000ab, lemkul2016empirical} In this regard, the classical description approximates the effect of electrons as a potential energy surface representing the quantum ground-state.\cite{shell2019lecturenotes} This description is reasonable in cases where the Born-Oppenheimer approximation is valid and the electronic structure is not of interest.\cite{shell2019lecturenotes} Furthermore, bond breaking or forming is prohebitted.\cite{shell2019lecturenotes}
 
-Typically, the potential $U (\mathbf{r})$ is divided into a term representing the bonded interactions and a term for the nonbonded interactions
+Typically, the potential $U (\mathbf{r})$ is divided into a term representing the bonded interactions and a term for the nonbonded interactions \cite{shell2019lecturenotes}
 
 \begin{equation}
   U = U_{\text{bonded}} + U_{\text{nonbonded}} .
@@ -150,19 +150,19 @@ Bonded interactions are associated with chemical bonds, bond angles and bond dih
   U_{\text{bonded}} = \sum_{\text{bonds}} a(d - d_0)^2 + \sum_{\text{angles}} b(\Phi - \Phi_0)^2 + \sum_{\text{dihedrals}} \Big( \sum_{n} c_n cos(\omega)^n \Big) ,
 \end{equation}
 
-where $d$ and $d_0$ are the calculated and the equilibrium bond length respectively, $\Phi$ and $\Phi_0$ the calculated and equilibrium bond angles and $\omega$ is the calculated dihedral angle. The parameters $a$, $b$ and $c_n$ are the strength for the harmonic and the cosine series potential repectively. 
+where $d$ and $d_0$ are the calculated and the equilibrium bond length respectively, $\Phi$ and $\Phi_0$ the calculated and equilibrium bond angles and $\omega$ is the calculated dihedral angle.\cite{shell2019lecturenotes} The parameters $a$, $b$ and $c_n$ are the strength for the harmonic and the cosine series potential repectively. 
 
 \subsubsection{Nonbonded Interactions}
 
-The nonbonded potential is associated with van der Waals attraction, pauli repulsion and electrostatic interactions. The van der Waals attraction arises due to the correlation between instantaneous dipoles between electron clouds of the atoms. The Pauli repulsion occurs upon the overlap of electron clouds and is a consequence of the Pauli principle, which forbids any two electrons from having the same quantum numbers. Both, the van der Waals attraction and the Pauli repulsion, are often combined into a single expression, such as the Lennard-Jones potential. The electrostatic forced arise due to partial or formal charges of the atoms and are taken into account through Coulomb's law. In combination, a typical nonbonded potential is modeled as
+The nonbonded potential is associated with van der Waals attraction, pauli repulsion and electrostatic interactions.\cite{shell2019lecturenotes} The van der Waals attraction arises due to the correlation between instantaneous dipoles between electron clouds of the atoms. The Pauli repulsion occurs upon the overlap of electron clouds and is a consequence of the Pauli principle, which forbids any two electrons from having the same quantum numbers. Both, the van der Waals attraction and the Pauli repulsion, are often combined into a single expression, such as the Lennard-Jones potential. The electrostatic forced arise due to partial or formal charges of the atoms and are taken into account through Coulomb's law. In combination, a typical nonbonded potential is modeled as
 
 \begin{equation}
   U_{\text{nonbonded}} = \sum_{\text{pairs}} \Big( \underbrace{ 4 \epsilon \bigg[ \big( \frac{r_{ij}}{\sigma} \big)^{-12} - \big( \frac{r_{ij}}{\sigma} \big)^{-6} \bigg] }_{\text{Lennard-Jones}} + \underbrace{ \frac{q_i q_j}{4 \pi \epsilon_0 r_{ij}} }_{\text{Coulomb}} \Big) , 
 \end{equation}
 
-where $r_{ij}$ is the pairwise distance, $q_i$ and $q_j$ are the net (partial) charges, $\epsilon$ and $\sigma$ are the Lennard-Jones parameters, which depend on the particular atom types and $\epsilon_0$ is the electric permitivity in vacuum. 
+where $r_{ij}$ is the pairwise distance, $q_i$ and $q_j$ are the net (partial) charges, $\epsilon$ and $\sigma$ are the Lennard-Jones parameters, which depend on the particular atom types and $\epsilon_0$ is the electric permitivity in vacuum.\cite{shell2019lecturenotes} 
 
-Obviously, calculating the nonbonded interactions is computationally more expensive compared to the bonded interactions, since the number of terms in the pairwise atomic sum scales as $N^2$, while the other scale as $N$. To reduce the computational overhead, the Lennard-Jones potential is often truncated as its contribution becomes minimal for large distances. To this end, a cutoff distance of $r_c \approx 2.5 \sigma$ is typically used where the energy is only a few percent of the minimum energy ($U_{\text{LJ}}(r_c) \approx -0.016 \epsilon$). In addition, it is common practice to shift to potential to avoid discontinuities, i.e. subtracting the value of the potential at the cutoff. However, the truncated contributions can become significant for the total energy and pressure of the system. To this end, a correction to the total potential can be introduced, which can be derived analytically for isotropic systems. On the other hand, the long-range Coulomb interaction need a special treadment, as a a a tail correction can not be derived directly. Therefore, Ewald summation is typically used to reduce the computational effort. In this case, the potential is split into a short-range and long-range contribution. The short-range contributions are computed in real space, while the long-range contributions are computed in Fourier space. 
+Obviously, calculating the nonbonded interactions is computationally more expensive compared to the bonded interactions, since the number of terms in the pairwise atomic sum scales as $N^2$, while the other scale as $N$. To reduce the computational overhead, the Lennard-Jones potential is often truncated as its contribution becomes minimal for large distances. To this end, a cutoff distance of $r_c \approx 2.5 \sigma$ is typically used where the energy is only a few percent of the minimum energy ($U_{\text{LJ}}(r_c) \approx -0.016 \epsilon$).\cite{shell2019lecturenotes} In addition, it is common practice to shift to potential to avoid discontinuities, i.e. subtracting the value of the potential at the cutoff. However, the truncated contributions can become significant for the total energy and pressure of the system. To this end, a correction to the total potential can be introduced, which is derived analytically for isotropic systems.\cite{shell2019lecturenotes, frenkel2001understanding}  On the other hand, the long-range Coulomb interaction need a special treadment, as a a a tail correction can not be derived directly.\cite{shell2019lecturenotes} Therefore, Ewald summation is typically used to reduce the computational effort. In this case, the potential is split into a short-range and long-range contribution. The short-range contributions are computed in real space, while the long-range contributions are computed in Fourier space. 
 
 \subsection{Numerical Integration}
 \label{numerical_integration}
@@ -174,9 +174,9 @@ The time evolution of the molecular system is described by Newton's equations of
   m \frac{d^2 \mathbf{r}}{d t^2} = - \frac{d U (\mathbf{r})}{d \mathbf{r}} .
 \end{equation}
 
-Starting from initial positions and velocities, the time-evolution of the system traces a path in phase space, called trajectory. This trajectory is a set of states compatible with the starting condition. For classical systems, the phase space trajectory lies on a surface of constant energy, as Newton's equations conserve energy. For ergodic systems, the trajectory will eventually visit all points in phase space compatible with the given total energy, whereas systems that are non-ergodic have areas in phase space that are inacessible. Obviously, it is not possible to sample all states of the trajectory. However, MD simulations aim at sampling the accessible phase space representatively.
+Starting from initial positions and velocities, the time-evolution of the system traces a path in phase space, called trajectory. This trajectory is a set of states compatible with the starting condition. For classical systems, the phase space trajectory lies on a surface of constant energy, as Newton's equations conserve energy.\cite{shell2019lecturenotes} For ergodic systems, the trajectory will eventually visit all points in phase space compatible with the given total energy, whereas systems that are non-ergodic have areas in phase space that are inacessible. Obviously, it is not possible to sample all states of the trajectory. However, MD simulations aim at sampling the accessible phase space representatively.
 
-Note that Eq. \ref{newtons_eq_motion} is a set of $3N$ second-order, nonlinear, coupled partial differential equations, which can not be solved analytically. Therefore, numerical integration is used to evolve the system in time. Here, the basic idea is to introduce a small timestep $\delta t$ and find the positions of the atoms at consecutive time steps, i.e. 
+Note that Eq. \ref{newtons_eq_motion} is a set of $3N$ second-order, nonlinear, coupled partial differential equations, which can not be solved analytically.\cite{shell2019lecturenotes} Therefore, numerical integration is used to evolve the system in time. Here, the basic idea is to introduce a small timestep $\delta t$ and find the positions of the atoms at consecutive time steps, i.e. 
 
 \begin{equation}
   \mathbf{r}(0), \mathbf{r}(\delta t), \mathbf{r}(2 \delta t), ..
@@ -223,7 +223,7 @@ The simplest approach to control the temperature is the velocity rescaling algor
  T = \frac{2 <K>}{k_B n_{DOF}} ,
 \end{equation}
 
-where $K$ is the kinetic energy and $n_{DOF}$ are the degrees of freedom. Therefore, the velocities can be rescaled at each time step to fix the temperature to a desired value. Despite its simplicity, this algorithm does not reproduce the correct thermodynamic properties of the canonical ensemble, since the fluctuations in the kinetic energy are not captured. 
+where $K$ is the kinetic energy and $n_{DOF}$ are the degrees of freedom.\cite{shell2019lecturenotes} Therefore, the velocities can be rescaled at each time step to fix the temperature to a desired value. Despite its simplicity, this algorithm does not reproduce the correct thermodynamic properties of the canonical ensemble, since the fluctuations in the kinetic energy are not captured.\cite{shell2019lecturenotes} 
 
 \subsubsection{Anderson Thermostat}
 
@@ -233,17 +233,17 @@ The Anderson thermostat introduces random collision of the molecules with an ima
  p(\vec{v}) = \Big( \frac{m}{2 \pi k_B T} \Big)^{3/2} \text{exp} \Big[- \frac{m |\vec{v}|^2}{2 k_B T} \Big]
 \end{equation}
 
-Although this approach generates the correct canonical ensemble propabliities, the molecular kinetics are not reproduced correctly, because the random collisions decorrelate the system.
+Although this approach generates the correct canonical ensemble propabliities, the molecular kinetics are not reproduced correctly, because the random collisions decorrelate the system.\cite{shell2019lecturenotes}
 
 \subsubsection{Nose Thermostat}
 
-Nose augmented the Hamiltonian with two extra degrees of freedom representing an imaginary heat bath:
+Nosé augmented the Hamiltonian with two extra degrees of freedom representing an imaginary heat bath:
 
 \begin{equation}
  H_{\text{Nosé}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{p_s^2}{2Q} + (3N + 1) \frac{ln(s)}{k_b T}
 \end{equation}
 
-Here, $s$ is the position and $p_s$ is the momentum of the heat bath. The parameter $Q$ is an effective mass associated with $s$, i.e. $p_s = Q \frac{ds}{dt}$ and its magnitude determines the coupling between the heat bath and the original system. It has to be chosen carefully by the user, as it influences the temperature fluctuations. Using the Lagrangian, it can be shown that the particles are coupled to the heat bath by scaling the momenta:
+Here, $s$ is the position and $p_s$ is the momentum of the heat bath.\cite{frenkel2001understanding} The parameter $Q$ is an effective mass associated with $s$, i.e. $p_s = Q \frac{ds}{dt}$ and its magnitude determines the coupling between the heat bath and the original system. It has to be chosen carefully by the user, as it influences the temperature fluctuations. Using the Lagrangian, it can be shown that the particles are coupled to the heat bath by scaling the momenta:
 
 \begin{equation}
  p_i = m_i v_i \times s
