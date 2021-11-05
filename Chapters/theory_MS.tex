@@ -286,21 +286,62 @@ Typically, The Nosé-Hoover thermostat and the Parinello-Rahman barostat are use
 
 \section{Coarse-Graining}
 
-Coarse-Graining is the process of building a simplified model of a complex system. To this end, a coarse-grained model represents the system at a lower level of resolution, i.e. it reduces the number of degrees of freedom. Obviously, the goal is to keep essential features while ignoring or averaging over less important details. In other words, the coarse-grained model has to maintain the correct physical behaviour with fewer degrees of freedom. The benefits of coarse-grained models are twofold: Firstly, the reduced representation allows to access longer length an time scales, as the computational cost is reduced as well. Secondly, coarse-graining helps to put the essential features driving the emergend phenomena of interest into the spot light, as disturbing and unimportant details are removed.
+Coarse-Graining is the process of building a simplified model of a complex system. To this end, a coarse-grained model represents the system at a lower level of resolution, i.e. it reduces the number of degrees of freedom. Obviously, the goal is to keep essential features while ignoring or averaging over less important details. In other words, the coarse-grained model has to maintain the correct physical behaviour with fewer degrees of freedom. The benefits of coarse-grained models are twofold: Firstly, the reduced representation allows to access longer length an time scales, as the computational cost is reduced as well. Secondly, coarse-graining helps to put the essential features driving the emergend phenomena of interest into the spot light, as disturbing and unnecessary details are removed.
+
+\subsection{Representation}
+
+The basis of a coarse-grained model is the representation of the particles captured in the system. The most fundamental model we could apply is a quantum mechanical description. In this regard, a classical atomistic description is already a coarse-grained model based on ab initio considerations. However, coarse-graining typically refers to an even lower resolution description, where the coarse-grained sites, often called beads, represent multiple atoms. Typically, the beads are associated with specific types reflecting the physiochemical properties of the corresponding group of atoms. Moreover, bonds between those CG beads are introduced to capture the molecular topology. The choice of mapping from the atomistic to the lower resolution representation is crucial and has to be done with great care, as the essential features of the original system still have to be captured by the coarse-grained representation. However, in many cases the mapping is based on the chemical intuition of the user, but more systematic methods have been developed recently.\cite{chakraborty2018encoding, giulini2020information}
+
+It is often required to not only specify the representation but also define a concrete mapping for the coordinates, i.e. a function $\mathbf{M}$ of the atomistic coordinates $\mathbf{r}$ to the coordinates of the CG beads $\mathbf{R}$. Typically, a linear mapping is chosen,
+
+\begin{equation}
+  \mathbf{R}_I = \sum_{i \in \phi(I)} c_{iI} \mathbf{r}_i ,
+\end{equation}
+
+where $I$ and $i$ are the indices of the CG bead and atom respectively, $\phi(I)$ is the set of indices of atoms the CG bead $I$ corresponds to and $c_{iI}$ are coefficients of the mapping. In many cases, the coordinate mapping is chosen such that it reflects the center of mass geometry of the group of atoms. 
 
 \subsection{Top-down vs Bottom-up}
 
-Once the representation of the coarse-grained model is defined, the forcefield has to be determined. For this task, a wide range of different schemes have been developed and two schools of thoughts have been established, refered to as bottom-up and top-down approaches. Note, that while a distinction between those two approaches is instructive, a clear classification is not always possible as many coarse-graining schemes incorporate both ideas.
+Once the representation of the coarse-grained model is defined, the forcefield has to be determined. For this task, a wide range of different schemes have been developed and two schools of thoughts have been established, refered to as bottom-up and top-down approaches. Note, that while a distinction between those two approaches is instructive, a clear classification is not always possible as many coarse-graining schemes incorporate aspects both ideas.
+
+The bottom-up approach utilizes a more detailed model and aims at reproducing the thermodynamic and structural properties of the higher resolution system as closely as possible. In general, the choice of the underlying fine-grained model is not bound to a specific resolution, but in practice the classical atomistic system is typically used as a basis. As the atomistic model itself is a approximation of the quantum mechanical description, the accuracy of the coarse-grained model depends on the quality of the underlying atomistic model. Once the high-resolution model is chosen, statistical mechanics provides a framework to rigorously derive the forcefield for the coarse-grained system. In theory, the many-body potential of mean force (PMF, see below) is central for this derivation. However, practical application of the PMF is provides significant challenges as it is extremely costly to evaluate for high dimensional systems.
+
+While the spirit of bottom-up approaches is related to inductive reasoning, i.e. generalizing from something that is more specific, the top-down approach can be associated with deduction, i.e. applying general rules to derive a conclusion. Top-down coarse-graining starts with universal physical principles or experimentally observed phenomenas that the model aims to reproduce. In general, top-down models are used to study the consequences of the rules incorporated in the model. In this regard, top-down models are often not chemically-specific, as the set of rules yielding a specific phenomena might not be unique. Furthermore, it is often not sufficient to link a single phenomena to a specific chemical compound, as a full range of properties have to be reproduced to characterize the compound with high confidence. In this sense, top-down models are often under-constrained.
 
 %While a coarse-grained model implies the existence of more fundamental, higher resolution model, the question of how the coarse-grained model is built upon this fine-grained 
 
 \cite{noid2013perspective}
 
-\subsection{Mapping Operator}
-
 \cite{noid2008multiscale}
 
-\subsection{Many-Body Potential of Mean Force}
+\subsection{Consistency Criteria and the Many-Body Potential of Mean Force}
+
+Deriving the coarse-grained potential $U(\mathbf{R})$ for the coarse-grained model is the most challenging task. In the case of bottom-up coarse-graining, the potential $U(\mathbf{R})$ can theoretically derived exactly from the fine-grained potential $u(\mathbf{r})$ and the mapping $\mathbf{M}(\mathbf{r})$. The underlying criteria for the derivation is called consistency criteria and states that the equilibrium joint probability density in phase space of the coarse-grained coordinates $\mathbf{R}$ and momenta $\mathbf{P}$ have to match the implied atomistic probability density.\cite{noid2008multiscale} For simplicity, the following considerations are restricted to the configuration space, i.e. exluding momenta, such that the consistency criteria can be written as
+
+\begin{equation}
+\label{consistency1}
+  p_{CG} (\mathbf{R}) = p_{AA} (\mathbf{R}) ,
+\end{equation}
+
+where $p_{CG} (\mathbf{R})$ is is the equilibrium probability density for a configuration $\mathbf{R}$ in the canonical ensemble of the coarse-grained model
+
+\begin{equation}
+\label{consistency2}
+  p_{CG} (\mathbf{R}) \propto \text{exp} \Big[ \frac{U(\mathbf{R})}{k_B T} \Big]
+\end{equation}
+
+and $p_{AA} (\mathbf{R})$ is the implied equilibrium probability density for a coarse-grained configuration $\mathbf{R}$ by the mapping $\mathbf{M}(\mathbf{r})$ expressed in terms of the fine-grained model
+
+\begin{equation}
+\label{consistency3}
+  p_{AA} (\mathbf{R}) \propto \mathcal{Z}(\mathbf{R}) := \int  \text{exp} \Big[ \frac{u(\mathbf{r})}{k_B T} \Big] \delta(\mathbf{M}(\mathbf{r}) - \mathbf{R}) d\mathbf{r} .
+\end{equation}
+
+Plugging Eq. \ref{consistency2} and \ref{consistency3} into \ref{consistency1} and reordering yields
+
+\begin{equation}
+ U(\mathbf{R}) = - k_B T \; \text{ln} (\mathcal{Z}(\mathbf{R})) + \text{const} .
+\end{equation}
 
 \cite{frenkel2001understanding}, \cite{noid2008multiscale}
 
