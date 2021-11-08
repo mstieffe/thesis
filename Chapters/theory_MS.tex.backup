@@ -111,11 +111,11 @@ As a consequence, a macroscopic systems appear to have constant energies.\cite{s
 
 \subsection{Information-theoretic View on Statistical Mechanics}
 
-In 1957 Jaynes published two papers emphazising the correspondence between information theory and statistical mechanics.\cite{jaynes1957information,jaynes1957information2} According to Jaynes, Gibbs entropy in statistical mechanics and Shannons information entropy are identical except for the Boltzmann constant.\cite{jaynes1957information} Consequently, statistical mechanics can be viewed from the perpespective of information theory and the seek for microscopic distributions can be treated as an inference problem.\cite{jaynes1957information} 
+In 1957 Jaynes published two papers emphazising the correspondence between information theory and statistical mechanics.\cite{jaynes1957information,jaynes1957information2} According to Jaynes, Gibbs' entropy in statistical mechanics and Shannon's information entropy are identical except for the Boltzmann constant.\cite{jaynes1957information} Consequently, statistical mechanics can be viewed from the perpespective of information theory and the seek for microscopic distributions can be treated as an inference problem.\cite{jaynes1957information} 
 
 Jaynes adapted a bayesian perpective (see Sec. \ref{bayes_vs_frequentist}) and treated the testable information, i.e. the macroscopic observables, as prior information.\cite{jaynes1957information} Obviously, information is missing that is needed to determine the specific microstate of a system that remains uncommunicated due to a description of the system solely in terms of macroscopic quantities. Consequently, finding the microscopic probability distribution amounts to assign probabilities to microstates that avoid bias while still aggreeing with the observed macroscopic quantities.\cite{jaynes1957information} In other words, out of all possible distributions the one has to be chosen which is the least-informative to avoid arbitrary assumptions.
 
-Shannon has showed, that the entropy written in Eq. \ref{gibbs_entropy} (without the Boltzmann constant) is a quantity that increases with increasing uncertainty.\cite{shannon1948mathematical} Consequently, the distribution that maximizes the entropy has to be found under the constraints of the given prior information. From this point of view, the principle of equal a priori probabilities is a consequence of our ignorance about the microscopic details of the system. In practice, the problem is solved introducing Lagrange multiplier to impose the constraints. For the microcanonical ensemble, the constraint renders to a zero probability for all microstates with different total energy than the observed one. In the canonical ensemble, the constraint is a fixed expectation value for the energy.\cite{jaynes1957information}
+Shannon has showed, that the entropy written in Eq. \ref{gibbs_entropy} (without the Boltzmann constant) is a quantity that increases with increasing uncertainty.\cite{shannon1948mathematical} Consequently, the distribution that maximizes the entropy has to be found under the constraints of the given prior information. From this point of view, the principle of equal a priori probabilities is a consequence of our ignorance about the microscopic details of the system. In practice, the problem is solved introducing Lagrange multiplier to impose the constraints. For the microcanonical ensemble, the constraint renders to a zero probability for all microstates with different total energy than the observed one. In the canonical ensemble, the constraint is a fixed expectation value for the energy.\cite{jaynes1957information} In both cases, the well known results from statistical mechanics are reproduced, i.e. the uniform distribution for the microcanonical ensemble and the boltzmann distribution for the canonical ensemble.
 
 % -----------------------------------
 %   Molecular Dynamics Simulation
@@ -126,7 +126,7 @@ Shannon has showed, that the entropy written in Eq. \ref{gibbs_entropy} (without
 In many cases, it is possible to express the basic laws of nature in terms of relatively simple equations. Unfortunately, solving such equations analytically, such as the equations of motion for more than two interacting bodies, becomes impossible in many cases. However, it is central to the statistical mechanics view on thermodynamics to consider systems with an extremely large number of interacting particles. 
 Fortunately, Computer simulations can circumvent these issues. The two main branches of computer simulation techniques for molecular systems are molecular dynamics (MD) and Monte Carlo (MC), but a whole range of hybrid techniques exists as well. In the following, the focus is set on MD simulations.
 
-\textit{Molecular Dynamics} (MD) simulation numerically integrats Newtons equations of motion allowing to analyze the physical movement of atoms or molecules and predict bulk properties. The starting point for every MD simulation is to set up a model for the molecular interactions, i.e. the forcefield, and to select initial positions and velocities for the particles. Afterwards, the system is evolved in time using descrete timesteps repeatly updating the particle positions and velocities. To this end, the forces have to be calculated at every step. However, the algorithm and parameters for the numerical intergration have to be taken with great care in order to minimize the effects of cumulative errors.\cite{frenkel2001understanding} After the system is equilibrated, i.e. it has evolved for a sufficient amount of time such that macroscopic proties do not change anymore, snapshots or whole trajectories of the system can be extracted and the actual measurement of the observable quantity of interest can be performed. In this regard, MD simulation builts a bridge between theory and experiment, as it allows to test a model and compare it with experimental results.\cite{allen2004introduction}
+\textit{Molecular Dynamics} (MD) simulation numerically integrats Newtons equations of motion allowing to analyze the physical movement of atoms or molecules and predict bulk properties. The starting point for every MD simulation is to set up a model for the molecular interactions, i.e. the forcefield, and to select initial positions and velocities for the particles. Afterwards, the system is evolved in time using descrete timesteps where the particle positions and velocities are repeatly updated. To this end, the forces have to be calculated at every step. However, the algorithm and parameters for the numerical intergration have to be taken with great care in order to minimize the effects of cumulative errors.\cite{frenkel2001understanding} After the system is equilibrated, i.e. it has evolved for a sufficient amount of time such that macroscopic proties do not change anymore, snapshots or whole trajectories of the system can be extracted and the actual measurement of the observable quantity of interest can be performed. In this regard, MD simulation builts a bridge between theory and experiment, as it allows to test a model and compare it with experimental results.\cite{allen2004introduction}
 
 The following introducting to MD is based on the book by Frenkel and Smit and the lecture notes of M. Scott Shell, which are excellent sources providing the interested reader with more detailed explanations on this topic.\cite{shell2019lecturenotes, frenkel2001understanding}
 
@@ -211,7 +211,7 @@ Eq. \ref{verlet} allows to compute the positions at the next time step from the 
 
 Note that the Verlet algorithm has two important features: It is time-reversible and symplectic, i.e. volume in phase space is preserved.\cite{allen2004introduction} Those features are crucial to maintain correct statistical sampling and stability, as those are properties of the true Hamiltonian dynamics.\cite{shell2019lecturenotes} Algorithms that do not preserve the volume in phase space can dramatically expand the initial volume, such that it eventually covers areas of phase space that are not compatible with the starting condition and might violate energy conservation. Although reversiblity and the conservation of phase space volume does not automatically guarantee that there is no drift of the total energy on a long time scale, it is at least a reasonable requirement.\cite{frenkel2001understanding} In practice, the Verlet algorithm does not exactly conserve the total energy, but it exhibits little long energy drifts.\cite{frenkel2001understanding} Note, that there a many different algorithm that can be derived from the Verlet algorithm yielding identical trajectories, such as the leap frog or the velocity Verlet algorithm.\cite{frenkel2001understanding}
 
-\subsection{Thermostat and Barostat}
+\subsection{Thermostats and Barostats: Controlling Temperature and Pressure}
 
 The numerical integration scheme described in Sec. \ref{numerical_integration} allows to sample from the microcanonical ensemble, i.e. maintain a constant total energy. However, it is often desirable to sample from different ensembles, such as the canonical ensemble (NVT) or the isothermal-isobaric ensemble (NPT). Modifications on the MD algorithm that allow to control the temperature or pressure are called thermostat or barostat algorithms respectively. They are important for many reasons, for example to match experimental conditions, study temperature dependent processes or enhance the efficiency of conformational search.\cite{Huenenberger2005} Several methods exist to control temperature and pressure during the simulation. In the following, some of the popular techniques are introduced.
 
@@ -235,29 +235,30 @@ The Anderson thermostat introduces random collision of the molecules with an ima
 
 Although this approach generates the correct canonical ensemble propabliities, the molecular kinetics are not reproduced correctly, because the random collisions decorrelate the system.\cite{shell2019lecturenotes}
 
-\subsubsection{Nose Thermostat}
+\subsubsection{Nosé-Hoover Thermostat}
 
 Nosé augmented the Hamiltonian with two extra degrees of freedom representing an imaginary heat bath:
 
 \begin{equation}
+\label{nose_hamiltonian}
  H_{\text{Nosé}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{p_s^2}{2Q} + (3N + 1) \frac{ln(s)}{k_b T}
 \end{equation}
 
-Here, $s$ is the position and $p_s$ is the momentum of the heat bath.\cite{frenkel2001understanding} The parameter $Q$ is an effective mass associated with $s$, i.e. $p_s = Q \frac{ds}{dt}$ and its magnitude determines the coupling between the heat bath and the original system. It has to be chosen carefully by the user, as it influences the temperature fluctuations. Using the Lagrangian, it can be shown that the particles are coupled to the heat bath by scaling the momenta:
+Here, $s$ is the position and $p_s$ is the momentum of the heat bath.\cite{frenkel2001understanding} The parameter $Q$ is an effective mass associated with $s$, i.e. $p_s = Q \frac{ds}{dt}$ and its magnitude determines the coupling between the heat bath and the original system. It has to be chosen carefully by the user, as it influences the temperature fluctuations.\cite{Huenenberger2005} Using the Lagrangian, it can be shown that the particles are coupled to the heat bath by scaling the momenta:
 
 \begin{equation}
  p_i = m_i v_i \times s
 \end{equation}
 
-The Hamiltonien in Eq. \ref{} can then be used to derive the equations of motions for the extended system, i.e. for both, the heat bath and the original system. Note, that this approach is deterministic as no stochastic element is present. This thermostat generates the correct thermodynamics for the canonical ensemble.
+The Hamiltonien in Eq. \ref{nose_hamiltonian} can then be used to derive the equations of motions for the extended system, i.e. for both, the heat bath and the original system. Note, that this approach is deterministic as no stochastic element is present. This thermostat generates the correct thermodynamics for the canonical ensemble.\cite{shell2019lecturenotes}
 
-However, scaling of the particle momenta using the position of the imaginary heat bath also implies scaling of the timescale in the extended system. Since the position $s$ is variable, the implied timescale also changes making it difficult to implement the Nose thermostat. To solve this issue, Hoover proposed an alternative by replacing the heat bath momentum $p_s$ with a friction coefficient $\xi = \frac{d ln(s)}{dt}$:
+However, scaling of the particle momenta using the position of the imaginary heat bath also implies scaling of the timescale in the extended system.\cite{shell2019lecturenotes} Since the position $s$ is variable, the implied timescale also changes making it difficult to implement the Nose thermostat. To solve this issue, Hoover proposed an alternative by replacing the heat bath momentum $p_s$ with a friction coefficient $\xi = \frac{d ln(s)}{dt}$:
 
 \begin{equation}
- H_{\text{Nosé}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{\xi^2 Q}{2} + 3N k_B T ln(s)
+ H_{\text{Nosé-Hoover}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{\xi^2 Q}{2} + 3N k_B T ln(s)
 \end{equation}
 
-This modified Hamiltonian yields equations of motion that no longer require a scaling of the time step but still enables to correctly generate a canonical ensemble through MD simulation.
+This approach is known as the Nosé-Hoover thermostat and the modified Hamiltonian yields equations of motion that no longer require a scaling of the time step but still enables to correctly generate a canonical ensemble through MD simulation.\cite{shell2019lecturenotes}
 
 \subsubsection{Parinello-Rahman Barostat}
 
@@ -269,13 +270,13 @@ In its core, the Parinello-Rahman barostat is similar to the Nose-Hoover thermos
  H_{\text{Parinello-Rahman}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i} \Big) + U(\mathbf{r}) + \sum_j \mathbf{P}_jj V + \sum_{j,k} \frac{1}{2} \mathbf{W}_{jk} \Big( \frac{d b_{jk}}{dt} \Big) .
 \end{equation}
 
-Here, $\mathbf{b}$ is a matrix containing the box vectors and $V$ is the volume of the simulation box, $\mathbf{P}$ is the instantenous pressure tensor and $\mathbf{W}$ is the mass parameter matrix. The vector of the simulatiin box $b$ is coupled to the pressure bath with the relationships
+Here, $\mathbf{b}$ is a matrix containing the box vectors and $V$ is the volume of the simulation box, $\mathbf{P}$ is the instantenous pressure tensor and $\mathbf{W}$ is the mass parameter matrix.\cite{abraham2014gromacs} The vector of the simulatiin box $b$ is coupled to the pressure bath with the relationships
 
 \begin{equation}
  \frac{db^2}{dt^2} = V \mathbf{W}^{-1 }\mathbf{b}^{'-1}(\mathbf{P}-\mathbf{P}_{ref}) ,
 \end{equation}
 
-where $\mathbf{P}_{ref}$ is the reference pressure.
+where $\mathbf{P}_{ref}$ is the reference pressure.\cite{abraham2014gromacs}
 
 Typically, The Nosé-Hoover thermostat and the Parinello-Rahman barostat are used simultaneously yielding a Hamiltonien that includes both, a coupling to a heat bath and a pressure bath. Therefore, the resulting equations of motions allow to sample from the isothermal-isobaric ensemble (NPT).
 
@@ -285,15 +286,62 @@ Typically, The Nosé-Hoover thermostat and the Parinello-Rahman barostat are use
 
 \section{Coarse-Graining}
 
+Coarse-Graining is the process of building a simplified model of a complex system. To this end, a coarse-grained model represents the system at a lower level of resolution, i.e. it reduces the number of degrees of freedom. Obviously, the goal is to keep essential features while ignoring or averaging over less important details. In other words, the simplified model still has to maintain the correct physical behaviour. The benefits of coarse-grained models are twofold: Firstly, the reduced representation allows to access longer length an time scales, as the computational cost is reduced as well. Secondly, coarse-graining helps to put the essential features driving the emergend phenomena of interest into the spot light, as disturbing and unnecessary details are removed.
+
+\subsection{Representation}
+
+The basis of a coarse-grained model is the representation of the particles captured in the system. The most fundamental model we could apply is a quantum mechanical description. In this regard, a classical atomistic description is already a coarse-grained model based on ab initio considerations. However, coarse-graining typically refers to an even lower resolution description, where the coarse-grained sites, often called beads, represent multiple atoms. Typically, the beads are associated with specific types reflecting the physiochemical properties of the corresponding group of atoms. Moreover, bonds between those CG beads are introduced to capture the molecular topology. The choice of mapping from the atomistic to the lower resolution representation is crucial and has to be done with great care, as the essential features of the original system still have to be captured by the coarse-grained representation. However, in many cases the mapping is based on the chemical intuition of the user, but more systematic methods have been developed recently.\cite{chakraborty2018encoding, giulini2020information}
+
+It is often required to not only specify the representation but also define a concrete mapping for the coordinates, i.e. a function $\mathbf{M}$ of the atomistic coordinates $\mathbf{r}$ to the coordinates of the CG beads $\mathbf{R}$. Typically, a linear mapping is chosen,
+
+\begin{equation}
+  \mathbf{R}_I = \sum_{i \in \phi(I)} c_{iI} \mathbf{r}_i ,
+\end{equation}
+
+where $I$ and $i$ are the indices of the CG bead and atom respectively, $\phi(I)$ is the set of indices of atoms the CG bead $I$ corresponds to and $c_{iI}$ are coefficients of the mapping. In many cases, the coordinate mapping is chosen such that it reflects the center of mass geometry of the group of atoms. 
+
 \subsection{Top-down vs Bottom-up}
+
+Once the representation of the coarse-grained model is defined, the forcefield has to be determined. For this task, a wide range of different schemes have been developed and two schools of thoughts have been established, refered to as bottom-up and top-down approaches. Note, that while a distinction between those two approaches is instructive, a clear classification is not always possible as many coarse-graining schemes incorporate aspects both ideas.
+
+The bottom-up approach utilizes a more detailed model and aims at reproducing the thermodynamic and structural properties of the higher resolution system as closely as possible. In general, the choice of the underlying fine-grained model is not bound to a specific resolution. A common choice is to use the classical atomistic model as a basis. In this case, the accuracy of the coarse-grained model depends on the quality of the fine-grained model, as the atomistic model itself is a approximation of the quantum mechanical description. Once the high-resolution model is chosen, statistical mechanics provides a framework to rigorously derive the forcefield for the coarse-grained system. In theory, the many-body potential of mean force (PMF, see below) is central for this derivation. However, practical application of the PMF is provides significant challenges as it is extremely costly to evaluate for high dimensional systems.
+
+While the spirit of bottom-up approaches is related to inductive reasoning, i.e. generalizing from something that is more specific, the top-down approach can be associated with deduction, i.e. applying general rules to derive a conclusion. Top-down coarse-graining starts with universal physical principles or experimentally observed phenomenas that the model aims to reproduce. In general, top-down models are used to study the consequences of the rules incorporated in the model. In this regard, top-down models are often not chemically-specific, as the set of rules yielding a specific phenomena might not be unique. Furthermore, it is often not sufficient to link a single phenomena to a specific chemical compound, as a full range of properties have to be reproduced to characterize the compound with high confidence. In this sense, top-down models are often under-constrained.
+
+%While a coarse-grained model implies the existence of more fundamental, higher resolution model, the question of how the coarse-grained model is built upon this fine-grained 
 
 \cite{noid2013perspective}
 
-\subsection{Mapping Operator}
-
 \cite{noid2008multiscale}
 
-\subsection{Many-Body Potential of Mean Force}
+\subsection{Consistency Criteria and the Many-Body Potential of Mean Force}
+
+Deriving the coarse-grained potential $U(\mathbf{R})$ for the coarse-grained model is the most challenging task. In the case of bottom-up coarse-graining, the potential $U(\mathbf{R})$ can theoretically derived exactly from the fine-grained potential $u(\mathbf{r})$ and the mapping $\mathbf{M}(\mathbf{r})$. The underlying criteria for the derivation is called consistency criteria and states that the equilibrium joint probability density in phase space of the coarse-grained coordinates $\mathbf{R}$ and momenta $\mathbf{P}$ have to match the implied atomistic probability density.\cite{noid2008multiscale} For simplicity, the following considerations are restricted to the configuration space, i.e. exluding momenta, such that the consistency criteria can be written as
+
+\begin{equation}
+\label{consistency1}
+  p_{CG} (\mathbf{R}) = p_{AA} (\mathbf{R}) ,
+\end{equation}
+
+where $p_{CG} (\mathbf{R})$ is is the equilibrium probability density for a configuration $\mathbf{R}$ in the canonical ensemble of the coarse-grained model
+
+\begin{equation}
+\label{consistency2}
+  p_{CG} (\mathbf{R}) \propto \text{exp} \Big[ \frac{U(\mathbf{R})}{k_B T} \Big]
+\end{equation}
+
+and $p_{AA} (\mathbf{R})$ is the implied equilibrium probability density for a coarse-grained configuration $\mathbf{R}$ by the mapping $\mathbf{M}(\mathbf{r})$ expressed in terms of the fine-grained model
+
+\begin{equation}
+\label{consistency3}
+  p_{AA} (\mathbf{R}) \propto \mathcal{Z}(\mathbf{R}) := \int  \text{exp} \Big[ \frac{u(\mathbf{r})}{k_B T} \Big] \delta(\mathbf{M}(\mathbf{r}) - \mathbf{R}) d\mathbf{r} .
+\end{equation}
+
+Plugging Eq. \ref{consistency2} and \ref{consistency3} into \ref{consistency1} and reordering yields
+
+\begin{equation}
+ U(\mathbf{R}) = - k_B T \; \text{ln} (\mathcal{Z}(\mathbf{R})) + \text{const} .
+\end{equation}
 
 \cite{frenkel2001understanding}, \cite{noid2008multiscale}
 
