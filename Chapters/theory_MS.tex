@@ -131,6 +131,7 @@ Fortunately, Computer simulations can circumvent these issues. The two main bran
 The following introducting to MD is based on the book by Frenkel and Smit and the lecture notes of M. Scott Shell, which are excellent sources providing the interested reader with more detailed explanations on this topic.\cite{shell2019lecturenotes, frenkel2001understanding}
 
 \subsection{Molecular Force Fields}
+\label{molecular_forcefield}
 
 Calculating forces acting on the particles is crucial to evolve the system in time. To this end, a definition for the potential energy function is required describing the interactions between the particles. These potentials can be defined on vary different levels of resolution. In the following, the classical description is used, which ignores the motion of the electrons and focuses solely on the motion of the nuclei. However, MD simulations including electronic degrees of freedom are also possible.\cite{marx2000ab, lemkul2016empirical} In this regard, the classical description approximates the effect of electrons as a potential energy surface representing the quantum ground-state.\cite{shell2019lecturenotes} This description is reasonable in cases where the Born-Oppenheimer approximation is valid and the electronic structure is not of interest.\cite{shell2019lecturenotes} Furthermore, bond breaking or forming is prohebitted.\cite{shell2019lecturenotes}
 
@@ -316,7 +317,7 @@ While the spirit of bottom-up approaches is related to inductive reasoning, i.e.
 
 \subsection{Consistency Criteria and the Many-Body Potential of Mean Force}
 
-Deriving the coarse-grained potential $U(\mathbf{R})$ for the coarse-grained model is the most challenging task. In the case of bottom-up coarse-graining, the potential $U(\mathbf{R})$ can theoretically derived exactly from the fine-grained potential $u(\mathbf{r})$ and the mapping $\mathbf{M}(\mathbf{r})$. The underlying criteria for the derivation is called consistency criteria and states that the equilibrium joint probability density in phase space of the coarse-grained coordinates $\mathbf{R}$ and momenta $\mathbf{P}$ have to match the implied atomistic probability density.\cite{noid2008multiscale} For simplicity, the following considerations are restricted to the configuration space, i.e. exluding momenta, such that the consistency criteria can be written as
+Deriving the coarse-grained potential $U(\mathbf{R})$ for the coarse-grained model is the most challenging task. In the case of bottom-up coarse-graining, the potential $U(\mathbf{R})$ can theoretically be derived exactly from the fine-grained potential $u(\mathbf{r})$ and the mapping $\mathbf{M}(\mathbf{r})$. The underlying criteria for the derivation is called consistency criteria and states that the equilibrium joint probability density $p_{CG} (\mathbf{R}, \mathbf{P})$ in phase space of the coarse-grained coordinates $\mathbf{R}$ and momenta $\mathbf{P}$ have to match the implied atomistic probability density $p_{AA} (\mathbf{R}, \mathbf{P})$.\cite{noid2008multiscale} For simplicity, the following considerations are restricted to the configuration space, i.e. exluding momenta, such that the consistency criteria can be written as
 
 \begin{equation}
 \label{consistency1}
@@ -327,35 +328,64 @@ where $p_{CG} (\mathbf{R})$ is is the equilibrium probability density for a conf
 
 \begin{equation}
 \label{consistency2}
-  p_{CG} (\mathbf{R}) \propto \text{exp} \Big[ \frac{U(\mathbf{R})}{k_B T} \Big]
+  p_{CG} (\mathbf{R}) \propto \text{exp} \Big[ - \frac{U(\mathbf{R})}{k_B T} \Big]
 \end{equation}
 
-and $p_{AA} (\mathbf{R})$ is the implied equilibrium probability density for a coarse-grained configuration $\mathbf{R}$ by the mapping $\mathbf{M}(\mathbf{r})$ expressed in terms of the fine-grained model
+and $p_{AA} (\mathbf{R})$ is the equilibrium probability density for a coarse-grained configuration $\mathbf{R}$ implied by the mapping $\mathbf{M}(\mathbf{r})$ expressed in terms of the fine-grained model
 
 \begin{equation}
 \label{consistency3}
-  p_{AA} (\mathbf{R}) \propto \mathcal{Z}(\mathbf{R}) := \int  \text{exp} \Big[ \frac{u(\mathbf{r})}{k_B T} \Big] \delta(\mathbf{M}(\mathbf{r}) - \mathbf{R}) d\mathbf{r} .
+  p_{AA} (\mathbf{R}) \propto \mathcal{Z}(\mathbf{R}) := \int  \text{exp} \Big[ - \frac{u(\mathbf{r})}{k_B T} \Big] \delta(\mathbf{M}(\mathbf{r}) - \mathbf{R}) d\mathbf{r} .
 \end{equation}
 
 Plugging Eq. \ref{consistency2} and \ref{consistency3} into \ref{consistency1} and reordering yields
 
 \begin{equation}
+\label{mbpmf}
  U(\mathbf{R}) = - k_B T \; \text{ln} (\mathcal{Z}(\mathbf{R})) + \text{const} .
 \end{equation}
 
+Eq. \ref{mbpmf} defines the many-body PMF as a projection of the free energy function onto the coarse-grained degrees of freedom. It assigns a weight to each coarse-grained configuration associated with the sum of all the Boltzmann weights for the corresponding atomistic configurations. Recalling the free energy  $F$
+
+\begin{equation}
+  F = U - TS = - k_B T \; \text{ln}(\mathcal{Z}) ,
+\end{equation}
+
+where $U$ is the internal energy, makes it clear that the many-body PMF is not a regular potential, as it contains both, energetic as well as entropic contributions. Moreover, as the name suggests, this potential generates the average atomistic forces associated with the atomistic configurations that map to the specific coarse-grained configuration. 
+
+Importantly, $U(\mathbf{R})$ typically introduces many-body interactions that can not be expressed with simple classical force fields as outlined in Sec. \ref{molecular_forcefield}. This is a direct consequence for integrating over degrees of freedom. Additionally, it is extremely costly to evaluate and becomes infeasible to compute for most systems. Therefore, a wide range of techniques have been developed for a tractable approximation of the many-body PMF. 
+
 \cite{frenkel2001understanding}, \cite{noid2008multiscale}
 
-\subsection{Consistency Criteria}
-
-\cite{noid2008multiscale}
-
-\subsection{Coarse-Grained Force Field}
+\subsection{Overview of Bottom-Up Techniques and Top-Down Force Fields}
 
 \subsubsection{Direct Boltzmann Inversion}
+
+The most simple approach to obtain an approximate coarse-grained potential is direct Boltzmann inversion (DBI). This approach aims at reproducing certain structural distributions computed from atomistic reference data that is mapped onto the coarse-grained degrees of freedom. The distribution functions for given interactions $\xi$ are denoted with $p_{\xi}(x)$, where $x$ is a scalar variable, such as pairwise distances, angles or dihedrals. The goal is then to find the corresponding potential $U_{\xi}$ that yields the desired distribution. Based on the assumption, that the distribution functions for different mechanical variables $x$ factorize, the probability distributions can be written as Boltzmann factors
+
+\begin{equation}
+  p_{\xi}(x) \propto \text{exp} \Big[ \frac{- U_{\xi}(x)}{k_B T} \Big] .
+\end{equation}
+
+In addition, the corresponding volume elements for each distribution has to be taken into account, i.e. the Jacobian element $J_{\xi}(x)$. The potential can then directly computed as 
+
+\begin{equation}
+  U_{\xi} (x) = -k_b T \text{ln} \Big( \frac{p_{\xi}(x)}{J_{\xi}(x)} \Big) .
+\end{equation}
+
+Note, that factorizing the probability distributions is a very severe approximation. Therefore, this approach yields accurate results only for interactions that can be regarded as isolated in the coarse-grained model. However, in cases where the coupling between the interactions can not be ignored, DBI yields inaccurate potentials that do not corretly reproduce the sturctural distributions as important cross-correlations are not taken into account.
 
 \cite{tschop1998simulation}
 
 \subsubsection{Iterative Boltzmann Inversion}
+
+To improve the potentials derived with DBI, an iterative scheme can be applied. This scheme is called iterative Boltzmann inversion (IBI) and consists of the following steps: (1) Initial potentials are derived using DBI. (2) Use the derived coarse-grained potentials in a MD simulations to compute the corresponding structural distributions $p_{\xi}(x|U)$. (3) Update the coarse-grained potentials via
+
+\begin{equation}
+  U_{\xi, \text{new}} (x) = U_{\xi, \text{old}} (x) - k_B T \text{ln} \Big( \frac{p_{\xi}(x)}{p_{\xi}(x|U)} \Big) .
+\end{equation}
+
+Steps (2) and (3) are repeated until the potentials converge. Despite its simplicity, IBI has become very popular and is used especially for complex liquids and polymers. While IBI still treads every interaction $\xi$ seperatly, it implicitly accounts for correlations between the interactions through the iterative scheme. However, convergence of the potentials is not guaranteed.
 
 \cite{reith2003deriving}
 
