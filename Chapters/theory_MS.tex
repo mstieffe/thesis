@@ -353,7 +353,7 @@ Eq. \ref{mbpmf} defines the many-body PMF as a projection of the free energy fun
 
 where $U$ is the internal energy, makes it clear that the many-body PMF is not a regular potential, as it contains both, energetic as well as entropic contributions. Moreover, as the name suggests, this potential generates the average atomistic forces associated with the atomistic configurations that map to the specific coarse-grained configuration. 
 
-Importantly, $U(\mathbf{R})$ typically introduces many-body interactions that can not be expressed with simple classical force fields as outlined in Sec. \ref{molecular_forcefield}. This is a direct consequence for integrating over degrees of freedom. Additionally, it is extremely costly to evaluate and becomes infeasible to compute for most systems. Therefore, a wide range of techniques have been developed for a tractable approximation of the many-body PMF. 
+Importantly, $U(\mathbf{R})$ typically introduces many-body interactions that can not be expressed with simple classical force fields as outlined in Sec. \ref{molecular_forcefield}. This is a direct consequence for integrating over degrees of freedom. Moreover, the many-body PMF is extremely high dimensional and therefore becomes infeasible to compute for most systems. For those reasons, a wide range of techniques have been developed to obtain a tractable approximation of the many-body PMF. 
 
 \cite{frenkel2001understanding}, \cite{noid2008multiscale}
 
@@ -391,9 +391,25 @@ Steps (2) and (3) are repeated until the potentials converge. Despite its simpli
 
 \subsubsection{Multiscale Coarse-Graining}
 
+Beside approaches that focus on reproducing certain structural properties, variational approaches can be applied to find an approximation of the many-body PMF. A very early work in this field is the Multiscale coarse-graining (MS-CG) method, which introduces a force-matching functional 
+
+\begin{equation}
+  \chi^2 [\mathbf{F}] = \frac{1}{3N} \Big \langle \sum_{I=1}^N | \mathbf{F}_I(\mathbf{M}(\mathbf{r})) - \mathbf{f}_I(\mathbf{r}) |^2 \Big \rangle  ,
+\end{equation}
+
+where $\mathbf{F}_I(\mathbf{M}(\mathbf{r}))$ is the force acting on the coarse-grained site $I$ mapped from the atomistic configuration implied by the trial potential of the coarse-grained model and $\mathbf{f}_I(\mathbf{r})$ is the effective force acting the group of atoms associated with site $I$. The angular brackets denotes the atomistic canonical ensemble average, which is typically approximated using trajectories obtained in a simulation. The MS-CG method states, that the coarse-grained potential yielding the best approximation of the average net atomistic forces should be used and therefore $\chi^2 [\mathbf{F}]$ has to be minimized. Indeed, the functional $\chi^2 [\mathbf{F}]$ has a unique global minimum given by the actual many-body PMF. In practice, the coarse-grained force $F$ is expressed as a linear combination of basis functions leading to a coupled system of linear equations that can be solved directly. 
+
 \cite{noid2008multiscale}
 
 \subsubsection{Relative Entropy}
+
+Another variational approach is based on the relative entropy, also knwon as Kullback-Leibler divergence, which is widely used as a asymmetric distance metric between probability distributions. Applied to the coarse-graining problem, the relative entropy can be written 
+
+\begin{equation}
+  S_{\text{rel}} = \int p_{\text{AA}}(\mathbf{r}) \; \text{ln} \Big( \frac{p_{\text{AA}(\mathbf{r})}}{p_{\text{CG}}(\mathbf{M}(\mathbf{r}))} \Big) d\mathbf{r} + <S_{\text{map}}> ,
+\end{equation}
+
+where $S_{\text{map}}(\mathbf{R}) = \text{ln} \int \delta [\mathbf{M}(\mathbf{r}) - \mathbf{R}] d\mathbf{r}$ is the mapping entropy, which accounts for the degeneracy of the mapping $\mathbf{M}$, i.e. multiple atomistic configurations are mapped to the same coarse-grained configuration.
 
 \cite{shell2008relative}, \cite{chaimovich2010relative}, \cite{chaimovich2011coarse}
 
