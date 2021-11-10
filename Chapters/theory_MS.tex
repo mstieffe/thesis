@@ -305,19 +305,15 @@ where $I$ and $i$ are the indices of the CG bead and atom respectively, $\phi(I)
 
 Once the representation of the coarse-grained model is defined, the forcefield has to be determined. For this task, a wide range of different schemes have been developed and two schools of thoughts have been established, refered to as bottom-up and top-down approaches. Note, that while a distinction between those two approaches is instructive, a clear classification is not always possible as many coarse-graining schemes incorporate aspects both ideas.
 
-The bottom-up approach utilizes a more detailed model and aims at reproducing the thermodynamic and structural properties of the higher resolution system as closely as possible. In general, the choice of the underlying fine-grained model is not bound to a specific resolution. A common choice is to use the classical atomistic model as a basis. In this case, the accuracy of the coarse-grained model depends on the quality of the fine-grained model, as the atomistic model itself is a approximation of the quantum mechanical description. Once the high-resolution model is chosen, statistical mechanics provides a framework to rigorously derive the forcefield for the coarse-grained system. In theory, the many-body potential of mean force (PMF, see below) is central for this derivation. However, practical application of the PMF is provides significant challenges as it is extremely costly to evaluate for high dimensional systems.
+The bottom-up approach utilizes a more detailed model and aims at reproducing the thermodynamic and structural properties of the higher resolution system as closely as possible. In general, the choice of the underlying fine-grained model is not bound to a specific resolution. A common choice is to use the classical atomistic model as a basis. In this case, the accuracy of the coarse-grained model depends on the quality of the fine-grained model, as the atomistic model itself is a approximation of the quantum mechanical description. Once the high-resolution model is chosen, statistical mechanics provides a framework to rigorously derive the forcefield for the coarse-grained system. In theory, the many-body potential of mean force (PMF, see below) is central for this derivation.\cite{noid2013perspective} However, practical application of the PMF is provides significant challenges as it is extremely costly to evaluate for high dimensional systems.
 
-While the spirit of bottom-up approaches is related to inductive reasoning, i.e. generalizing from something that is more specific, the top-down approach can be associated with deduction, i.e. applying general rules to derive a conclusion. Top-down coarse-graining starts with universal physical principles or experimentally observed phenomenas that the model aims to reproduce. In general, top-down models are used to study the consequences of the rules incorporated in the model. In this regard, top-down models are often not chemically-specific, as the set of rules yielding a specific phenomena might not be unique. Furthermore, it is often not sufficient to link a single phenomena to a specific chemical compound, as a full range of properties have to be reproduced to characterize the compound with high confidence. In this sense, top-down models are often under-constrained.
+While the spirit of bottom-up approaches is related to inductive reasoning, i.e. generalizing from something that is more specific, the top-down approach can be associated with deduction, i.e. applying general rules to derive a conclusion. Top-down coarse-graining starts with universal physical principles or experimentally observed phenomenas that the model aims to reproduce. In general, top-down models are used to study the consequences of the rules incorporated in the model.\cite{schmid2009toy} In this regard, top-down models are often not chemically-specific, as the set of rules yielding a specific phenomena might not be unique.\cite{noid2013perspective} Furthermore, it is often not sufficient to link a single phenomena to a specific chemical compound, as a full range of properties have to be reproduced to characterize the compound with high confidence. In this sense, top-down models are often under-constrained.
 
 %While a coarse-grained model implies the existence of more fundamental, higher resolution model, the question of how the coarse-grained model is built upon this fine-grained 
 
-\cite{noid2013perspective}
-
-\cite{noid2008multiscale}
-
 \subsection{Consistency Criteria and the Many-Body Potential of Mean Force}
 
-Deriving the coarse-grained potential $U(\mathbf{R})$ for the coarse-grained model is the most challenging task. In the case of bottom-up coarse-graining, the potential $U(\mathbf{R})$ can theoretically be derived exactly from the fine-grained potential $u(\mathbf{r})$ and the mapping $\mathbf{M}(\mathbf{r})$. The underlying criteria for the derivation is called consistency criteria and states that the equilibrium joint probability density $p_{CG} (\mathbf{R}, \mathbf{P})$ in phase space of the coarse-grained coordinates $\mathbf{R}$ and momenta $\mathbf{P}$ have to match the implied atomistic probability density $p_{AA} (\mathbf{R}, \mathbf{P})$.\cite{noid2008multiscale} For simplicity, the following considerations are restricted to the configuration space, i.e. exluding momenta, such that the consistency criteria can be written as
+Deriving the coarse-grained potential $U_{\text{CG}}(\mathbf{R})$ for the coarse-grained model is the most challenging task. In the case of bottom-up coarse-graining, the potential $U(\mathbf{R})$ can theoretically be derived exactly from the fine-grained potential $U_{\text{AA}}(\mathbf{r})$ and the mapping $\mathbf{M}(\mathbf{r})$. The underlying criteria for the derivation is called consistency criteria and states that the equilibrium joint probability density $p_{CG} (\mathbf{R}, \mathbf{P})$ in phase space of the coarse-grained coordinates $\mathbf{R}$ and momenta $\mathbf{P}$ have to match the implied atomistic probability density $p_{AA} (\mathbf{R}, \mathbf{P})$.\cite{noid2008multiscale} For simplicity, the following considerations are restricted to the configuration space, i.e. exluding momenta, such that the consistency criteria can be written as
 
 \begin{equation}
 \label{consistency1}
@@ -328,14 +324,14 @@ where $p_{CG} (\mathbf{R})$ is is the equilibrium probability density for a conf
 
 \begin{equation}
 \label{consistency2}
-  p_{CG} (\mathbf{R}) \propto \text{exp} \Big[ - \frac{U(\mathbf{R})}{k_B T} \Big]
+  p_{CG} (\mathbf{R}) \propto \text{exp} \Big[ - \frac{U_{\text{CG}}(\mathbf{R})}{k_B T} \Big]
 \end{equation}
 
 and $p_{AA} (\mathbf{R})$ is the equilibrium probability density for a coarse-grained configuration $\mathbf{R}$ implied by the mapping $\mathbf{M}(\mathbf{r})$ expressed in terms of the fine-grained model
 
 \begin{equation}
 \label{consistency3}
-  p_{AA} (\mathbf{R}) \propto \mathcal{Z}(\mathbf{R}) := \int  \text{exp} \Big[ - \frac{u(\mathbf{r})}{k_B T} \Big] \delta(\mathbf{M}(\mathbf{r}) - \mathbf{R}) d\mathbf{r} .
+  p_{AA} (\mathbf{R}) \propto \mathcal{Z}(\mathbf{R}) := \int  \text{exp} \Big[ - \frac{U_{\text{AA}}(\mathbf{r})}{k_B T} \Big] \delta(\mathbf{M}(\mathbf{r}) - \mathbf{R}) d\mathbf{r} .
 \end{equation}
 
 Plugging Eq. \ref{consistency2} and \ref{consistency3} into \ref{consistency1} and reordering yields
@@ -351,69 +347,89 @@ Eq. \ref{mbpmf} defines the many-body PMF as a projection of the free energy fun
   F = U - TS = - k_B T \; \text{ln}(\mathcal{Z}) ,
 \end{equation}
 
-where $U$ is the internal energy, makes it clear that the many-body PMF is not a regular potential, as it contains both, energetic as well as entropic contributions. Moreover, as the name suggests, this potential generates the average atomistic forces associated with the atomistic configurations that map to the specific coarse-grained configuration. 
+where $U$ is the internal energy, makes it clear that the many-body PMF is not a regular potential, as it contains both, energetic as well as entropic contributions.\cite{noid2008multiscale} Moreover, as the name suggests, this potential generates the average atomistic forces associated with the atomistic configurations that map to the specific coarse-grained configuration.\cite{noid2013perspective} 
 
-Importantly, $U(\mathbf{R})$ typically introduces many-body interactions that can not be expressed with simple classical force fields as outlined in Sec. \ref{molecular_forcefield}. This is a direct consequence for integrating over degrees of freedom. Moreover, the many-body PMF is extremely high dimensional and therefore becomes infeasible to compute for most systems. For those reasons, a wide range of techniques have been developed to obtain a tractable approximation of the many-body PMF. 
+Importantly, $U(\mathbf{R})$ typically introduces many-body interactions that can not be expressed with simple classical force fields as outlined in Sec. \ref{molecular_forcefield}.\cite{noid2013perspective} This is a direct consequence for integrating over degrees of freedom. Moreover, the many-body PMF is extremely high dimensional and therefore becomes infeasible to compute for most systems.\cite{noid2013perspective} For those reasons, a wide range of techniques have been developed to obtain a tractable approximation of the many-body PMF (see below). 
 
-\cite{frenkel2001understanding}, \cite{noid2008multiscale}
 
-\subsection{Overview of Bottom-Up Techniques and Top-Down Force Fields}
+\subsection{Overview of Bottom-Up Approaches and Top-Down Force Fields}
+
+In this section, some popular bottom-up approaches to determine the coarse-grained potential are reviewed. Those approaches include structure based techniques, such as direct Boltzmann inversion (DBI) and iterative Boltzmann inversion (IBI), as well as variational approaches, like the multiscale coarse-graining approach (MS-CG) and the relative entropy (RE) framework. Moreover, two generic top-down force fields are presented, namely the Martini forcefield and the Kremer-Grest model.
 
 \subsubsection{Direct Boltzmann Inversion}
 
-The most simple approach to obtain an approximate coarse-grained potential is direct Boltzmann inversion (DBI). This approach aims at reproducing certain structural distributions computed from atomistic reference data that is mapped onto the coarse-grained degrees of freedom. The distribution functions for given interactions $\xi$ are denoted with $p_{\xi}(x)$, where $x$ is a scalar variable, such as pairwise distances, angles or dihedrals. The goal is then to find the corresponding potential $U_{\xi}$ that yields the desired distribution. Based on the assumption, that the distribution functions for different mechanical variables $x$ factorize, the probability distributions can be written as Boltzmann factors
+The most simple approach to obtain an approximate coarse-grained potential is direct Boltzmann inversion (DBI).\cite{tschop1998simulation} This approach aims at reproducing certain structural distributions computed from atomistic reference data that is mapped onto the coarse-grained degrees of freedom. The distribution functions for given interactions $\xi$ are denoted with $p_{\xi}(x)$, where $x$ is a scalar variable, such as pairwise distances, angles or dihedrals. The goal is then to find the corresponding potential $U_{\xi}$ that yields the desired distribution. Based on the assumption, that the distribution functions for different mechanical variables $x$ factorize, the probability distributions can be written as Boltzmann factors \cite{tschop1998simulation}
 
 \begin{equation}
   p_{\xi}(x) \propto \text{exp} \Big[ \frac{- U_{\xi}(x)}{k_B T} \Big] .
 \end{equation}
 
-In addition, the corresponding volume elements for each distribution has to be taken into account, i.e. the Jacobian element $J_{\xi}(x)$. The potential can then directly computed as 
+In addition, the corresponding volume elements for each distribution has to be taken into account, i.e. the Jacobian element $J_{\xi}(x)$.\cite{tschop1998simulation} The potential can then directly computed as 
 
 \begin{equation}
   U_{\xi} (x) = -k_b T \text{ln} \Big( \frac{p_{\xi}(x)}{J_{\xi}(x)} \Big) .
 \end{equation}
 
-Note, that factorizing the probability distributions is a very severe approximation. Therefore, this approach yields accurate results only for interactions that can be regarded as isolated in the coarse-grained model. However, in cases where the coupling between the interactions can not be ignored, DBI yields inaccurate potentials that do not corretly reproduce the sturctural distributions as important cross-correlations are not taken into account.
+Note, that factorizing the probability distributions is a very severe approximation. Therefore, this approach yields accurate results only for interactions that can be regarded as isolated in the coarse-grained model.\cite{noid2013perspective} However, in cases where the coupling between the interactions can not be ignored, DBI yields inaccurate potentials that do not corretly reproduce the sturctural distributions as important cross-correlations are not taken into account.
 
-\cite{tschop1998simulation}
 
 \subsubsection{Iterative Boltzmann Inversion}
 
-To improve the potentials derived with DBI, an iterative scheme can be applied. This scheme is called iterative Boltzmann inversion (IBI) and consists of the following steps: (1) Initial potentials are derived using DBI. (2) Use the derived coarse-grained potentials in a MD simulations to compute the corresponding structural distributions $p_{\xi}(x|U)$. (3) Update the coarse-grained potentials via
+To improve the potentials derived with DBI, an iterative scheme can be applied. This scheme is called iterative Boltzmann inversion (IBI) and consists of the following steps:\cite{muller2002coarse, reith2003deriving} (1) Initial potentials are derived using DBI. (2) Use the derived coarse-grained potentials in a MD simulations to compute the corresponding structural distributions $p_{\xi}(x|U)$. (3) Update the coarse-grained potentials via
 
 \begin{equation}
   U_{\xi, \text{new}} (x) = U_{\xi, \text{old}} (x) - k_B T \text{ln} \Big( \frac{p_{\xi}(x)}{p_{\xi}(x|U)} \Big) .
 \end{equation}
 
-Steps (2) and (3) are repeated until the potentials converge. Despite its simplicity, IBI has become very popular and is used especially for complex liquids and polymers. While IBI still treads every interaction $\xi$ seperatly, it implicitly accounts for correlations between the interactions through the iterative scheme. However, convergence of the potentials is not guaranteed.
-
-\cite{reith2003deriving}
+Steps (2) and (3) are repeated until the potentials converge. Despite its simplicity, IBI has become very popular and is used especially for complex liquids and polymers. While IBI still treads every interaction $\xi$ seperatly, it implicitly accounts for correlations between the interactions through the iterative scheme.\cite{noid2013perspective} However, convergence of the potentials is not guaranteed.\cite{noid2013perspective}
 
 \subsubsection{Multiscale Coarse-Graining}
 
-Beside approaches that focus on reproducing certain structural properties, variational approaches can be applied to find an approximation of the many-body PMF. A very early work in this field is the Multiscale coarse-graining (MS-CG) method, which introduces a force-matching functional 
+Beside approaches that focus on reproducing certain structural properties, variational approaches can be applied to find an approximation of the many-body PMF. A very early work in this field is the Multiscale coarse-graining (MS-CG) method, which introduces a force-matching functional \cite{ercolessi1994interatomic, izvekov2005multiscale, izvekov2005multiscale2}
 
 \begin{equation}
-  \chi^2 [\mathbf{F}] = \frac{1}{3N} \Big \langle \sum_{I=1}^N | \mathbf{F}_I(\mathbf{M}(\mathbf{r})) - \mathbf{f}_I(\mathbf{r}) |^2 \Big \rangle  ,
+  \chi^2 [\mathbf{F}] = \frac{1}{3N} \Big \langle \sum_{I=1}^N | \mathbf{F}_I(\mathbf{M}(\mathbf{r})) - \mathbf{f}_I(\mathbf{r}) |^2 \Big \rangle_{\text{AA}}  ,
 \end{equation}
 
-where $\mathbf{F}_I(\mathbf{M}(\mathbf{r}))$ is the force acting on the coarse-grained site $I$ mapped from the atomistic configuration implied by the trial potential of the coarse-grained model and $\mathbf{f}_I(\mathbf{r})$ is the effective force acting the group of atoms associated with site $I$. The angular brackets denotes the atomistic canonical ensemble average, which is typically approximated using trajectories obtained in a simulation. The MS-CG method states, that the coarse-grained potential yielding the best approximation of the average net atomistic forces should be used and therefore $\chi^2 [\mathbf{F}]$ has to be minimized. Indeed, the functional $\chi^2 [\mathbf{F}]$ has a unique global minimum given by the actual many-body PMF. In practice, the coarse-grained force $F$ is expressed as a linear combination of basis functions leading to a coupled system of linear equations that can be solved directly. 
-
-\cite{noid2008multiscale}
+where $\mathbf{F}_I(\mathbf{M}(\mathbf{r}))$ is the force acting on the coarse-grained site $I$ mapped from the atomistic configuration implied by the trial potential of the coarse-grained model and $\mathbf{f}_I(\mathbf{r})$ is the net force acting the group of atoms associated with site $I$. The angular brackets with subscript \textit{AA} denotes the atomistic canonical ensemble average, which is typically approximated using trajectories obtained in a simulation. The MS-CG method states, that the coarse-grained potential yielding the best approximation of the average net atomistic forces should be used and therefore $\chi^2 [\mathbf{F}]$ has to be minimized. Indeed, the functional $\chi^2 [\mathbf{F}]$ has a unique global minimum given by the actual many-body PMF.\cite{noid2013perspective} In practice, the coarse-grained force $F$ is expressed as a linear combination of basis functions leading to a coupled system of linear equations that can be solved directly.\cite{noid2013perspective} 
 
 \subsubsection{Relative Entropy}
 
-Another variational approach is based on the relative entropy, also knwon as Kullback-Leibler divergence, which is widely used as a asymmetric distance metric between probability distributions. Applied to the coarse-graining problem, the relative entropy can be written 
+Another variational approach is based on the relative entropy, also knwon as Kullback-Leibler divergence, which is widely used as a asymmetric distance metric between probability distributions.\cite{kullback1951information, shell2008relative, chaimovich2010relative, chaimovich2011coarse} Applied to the coarse-graining problem, the relative entropy can be written 
 
 \begin{equation}
-  S_{\text{rel}} = \int p_{\text{AA}}(\mathbf{r}) \; \text{ln} \Big( \frac{p_{\text{AA}(\mathbf{r})}}{p_{\text{CG}}(\mathbf{M}(\mathbf{r}))} \Big) d\mathbf{r} + <S_{\text{map}}> ,
+\label{relative_entropy}
+  S_{\text{rel}} = \int p_{\text{AA}}(\mathbf{r}) \; \text{ln} \Big( \frac{p_{\text{AA}(\mathbf{r})}}{p_{\text{CG}}(\mathbf{M}(\mathbf{r}))} \Big) d\mathbf{r} + \langle S_{\text{map}} \rangle_{\text{AA}} ,
 \end{equation}
 
-where $S_{\text{map}}(\mathbf{R}) = \text{ln} \int \delta [\mathbf{M}(\mathbf{r}) - \mathbf{R}] d\mathbf{r}$ is the mapping entropy, which accounts for the degeneracy of the mapping $\mathbf{M}$, i.e. multiple atomistic configurations are mapped to the same coarse-grained configuration.
+where
 
-\cite{shell2008relative}, \cite{chaimovich2010relative}, \cite{chaimovich2011coarse}
+\begin{equation}
+  S_{\text{map}}(\mathbf{R}) = \text{ln} \int \delta [\mathbf{M}(\mathbf{r}) - \mathbf{R}] d\mathbf{r} 
+\end{equation}
+
+is the mapping entropy, which accounts for the degeneracy of the mapping $\mathbf{M}$, i.e. a single coarse-grained configuration corresponds to multiple atomistic configurations. The relative entropy $S_{\text{rel}}$ can be interpreted as a measure for the loss of information when changing from an atomistic to a coarse-grained description.\cite{shell2008relative} Moreover, it is related to many different coarse-graining errors and vanishes only if $p_{\text{CG}}(\mathbf{r}) \propto p_{\text{AA}}(\mathbf{r})$.\cite{chaimovich2010relative} 
+
+Inserting the distributions known for the canonical ensemble, i.e. $p_{\text{CG}}(\mathbf{R}) = \mathcal{Z}_{\text{CG}}^{-1} \text{exp} \Big[- \frac{U_{\text{CG}}(\mathbf{R})}{k_B T} \Big]$ and $p_{\text{AA}}(\mathbf{r}) = \mathcal{Z}_{\text{AA}}^{-1} \text{exp} \Big[- \frac{U_{\text{AA}}(\mathbf{r})}{k_B T} \Big]$, into Eq. \ref{relative_entropy} yields
+
+\begin{equation}
+  S_{\text{rel}} = \frac{\langle U_{\text{CG}} - U_{\text{AA}} \rangle_{\text{AA}}}{k_B T} - \frac{F_{\text{CG}} - F_{\text{AA}}}{k_B T} + \langle S_{\text{map}} \rangle_{\text{AA}} ,
+\end{equation}
+
+where $F = - k_b T \; \text{ln}(\mathcal{Z})$ is the free energy. In order to optimize the parameters $\lambda$ of the coarse-grained potential $U_{\text{CG}}$ the derivative of the relative entropy can be used
+
+\begin{equation}
+  \frac{\partial S_{\text{rel}}}{\partial \lambda} = \frac{1}{k_B T} \Big[ \Big \langle \frac{\partial U_{\text{CG}}}{\partial \lambda} \Big \rangle_{\text{AA}} -\Big \langle \frac{\partial U_{\text{CG}}}{\partial \lambda} \Big \rangle_{\text{CG}} \Big] ,
+\end{equation}
+
+i.e. the derivatives of $U_{\text{CG}}$ with respect to its parameters have to average to the same value for both, the atomistic and the coarse-grained ensemble.\cite{shell2008relative} Importantly, this approach reproduces the expectation values for every observable, such as distances or angles, that are included in the coarse-grained potential.\cite{shell2008relative} Therefore, the relative entropy framework can be used to generate potentials that capture the correct structural distributions. Numerical minimization of the relative entropy is typically achieved using advanced algorithms, such as the Newton-Raphson method.\cite{shell2008relative}
 
 \subsubsection{Martini Force Field}
+
+The Martini force field is a generic coarse-grained model for a wide range of soft matter systems. It was developed with an emphasize on biomolecules and its various applications include lipid membranes, proteins, sugars and nucleotides. The parametrization of the martini force field incorporates both coarse-graining philosophies, a top-down approach for the non-bonded interactions and a bottom-up approach for the bonded interactions. While the nonbonded parameters of the model are tuned to reproduce experimental partitioning free energies of water-alkane mixtures, the bonded interactions are optimized to capture the correct conformational distributions of atomistic reference data. 
+
+The model introduces four main building blocks: 
+
 
 \cite{marrink2007martini}, \cite{marrink2013perspective}
 
