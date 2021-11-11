@@ -426,14 +426,39 @@ i.e. the derivatives of $U_{\text{CG}}$ with respect to its parameters have to a
 
 \subsubsection{Martini Force Field}
 
-The Martini force field is a generic coarse-grained model for a wide range of soft matter systems. It was developed with an emphasize on biomolecules and its various applications include lipid membranes, proteins, sugars and nucleotides. The parametrization of the martini force field incorporates both coarse-graining philosophies, a top-down approach for the non-bonded interactions and a bottom-up approach for the bonded interactions. While the nonbonded parameters of the model are tuned to reproduce experimental partitioning free energies of water-alkane mixtures, the bonded interactions are optimized to capture the correct conformational distributions of atomistic reference data. 
+The Martini force field is a generic coarse-grained potential for a wide range of soft matter systems. It was developed with an emphasize on biomolecules and its various applications include lipid membranes, proteins, sugars and nucleotides.\cite{marrink2007martini, monticelli2008martini, lopez2009martini, uusitalo2015martini} The parametrization of the martini force field incorporates both coarse-graining philosophies, a top-down approach for the non-bonded interactions and a bottom-up approach for the bonded interactions. While the nonbonded parameters of the model are tuned to reproduce experimental partitioning free energies of water-alkane mixtures, the bonded interactions are optimized to capture the correct conformational distributions of atomistic reference data.\cite{marrink2013perspective} 
 
-The model introduces four main building blocks: 
+Central to the to the Martini model is a robust transferablity across soft matter systems. For this reason, the model is based on modular building blocks, i e. coarse-grained beads, and introduces rules for the mapping from groups of atoms to the beads. On average, four heavy atoms and their associated hydrogens are represented by a single coarse-grained site. The four main building blocks are denoted with charged (Q), polar (P), nonpolar(N), and apolar (C). Each of the main bead types have further subtypes distinguishing either their hydrogen bonding capability (Q and N types) or their degree of polarity (P and C types). The assignment of the specific bead types is based on the hydrophobicity, i.e. the water/organic partition free energy, of the corresponding group of atoms.
 
-
-\cite{marrink2007martini}, \cite{marrink2013perspective}
+Despite its wide use, the Martini model also has its limitations linked to its ambition of being broadly transferable. A major drawback of the Martini model is a less accurate reproduction of structural features. For example, the model does not include size-dependent Lennard-Jones parameters which may lead to artifacts such as increased barriers in dimerization profiles.\cite{alessandri2019pitfalls}
 
 \subsubsection{Kremer-Grest Polymer Model}
+
+The Kremer-Grest (KG) model is top-down model widely used to study generic polymer properties. The model represents polymers as chains of beads connected via non-linear springs. The spring potential is tuned such that crossing of two polymer chains is avoided in order to correctly simulate the dynamics long-chain polymer melts, in especially entanglement effects.
+More specifically, the potential for bonded beads is given by the finite-extensible-nonlinear spring (FENE) potential
+
+\begin{equation}
+  U_{\text{FENE}}(r) = -15 k_B T \Big( \frac{R}{\sigma} \Big)^2 \text{ln} \Big[ 1 - \Big(\frac{r}{R}\Big)^2 \Big] ,
+\end{equation}
+
+where $r$ is the distance between the two bonded beads, $\sigma$ is the bead diameter and $R$ defines the distance where the potential divergences. A typical choice is to set $R = 1.5 \sigma$. Additionally, the beads interact through a truncated and shifted Lennard-Jones potential, which is purely repulsive:
+
+\begin{equation}
+  U_{\text{WCA}}(r) = \begin{cases}
+    4 k_B T \Big[ \Big( \frac{\sigma}{r} \Big)^{-12} - \frac{\sigma}{r} \Big)^{-6} + \frac{1}{4} \Big] \;\; , \;\; \text{if} \; r < 2^{1/6} \sigma \\
+    0 \;\; , \;\; \text{otherwise}
+  \end{cases} ,
+\end{equation}
+
+In order to vary the stiffness of the chains, an additional bending potential can be introduced
+
+\begin{equation}
+  U_{\text{bend}}(\Theta) = \kappa k_B T (1 - \text{cos}(\Theta)) , 
+\end{equation}
+
+where $\Theta$ is the the bond angle and $\kappa$ defines the stiffness.
+
+While the KG model is a generic model to study universal phenomenas of polymers, the stiffness can be used to relate the model to specific polymer species. 
 
 \cite{kremer1990dynamics}, \cite{grest1986molecular}, \cite{faller1999local}, \cite{everaers2020kremer}
 
