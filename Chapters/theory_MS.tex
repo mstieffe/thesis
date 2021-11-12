@@ -434,7 +434,7 @@ Despite its wide use, the Martini model also has its limitations linked to its a
 
 \subsubsection{Kremer-Grest Polymer Model}
 
-The Kremer-Grest (KG) model is top-down model widely used to study generic polymer properties. The model represents polymers as chains of beads connected via non-linear springs. The spring potential is tuned such that crossing of two polymer chains is avoided in order to correctly simulate the dynamics long-chain polymer melts, in especially entanglement effects.
+The Kremer-Grest (KG) model is top-down model widely used to study generic polymer properties.\cite{kremer1990dynamics, grest1986molecular} The model represents polymers as chains of beads connected via non-linear springs. The spring potential is tuned such that crossing of two polymer chains is avoided in order to correctly simulate the dynamics of polymer melts, in especially entanglement effects of long chains.
 More specifically, the potential for bonded beads is given by the finite-extensible-nonlinear spring (FENE) potential
 
 \begin{equation}
@@ -456,17 +456,17 @@ In order to vary the stiffness of the chains, an additional bending potential ca
   U_{\text{bend}}(\Theta) = \kappa k_B T (1 - \text{cos}(\Theta)) , 
 \end{equation}
 
-where $\Theta$ is the the bond angle and $\kappa$ defines the stiffness.
+where $\Theta$ is the the bond angle and $\kappa$ defines the stiffness.\cite{faller1999local}
 
-While the KG model is a generic model to study universal phenomenas of polymers, the stiffness can be used to relate the model to specific polymer species. 
-
-\cite{kremer1990dynamics}, \cite{grest1986molecular}, \cite{faller1999local}, \cite{everaers2020kremer}
+While the KG model is a generic model to study universal phenomenas of polymer melts, the stiffness of the chains can be used to relate the model to real polymers.\cite{everaers2020kremer, svaneborg2020characteristic} To this end, simulated polymer melts can be linked to commodity polymers via their Kuhn length, which is the scale indicating the crossover from a chemistry-specific to a universal random-walk like behaviour.
 
 % -----------------------------------
 %   Backmapping
 % -----------------------------------
 
 \section{Backmapping}
+
+Reducing the resolution is just one side of the MS philosophie that allows to adjust the focus to larger scales. To close the loop, a reverse-mapping is required that allows to go the other direction as well. Such a reverse-mapping, also refered to as \textit{Backmapping}, can be regarded as a magnifying glass to zoom in to the molecular system. To this end, the backmapping scheme has to reintroduce the missing details that have not been captured in the coarse-grained model.
 
 \subsection{The Challenges of Reintroducing Degrees of Freedom}
 
