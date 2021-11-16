@@ -296,10 +296,10 @@ The basis of a coarse-grained model is the representation of the particles captu
 It is often required to not only specify the representation but also define a concrete mapping for the coordinates, i.e. a function $\mathbf{M}$ of the atomistic coordinates $\mathbf{r}$ to the coordinates of the CG beads $\mathbf{R}$. Typically, a linear mapping is chosen,
 
 \begin{equation}
-  \mathbf{R}_I = \sum_{i \in \phi(I)} c_{iI} \mathbf{r}_i ,
+  \mathbf{R}_I = \mathbf{M}_{I}(\mathbf{r}) = \sum_{i \in \phi(I)} b_{iI} \mathbf{r}_i 
 \end{equation}
 
-where $I$ and $i$ are the indices of the CG bead and atom respectively, $\phi(I)$ is the set of indices of atoms the CG bead $I$ corresponds to and $c_{iI}$ are coefficients of the mapping. In many cases, the coordinate mapping is chosen such that it reflects the center of mass geometry of the group of atoms. 
+where $I$ and $i$ are the indices of the CG bead and atom respectively, $\phi(I)$ is the set of indices of atoms the CG bead $I$ corresponds to and $b_{iI}$ are coefficients of the mapping. In many cases, the coordinate mapping is chosen such that it reflects the center of mass geometry of the group of atoms. 
 
 \subsection{Top-down vs Bottom-up}
 
@@ -468,7 +468,7 @@ While the KG model is a generic model to study universal phenomenas of polymer m
 
 Reducing the resolution is just one side of the MS philosophie. In order to close the loop, a reverse-mapping that allows to go the other direction is required as well. Such a reverse-mapping, also refered to as \textit{Backmapping}, can be regarded as a magnifying glass to zoom in to the molecular system.
 
-Combining coarse-graining with a reverse-mapping procedure unlocks the true power of MS modeling, as it provides a strategy to take the best of both worlds: Coarse-graining can be used to obtain trajectories of long time scale and large length scale processes that would have been to costly and time consuming to perform using a higher resolution model. However, the coarse-grained model lacks the accuracy and details provided in an atomistic simulation. Those atomistic details are often required for one or more of the following reasons: (1) to rigorously analyze the simulation results on a local scale, (2) to enable a direct comparison to experimental data, for example obtained with spectroscopic methods, (3) to serve as starting point for further simulations, or (4) to asses stabilities and accuracy of obtained coarse-grained structures in order to improve the coarse-grained model.\cite{hess2006long, shimizu2018reconstruction, brocos2012multiscale, stansfeld2011coarse, pandey2014multiscale, pezeshkian2020backmapping, deshmukh2016water} 
+Combining coarse-graining with a reverse-mapping procedure unlocks the true power of MS modeling, as it provides a strategy to take the best of both worlds: Coarse-graining can be used to obtain trajectories of long time scale and large length scale processes that would have been to costly and time consuming to perform using a higher resolution model. However, the coarse-grained model lacks the accuracy and details provided in an atomistic simulation. Those atomistic details are often required for one or more of the following reasons: (1) to rigorously analyze the simulation results on a local scale, (2) to enable a direct comparison to experimental data, for example obtained with spectroscopic methods, (3) to serve as starting point for further simulations, or (4) to asses the stability and accuracy of the obtained coarse-grained structures in order to improve the coarse-grained model.\cite{hess2006long, shimizu2018reconstruction, brocos2012multiscale, stansfeld2011coarse, pandey2014multiscale, pezeshkian2020backmapping, deshmukh2016water} 
 Backmapping can circumenvent these limitations by efficiently reintroducing details along the coarse-grained degrees of freedom. Typically, the large scale behaviour of the system is already captured correctly by the coarse-grained model and therefore reintroducing the missing degrees of freedom becomes feasable as they have to be equilibrated only locally. Hence, connecting a coarse-grained model with a backmapping scheme is an efficient approach to yield well equlibrated, high-resolution molecular structures and trajectories for long time and large length scales. 
 
 %protein-DNA complexes. asses stabilities and accuracy of structures sampled in coarse-grained model. Use backmapped structures for further AA MD simulation. Need atomistic details to compare with experiment. \cite{shimizu2018reconstruction}
@@ -482,43 +482,76 @@ Backmapping can circumenvent these limitations by efficiently reintroducing deta
 
 \subsection{The Challenges of Reintroducing Degrees of Freedom}
 
-While mapping from a higher to a lower resolution is typically straightforward, the opposite direction is more challenging. Formally, let $\{A_{I} = (\mathbf{R}_I, C_I) | I = 1, \dots, N \}$ denote the set of $N$ coarse-grained beads. Each bead has position $\mathbf{R}_I$ and an associated list of features $A_I$. The features $A_I$ can include various attributes, such as the chemical element, the connectivity or associated force field parameters. Similarly, atomistic structures are denoted as the set of $n$ atoms $\{a_{I} = (\mathbf{r}_i, c_i) | i = 1, \dots, n \}$, with position $\mathbf{r}_i$ and attributes $c_i$. A backmapping function $\phi$ takes the coarse-grained information $(\mathbf{A}_1, \dots, \mathbf{A}_N)$ as well as the desired atomistic attributes $(\mathbf{c}_1, \dots, \mathbf{c}_n)$ as input and generates a set of coordinates $(\mathbf{r}_1, \dots, \mathbf{r}_n)$,
+While mapping from a higher to a lower resolution is typically straightforward, the opposite direction is more challenging. Formally, let $\{\mathbf{A}_{I} = (\mathbf{R}_I, \mathbf{C}_I) | I = 1, \dots, N \}$ denote the set of $N$ coarse-grained beads. Each bead has position $\mathbf{R}_I$ and an associated type $\mathbf{C}_I$. The type $\mathbf{C}_I$ reflects various attributes, such as the bead mass, the connectivity or associated force field parameters. Similarly, let $\{\mathbf{a}_{I} = (\mathbf{r}_i, \mathbf{c}_i) | i = 1, \dots, n \}$ denote the set of $n$ atoms, with position $\mathbf{r}_i$ and types $\mathbf{c}_i$.
+ 
+A backmapping function $\phi$ takes the coarse-grained information $\mathbf{A} = (\mathbf{A}_1, \dots, \mathbf{A}_N)$ as well as the desired atom types $ \mathbf{c} = (\mathbf{c}_1, \dots, \mathbf{c}_n)$ as input and generates a set of coordinates $\mathbf{r} = (\mathbf{r}_1, \dots, \mathbf{r}_n)$,
 
 \begin{equation}
-  \phi \Big( (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) = (\mathbf{r}_1, \dots, \mathbf{r}_n)
+  %\phi \Big( (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) = (\mathbf{r}_1, \dots, \mathbf{r}_n) .
+  \phi ( \mathbf{A}, \mathbf{c} ) = \mathbf{r}.
 \end{equation}
 
-Deriving the function $\phi$ is not a trivial task, as it is constrained by two important aspects. First of all, the mapping has to be consistent, i.e. the missing degrees of freedom have to be reinserted along the coarse-grained degrees of freedom. In other words, applying the coarse-grained mapping on the backmapped structure has to yield the original coarse-grained structure,
+Deriving the function $\phi$ is not a trivial task, as it is constrained by two important aspects. First of all, the mapping has to be consistent, i.e. the missing degrees of freedom have to be reinserted along the coarse-grained degrees of freedom. In other words, applying the coarse-grained mapping $\mathbf{M}$ to the backmapped structure has to yield the original coarse-grained structure,
 
 \begin{equation}
-  \mathbf{M} \Big( \phi \Big( (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) \Big) = \mathbf{R} .
+  %\mathbf{M} \Big( \phi \Big( (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) \Big) = \mathbf{R} .
+  \mathbf{M} ( \phi  (\mathbf{A}, \mathbf{c}) ) = \mathbf{R}.
 \end{equation}
 
+Secondly, the mapping is not unique, since the reduced resolution implies that many atomistic structures can map to the same coarse-grained configuration. As a consequence, a single coarse-grained structure $\mathbf{R}$ will correspond to an ensemble of atomistic microstates $\{\mathbf{r} | \mathbf{M}(\mathbf{r}) = \mathbf{R}\}$. Therefore, strictly speaking, the coarse-grained mapping is not invertable. 
 
-Secondly, the mapping is not unique, since the reduced resolution implies that many atomistic structures can map to the same coarse-grained configuration. As a consequence, a single coarse-grained structure $\mathbf{R}$ will correspond to an ensemble of atomistic microstates $\{\mathbf{r} | \mathbf{M}(\mathbf{r}) = \mathbf{R}\}$. Therefore, strictly speaking, the coarse-grained mapping is not invertable. In this regard, the backmapping procedure should yield an atomistic microstate drawn from the probability distribution of atomistic microstates, given the CG configuration. Hence, the backmapping problem has to be expressed as a joint conditional probablity distribution
+To take the aforementioned aspects into account, the backmapping problem has to be expressed as a joint conditional probablity distribution $p_{\phi} ( \mathbf{r} | \mathbf{A}, \mathbf{c})$ that assigns a statistical weight to each atomistic microstate given the coarse-grained information as well as the atomistic attributes. Ideally, the coarse-grained model generates the Boltzmann distribution expressed in the coarse-grained degrees of freedom, i.e. the many-body PMF is reproduced perfectly. Consequently, an ideal backmapping scheme also has to reinsert atomistic details with the correct statistical weight, i.e.
 
 \begin{equation}
-  p_{\phi}\Big( (\mathbf{r}_1, \dots, \mathbf{r}_n) \Big | (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) ,
+  p_{\phi} ( \mathbf{r} | \mathbf{A}, \mathbf{c}) = \begin{cases}
+    \propto \text{exp} \Big( - \frac{U(\mathbf{r})}{k_B T} \Big) \;\;\;\; & \text{if} \; \tilde{\mathbf{M}}(\mathbf{r}, \mathbf{c}) = (\mathbf{R}, \mathbf{C}) \\
+    0 \;\;\;\; & \text{if} \; \tilde{\mathbf{M}}(\mathbf{r}, \mathbf{c}) \neq (\mathbf{R}, \mathbf{C})
+  \end{cases}.
 \end{equation}
 
-that assigns a statistical weight to each atomistic microstate given the coarse-grained information as well as the atomistic attributes. Ideally, the coarse-grained model generates the Boltzmann distribution expressed in the coarse-grained degrees of freedom, i.e. the many-body PMF is reproduced perfectly. Consequently, an ideal backmapping scheme also has to reinsert atomistic details with the correct statistical weight, i.e.
+Here, $\tilde{\mathbf{M}}$ is used as an extended coarse-graining mapping function that includes both, the coordinates as well as the types of the atoms and beads, respectively, 
 
 \begin{equation}
-  p_{\phi}\Big( (\mathbf{r}_1, \dots, \mathbf{r}_n) \Big | (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) = \begin{cases}
-    \propto \text{exp} \Big( - \frac{E(\mathbf{r})}{k_B T} \Big) \;\;\;\; & \text{if} \; \mathbf{M}(\mathbf{r}) = \mathbf{R} \\
-    0 \;\;\;\; & \text{if} \; \mathbf{M}(\mathbf{r}) \neq \mathbf{R}
-  \end{cases} 
+  \tilde{\mathbf{M}}(\mathbf{r}, c) = (\mathbf{R}, C),
 \end{equation}
+
+where $c = (c_1, \dots, c_n)$ denotes the $n$ atom types and $C =(C_1, \dots, C_N)$ denots the $N$ bead types.
+
+%\begin{equation}
+%  p_{\phi}\Big( (\mathbf{r}_1, \dots, \mathbf{r}_n) \Big | (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) = \begin{cases}
+%    \propto \text{exp} \Big( - \frac{E(\mathbf{r})}{k_B T} \Big) \;\;\;\; & \text{if} \; \mathbf{M}(\mathbf{r}) = \mathbf{R} \\
+%    0 \;\;\;\; & \text{if} \; \mathbf{M}(\mathbf{r}) \neq \mathbf{R}
+%  \end{cases} 
+%\end{equation}
+
+%\begin{equation}
+  %p_{\phi}\Big( (\mathbf{r}_1, \dots, \mathbf{r}_n) \Big | (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) ,
+  %p_{\phi} ( \mathbf{r} | \mathbf{A}, \mathbf{c}) ,
+%\end{equation}
 
 \subsection{Overview of Existing Approaches}
 
-\subsubsection{Generic Approaches}
+In the following, some popular backmapping approaches are reviewed. 
 
-\cite{rzepiela2010reconstruction}, \cite{wassenaar2014going}
 
 \subsubsection{Fragment-based Approaches}
 
+Most backmapping approaches follow a similar procedure: At first, an initial atomistic structure is proposed. In the case of fragment-based backmapping, several trial atomistic fragments corresponding to a single or a small set of beads are superimposed onto the coarse-grained sites. Typically, rigid rotation and translation is used to optimize the orientation of the given fragment with respect to some geometric or energetic properties. The trial fragments are usually taken from a presampled library that has to be simulated beforehand. The resulting initial atomistic structure is most likely not representative for the Boltzmann distribution, as a simple projection of fragments onto the coarse-grained sites typically leads to overlaps between reconstructed atoms and distorted bonded structures. It is therefore necessarry to relaxe the initial structure by means of energy minimization based on the atomistic forcefield. Subsequently, the relaxed structure has to be equilibrated using MD simulation. In some cases where the overall equilibration and diffusion is rather slow compared to the equilibration of local features the equilibration process is straight forward. In other cases, restraints have to be introduced to prevent the reconstructed atoms to drift to far away from the center of the coarse-grained site. Therefore, an additional potential is applied that couples the atomistic degrees of freedom to the coarse-grained degrees of freedom
+
+\begin{equation}
+  U_{\text{restr}}(\mathbf{r}, \mathbf{R}) = b (\mathbf{M}(\mathbf{r}) - \mathbf{R})^2 ,
+\end{equation}
+
+where the prefactor $b$ is used to scale the restaining potaetial.
+
 \cite{peter2009multiscale}, \cite{zhang2019hierarchical}, \cite{hess2006long}, \cite{brasiello2012multiscale}
+
+\subsubsection{Generic Approaches}
+
+Generic backmapping approach are similar to the fragment-based approach, but differ in the way the initial atomistic structure is derived. Generic schemes do not rely on presampled fragments but project the atomistic degrees of freedom onto the coarse-grained structure using general rules. In the most basic version, the atoms are randomly placed close to their corresponding coarse-grained site. More sophisticated approaches rely on geometric rules to place the atoms. The resulting initial atomistic structure is typically even more distorted as in the fragment-based approach. Therefore, the subsequent energy minimization and equilibration procedures have to be performed more carefully and typically involve multiple stages where the interaction potentials are gradually switched on.
+
+\cite{rzepiela2010reconstruction}, \cite{wassenaar2014going}
+
 
 \subsubsection{Machine Laarning Approaches}
 
