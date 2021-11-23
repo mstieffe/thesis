@@ -162,14 +162,14 @@ While the afore mentioned challenges are examples for the curse of dimensionalit
 
 \subsection{Reducing the Dimensionality: Latent Variables}
 
-One branch of ML algorithms is designated to reduce the dimensionality of a data set. Such models are refered to as latent variable models (LVM).
-The key assumption of LVMs is that real-world data is generally structured and therefore it can be described through a lower-dimensional distribution $\mathcal{Z}$ supported in $\mathbb{R}^d$. This assumption is known as the manifold hypothesis, which states that high-dimensional data $x \in \mathbb{R}^D$ tends to lie on a low-dimensional manifold $\mathcal{M} \subset \mathbb{R}^D$ embedded in the high-dimensional space $\mathbb{R}^D$.\cite{fefferman2016testing} Therefore, real-world data is assumed to have an intrinsic lower dimensionality $d < D$ and our oberservations $x$ can be explained through some hidden variables $z \in \mathbb{R}^d$. 
+One branch of ML algorithms is designated to reduce the dimensionality of a data set by mapping it to a lower dimensional representation.\cite{van2009dimensionality, ge2018process} Such models are refered to as latent variable models (LVM).
+The key assumption of LVMs is that real-world data is generally structured, which implies that it can be described through a lower-dimensional distribution $\mathcal{Z}$ supported in $\mathbb{R}^d$. This assumption is known as the manifold hypothesis, which states that high-dimensional data $x \in \mathbb{R}^D$ tends to lie on a low-dimensional manifold $\mathcal{M} \subset \mathbb{R}^D$ embedded in the high-dimensional space $\mathbb{R}^D$.\cite{fefferman2016testing} Therefore, real-world data is assumed to have an intrinsic lower dimensionality $d < D$ and our oberservations $x$ can be explained through some hidden variables $z \in \mathbb{R}^d$. 
 
-The attentive reader will note a strong similarity to the concept of coarse-graining explained in Sec. \ref{}. 
+In general, the point $z$ that maps to a point $x$ is unknown and therefore $z$ is refered to as a latent variable and $\mathcal{Z}$ is the latent distribution. The high-dimensional space $\mathbb{R}^D$ that supports the actual distribution $\mathcal{X}$ is often called ambient space and the low-dimensional space $\mathbb{R}^d$ that supports the latent distribution $\mathcal{Z}$ is refered to as the latent space. Note that the actual dimension $d$ of the latent space is often unknown. In many cases, a tractable distribution, like a Gaussian distribution, is assumed to resemble the latent distribution.
 
-In general, the point $z$ that maps to a point $x$ is unknown and therefore $z$ is refered to as a latent variable and $\mathcal{Z}$ is the latent distribution. The high-dimensional space $\mathbb{R}^D$ that supports the actual distribution $\mathcal{X}$ is often called ambient space and the low-dimensional space $\mathbb{R}^d$ that supports the latent distribution $\mathcal{Z}$ is refered to as the latent space. Note that the actual dimension $d$ of the latent space is often unknown. It is common to assume a tractable distribution like a Gaussian distribution to resemble the latent distribution.
+The attentive reader will note a strong similarity to the concept of coarse-graining explained in Sec. \ref{}. Indeed, coarse-grained models and LVM follow the same philosophy: Both aim at reducing the complexity by mapping a high dimensional representation to a lower dimensional, simpler representation that still captures the essential features while unimportant features, such as noise or redundant features, are removed. While coarse-grained representations are frequently based on physical and chemical intuition, ML techniques have been used recently to optimize the mapping.\cite{chakraborty2018encoding, webb2018graph, wang2019coarse}
 
-A common idea of LVM is to decompose the generative process for new samples $x' \sim \mathcal{X}$ into two steps: (1) Draw a sample $z \sim \mathcal{Z}$ from the latent distribution with probability $p_{\mathcal{Z}}(z)$. (2) Introduce a parametrized mapping function 
+LVMs are often used for the inverse task as well, i.e. to generate a new instance of $\mathbf{x}' \sim \mathcal{X}$. For this purpose, the generative process is decomposed into two steps: (1) Draw a sample $z \sim \mathcal{Z}$ from the latent distribution with probability $p_{\mathcal{Z}}(z)$. (2) Introduce a parametrized mapping function 
 
 \begin{equation}
   g_{\Theta}: \mathbb{R}^d \rightarrow \mathbb{R}^D ,
@@ -177,67 +177,63 @@ A common idea of LVM is to decompose the generative process for new samples $x' 
 
 where $\Theta$ are the parameters of the mapping, that transforms points from $\mathcal{Z}$ to the (intractable) distribution $\mathcal{X}$. The mapped distribution is denoted with $g(\mathcal{Z})$ and the overall goal is that the mapped distribution resembles the actual data distribution $g(\mathcal{Z}) \approx \mathcal{X}$ .
 
-Note that the applied latent distribution $\mathcal{Z}$ might be very different from the actual manifold the data resides. Therefore, the transformation $g_{\Theta}$ has to be highly nonlinear to be able to deform the latent distribution $\mathcal{Z}$ such that it resembles the distribution $\mathcal{X}$. In general, deriving $g_{\Theta}$ from first principled is infeasible for most real-world applications. This motivates the use of DNNs for the transformation, as they are highly nonlinear and have the ability to approximate functions in high dimensions effeciently. 
+Note, that the applied latent distribution $\mathcal{Z}$ can differ signficantly from the actual manifold the data resides. Therefore, the transformation $g_{\Theta}$ has to be highly nonlinear to be able to deform the latent distribution $\mathcal{Z}$ such that it resembles the distribution $\mathcal{X}$.\cite{lopez2020deep} In general, deriving $g_{\Theta}$ from first principled is infeasible for most real-world applications. This motivates the use of DNNs for the transformation, as they are highly nonlinear and have the ability to approximate functions in high dimensions efficiently.\cite{hornik1989multilayer, cybenko1992approximation, naitzat2020topology}
 
 
 
-\section{Neural Networks}
+\section{Artificial Neural Networks}
 
-ANNs are inspired by nervous systems, such as our human brain. A nervous system is a information processing system capable to perform extremely complex tasks: It coordinates incoming signals, such as information about the environment captured by sensory cells, and creates actions accordingly. The ability to organize themself and learn from experience distinguishes them from conventionel computers and has led to the development of artificial models of its biological counterpart.
+\textit{Artificial neural networks} (ANNs) are inspired by nervous systems, such as our human brain. A nervous system processes information and is capable to perform extremely complex tasks: It coordinates incoming signals, such as information about the environment captured by sensory cells, and creates actions accordingly. Their ability to organize themself and learn from experience distinguishes them from conventional computers and has motivated researchers to develop artificial models of its biological counterpart.
 
-The history of ANNs began in 1943 with the creation of the first computational model of a neural network by Warren McCulloch and Walter Pitts based on algorithms called threshold logits. The next milestone was taken by F. Rosenblatt in 1958 with the invention of the perceptron: A two-layer neural network able to perform pattern recognition. The publication of the book 'perceptron' by Marvin Minsky and Seymour Papert in 1969 lead to the AI winter and research in the field stagnated as they stated that basic two-layer networks are incapable of solving the exclusive or circuit (non-linearly separable data). Larger networks were needed to solve the problem but could not be realized because of a lack of computational processing power and efficient algorithms at that time. Fortunately, the research field was not completely abandoned and ANNS were revived in the early 1980s due to the increased computational processing power and the introducing of the backpropagation algorithm in 1975 by Werbos that made it possible to train multi-layer networks. Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.
+The history of ANNs began in 1943 with the creation of the first computational model of a neural network by McCulloch and Pitts based on algorithms called threshold logits.\cite{mcculloch1943logical} The next milestone was taken by Rosenblatt in 1958 with the invention of the perceptron: A two-layer neural network able to perform pattern recognition.\cite{rosenblatt1958perceptron} Research in the field stagnated with the publication of the book 'perceptron' by Minsky and Papert in 1969, as they stated that basic two-layer networks are incapable of solving the exclusive or circuit, i.e. non-linearly separable data.\cite{minsky2017perceptrons} Larger networks were needed to solve the problem but could not be realized because of a lack of computational processing power and efficient algorithms at that time. Fortunately, the research field was not completely abandoned and ANNS were revived in the early 1980s. The increased computational processing power in combination with the backpropagation algorithm, which was introduced in 1975 by Werbos, made it possible to train multi-layer networks.\cite{werbos1982applications} Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.\cite{schmidhuber2015deep}
 
 %The outstanding ability of nervous systems to organize themself and learn from experience have fascinated researchers for the last century and motivat developing an artificial model of its biological counterpart.
 %ANNs are inspired by nervous systems, such as our human brain. Their ability to organize themself and learn from experience has fascinated researchers over the past century and has motivated them to develop artificial models of its biological counterpart.
 
 \subsection{General Concept}
 
-Nervous systems are built up from a large number of interconnected cells, called neurons. The human brain, as an example, consists of $\sim 10^{11}$ neurons. While a single neuron is very simple processing unit, the power and complexity of nervous systems arises from the interplay of the neurons composing the network.
+Nervous systems are built up from a large number of interconnected cells, called \textit{neurons}. The human brain, as an example, consists of $\sim 10^{11}$ neurons.\cite{baer2009neurowissenschaften} While a single neuron is very simple processing unit, the power and complexity of nervous systems arises from the interplay of a vast number of neurons composing the network.
 
-\subsubsection{Neurons}
- 
-The main task of a neuron is to receive, process and transmit signals. To achieve this, a biological neuron is equipped with dendrites (receiver), a cell body (processor) and an axon (transmitter). Dendrites are thin fibers connected via synapses with the axons of thousands of other neurons. Synapses are crucial for the flow of information inside the network as they weight incoming signals captured by the dendrites: Depending on the synapse the signal can either increase or decrease the electrical potential of the cell. If a specific threshold potential is reached, the axon will fire a signal to all the dendrites it is connected to. 
+The main task of a neuron is to receive, process and transmit signals. To achieve this, a biological neuron is equipped with \textit{dendrites} (receiver), a \textit{cell body} (processor) and an \textit{axon} (transmitter).\cite{baer2009neurowissenschaften} Dendrites are thin fibers connected via \textit{synapses} with the axons of thousands of other neurons. Synapses are crucial for the flow of information inside the network, as they weight incoming signals captured by the dendrites: Depending on the synapse the signal can either increase or decrease the electrical potential of the cell.\cite{baer2009neurowissenschaften} If a specific \textit{threshold potential} is reached, the axon will fire a signal to all the dendrites it is connected to. 
 
-An artificial neuron works similarly to this: An input tensor $x$ is weighted by a weight tensor $w$ and the result is accumulated. Afterwards, a threshold value $\psi$ is subtracted and a non-linear function, called activation function, $a()$ is applied to derive the output $y$.
+An artificial neuron works similarly to this: An \textit{input tensor} $x$ is weighted by a \textit{weight tensor} $w$ and the result is accumulated. Afterwards, a \textit{threshold value} $\psi$ is subtracted and a non-linear function, called \textit{activation function}, $a()$ is applied to derive the output $y$.
 
 \begin{equation}
   y = a( \sum_i x_i w_i - \psi )
 \end{equation}
 
-In this example $x$ and $w$ are vectors but higher rank tensors are common as well.
-
-\subsubsection{Deep Learning}
-
-To explain the mechanism of information processing in a Neural Network we can turn to visual object recognition: Our retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond, which can be described as a response vector. The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefor, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors. At early stages of processing, the object identity manifolds for different objects might be highly tangled and introducing an accurate decision boundary for object recognition becomes impossible.
-This is where the special structure of the visual cortex plays an important role: Neurons are grouped into subsequent layers and the further the signals are processed the more flattened and seperated the manifolds become.
-
-The same idea is applied in modern ANNs that are refered to as Deep Neural Networks (DNN) or Deep Learning (DL): Multiple layers are arranged subsequently and each layer learns to transform its input into a more abstract and composite representation. While the first layer might learn very basic features, like the positions of edges, subsequent layer can learn more high-level features composed of the preceding features. 
-
-Formally, the layer between the input layer and the output layer are referred to as hidden layer. In The simplest case information only flows forward in the network (feedforawrd neural network), from the input layer through the hidden layers to the output layer. In more complex network architectures the connections between the layer can form cycles (recurrent neural network), such that a layer can receive information from subsequent layer as well.
-
-The mathematical foundation for DNNs is given by the universal function approximation theorem that was first proven by George Cybenko in 1989. In its classical formulation it states that any continuous function $f$ on a compact set $K$ can be approximated by a feedforward neural network $F$ with just one hidden layer within arbitrary accuracy $|F(x) - f(x)| < \epsilon$, where $\epsilon > 0$ and $x \in K$. Importantly, the width of the hidden layer (number of neurons) needs to be unbound in this formulation of the theorem. A dual formulation states that the theorem holds true for bounded width but arbitrary depth (number of layer) as well. While both cases guarantee the existence of an appropriately tuned network capable to approximate any continuous function, practice has shown that DNNs perform better in many applications and suffer less from training issues, such as overfitting. 
-
-%A single neuron is a very simple processing unit, but a network of neurons becomes a powerful information processing system: Signals from the environment captured by sensory cells are encoded and processed by the network to create an appropriate response. 
+In this example $x$ and $w$ are vectors but higher rank tensors are common as well.\cite{rojas2013neural}
 
 \subsection{Deep Learning: Multiple Levels of Resolution}
 
-Modern ANNs are built up from various different layer architectures. In following, we want o give an overview over some of the most commonly used.
+To explain the mechanism of information processing in a neural network, we can turn to visual object recognition: Our retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond, which can be described as a response vector.\cite{dicarlo2012does} The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefore, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors.\cite{dicarlo2012does} At early stages of processing, the object identity manifolds for different objects might be highly tangled making it impossible to introduce an accurate decision boundary for object recognition. This is where the special structure of the visual cortex comes into play: Neurons are grouped into subsequent layers and the further the signals are processed the more flattened and seperated the manifolds become.\cite{dicarlo2012does}
+
+The same idea is applied in modern ANNs that are refered to as \textit{Deep Neural Networks} (DNN) or \textit{Deep Learning} (DL): Multiple layers are arranged subsequently and each layer transforms its input into a more abstract and composite representation. While the first layer learns rather basic features, such as the positions of edges, subsequent layers learn more high-level features composed of the preceding features. 
+
+The layers arranged between the input layer and the output layer are referred to as \textit{hidden layers}. In the simplest case, information only flows forward in the network, i.e. a \textit{feedforward neural network} (FNN), from the input layer through the hidden layers to the output layer. More complex network architectures allow cyclic connections between the layers, i.e. \textit{recurrent neural networks} (RNNs), such that a layer can receive information from subsequent layers as well.
+
+The mathematical foundation for DNNs is given by the \textit{universal function approximation theorem} that was first proven by Cybenko in 1989.\cite{cybenko1992approximation} The classical formulation of the theorem states that any continuous function $f$ on a compact set $K$ can be approximated by a feedforward neural network $F$ with just one hidden layer within arbitrary accuracy $|F(x) - f(x)| < \epsilon$, where $\epsilon > 0$ and $x \in K$. Importantly, the \textit{width} of the hidden layer, i.e. the number of neurons, needs to be unbound in this formulation of the theorem. A dual formulation states that the theorem holds true for bounded width but arbitrary \textit{depth}, i.e.  the number of layers, as well.\cite{lu2017expressive} While both cases guarantee the existence of an appropriately tuned network capable to approximate any continuous function, DNNs are preferable to shallow networks in most cases, as the hierachical structure reduces the required number of parameters compared to shallow networks and makes training more robust against training issues, such as overfitting.\cite{mhaskar2017and}
+
+%that DNNs perform better in many applications and suffer less from training issues, such as overfitting.\cite{mhaskar2017and}
+%A single neuron is a very simple processing unit, but a network of neurons becomes a powerful information processing system: Signals from the environment captured by sensory cells are encoded and processed by the network to create an appropriate response. 
+
+Modern ANNs are built up from various different layer architectures. In the following, an overview of the most commonly used layer architectures is given.
 
 \subsubsection{Dense Layer}
 
-A dense layer (also fully-connected layer) is the simplest and most common layer of an ANN. Each neuron in a dense layer receives signals from all the neurons of the preceding layer. We can express a dense layer as
+A \textit{dense layer} or \textit{fully-connected layer} is the simplest and most common layer of an ANN. Each neuron in a dense layer receives signals from all the neurons of the preceding layer. A dense layer can be expressed as
 
 \begin{equation}
-  \vec{y} = a( A \vec{x})
+  \vec{y} = a( A \vec{x}) ,
 \end{equation}
 
-where $A$ is a matrix containing the weights and thresholds. The full-connectivity of each neuron makes it capable to detect global pattern in the data, but it also makes it impractical for large inputs as $A$ grows with the size of $\vec{x}$
+where $A$ is a matrix containing the weights and thresholds. The full-connectivity of each neuron makes it capable to detect global pattern in the data, but it also makes it impractical for large inputs, as $A$ grows with the size of $\vec{x}$.
 
 \subsubsection{Convolutional Layer}
 
-Another idea originating from our understanding of the visual cortex is local connectivity: Neurons are only locally connected to neurons in a restricted area of the previous layer known as the receptive field of the neuron. This architecture is perfectly suited to learn hierchacical pattern in the data as the receptive field of the neurons become bigger the higher they are placed in the hierachy of the network. 
+Another idea originating from our understanding of the visual cortex is local connectivity: Neurons are only locally connected to neurons in a restricted area of the previous layer known as the \textit{receptive field} of the neuron.\cite{baer2009neurowissenschaften} The receptive field of the neurons becomes bigger the higher they are placed in the hierachy of the network. Therefore, this architecture is perfectly suited to learn hierachical pattern in the data. Layer architectures incorporating the idea of a limitted receptive field are called \textit{convolutional layer}.
 
-A convolutional layer consists of a bank of parameterized filters that are sliced over the input. At each position the descrete convolution of the filter with the segment of the image it overlaps is computed and stored into a so called feature map. Convolutional layer can be applied to tensors of arbitrary rank. In the following we consider the two dimensional case where the input are images $X_j \in \mathbb{R}^{N_x \times N_y}$ with $N_x$ the width, $N_y$ the height of the image and $j \in \{0, .., N_c\}$ is the index for the $N_c$ feature channels. The different feature channels provide different views on the data, such as the different colour channels for a RGB image. The bank of filters is denoted with $K_{i,j} \in \mathbb{R}^{m_x \times m_y}$, where $m_x$ is the width, $m_y$ is the height, connecting the $j$th feature channel of the input with the $i$th feature channel of the output. The $i$th feature map $Y_i \in \mathbb{R}^{n_x \times n_y}$ of the output can be computed as
+A convolutional layer consists of a bank of parameterized \textit{filters} that are sliced over the input. At each position the descrete convolution of the filter with the segment of the image it overlaps is computed and stored into a so called \textit{feature map}. Convolutional layer can be applied to tensors of arbitrary rank. In the following, the two dimensional case is considered, where the inputs are images $X_j \in \mathbb{R}^{N_x \times N_y}$ with $N_x$ the width, $N_y$ the height of the image and $j \in \{0, .., N_c\}$ is the index for the $N_c$ \textit{feature channels}. The different feature channels provide different views on the data, such as the different colour channels of an RGB image. The bank of filters is denoted with $K_{i,j} \in \mathbb{R}^{m_x \times m_y}$, where $m_x$ is the width, $m_y$ is the height, connecting the $j$th feature channel of the input with the $i$th feature channel of the output. The $i$th feature map $Y_i \in \mathbb{R}^{n_x \times n_y}$ of the output can be computed as
 
 \begin{equation}
   Y_i = a(\Phi + \sum_j^{N_c} K_{i,j} * X_j)
@@ -249,38 +245,42 @@ where $\Phi$ is a bias matrix. The size of the output $(n_x, n_y)$ can be derive
   (n_x, n_y) = (N_x - m_x + 1, N_y - m_y + 1)
 \end{equation}
 
-Furthermore, the size of the output can also dependent on zero-padding and slicing:
+Additionally, the size of the output is affected by \textit{zero-padding} and \textit{slicing}:
 
 \begin{itemize}
-  \item zero-padding: the size of the input tensor can be artificially extended by adding zeros at the border or between input units. $P$ denots the number of zeros concatenated at each side.
-  \item strides: While the filter is sliced over the input the step size $S$, called stride, for the translation can be greater than one effectively reducing the output size.
+  \item Zero-padding: The size of the input tensor can be artificially extended by adding zeros at the border or between input units. $P$ denots the number of zeros concatenated at each side.
+  \item Strides: While the filter is sliced over the input the step size $S$, called \textit{stride}, for the translation can be greater than one effectively reducing the output size.
 \end{itemize}
 
 In summary, the output size can be computed as
 
 \begin{equation}
-  (n_x, n_y) = (\frac{N_x - m_x + 2P}{S}+1, \frac{N_y - m_y + 2P}{S}+1)
+  (n_x, n_y) = \Big( \frac{N_x - m_x + 2P}{S}+1, \frac{N_y - m_y + 2P}{S}+1 \Big)
 \end{equation}
 
-Note that depending on the choice of zero-padding and strides the size of the output can either decrease (downsample) or increase (upsample) compared to the size of the input. The latter one is often referred to as transposed (or fractionally-strided) convolution and is typically used in a decoder architecture as it introduces a concept to learn the upsampling transformation. While this concept correctly describes the concept of upsampling, it incolves many useless multiplcations with zero which are avoided by efficient implementations in real-world applications.
+Depending on the choice of zero-padding and strides the size of the output can either decrease (downsampling) or increase (upsampling) compared to the size of the input. The latter is often referred to as \textit{transposed} (or \textit{fractionally-strided}) convolution. It is typically used in a decoder architecture to learn the upsampling transformation. 
+%While this concept correctly describes the concept of upsampling, it incolves many useless multiplcations with zero which are avoided by efficient implementations in real-world applications.
 
-Typically, a convolutional layer needs less parameters than a dense layer as the size of the filters are independent from the size of the input. Additionally, a convolutional layer is equivariant with respect to translations as the same filters are applied over the hole input. 
+Typically, a convolutional layer needs less parameters than a dense layer, as the size of the filters are independent from the size of the input and the parameters of each filter are shared between all neurons of the layer. Additionally, weight sharing makes a convolutional layer equivariant with respect to translations, as the same filters are applied over the hole input. 
 
 \subsubsection{Composition of Layer}
 
-A DNN is composed of multiple layer and therefore can be described as a nested function. For a simple feed-forward DNN $F$ with $L$ layer we can write
+A DNN is composed of multiple layers. Therefore, it can be described as a nested function. A simple feed-forward DNN $F$ with $L$ layer can be written as
 
 \begin{equation}
-  F(x;W) = y^L(...y^1(y^0(x;W^0);W^1)...;W^L)
+  F(x;W) = y^L(...y^1(y^0(x;W^0);W^1)...;W^L) ,
 \end{equation}
 
 where $y^l$ is the $l$'th layer in the network with the corresponding weights $W^l$ and the collection of all weights is denoted with $W=(W^0, W^1,..,W^L)$.
 
-A recurrent NN also allows feedback loops by introducing cyclic connections between the layers, such that the output of subsequent layer can be reused as input for preceding layer in the next iteration. This is often necessarry for sequential data, like text or video, where the current state has a dependence on past states. A recurrent network can be described as a recursive process where a recurring function is called in each iteration. Unrolling the recursive process let us write the recurrent process as a nested function as well. For example consider a network $F$ that takes a current input as well as previous output as arguments. The unrolled network $G$ for an input sequence $(x_1, x_2, .., x_n)$ can be written as
+A RNN also allows feedback loops by introducing cyclic connections between the layers, such that the output of subsequent layer can be reused as input for preceding layer in the next iteration.\cite{lipton2015critical} This is often necessarry for sequential data, like text or video, where the current state has a dependence on past states. A recurrent network can be described as a recursive process where a recurring function is called in each iteration. Unrolling the recursive process makes it possible to write the recurrent process as a nested function as well. For example, consider a network $F$ that takes a current input as well as previous output as arguments. The unrolled network $G$ for an input sequence $(x_1, x_2, .., x_n)$ can be written as
 
 \begin{equation}
+\label{rnn_unrolled}
   G((x_1, x_2, .., n_n);W) = F((x_n, ..F((x_2,F((x_1, 0);W));W)..);W).
 \end{equation}
+
+Note, that Eq. \ref{rnn_unrolled} implies that multiple states of the network have to be stored simultaneously in memory, which possible causes memory issues.
 
 \subsection{Backpropagation Algorithm and Stochastic Optimization}
 
