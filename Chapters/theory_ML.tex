@@ -258,7 +258,7 @@ In summary, the output size can be computed as
   (n_x, n_y) = \Big( \frac{N_x - m_x + 2P}{S}+1, \frac{N_y - m_y + 2P}{S}+1 \Big)
 \end{equation}
 
-Depending on the choice of zero-padding and strides the size of the output can either decrease (downsampling) or increase (upsampling) compared to the size of the input. The latter is often referred to as \textit{transposed} (or \textit{fractionally-strided}) convolution. It is typically used in a decoder architecture to learn the upsampling transformation. 
+Depending on the choice of zero-padding and strides the size of the output can either decrease (downsampling) or increase (upsampling) compared to the size of the input. The latter is often referred to as \textit{transposed} (or \textit{fractionally-strided}) convolution. It is typically used in a decoder architecture to learn the upsampling transformation. Note, that it is possible to express convolutional layer as a fully-connected layer as well. However, this is not done in practice, as this involves many unnecessarry multiplications with zero.
 %While this concept correctly describes the concept of upsampling, it incolves many useless multiplcations with zero which are avoided by efficient implementations in real-world applications.
 
 Typically, a convolutional layer needs less parameters than a dense layer, as the size of the filters are independent from the size of the input and the parameters of each filter are shared between all neurons of the layer. Additionally, weight sharing makes a convolutional layer equivariant with respect to translations, as the same filters are applied over the hole input. 
@@ -273,74 +273,66 @@ A DNN is composed of multiple layers. Therefore, it can be described as a nested
 
 where $y^l$ is the $l$'th layer in the network with the corresponding weights $W^l$ and the collection of all weights is denoted with $W=(W^0, W^1,..,W^L)$.
 
-A RNN also allows feedback loops by introducing cyclic connections between the layers, such that the output of subsequent layer can be reused as input for preceding layer in the next iteration.\cite{lipton2015critical} This is often necessarry for sequential data, like text or video, where the current state has a dependence on past states. A recurrent network can be described as a recursive process where a recurring function is called in each iteration. Unrolling the recursive process makes it possible to write the recurrent process as a nested function as well. For example, consider a network $F$ that takes a current input as well as previous output as arguments. The unrolled network $G$ for an input sequence $(x_1, x_2, .., x_n)$ can be written as
+A RNN also allows feedback loops by introducing cyclic connections between the layers, such that the output of subsequent layer can be reused as input for preceding layer in the next iteration.\cite{lipton2015critical} This is often necessarry for sequential data, like text or video, where the current state has a dependence on past states. A recurrent network can be described as a recursive process where a recurring function is called in each iteration. Unrolling the recursive process makes it possible to write the recurrent process as a nested function as well. For example, consider a network $F$ that takes a current input as well as a previous output as arguments. The unrolled network $G$ for an input sequence $(x_1, x_2, .., x_n)$ can be written as
 
 \begin{equation}
 \label{rnn_unrolled}
   G((x_1, x_2, .., n_n);W) = F((x_n, ..F((x_2,F((x_1, 0);W));W)..);W).
 \end{equation}
 
-Note, that Eq. \ref{rnn_unrolled} implies that multiple states of the network have to be stored simultaneously in memory, which possible causes memory issues.
+Note, that Eq. \ref{rnn_unrolled} implies that multiple states of the network have to be stored simultaneously in memory in order to compute the gradients for training (see below).
 
 \subsection{Backpropagation Algorithm and Stochastic Optimization}
 
-A NN is a parametrized function $F(x;W)$ with parameters $W$ that maps samples $x$ from a domain $X$ to a codomain $Y$.
+Training of a NN $f_{\Theta}$ refers to tuning the weights $\Theta$ such that a desired output is produced. To achieve this, a measurement for the error the network makes is required as well as an efficient optimization algorithm.
+
+\subsubsection{Cost Function}
+
+The cost function $\mathcal{C}$ (or loss-function, error-function) maps the output of the network $f_{\Theta}(\mathbf{x})$ to a real number representing the error. It has to fulfill two requirements: Firstly, it has be differentiable in order to be used for the optimization of the weights. Secondly, it has be written as an average
 
 \begin{equation}
-  F(W): X \rightarrow Y
+  \overline{\mathcal{C}}_{T} = \frac{1}{n} \sum_{(\mathbf{x}, \mathbf{y}) \in T} \mathcal{C}(f_{\Theta}(\mathbf{x}), \mathbf{y})
 \end{equation}
 
-Training of a NN refers to tuning the weights such that a desired output is produced. To achieve this, a measurement for the error the network makes is needed as well as an efficient optimization algorithm.
+over cost functions $\mathcal{C}(f_{\Theta}(\mathbf{x}), \mathbf{y})$ for individual instances of the training batch $T = \{(\mathbf{x}_1, \mathbf{y}_1), \dots, (\mathbf{x}_n, \mathbf{y}_n)\}$. This is crucial in order to generalize the gradient of the error computed for a single example to the overall error of the training batch.
 
-\subsubsection{Loss-Function}
-
-The Loss-function $C$ (or cost-function, error-function) maps the output of the network to a real number representing the error. In the supervised approach, it measures the difference of the estimated and target value for an instant of the data. In this case, the loss-function is a function of both, the networks output $F(x;W)$ as well as the target value $y$. 
-
-The loss-function has to fulfill two requirements: Firstly, it has be differentiable in order to be used for the optimization of the weights. Secondly, it has be written as an average
+The actual choice for the functional form of the cost function $\mathcal{C}$ is problem dependent. The mean-squared-error (MSE)
 
 \begin{equation}
-  C = \frac{1}{n} \sum_{t} C_t
+  \mathcal{C}(f_{\Theta}(\mathbf{x}), \mathbf{y}) = (f_{\Theta}(\mathbf{x}) - \mathbf{y})^2 ,
 \end{equation}
 
-over loss-functions $C_t$ for individual instances $t \in T$ of the training bach $T = \{(x_1, y_1, .., x_n, y_n)\}$. This is crucial to generalize the gradient of the error computed for a single example to the overall error of the training batch.
+is frequently used for for regression, as it guarentees the existence of a global minimum. However, it overemphasizes outliers and therefore should not be used for data that is prone to many outliers.
 
-The actual choice for the functional form of the loss-function is problem dependent. A typical choice is the mean-squared-error (MSE):
+Classification tasks typically require to predict a probability distribution over the class labels. In this case, the output layer of the network has to be normalized, for example using a softmax activation function, in order to apply one of the well known measurements for the difference of two probability distributions. As an example, the cross-entropy
 
 \begin{equation}
-  C(F(x;W), y) = (F(x;W) - y)^2
+  \mathcal{C}(f_{\Theta}(\mathbf{x}), \mathbf{y}) = - \sum_{i} y_i log(f_{\Theta}(\mathbf{x})_i)
 \end{equation}
 
-The MSE is widely used for regression tasks as it guarentees the existence of a global minimum. However, it overemphasizes outliers and therefore should not be used for data that is prone to many outliers.
-
-The goal for classification tasks is typically to predict a probability distribution over the class labels. In this case the output layer of the network is normalized to unity using a softmax activation function, such that known measurements for the difference of two probability distributions can be applied. A standard choice is the cross-entropy
-
-\begin{equation}
-    C(F(x;W), y) = - \sum_{i} y_i log(F_i(x;W))
-\end{equation}
-
-but other common choices include the Kullback-Leibler divergence, Jensen-Shannon divergence or the Wasserstein distance.
+is frequently used. Other common choices include the Kullback-Leibler divergence, Jensen-Shannon divergence or the Wasserstein distance.
 
 \subsubsection{Backpropagation}
 
-During training of the network the weights of the network are adjusted such that the loss-function will be minimized. This is achieved using gradient methods like gradient descent on the loss-function for single input output pairs $(x,y)$ in the weight space,
+During training, the weights of the network $\Theta$ are adjusted such that the cost function $\mathcal{C}$ will be minimized. To this end, gradient methods, such as gradient descent, are applied for single input-output pairs $(\mathbf{x},\mathbf{y})$ in the weight space,
 
 \begin{eqnarray}
-  W \rightarrow W + \eta \frac{\partial C(F(x;W), y)}{\partial W}
+  \Theta \rightarrow \Theta + \eta \frac{\partial \mathcal{C}(f_{\Theta}(\mathbf{x}), \mathbf{y})}{\partial \theta}
 \end{eqnarray}
 
 where $\eta$ is the learning rate.
 
-Naive direct computation of the gradients with respect to each weight individually is computationally expensive. Backpropagation is an algorithm to compute the gradients efficiently enabling the application of gradient methods for DNNs. It is based on ther chain rule and benefits from the nested structure of the network allowing to compute the gradients layer by layer: Starting from the last layer it iterates backward through the network avoiding duplicate and unneccessary intermediate calculations.
+A naive, direct computation of the gradients with respect to each weight individually is computationally expensive and is not feasable for a DNN. To circumvent these limitations, backpropagation (BP) was invented. BP is an algorithm to compute the gradients efficiently enabling the application of gradient methods for DNNs. It is based on the chain rule and benefits from the nested structure of the network allowing to compute the gradients layer by layer: Starting from the last layer, it iterates backward through the network, whereby avoiding duplicate and unneccessary intermediate calculations.
 
-To explain the backpropagation algorithm we consider a feed-forward NN with $L$ layer. In the following we assume that each layer is a fully connected layer such that we can write for a single node in the network
+Consider a feed-forward NN with $L$ layers. In the following, each layer is treated as a fully connected layer for simplicity. A single node $y_i^l$ in layer $l$ can be written as
 
 \begin{equation}
-  y^l_j = a ( \underbrace{ \sum_i w^l_{i,j} y^{l-1}_i }_{z^l_j}) 
+  y^l_j = a ( \underbrace{ \sum_i \Theta^l_{i,j} y^{l-1}_i }_{z^l_j}) ,
 \end{equation}
 
-where $a()$ is the activation function. Note that convolutional layer can technically also be expressed as a fully-connected layer (however, it is not done in real-world applications). 
+where $a()$ is the activation function. 
 
-Since the output of nodes placed lower in the hierachy will have an impact on the output of nodes placed higher in the hierachy, the chain rule has to be applied to derive the gradients for each weight. The backpropagation algorithm conveniently introduces a recursive notation to derive the gradients,
+The chain rule has to be applied to derive the gradients for the weights, since the output of nodes placed lower in the hierachy will have an impact on the output of nodes placed higher in the hierachy. The backpropagation algorithm conveniently introduces a recursive notation to derive the gradients,
 
 \begin{equation}
   \frac{\partial C(F(x;W)}{\partial w_{i,j}^l} = \delta_j^l y_i^{l-1}
