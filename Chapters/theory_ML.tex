@@ -20,7 +20,7 @@ ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods
 %Self-learning algorithms are therefore very appealing and help to automate processes that traditionally require a significant amount of human effort.
 \section{Basics}
 
-Most problems in ML are tackled by a common scheme: The first step is to collect a \textit{data set} $\mathcal{D} = \{ \mathbf{x} \}$ consisting of a set of indipendent and identically disitributed variables $\mathbf{x}$. Typically, $\mathbf{x} \in \mathrm{R}^D$ is a vector with dimension $D$ or a tensor of even higher rank, such as an image. The second step is to introduce a \textit{model} $f_{\Theta}(\mathbf{x}) \coloneqq f(\mathbf{x};\Theta) = \mathbf{y}$ as a function
+Most problems in ML are tackled by a common scheme: The first step is to collect a \textit{data set} $\mathcal{D} = \{ \mathbf{x} \}$ consisting of a set of independent and identically distributed variables $\mathbf{x}$ sampled from a distribution $\mathcal{X}$, which is typically high dimensional and intractable. In general, $\mathbf{x} \in \mathrm{R}^D$ is a vector with dimension $D$ or a tensor of even higher rank, such as an image. The second step is to introduce a \textit{model} $f_{\Theta}(\mathbf{x}) \coloneqq f(\mathbf{x};\Theta) = \mathbf{y}$ as a function
 
 \begin{equation}
   f_{\Theta}: \mathrm{R}^D \rightarrow \mathrm{R}^S
@@ -322,33 +322,33 @@ During training, the weights of the network $\Theta$ are adjusted such that the 
 
 where $\eta$ is the learning rate.
 
-A naive, direct computation of the gradients with respect to each weight individually is computationally expensive and is not feasable for a DNN. To circumvent these limitations, backpropagation (BP) was invented. BP is an algorithm to compute the gradients efficiently enabling the application of gradient methods for DNNs. It is based on the chain rule and benefits from the nested structure of the network allowing to compute the gradients layer by layer: Starting from the last layer, it iterates backward through the network, whereby avoiding duplicate and unneccessary intermediate calculations.
+A naive, direct computation of the gradients with respect to each weight individually is computationally expensive and is not feasable for a DNN. To circumvent these limitations, \textit{backpropagation} (BP) was invented.\cite{werbos1982applications} BP is an algorithm to compute the gradients efficiently enabling the application of gradient methods for DNNs. It is based on the chain rule and benefits from the nested structure of a NN allowing to compute the gradients layer by layer: Starting from the last layer, it iterates backward through the network, whereby avoiding duplicate and unnecessary intermediate calculations.
 
-Consider a feed-forward NN with $L$ layers. In the following, each layer is treated as a fully connected layer for simplicity. A single node $y_i^l$ in layer $l$ can be written as
-
-\begin{equation}
-  y^l_j = a ( \underbrace{ \sum_i \Theta^l_{i,j} y^{l-1}_i }_{z^l_j}) ,
-\end{equation}
-
-where $a()$ is the activation function. 
-
-The chain rule has to be applied to derive the gradients for the weights, since the output of nodes placed lower in the hierachy will have an impact on the output of nodes placed higher in the hierachy. The backpropagation algorithm conveniently introduces a recursive notation to derive the gradients,
+Consider a feed-forward NN with $L$ layers. In the following, each layer is treated as a fully connected layer for simplicity. A single node $u_i^l$ in layer $l$ can be written as
 
 \begin{equation}
-  \frac{\partial C(F(x;W)}{\partial w_{i,j}^l} = \delta_j^l y_i^{l-1}
+  u^l_j = a ( \underbrace{ \sum_i \Theta^l_{i,j} u^{l-1}_i }_{z^l_j}) ,
 \end{equation}
 
-where $\delta_j^l$ is refered to as the delta-error or error at the level $l$. It is computed as
+where $ \Theta^l$ is the weight matrix for layer $l$ and $a()$ is the activation function. 
+
+The chain rule has to be applied to derive the gradients for the weights, since the output of nodes placed lower in the hierarchy impacts the output of nodes placed higher in the hierarchy. Conveniently, the BP algorithm introduces a recursive notation to derive the gradients,
+
+\begin{equation}
+  \frac{\partial \mathcal{C}(f_{\Theta}(\mathbf{x}), \mathbf{y})}{\partial \Theta_{i,j}^l} = \delta_j^l u_i^{l-1}
+\end{equation}
+
+where $\delta_j^l$ is referred to as the \textit{delta-error} or \textit{error at the level} $l$. It is computed as
 
 \begin{equation}
 \delta_j^l =
 \begin{cases} 
-  C'a'(z_j^l), & \text{for } l=L\\
-  a'(z_j^l)\sum_i{w^l_{i,j}\delta_j^{l+1}}, & \text{for } l<L
+  \mathcal{C}'a'(z_j^l), & \text{for } l=L\\
+  a'(z_j^l)\sum_i{\Theta^l_{i,j}\delta_j^{l+1}}, & \text{for } l<L
    \end{cases}.
 \end{equation}
 
-where $C'$ and $a'$ are the derivatives of the loss-function $C$ and the activation function $a$. The recursive notation for the delta-error makes it possible to compute the gradient from back to front and reuse the delta-error from subsequent layers.
+where $\mathcal{C}'$ and $a'$ are the derivatives of the cost function $\mathcal{C}$ and the activation function $a$. The recursive notation for the delta-error allows to compute the required gradients from back to front by reusing the delta-error from subsequent layers, whereby avoiding redundant computations.
 
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
 %It focuses on computer algorithms that construct statistical models based on training data:
@@ -358,18 +358,40 @@ where $C'$ and $a'$ are the derivatives of the loss-function $C$ and the activat
 
 \section{Generative Modeling}
 
-Generative modeling refers to designing a model that learns an esitimate for a distribution $\mathcal{X}$ defined over $\mathbb{R}^D$, where the dimension $D$ is typically large. In general, the distribution $\mathcal{X}$ is complicated and intractable. In practice, models are trained using a set of indipendently and identically distributed training samples $\{x\}$, where the samples $x \sim \mathcal{X}$. The probability for a sample $x$ is denoted with $p_{\mathcal{X}}(x)$ and the probability defined by the model is $p_{\Theta}(x)$, where $\Theta$ refers to the parameters of the model. The overall goal of a generative model is find the set of optimal parameters $\Theta^{*}$ such that the model probability $p_{\Theta^{*}}(x)$ converges to the true probability $p_{\mathcal{X}}(x)$. 
+ML algorithms are divided into two broad categories, namely \textit{generative} and \textit{discriminative} models. While the former aims at learning the dependencies of all the variables in a system, the goal of the latter is to learn decision boundaries. Generative models are typically linked to unsupervised training and discriminative models to supervised training, but a clear dichotomy is not always possible.
 
+Consider a set of labeled data $\mathcal{D} = \{ \mathbf{(x, y)} \}$ drawn from a distribution $\mathcal{X}$ with joint probability $p_{\mathcal{X}}(\mathbf{x}, \mathbf{y})$. The goal of a discriminative model is to learn the conditional probability $p_{\mathcal{X}} (\mathbf{y}|\mathbf{x})$ of the class labels $\mathbf{y}$ given the observation $\mathbf{x}$. To this end, a discriminative model does not necessarily have to learn about the dependencies of all the variables in the system, as it only has to focus on the variables that are important for labeling the observations.
+
+On the other hand, generative approaches model the joint probability $p_{\mathcal{X}} \mathbf{(x,y)}$ (or simply $p_{\mathcal{X}} \mathbf{(x)}$ if no labels are given). They are framed generative as the probability $p_{\mathcal{X}} \mathbf{(x,y)}$ can be used to generate new instances of the underlying distribution. However, it is straightforward to compute marginalized probabilities 
+
+\begin{equation}
+  p_{\mathcal{X}} \mathbf{(x)} = \sum_{\mathbf{y}} p_{\mathcal{X}} \mathbf{(x,y)}
+\end{equation}
+
+or conditional probabilities 
+
+\begin{equation}
+  p_{\mathcal{X}} \mathbf{(y|x)} = \frac{p_{\mathcal{X}} \mathbf{(x,y)}}{p_{\mathcal{X}} \mathbf{(x)}} .
+\end{equation}
+
+Therefore, generative models can be used for classification and regression as well. Obviously, the underlying task for generative models is more complex compared to the discriminative task, as the generative model has to be more informative. As a consequence, generative models require more parameters than discriminative models. 
+
+While both approaches can be used for classification and regression, only the generative approach can be used to sample new instances of the data, which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to \textit{Deep Generative Models} (DGMs) for simplicity.
+
+%Generative models learn an estimate for a distribution $\mathcal{X}$ defined over $\mathbb{R}^D$, where the dimension $D$ is typically large. In general, the distribution $\mathcal{X}$ is complicated and intractable. In practice, models are trained using a set of indipendently and identically distributed training samples $\{x\}$, where the samples $x \sim \mathcal{X}$. The probability for a sample $x$ is denoted with $p_{\mathcal{X}}(x)$ and the probability defined by the model is $p_{\Theta}(x)$, where $\Theta$ refers to the parameters of the model. The overall goal of a generative model is find the set of optimal parameters $\Theta^{*}$ such that the model probability $p_{\Theta^{*}}(x)$ converges to the true probability $p_{\mathcal{X}}(x)$. 
+
+%Regarding experiments for a binary classification task, logistic regression, i.e. a discriminative model, outperforms Gaussian Naive Bayes, i.e. a generative model, in terms of asymptotic errors.\cite{ng2002discriminative} However, in a low data regime generative models can give superior performance.\cite{ng2002discriminative}
 
 \subsection{Maximum likelihood and the Relative Entropy}
 
-The major route to train a DGM is to maximize the data likelihood. The underlying idea of this approach is to find a model that best explains the oberserved data . A model with parameters $\Theta$ provides an estimate for the probability $p_{\Theta}(x)$ for a given oberservation $x$. The likelihood $\mathcal{L}$ for the data under the parametric model can be written as
+A DGM with parameters $\Theta$ provides an estimate for the probability $p_{\Theta}(\mathbf{x})$ of an observation $\mathbf{x}$. The general goal is to approximate the true probability distribution, i.e. find the optimal parameters $\Theta^{*}$ such that  $p_{\Theta^{*}}(\mathbf{x}) \approx p_{\mathcal{X}}(\mathbf{x})$.
+The major route to train a DGM is to maximize the data \textit{likelihood}. The underlying idea of this approach is to find a model that best explains the observed data. The likelihood $\mathcal{L}$ for the data under the parametric model can be written as
 
 \begin{equation}
   \mathcal{L} = \prod_i^N p_{\Theta}(x) ,
 \end{equation}
 
-where $N$ is the number of examples in the training data $\{x\}$. The goal of maximum likelihood approaches is to find the optimal set of paramters $\Theta^{*}$ such that the likelihood $L$ of observing the data is maximized:
+where $N$ is the number of examples in the training data $\mathcal{D}$. In the maximum likelihood approach the parameters $\Theta$ are optimized to maximize $\mathcal{L}$:
 
 \begin{equation}
   \Theta^{*} = \underset{\Theta}{\text{argmax}} \; \mathcal{L}
@@ -381,15 +403,15 @@ Instead of maximizing the likelihood, it is common practice to minimize the nega
   \underset{\Theta}{\text{argmax}} \; \prod_i^{N} p_{\Theta}(x) = \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{\Theta}(x) ) .
 \end{equation}
 
-In the limit for infinite data $N \rightarrow \infty$ the maximum likelihood approach is equivalent to minimizing the cross-entropy $H(p_{\mathcal{X}}(x), p_{\Theta}(x))$, where $p_{\mathcal{X}}(x)$ is the true probability distribution of the data, as it can be shown 
+In the limit for infinite data $N \rightarrow \infty$ the maximum likelihood approach is equivalent to minimizing the cross-entropy $H(p_{\mathcal{X}}(\mathbf{x}), p_{\Theta}(\mathbf{x}))$, as it can be shown 
 
 \begin{align}
  \underset{N \rightarrow \infty}{\text{lim}} \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{\Theta}(x) ) 
  &= \underset{\Theta}{\text{argmin}} \; \mathbb{E}_{x \sim p_{\mathcal{X}}(x)} log ( \frac{1}{ p_{\Theta}(x) }) \\
- &= H(p_{\mathcal{X}}(x), p_{\Theta}(x)).
+ &=  \underset{\Theta}{\text{argmin}} \; H(p_{\mathcal{X}}(\mathbf{x}), p_{\Theta}(\mathbf{x})).
 \end{align}
 
-The cross-entropy takes a minimum when the two distributions match, that is $p_{\Theta}(x) = p_{\mathcal{X}}(x)$. Therefore, an ideal model trained with the maximum likehood approach yields a model that perfectly reproduces the true data distribution.
+The cross-entropy has a minimum when the two distributions match, i.e. $p_{\Theta}(\mathbf{x}) = p_{\mathcal{X}}(\mathbf{x})$. Therefore, an ideal model trained with the maximum likelihood approach yields a model that perfectly reproduces the true data distribution $\mathcal{X}$.
 
 
 \subsection{Explicit Generative Models: An Overview}
