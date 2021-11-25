@@ -374,7 +374,7 @@ or conditional probabilities
   p_{\mathcal{X}} \mathbf{(y|x)} = \frac{p_{\mathcal{X}} \mathbf{(x,y)}}{p_{\mathcal{X}} \mathbf{(x)}} .
 \end{equation}
 
-Therefore, generative models can be used for classification and regression as well. Obviously, the underlying task for generative models is more complex compared to the discriminative task, as the generative model has to be more informative. As a consequence, generative models require more parameters than discriminative models. 
+Therefore, generative models can be used for classification and regression as well. Obviously, the underlying task for generative models is more complex compared to the discriminative task, as the generative model has to be more informative. As a consequence, generative models require more parameters than discriminative models. Moreover, experiments have shown, that discriminative models outperform generative models in classification tasks in terms of asymptotic error.\cite{ng2002discriminative} However, generative models reach the higher asymptotic error faster. 
 
 While both approaches can be used for classification and regression, only the generative approach can be used to sample new instances of the data, which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to \textit{Deep Generative Models} (DGMs) for simplicity.
 
@@ -400,29 +400,45 @@ where $N$ is the number of examples in the training data $\mathcal{D}$. In the m
 Instead of maximizing the likelihood, it is common practice to minimize the negative logarithm of the likelihood to avoid numerical issues
 
 \begin{equation}
-  \underset{\Theta}{\text{argmax}} \; \prod_i^{N} p_{\Theta}(x) = \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{\Theta}(x) ) .
+  \underset{\Theta}{\text{argmax}} \; \prod_i^{N} p_{\Theta}(\mathbf{x}) = \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{\Theta}(\mathbf{x}) ) .
 \end{equation}
 
-In the limit for infinite data $N \rightarrow \infty$ the maximum likelihood approach is equivalent to minimizing the cross-entropy $H(p_{\mathcal{X}}(\mathbf{x}), p_{\Theta}(\mathbf{x}))$, as it can be shown 
+If $N$ is large, the maximum likelihood approach is equivalent to minimizing the \textit{cross-entropy} 
+
+\begin{equation}
+  H(p_{\mathcal{X}}(\mathbf{x}), p_{\Theta}(\mathbf{x})) = \mathbb{E}_{x \sim p_{\mathcal{X}}(\mathbf{x})} \Big[ log \Big( \frac{1}{ p_{\Theta}(\mathbf{x}) } \Big) \Big] ,
+\end{equation}
+
+as well as the \textit{relative entropy}
+
+\begin{equation}
+  D(p_{\mathcal{X}}(\mathbf{x})|| p_{\Theta}(\mathbf{x})) = \mathbb{E}_{x \sim p_{\mathcal{X}}(\mathbf{x})} \Big[ log \Big( \frac{p_{\mathcal{X}}(\mathbf{x})}{ p_{\Theta}(\mathbf{x}) } \Big) \Big]
+\end{equation}
+
+as the law of large numbers states
 
 \begin{align}
- \underset{N \rightarrow \infty}{\text{lim}} \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{\Theta}(x) ) 
- &= \underset{\Theta}{\text{argmin}} \; \mathbb{E}_{x \sim p_{\mathcal{X}}(x)} log ( \frac{1}{ p_{\Theta}(x) }) \\
- &=  \underset{\Theta}{\text{argmin}} \; H(p_{\mathcal{X}}(\mathbf{x}), p_{\Theta}(\mathbf{x})).
+ \underset{N \rightarrow \infty}{\text{lim}}  \; - \frac{1}{N} \sum_i^N log ( p_{\Theta}(\mathbf{x}) ) 
+ &= \; \mathbb{E}_{x \sim p_{\mathcal{X}}(\mathbf{x})} [ - log ( p_{\Theta}(\mathbf{x})) ]  .
 \end{align}
 
-The cross-entropy has a minimum when the two distributions match, i.e. $p_{\Theta}(\mathbf{x}) = p_{\mathcal{X}}(\mathbf{x})$. Therefore, an ideal model trained with the maximum likelihood approach yields a model that perfectly reproduces the true data distribution $\mathcal{X}$.
+%\begin{align}
+% \underset{N \rightarrow \infty}{\text{lim}} \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{\Theta}(x) ) 
+% &= \underset{\Theta}{\text{argmin}} \; \mathbb{E}_{x \sim p_{\mathcal{X}}(x)} \Big[ log \Big( \frac{1}{ p_{\Theta}(x) } \Big) \Big] \\
+% &= \underset{\Theta}{\text{argmin}} \; \mathbb{E}_{x \sim p_{\mathcal{X}}(x)} \Big[ log \Big( \frac{1}{ p_{\Theta}(x)} \Big) + log ( p_{\mathcal{X}} ) \Big]
+%\end{align}
 
+Both, cross-entropy and relative entropy, reach a minima when the two distributions match, i.e. $p_{\Theta}(\mathbf{x}) = p_{\mathcal{X}}(\mathbf{x})$. Therefore, an ideal model trained with the maximum likelihood approach yields a model that perfectly reproduces the true data distribution $\mathcal{X}$. 
 
 \subsection{Explicit Generative Models: An Overview}
 
-Generative models can be further distinguished between those that access the models probability distribution $p_{\Theta}(x)$ explicitly through some functional form and those that define it implicitly through a sampler. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straigh-forward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{\Theta}(x))$, which often becomes a bottleneck for the expressive power of the model. Therefore, designing an explicit model is often a trade-off between capturing the complexity of the true data distribution and still being tractable. Implicit models on the other hand do not require direct access to the likelihood function but define a stochastic procedure to directly generate new samples. 
+Generative models are further distinguished between those that access the models probability distribution $p_{\Theta}(\mathbf{x})$ \textit{explicitly} through some functional form and those that define it \textit{implicitly} through a sampler. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straightforward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{\Theta}(\mathbf{x})$, which often becomes a bottleneck for the expressive power of the model. Therefore, the design of an explicit model is often a trade-off between the complexity of the true data distribution and tractability. Implicit models on the other hand do not require direct access of the likelihood function but define a stochastic procedure to directly generate new samples. 
 
-The various variants of explicit DGMs fall into two categories: Models that carefully construct a tractable functional form for the likelihood $\mathcal{L}$ and models that use a tractable approximation. Two major examples for tractable explicit models are autoregressive models and normalizing flow models. Examples for explicit models that require approximation are the variational auto encoder and the Boltzmann machine. The most prominent member of implicit generative models is the generative adversarial approach.
+The various variants of explicit DGMs fall into two categories: Models that carefully construct a tractable functional form for the likelihood $\mathcal{L}$ and models that use a tractable approximation.\cite{goodfellow2020generative} Two major examples for tractable explicit models are autoregressive models and normalizing flow models. Examples for explicit models that require approximation are the variational auto encoder and the Boltzmann machine. The most prominent member of implicit generative models is the generative adversarial approach.
 
 \subsubsection{Autoregressive Modelling}
 
-The autoregressive approach applies the chain rule for probabilities to rewrite the joint probability $p(\mathbf{x})$ of an n-dimensional vector $\mathbf{x}$ into a product of conditional probabilities that are easy to access
+The autoregressive approach decomposes a complex probability distribution into simpler conditional probability distributions.\cite{oord2016conditional, oord2016wavenet, jozefowicz2016exploring} To this end, the chain rule for probabilities is applied to rewrite the joint probability $p(\mathbf{x})$ of an n-dimensional vector $\mathbf{x}$ into a product of conditional probabilities that are easy to access
 
 \begin{equation}
   p_{\Theta}(\mathbf{x}) = \prod_i^n p_{\Theta}(x_i | x_1, x_2, .., x_{i-1}) .
@@ -432,75 +448,74 @@ Splitting up the problem into conditional probailities often allows for a tracta
 
 \subsubsection{Normalizing Flow}
 
-Normalizing Flow (NF) models are LVMs that make use of the change of variables formula for invertable transformations $g$ that map from the data distribution $\mathcal{X}$ to the latent distribution $\mathcal{Z}$. Given a transformation
+Normalizing Flow (NF) models are LVMs that transform a simple prior distribution into a more complex distribution using invertible and differentiable mappings.\cite{rezende2015variational, dinh2014nice, kobyzev2020normalizing} NF models are based on the change of variables formula for invertable transformations $g$ that map from the data distribution $\mathcal{X}$ to the latent distribution $\mathcal{Z}$. Given a transformation
 
 \begin{equation}
   g: \mathrm{R}^D \rightarrow \mathrm{R}^D
 \end{equation}
 
-that is invertible and both $g$ and $g^{-1}$ are continuously differentiable, as well as orientation-preserving ($ \nabla g > 0 $), then the change of variables formula can be used to express the likelihood of a data point $x \sim \mathcal{X}$ in terms of another, potentially simpler, density function in the latent space
+that is invertible and both $g$ and $g^{-1}$ are continuously differentiable, as well as orientation-preserving, i.e. $ \nabla g > 0 $, then the change of variables formula can be used to express the likelihood of a data point $x \sim \mathcal{X}$ in terms of another, potentially simpler, density function in the latent space
 
 \begin{equation}
   p_{\mathcal{X}} (\mathbf{x}) = p_{\mathcal{Z}} (g^{-1}(\mathbf{x})) \Big| \text{det} \left( \frac{\partial g^{-1}(\mathbf{x})}{\partial \mathbf{x}} \right) \Big| .
 \end{equation}
 
-NF models have the advantage that they allow for direct optimization and evaluation of the likelihood. The major drawback of NF models are the required restrictions on the transformation $g$ that are difficult to fulfill in practice and limit their applicability. The most important restriction to be named is the equality of the dimensions of the latent and the data space.
+NF models have the advantage that they allow for direct optimization and evaluation of the likelihood. The major drawback of NF models are the required restrictions on the transformation $g$ that are difficult to fulfill in practice and limit their applicability.\cite{ruthotto2021introduction} The most important restriction to be named is the equality of the dimensions of the latent and the data space.
 
 \subsubsection{Variational Autoencoder}
 
-A Variational Autoencoder (VAE) is a LVM consisting of two parts: An encoder $e_{\Psi}(z|x)$ compresses a given input $x$ into a constraint distribution in the latent space $\mathbb{R}^d$ and a decoder $p_{\Theta}(x|z)$ reconstructs a distribution in the ambient space $\mathbb{R}^D$. 
+A Variational Autoencoder (VAE) is a LVM consisting of two parts:\cite{kingma2013auto, kingma2019introduction, rezende2014stochastic} An encoder $e_{\Psi}(\mathbf{z}|\mathbf{x})$ compresses a given input $\mathbf{x}$ into a constraint distribution in the latent space $\mathbb{R}^d$ and a decoder $p_{\Theta}(\mathbf{x}|\mathbf{z})$ reconstructs a distribution in the ambient space $\mathbb{R}^D$. 
 
-Typically, $e_{\Psi}(z|x)$ and $p_{\Theta}(x|z)$ are represented as a family of parametrized distributions, such as multivariate Gaussian distributions $\mathcal{N}(\boldsymbol{\mu}_{\Psi}, \boldsymbol{\Sigma}_{\Psi})$ and $\mathcal{N}(\boldsymbol{\mu}_{\Theta}, \boldsymbol{\Sigma}_{\Theta})$ with means $\boldsymbol{\mu}$ and variances $\boldsymbol{\Sigma}$ as parameters. Those parameters are then learned by DNNs with weights $\Psi$ and $\Theta$ respectively. Importantly, unlike NF models the dimensions of latent and ambient space do not have to match and the dimension of the latent space $d$ is generally chosen much smaller than the dimension of the data space $D$. As a consequence, the mapping between the spaces is not invertable anymore and thus the likelihood can not be computed directly.
+Typically, $e_{\Psi}(\mathbf{z}|\mathbf{x})$ and $p_{\Theta}(\mathbf{x}|\mathbf{z})$ are represented as a family of parametrized distributions, such as multivariate Gaussian distributions $\mathcal{N}(\boldsymbol{\mu}_{\Psi}, \boldsymbol{\Sigma}_{\Psi})$ and $\mathcal{N}(\boldsymbol{\mu}_{\Theta}, \boldsymbol{\Sigma}_{\Theta})$ with means $\boldsymbol{\mu}$ and variances $\boldsymbol{\Sigma}$ as parameters. Those parameters are learned by DNNs with weights $\Psi$ and $\Theta$, respectively. Importantly, unlike NF models, the dimensions of latent and ambient space do not have to match. In general, the dimension of the latent space $d$ is chosen much smaller than the dimension of the data space $D$. As a consequence, the mapping between the spaces is not invertable anymore and thus the likelihood can not be computed directly.
 %The goal of a Variational Autoencoder (VAE) is to introduce a map $g_{\Theta}$ (decoder) from a latent space $\mathrm{Z}$ to the data space $\mathrm{X}$, but unlike NF models the dimensions of latent and data space do not have to match. Typically the dimension of the latent space is much smaller than the dimension of the data space. As a consequence the map $g_{\Theta}$ is not invertable anymore and thus the likelihood can not be computed directly. 
 
-Typically, a standard normal distribution is used as a prior distribution $p_{\mathcal{Z}}(z)$ for the latent variables. Using Bayes's rule, the likelihood for a data point $x$ can be written as
+Typically, a standard normal distribution is used as a prior distribution $p_{\mathcal{Z}}(\mathbf{z})$ for the latent variables. Using Bayes's rule, the likelihood for a data point $\mathbf{x}$ can be written as
 
 \begin{equation}
-  p_{\Theta}(x) = \frac{p_{\Theta}(x|z)p_{\mathcal{Z}}(z)}{p_{\Theta}(z|x)} .
+  p_{\Theta}(\mathbf{x}) = \frac{p_{\Theta}(\mathbf{x}|\mathbf{z})p_{\mathcal{Z}}(\mathbf{z})}{p_{\Theta}(\mathbf{z}|\mathbf{x})} .
 \end{equation}
 
-Unfortunately, the posterior distribution $p_{\Theta}(z|x)$ is typically intractable. Therefore, the VAE approach aims to approximate it with the encoder $e_{\Psi}(z|x)$,
+Unfortunately, the posterior distribution $p_{\Theta}(\mathbf{z}|\mathbf{x})$ is typically intractable. Therefore, the VAE approach aims to approximate it with the encoder $e_{\Psi}(\mathbf{z}|\mathbf{x})$,
 
 \begin{equation}
-  e_{\Psi}(z|x) \approx p_{\Theta}(z|x) .
+  e_{\Psi}(\mathbf{z}|\mathbf{x}) \approx p_{\Theta}(\mathbf{z}|\mathbf{x}) .
 \end{equation}
 
 Using Jensen's inequlity, a variational lower bound, also called evidence lower bound (ELBO), can be derived to train both, the encoder $e_{\Psi}$ and the decoder $p_{\Theta}(z|x)$:
 
 \begin{align}
-  log(p_{\Theta}(x)) &\geq \mathbb{E}_{e_{\Psi}(z|x)} \Big[ log \big( \frac{p_{\Theta}(x,z)}{e_{\Psi}(z|x)} \big) \Big] \\
-    &= \underbrace{ \mathbb{E}_{e_{\Psi}(z|x)} \Big[ log \big( p_{\Theta}(x|z)\big) \Big] } _\text{reconstruction} -  \underbrace{  \text{KL}(e_{\Psi}(z|x)||p_{\mathcal{Z}}(z))  }_\text{regularization}
+  log(p_{\Theta}(\mathbf{x})) &\geq \mathbb{E}_{e_{\Psi}(\mathbf{z}|\mathbf{x})} \Big[ log \big( \frac{p_{\Theta}(\mathbf{x},\mathbf{z})}{e_{\Psi}(\mathbf{z}|\mathbf{x})} \big) \Big] \\
+    &= \underbrace{ \mathbb{E}_{e_{\Psi}(\mathbf{z}|\mathbf{x})} \Big[ log \big( p_{\Theta}(\mathbf{x}|\mathbf{z})\big) \Big] } _\text{reconstruction} -  \underbrace{  \text{KL}(e_{\Psi}(\mathbf{z}|\mathbf{x})||p_{\mathcal{Z}}(\mathbf{z}))  }_\text{regularization}
 \end{align}
   
-The negative ELBO is then minimized. The first term reduces the approximation error in ambient space (reconstruction error) that arises due to the restriction for the dimensionality of the latent space and the approximation error for the posterior. The second term acts as a regularizer that biases the the approximate posterior towars the prior distribution $p_{\mathcal{Z}}(z)$. Note that both terms might be in a conflict with each other. 
+The negative ELBO is then minimized. The first term reduces the approximation error in ambient space (reconstruction error) that arises due to the restriction for the dimensionality of the latent space and the approximation error for the posterior. The second term acts as a regularizer that biases the the approximate posterior towars the prior distribution $p_{\mathcal{Z}}(\mathbf{z})$. Note that both terms might be in a conflict with each other. 
 
-The main drawback of VAEs is that the gap between the ELBO used for optimization and the actual likelihood might be very big resulting in a model that is very different from the true distribution. Empirically, vanilla VAEs have a tendency to ignore some of the latent variables and produce blurred samples in ambient space.
+The main drawback of VAEs is that the gap between the ELBO used for optimization and the actual likelihood might be very big resulting in a model that is very different from the true distribution.\cite{ruthotto2021introduction} Empirically, vanilla VAEs have a tendency to ignore some of the latent variables and produce blurred samples in ambient space.\cite{asperti2021survey}
   
 \subsubsection{Markov Chain approximation}
   
-Some generative models generate samples using a markov chain technique: A sample $x$ is repeatly updated according to some transition operator $x' \sim q(x'|x)$. 
+Some generative models generate samples using a markov chain technique: A sample $\mathbf{x}$ is repeatly updated according to some transition operator $\mathbf{x}' \sim q(\mathbf{x}'|\mathbf{x})$. 
 
-An example for such a model is the Boltzmann machine (BM): A BM is a LVM that concists of binary units connected with each other. The units of a BM are divided into visible units receicing information from the environment and hidden (latent) units. The weights $\Theta$ of the network are the parameters of an energy function $E(\Theta)$ which is used to define the probability distribution over binary patterns of the units. During training, the weights are updated such that the likelihood for the given training data is maximized. To sample a new state the units are repeatly updated stochastically until an equilibrium state is reached. 
+An example for such a model is the Boltzmann machine (BM):\cite{fahlman1983massively, ackley1985learning, hinton1986learning, hinton1984boltzmann} A BM is a LVM that concists of binary units connected with each other. The units of a BM are divided into visible units receicing information from the environment and hidden (latent) units. The weights $\Theta$ of the network are the parameters of an energy function $E(\Theta)$ which is used to define the probability distribution over binary patterns of the units. During training, the weights are updated such that the likelihood for the given training data is maximized. To sample a new state the units are repeatly updated stochastically until an equilibrium state is reached. 
   
-The convergence of such model might be very slow in practice and there is not a clear criterion whether a chain has converged or not. BMs and its variants are barely used nowadays, because they do not scale well to high dimensional data.
+The convergence of such model might be very slow in practice and there is not a clear criterion whether a chain has converged or not.\cite{goodfellow2020generative} BMs and its variants are barely used nowadays, because they do not scale well to high dimensional data.
   
   
 \subsection{Implicit Generative Model: The Generative Adversarial Network}
 \label{ML_GAN}
 
+\textit{Generative adversarial networks} (GANs) were introduced by Ian Goodfellow et al. in 2014.\cite{goodfellow2014generative} They have become one of the most successful implicit generative models known in ML community. A GAN is a LVM, but unlike VAEs or NF models, they are not aiming to infer the distribution of latent variables underlie the samples, but learn a transformation from a given prior distribution $\mathcal{Z}$ to the data distribution $\mathcal{X}$.
 
-Generative adversarial networks (GANs) were introduced by Ian Goodfellow et al. in 2014. They have become one of the most successful implicit generative models known in ML community. A GAN is a LVM, but unlike VAEs or NF models they are not aiming to infer the distribution of latent variables underlie the samples, but learn a transformation from a given prior distribution $\mathcal{Z}$ to $\mathcal{X}$.
+In its core, a GAN consists of two competing models trained in a game: A generator $g_{\Theta}$ maps samples $\mathbf{z} \in \mathbb{R}^d$ from a latent distribution $\mathcal{Z}$ into the ambient space $\mathbb{R}^D$. A second model, the discriminator $c$, has to distinguish between synthetic samples $g_{\Theta}(\mathbf{z})$ from the generator and real samples $\mathbf{x}$ from the training set $\mathcal{D} = \{\mathbf{x}\}$, where $\mathbf{x}$ are drawn from $\mathcal{X}$. Thereby, the discriminator $c_{\Psi}$ acts as a distance measure in ambient space for the real distribution $\mathcal{X}$ and the distribution of synthetic samples $g_{\Theta}(\mathcal{Z})$. While the discriminator $c_{\Psi}$ is trained as a classifier in a supervised manner, the generator $g_{\Theta}$ is trained to fool the discriminator $c_{\Psi}$. Therefore, the generator $g_{\Theta}$ is indirectly pushed towards minimizing the difference between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$.
+The whole training process of a GAN is considered a likelihood-free method as neither the likelihood of the model $p_{\mathcal{\Theta}}(\mathbf{x})$ itself nor a lower bound of it is used explicitly. 
 
-In its core, a GAN concists of two competing models trained in a game: A generator $g_{\Theta}$ maps samples $z \sim \mathcal{Z}$ into the ambient space $\mathbb{R}^D$. A second model, the discriminator $c$, has to distinguish between synthetic samples $g_{\Theta}(z)$ from the generator and real samples $x$ from the training set $\{x\}$, where $x \sim \mathcal X$. Thereby, the discriminator $c_{\Psi}$ acts as a distance measure in ambient space for the real distribution $\mathcal{X}$ and the distribution of synthetic samples $g_{\Theta}(\mathcal{Z})$. While the discriminator $c_{\Psi}$ is trained as a classifier in a supervised manner, the generator $g_{\Theta}$ is trained fool the discriminator $c_{\Psi}$. Therefore, the generator $g_{\Theta}$ is indirectly pushed towards minimizing the difference between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$.
-The whole training process of a GAN is concidered a likelihood-free method as neither the likelihood of sample $p_{\mathcal{X}}(x)$ itself nor a lower bound of it is used explicitly. 
-
-Both, the generator $g_{\Theta}$ and the discriminator $c_{\Psi}$ are typically implemented as DNNs with weights $\Theta$ and $\Psi$ respectively. The generator is a function
+Both, the generator $g_{\Theta}$ and the discriminator $c_{\Psi}$ are typically implemented as DNNs with weights $\Theta$ and $\Psi$, respectively. The generator is a function
 
 \begin{equation}
   g_{\Theta}: \mathbb{R}^d \rightarrow \mathbb{R}^D,
 \end{equation}
 
-of latent samples $z$. The prior distribution $\mathcal{Z}$ is typically defined as a high-dimensional Gaussian distribution or uniform distribution over a hypercube. Intuitively, the latent samples $z$ provide a source of randomness for the model.
+of latent samples $\mathbf{z}$. The prior distribution $\mathcal{Z}$ is typically defined as a high-dimensional Gaussian distribution or uniform distribution over a hypercube. Intuitively, the latent samples $\mathbf{z}$ provide a source of randomness for the model.
 
 \subsubsection{Vanilla Approach: Discriminator as Binary Classifier}
 
@@ -510,13 +525,13 @@ In the seminal work of Ian Goodfellow et al. the GAN training is set up as a bin
   c_{\Psi}: \mathbb{R}^D \rightarrow [0,1],
 \end{equation}
   
-aiming to predict the probability whether a given sample is drawn from the training data set $\{x\}$ or not. In this spirit, an optimal discriminator $c_{\Psi^{*}}$ is supposed to predict $c_{\Psi^{*}}(x) \approx 1$ and $c_{\Psi^{*}}(g(z)) \approx 0$. Obviously, the training of both networks is coupled, since the goal of the generator is to reproduce the data distribution and therefore the samples it produces are supposed to be indistinguishable from the training set.
+aiming to predict the probability whether a given sample is drawn from the training true distribution $\mathcal{X}$ or from the generator $g_{\Theta}(\mathcal{Z})$. In this spirit, an optimal discriminator $c_{\Psi^{*}}$ is supposed to predict $c_{\Psi^{*}}(x) \approx 1$ and $c_{\Psi^{*}}(g(\mathbf{z})) \approx 0$. Obviously, the training of both networks is coupled, since the goal of the generator is to reproduce the data distribution $\mathcal{X}$ and therefore the samples it produces are supposed to be indistinguishable from the training set.
 
-The natural choice for the loss function for a binary-classification problem is the cross entropy and therefore the original GAN loss $J(\Theta, \Psi)$ is defined as
+The natural choice for the loss function for a binary-classification problem is the cross entropy. Therefore, the original GAN loss $J(\Theta, \Psi)$ is defined as
 
 \begin{equation}
 \label{gan_loss_binary}
-  J(\Theta, \Psi) = \mathbb{E}_{x \sim \mathcal{X}} [log(c_{\Psi}(x))] + \mathbb{E}_{z \sim \mathcal{Z}} [log(1 - c_{\Psi}(g_{\Theta}(z)))] .
+  J(\Theta, \Psi) = \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [log(c_{\Psi}(\mathbf{x}))] + \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [log(1 - c_{\Psi}(g_{\Theta}(\mathbf{z})))] .
 \end{equation}
   
 As a result, the GAN training becomes a minimax game, where the discriminator aims at maximizing $J(\Theta, \Psi)$ while the generator tries to minimize $J(\Theta, \Psi)$:
@@ -525,12 +540,12 @@ As a result, the GAN training becomes a minimax game, where the discriminator ai
   \Psi^{*} = \underset{\Psi}{\text{arg max}} \; J(\Theta, \Psi) \;\; \text{and} \;\; \Theta^{*} = \underset{\Theta}{\text{arg min}} \; J(\Theta, \Psi)
 \end{equation}
   
-This refers to a zero-sum game where the gain of one player is the loss of the other. The training of a GAN converges when a saddle point $(\Psi^{*}, \Theta^{*})$ is reached, which is also called Nash equilibrium in game theory: For both networks the loss can not be optimized any further given the weights of the other. However, being a saddle point makes it difficult to find the Nash equiibrium numerically.
+This refers to a zero-sum game where the gain of one player is the loss of the other. The training of a GAN converges when a saddle point $(\Psi^{*}, \Theta^{*})$ is reached, which is also called \textit{Nash equilibrium} in game theory: For both networks, the loss can not be optimized any further given the weights of the other. However, being a saddle point, makes it difficult to find the Nash equiibrium numerically.
 
-Using the loss defined in \ref{gan_loss_binary} it can be shown the optimal discriminator $c_{\Psi^{*}, \Theta}$ for a fixed generator $g_{\Theta}$ is given by
+Using the loss defined in \ref{gan_loss_binary}, it can be shown that the optimal discriminator $c_{\Psi^{*}, \Theta}$ for a fixed generator $g_{\Theta}$ is given by
 
 \begin{equation}
-  c_{\Psi^{*}, \Theta} (x) = \frac{p_{\mathcal{X}}(x)}{p_{\mathcal{X}}(x) + p_{\Theta}(x)}
+  c_{\Psi^{*}, \Theta} (\mathbf{x}) = \frac{p_{\mathcal{X}}(\mathbf{x})}{p_{\mathcal{X}}(\mathbf{x}) + p_{\Theta}(\mathbf{x})}
 \end{equation}
 
 In practice, the minimax game is tackled iteratively with an alternating approach where the discriminator $c_{\Psi}$ is trained for $k$ steps followed by one training step for $g_{\Theta}$.
@@ -543,7 +558,3 @@ In practice, the minimax game is tackled iteratively with an alternating approac
 
 
 \subsubsection{Limitations}
-
-\section{Clustering}
-
-\subsection{The Sketch-Map Algorithm}
