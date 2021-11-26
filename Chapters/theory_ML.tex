@@ -358,7 +358,7 @@ where $\mathcal{C}'$ and $a'$ are the derivatives of the cost function $\mathcal
 
 \section{Generative Modeling}
 
-ML algorithms are divided into two broad categories, namely \textit{generative} and \textit{discriminative} models. While the former aims at learning the dependencies of all the variables in a system, the goal of the latter is to learn decision boundaries. Generative models are typically linked to unsupervised training and discriminative models to supervised training, but a clear dichotomy is not always possible.
+ML algorithms are divided into two broad categories, namely \textit{generative} and \textit{discriminative} models.\cite{jebara2012machine} While the former aims at learning the dependencies of all the variables in a system, the goal of the latter is to learn decision boundaries. Generative models are typically linked to unsupervised training and discriminative models to supervised training, but a clear dichotomy is not always possible.
 
 Consider a set of labeled data $\mathcal{D} = \{ \mathbf{(x, y)} \}$ drawn from a distribution $\mathcal{X}$ with joint probability $p_{\mathcal{X}}(\mathbf{x}, \mathbf{y})$. The goal of a discriminative model is to learn the conditional probability $p_{\mathcal{X}} (\mathbf{y}|\mathbf{x})$ of the class labels $\mathbf{y}$ given the observation $\mathbf{x}$. To this end, a discriminative model does not necessarily have to learn about the dependencies of all the variables in the system, as it only has to focus on the variables that are important for labeling the observations.
 
@@ -409,9 +409,10 @@ If $N$ is large, the maximum likelihood approach is equivalent to minimizing the
   H(p_{\mathcal{X}}(\mathbf{x}), p_{\Theta}(\mathbf{x})) = \mathbb{E}_{x \sim p_{\mathcal{X}}(\mathbf{x})} \Big[ log \Big( \frac{1}{ p_{\Theta}(\mathbf{x}) } \Big) \Big] ,
 \end{equation}
 
-as well as the \textit{relative entropy}
+as well as the \textit{relative entropy}, which is also known as the \textit{Kullback-Leibler divergence}
 
 \begin{equation}
+\label{relative_entropy}
   D(p_{\mathcal{X}}(\mathbf{x})|| p_{\Theta}(\mathbf{x})) = \mathbb{E}_{x \sim p_{\mathcal{X}}(\mathbf{x})} \Big[ log \Big( \frac{p_{\mathcal{X}}(\mathbf{x})}{ p_{\Theta}(\mathbf{x}) } \Big) \Big]
 \end{equation}
 
@@ -419,8 +420,10 @@ as the law of large numbers states
 
 \begin{align}
  \underset{N \rightarrow \infty}{\text{lim}}  \; - \frac{1}{N} \sum_i^N log ( p_{\Theta}(\mathbf{x}) ) 
- &= \; \mathbb{E}_{x \sim p_{\mathcal{X}}(\mathbf{x})} [ - log ( p_{\Theta}(\mathbf{x})) ]  .
+ &= \; \mathbb{E}_{x \sim p_{\mathcal{X}}(\mathbf{x})} [ - log ( p_{\Theta}(\mathbf{x})) ]  ,
 \end{align}
+
+and the scaling factor $\frac{1}{N}$ is irrelevant, as it does not affect the $\underset{\Theta}{\text{argmin}}$ operation.
 
 %\begin{align}
 % \underset{N \rightarrow \infty}{\text{lim}} \underset{\Theta}{\text{argmin}} \; - \sum_i^N log ( p_{\Theta}(x) ) 
@@ -507,7 +510,7 @@ The convergence of such model might be very slow in practice and there is not a 
 \textit{Generative adversarial networks} (GANs) were introduced by Ian Goodfellow et al. in 2014.\cite{goodfellow2014generative} They have become one of the most successful implicit generative models known in ML community. A GAN is a LVM, but unlike VAEs or NF models, they are not aiming to infer the distribution of latent variables underlie the samples, but learn a transformation from a given prior distribution $\mathcal{Z}$ to the data distribution $\mathcal{X}$.
 
 In its core, a GAN consists of two competing models trained in a game: A generator $g_{\Theta}$ maps samples $\mathbf{z} \in \mathbb{R}^d$ from a latent distribution $\mathcal{Z}$ into the ambient space $\mathbb{R}^D$. A second model, the discriminator $c$, has to distinguish between synthetic samples $g_{\Theta}(\mathbf{z})$ from the generator and real samples $\mathbf{x}$ from the training set $\mathcal{D} = \{\mathbf{x}\}$, where $\mathbf{x}$ are drawn from $\mathcal{X}$. Thereby, the discriminator $c_{\Psi}$ acts as a distance measure in ambient space for the real distribution $\mathcal{X}$ and the distribution of synthetic samples $g_{\Theta}(\mathcal{Z})$. While the discriminator $c_{\Psi}$ is trained as a classifier in a supervised manner, the generator $g_{\Theta}$ is trained to fool the discriminator $c_{\Psi}$. Therefore, the generator $g_{\Theta}$ is indirectly pushed towards minimizing the difference between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$.
-The whole training process of a GAN is considered a likelihood-free method as neither the likelihood of the model $p_{\mathcal{\Theta}}(\mathbf{x})$ itself nor a lower bound of it is used explicitly. 
+The whole training process of a GAN is considered a likelihood-free method as neither the likelihood of the model $p_{\Theta}(\mathbf{x})$ itself nor a lower bound of it is used explicitly. 
 
 Both, the generator $g_{\Theta}$ and the discriminator $c_{\Psi}$ are typically implemented as DNNs with weights $\Theta$ and $\Psi$, respectively. The generator is a function
 
@@ -525,36 +528,78 @@ In the seminal work of Ian Goodfellow et al. the GAN training is set up as a bin
   c_{\Psi}: \mathbb{R}^D \rightarrow [0,1],
 \end{equation}
   
-aiming to predict the probability whether a given sample is drawn from the training true distribution $\mathcal{X}$ or from the generator $g_{\Theta}(\mathcal{Z})$. In this spirit, an optimal discriminator $c_{\Psi^{*}}$ is supposed to predict $c_{\Psi^{*}}(x) \approx 1$ and $c_{\Psi^{*}}(g(\mathbf{z})) \approx 0$. Obviously, the training of both networks is coupled, since the goal of the generator is to reproduce the data distribution $\mathcal{X}$ and therefore the samples it produces are supposed to be indistinguishable from the training set.
+aiming to predict the probability whether a given sample is drawn from the training true distribution $\mathcal{X}$ or from the generator $g_{\Theta}(\mathcal{Z})$.\cite{goodfellow2014generative} In this spirit, an optimal discriminator $c_{\Psi^{*}}$ is supposed to predict $c_{\Psi^{*}}(x) \approx 1$ and $c_{\Psi^{*}}(g(\mathbf{z})) \approx 0$. Obviously, the training of both networks is coupled, since the goal of the generator is to reproduce the data distribution $\mathcal{X}$ and therefore the samples it produces are supposed to be indistinguishable from the training set.
 
-The natural choice for the loss function for a binary-classification problem is the cross entropy. Therefore, the original GAN loss $J(\Theta, \Psi)$ is defined as
+The natural choice for the loss function for a binary-classification problem is the cross entropy. Therefore, the original cost function for the GAN $\mathcal{C}(g_{\Theta}, c_{\Psi})$ is defined as \cite{goodfellow2014generative}
 
 \begin{equation}
 \label{gan_loss_binary}
-  J(\Theta, \Psi) = \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [log(c_{\Psi}(\mathbf{x}))] + \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [log(1 - c_{\Psi}(g_{\Theta}(\mathbf{z})))] .
+  \mathcal{C}(g_{\Theta}, c_{\Psi}) = \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [log(c_{\Psi}(\mathbf{x}))] + \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [log(1 - c_{\Psi}(g_{\Theta}(\mathbf{z})))] .
 \end{equation}
   
-As a result, the GAN training becomes a minimax game, where the discriminator aims at maximizing $J(\Theta, \Psi)$ while the generator tries to minimize $J(\Theta, \Psi)$:
+As a result, the GAN training becomes a minimax game, where the discriminator aims at maximizing $J(\Theta, \Psi)$ while the generator tries to minimize $J(\Theta, \Psi)$:\cite{goodfellow2014generative}
 
 \begin{equation}
-  \Psi^{*} = \underset{\Psi}{\text{arg max}} \; J(\Theta, \Psi) \;\; \text{and} \;\; \Theta^{*} = \underset{\Theta}{\text{arg min}} \; J(\Theta, \Psi)
+  \Psi^{*} = \underset{\Psi}{\text{arg max}} \; \mathcal{C}(g_{\Theta}, c_{\Psi}) \;\; \text{and} \;\; \Theta^{*} = \underset{\Theta}{\text{arg min}} \; \mathcal{C}(g_{\Theta}, c_{\Psi})
 \end{equation}
   
 This refers to a zero-sum game where the gain of one player is the loss of the other. The training of a GAN converges when a saddle point $(\Psi^{*}, \Theta^{*})$ is reached, which is also called \textit{Nash equilibrium} in game theory: For both networks, the loss can not be optimized any further given the weights of the other. However, being a saddle point, makes it difficult to find the Nash equiibrium numerically.
 
-Using the loss defined in \ref{gan_loss_binary}, it can be shown that the optimal discriminator $c_{\Psi^{*}, \Theta}$ for a fixed generator $g_{\Theta}$ is given by
+Using the loss defined in \ref{gan_loss_binary}, it can be shown that the optimal discriminator $c_{\Psi^{*}, \Theta}$ for a fixed generator $g_{\Theta}$ is given by \cite{goodfellow2014generative}
 
 \begin{equation}
-  c_{\Psi^{*}, \Theta} (\mathbf{x}) = \frac{p_{\mathcal{X}}(\mathbf{x})}{p_{\mathcal{X}}(\mathbf{x}) + p_{\Theta}(\mathbf{x})}
+\label{optimal_discriminator}
+  c_{\Psi^{*}, \Theta} (\mathbf{x}) = \frac{p_{\mathcal{X}}(\mathbf{x})}{p_{\mathcal{X}}(\mathbf{x}) + p_{\Theta}(\mathbf{x})} .
 \end{equation}
 
-In practice, the minimax game is tackled iteratively with an alternating approach where the discriminator $c_{\Psi}$ is trained for $k$ steps followed by one training step for $g_{\Theta}$.
+Moreover, assuming on optimal discriminator, it can be shown that the cost function for the generator is related to the Jensen-Shannon divergence $JS$. The $JS$ divergence is symmetrized variant of the relative entropy defined in Eq. \ref{relative_entropy}:
+
+\begin{equation}
+  \label{jensen_shannon}
+  JS(p_{\mathcal{X}}|| p_{\Theta}) = \frac{1}{2} D\Big(p_{\mathcal{X}}|| \frac{p_{\mathcal{X}} + p_{\Theta}}{2} \Big) + \frac{1}{2} D\Big(p_{\Theta}|| \frac{p_{\mathcal{X}} + p_{\Theta}}{2} \Big)
+\end{equation}
+
+Plugging Eq. \ref{optimal_discriminator} into Eq. \ref{gan_loss_binary} yields the cost function for the generator given an optimal discriminator:
+
+\begin{equation}
+  \mathcal{C}(g_{\Theta}, c_{\Psi^{*}}) = 2 JS(p_{\mathcal{X}}|| p_{\Theta}) - 2 \text{log}(2)
+\end{equation}
+
+The above analysis is instructive and motivates the usage of the GAN approach. However, the theoretical analysis does not hold in practice for several reasons: 
+Firstly, the minimax game is tackled iteratively with an alternating approach where the discriminator $c_{\Psi}$ is trained for $k$ steps in order to reach optimality followed by one training step for $g_{\Theta}$. Typically, a rather small number of training steps $k$ for the discriminator is chosen in order to maintain a feasable optimization. Therefore, the assumption of an optimal discriminator does not apply and the convexity of the cost function is not guaranteed. Secondly, convergence to an equilibrium where $p_{\Theta}(\mathbf{x}) = p_{\mathcal{X}}(\mathbf{x})$ is hindered by the limited capacity of the generator and the discriminator: A direct optimization in function space would be required to guarantee convergence. However, both models are represented as DNNs and optimization takes place in the finite parameter space.  Finally, optimizing the generator with the cross entropy defined in Eq. \ref{gan_loss_binary} does not perform well in practice, as the cost can easily saturate: If the discriminator can reject samples produced by the generator with high confidence, the generator's gradients vanish making it impossible to improve. This limitation is especially severe in the beginning of the training, where generated samples are clearly different from the training data. To circumvent this limitation, a heuristic loss for the generator is typically used instead:
+
+\begin{equation}
+\label{gan_nonsaturating_loss}
+    \mathcal{C}(g_{\Theta}) = \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [- log( c_{\Psi}(g_{\Theta}(\mathbf{z})))] .
+\end{equation}
   
+The loss in Eq. \ref{gan_nonsaturating_loss} provides strong gradients for the generator. However, other issues can occur upon application of the non-saturating cost function, such as numerical instability of the gradients and mode collapse, i.e. low sample variance.
   
 \subsubsection{Wasserstein Distance: Discriminator Estimates Transport Cost}
   
+Various variants of GANs have been developed to tackle the above mentioned challenges. A popular variant is the \textit{Wasserstein GAN} (WGAN) that uses the \textit{Earth Mover distance} (EMD) to measure the distance between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$. According to \cite{}, the EMD has some appealing properties compared to other probability distance functions, such as relative entropy, cross entropy or Jensen-Shannon divergence: If the distributions have disjoint support, the aforementioned distance measurments yield gradients that are always zero. This is a major concern when dealing with real-world high-dimensional data sets, as the manifold hypotheses states that most of the probability mass is concentrated in lower dimensional manifolds. Therefore, it is likely that the intersection of two probability distributions vanishes. The EMD circumvents these issues and guarantees continuity and differantiability.
+
+The EMD is defined as
+
+\begin{equation}
+  W(p_{\mathcal{X}}, p_{\Theta}) = \underset{\gamma \in \Gamma (p_{\mathcal{X}}, p_{\Theta})}{\text{inf}} \;  \mathbb{E}_{(\mathbf{x}, \mathbf{y}) \sim \gamma} [ \lVert \mathbf{x} - \mathbf{y} \rVert ] ,
+\end{equation}
   
-\subsubsection{Learning Conditional Distributions}
+where $\Gamma (p_{\mathcal{X}}, p_{\Theta})$ denotes the set of all joint distributions $\gamma(\mathbf{x}, \mathbf{y})$ whose marginals are $(p_{\mathcal{X}}$ and $p_{\Theta})$, respectively. The $\gamma(\mathbf{x}, \mathbf{y})$ can be interpreted as a transport plan indicating how much probability mass has to be moved from $\mathbf{x}$ to $\mathbf{y}$ in order to make the two distributions match. Therefore, the EMD seeks the minimal transport cost. 
 
+The formulation of the EMD in Eq. \ref{} is highly intractable and most practical implementations apply a equivalent formulation of the EMD knwon as Kantorovich-Rubinstein duality:
 
+\begin{equation}
+\label{wasserstein_duality}
+  W(p_{\mathcal{X}}, p_{\Theta}) = \underset{f \in \text{Lip}(f)\leq 1}{\text{max}} \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [f(g_{\Theta}(\mathbf{z}))] - \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [f(\mathbf{x})]
+\end{equation}
+  
+In Eq. \ref{wasserstein_duality} the maximum is taken over all functions $f: \mathbb{R}^D \rightarrow \mathbb{R}$ that are 1-Lipschitz. In practice, the function $f$ is approximated with a NN $c_{\Psi}$ and additional constraints are applied to ensure the 1-Lipschitz continuity. The minimax game for WGAN can be written as
+
+\begin{equation}
+\label{wasserstein_loss}
+  \underset{\Theta}{\text{min}} \; \underset{\Psi}{\text{max}} \; \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [c_{\Psi}(g_{\Theta}(\mathbf{z}))] - \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [c_{\Psi}(\mathbf{x})] .
+\end{equation}
+
+  
 \subsubsection{Limitations}
