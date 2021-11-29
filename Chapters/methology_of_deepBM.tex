@@ -1,10 +1,25 @@
 % Chapter Template
 
-\chapter{Methology of DeepBM: Adversarial Backmapping of Condensed-Phase Molecular Structures} % Main chapter title
+\chapter{Methology of DeepBM: Adversarial Backmapping of Condensed-Phase Molecular Structures}
+\label{methology}
 
-\label{methology} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+In this chapter, \textit{DeepBM} is introduced: A new method to tackle the backmapping problem for molecular structures based on ML. The method utilizes DNNs to learn a mapping from a coarse-grained representation to a higher resolution, i.e. it learns to reintroduce missing degrees of freedom. Unlike other backmapping schemes, deepBM aims at directly predicting equilibrated molecular structures that resemble the Boltzmann distribution. Importantly, deepBM does not rely on further energy minimization for relaxation and MD simulations for equilibration. Moreover, deepBM is designed for condensed-phase molecular systems and scales linearly with the number of fine-grained particles.
+
+The method is based on DGMs with a convolutional network architecture. The model is trained with the generative adversarial approach and the coarse-grained structure is treated as a conditional variable for the generative process. To this end, training data is generated consisting of pairs of corresponding coarse-grained and fine-grained molecular structures. The convolutional architecture requires a regular discretization of 3D space, which prohibits scaling to larger spatial structures. Therefore, the generator is combined with an autoregressive approach that reconstructs the fine-grained structure incrementaly, i.e. atom by atom. In order to make the model scalable to arbitrary system sizes, each step uses only local information guided by the coarse-grained representation.
 
 \section{Notation and Problem Formulation}
+
+As described in Sec. \ref{theory_backmapping}, a backmapping scheme reintroduces details along the coarse-grained degrees of freedom. To this end, the backmapping function $\phi$ is necessarily a function of the coordinates $\mathbf{R} \in \mathbb{R}^{3N}$ of the $N$ coarse-grained beads. However, additional information to characterize the spezific chemistry of both, the coarse-grained and the fine-grained structure, can be provided as well in order to improve the quality and transferability of the mapping. 
+
+Formally, let $\mathcal{A} = \{\mathbf{A}_{I} = (\mathbf{R}_I, \mathbf{C}_I) | I = 1, \dots, N \}$ denote a snapshot of the coarse-grained system consisting of $N$ beads. Each bead has position $\mathbf{R}_I$ and an associated type $\mathbf{C}_I$. The type $\mathbf{C}_I$ reflects various chemistry specific attributes, such as the bead mass, the connectivity or associated force field parameters. Similarly, let $\mathpzc{a} = \{\mathbf{a}_{I} = (\mathbf{r}_i, \mathbf{c}_i) | i = 1, \dots, n \}$ denote the atomistic snapshots of the system consisting of $n$ atoms, with position $\mathbf{r}_i$ and types $\mathbf{c}_i$. The training data $\mathcal{D} = \{(\mathcal{A}_j, \mathpzc{a}_j)\}$ consists of pairs of corresponding atomistic and coarse-grained snapshots. Typically, the fine-grained structure $\mathbf{r} = (\mathbf{r}_1, \dots, \mathbf{r}_n)$ is sampled from the Boltzman distribution $p_{\mathbf{c}}(\mathbf{r}) \propto \text{exp}[ - U_{\mathbf{c}}(\mathbf{r})/(k_B T) ]$, where the superscript $\mathbf{c} = {\mathbf{c}_1, \dots, \mathbf{c}_n}$ denots the chemistry specific information of all the atoms. The corresponding coarse-grained structures $\mathbf{R} = (\mathbf{R}_1, \dots, \mathbf{R}_N)$ are obtained upon application of the coarse-grained mapping $\mathbf{R} = M_{\mathbf{C}}(\mathbf{r})$, 
+
+The backmapping problem can be formulated as the joint conditional probibility 
+
+\begin{equation}
+  p_{\phi} ( \mathbf{r} | \mathbf{A}, \mathbf{c}).
+\end{equation}
+
+
 
 \section{Autoregressive Reconstruction}
 
