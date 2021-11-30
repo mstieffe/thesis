@@ -58,17 +58,6 @@ The first step of the proposed algorithm is to generate an initial structure bas
 
 where $S$ sorts the atoms in the order of reconstruction and $\mathbf{r}_{S(1)}, \dots, \mathbf{r}_{S(i-1)}$ denotes the atoms that have already been generated. Eq. \ref{} allows to split a complex, high-dimensional problem into a sequence of rather simple tasks, namely to learn the conditionals $p_{\mathcal{X}}(\mathbf{r}_{S(i)} | \mathbf{r}_{S(1)}, \dots, \mathbf{r}_{S(i-1)}, \mathbf{c}_{S(1)}, \dots, \mathbf{c}_{S(i)},  \mathbf{A}_1, \dots, \mathbf{A}_N)$. 
 
-The order of reconstruction $S$ can be defined in various ways. In the current implementation, a molecule is selected randomly and completely reconstructed before the next molecule is chosen. Three different options are possible to traverse through the molecular structure: 
-
-\begin{itemize}
- \item \textit{depth-first-search}: Consider each molecule as a graph, where each node corresponds to an atom and edges represent the bonds. In the depth-first-search algorithm, a root node is selected from which each branch is explored as far as possible before backtracking.
- \item \textit{breadth-first-search}: A root node is selected from which all nodes at the present depth are explored before moving on to the nodes at the next depth level.
- \item \textit{random}: The order of reconstruction is chosen randomly.
-\end{itemize}
-
-Practice has shown that an ordering based on the depth-first-search yields the best performance.
-
-
 \section{Representation of Molecular Structures}
 
 \section{Conditional GAN}
