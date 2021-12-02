@@ -304,10 +304,10 @@ The basis of a coarse-grained model is the representation of the particles captu
 It is often required to not only specify the representation but also define a concrete mapping for the coordinates, i.e. a function $\mathbf{M}$ of the atomistic coordinates $\mathbf{r}$ to the coordinates of the CG beads $\mathbf{R}$. Typically, a linear mapping is chosen,
 
 \begin{equation}
-  \mathbf{R}_I = \mathbf{M}_{I}(\mathbf{r}) = \sum_{i \in \phi(I)} b_{iI} \mathbf{r}_i 
+  \mathbf{R}_I = \mathbf{M}_{I}(\mathbf{r}) = \sum_{i \in \psi(I)} b_{iI} \mathbf{r}_i 
 \end{equation}
 
-where $I$ and $i$ are the indices of the CG bead and atom respectively, $\phi(I)$ is the set of indices of atoms the CG bead $I$ corresponds to and $b_{iI}$ are coefficients of the mapping. In many cases, the coordinate mapping is chosen such that it reflects the center of mass geometry of the group of atoms. 
+where $I$ and $i$ are the indices of the CG bead and atom respectively, $\psi(I)$ is the set of indices of atoms the CG bead $I$ corresponds to and $b_{iI}$ are coefficients of the mapping. In many cases, the coordinate mapping is chosen such that it reflects the center of mass geometry of the group of atoms. 
 
 \subsection{Top-down vs Bottom-up}
 
