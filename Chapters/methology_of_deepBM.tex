@@ -47,7 +47,7 @@ Sampling from $p_{\mathcal{X}}(\mathbf{r}_1, \dots, \mathbf{r}_n | \mathbf{A}_1,
 
 Moreover, direct sampling restricts the transferability of the trained model. As an example, the number of coarse-grained beads and atoms is fixed, i.e. the model is only applicable to systems of the same size. This implies that the data required for training needs to be as high-dimensional as the target system. Such a strategy is questionable, as the purpose of most MS approaches is to extend the accesable system size. Additionally, the model becomes chemistry specific, as the trained sampler expects to generate the same kind molecules it was trained on. Therefore, it is not possible transfer the learned correlation across chemical space. 
 
-The proposed method deepBM circumvents these limitations by factorizing $p_{\mathcal{X}}$ in terms of atomic contributions. More precisely, the generation of one specific atom becomes conditional on both, the coarse-grained beads as well as all the atoms previously reconstructed. Such a factorization can be easily optained by applying the chain rule for probabilities
+The proposed method deepBM circumvents these limitations by factorizing $p_{\mathcal{X}}$ in terms of atomic contributions. More precisely, the generation of one specific atom becomes conditional on both, the coarse-grained beads as well as all the atoms previously reconstructed. Such a factorization can be obtained by applying the chain rule for probabilities
 
 \begin{equation}
 \label{probability_factorization}
@@ -57,14 +57,11 @@ The proposed method deepBM circumvents these limitations by factorizing $p_{\mat
 
 where $S$ sorts the atoms in the order of reconstruction and $\mathbf{r}_{S(1)}, \dots, \mathbf{r}_{S(i-1)}$ denotes the atoms that have already been generated. Eq. \ref{probability_factorization} allows to split a complex, high-dimensional problem into a sequence of rather simple tasks, namely to learn the conditionals $p_{\mathcal{X}}(\mathbf{r}_{S(i)} | \mathbf{r}_{S(1)}, \dots, \mathbf{r}_{S(i-1)}, \mathbf{c}_{S(1)}, \dots, \mathbf{c}_{S(i)},  \mathbf{A}_1, \dots, \mathbf{A}_N)$. To this end, the generative model $\phi_{\Theta}$ is trained to generate and refine atom coordinates sequentially. The dependence on earlier predictions of $\phi_{\Theta}$ makes the method \textit{autoregressive}. Note, that the modular reconstruction increases the flexibility of the model and offers a perspective to release the aforementioned resitrictions.
 
-\subsection{Ordering}
+\subsection{Ordering of Molecular Graphs}
 
-The factorization proposed in Eq. \ref{} requires a strict ordering $S$ of the particles. In general, the ordering $S$ is not unique. In the current implementation, a molecule is selected randomly and completely reconstructed before the next molecule is chosen. Therefore, the sorting $S$ of the whole system is a random concatenation of the sortings for each individual molecule. 
+The factorization proposed in Eq. \ref{probability_factorization} requires a strict ordering $S$ of the particles. In general, the ordering $S$ is not unique. In the current implementation, a molecule is selected randomly and completely reconstructed before the next molecule is chosen. Therefore, the sorting $S$ of the whole system is a random concatenation of the sortings for each individual molecule. 
 
-In the following, a molecule is considered as a graph, where each node represents an atom or bead and edges correspond to bonds between the particles. Conesequently, the ordering for each molecule can be defined as a traversal through a graph. In general, a molecular graph is undirected and can be cyclic or acyclic. Defining an ordering for an undirected graph effectively converts it into a directed graph. If the ordering allows to traverse the molecular graph such that each node is only visited after all of its dependencies are visited, it is called a \textit{topological sort}. Note, that a topological sort is only possible if the graph has no cycles.
-
-
-In practice, the sorting $S$ is found by the following strategy: Starting from a root node, three different alogrithms to traverse the graph structure are possible:
+In order to sort the particles of each molecule, the molecular structure can be represented as a graph. More precisely, particles and bonds are mapped to the nodes and edges of the graph. Note, that molecular graphs are generally undirected and can be cyclic or acyclic. The graph representation allows to define the sorting of the particles as a graph traversal. Starting from a root node, the following strategies can be applied for traversing:
 
 \begin{itemize}
  \item \textit{depth-first-search}: Each branch of the graph is explored as far as possible before backtracking.
@@ -72,15 +69,19 @@ In practice, the sorting $S$ is found by the following strategy: Starting from a
  \item \textit{random}: If the current node has multiple unexplored edges, the subsequent node is chosen randomly. 
 \end{itemize}
 
-Practice has shown that an ordering based on the depth-first-search yields the best performance. Moreover, deepBM sorts the atoms depending on both, the coarse-grained and the atomistic molecular topology: In an outer loop, the coarse-grained molecular graph is explored yielding a sorting $S_{CG}(I)$ for the beads $\mathbf{A}_I$. In an inner loop, deepBM generates atom positions for each atom $\mathbf{a}_i$ of the fragment $\psi_{I}$ according to an ordering $S_{\psi_{I}}(i)$.
+Practice has shown that an ordering based on the depth-first-search yields the best performance regarding the quality of reconstructed molecules. More specifically, deepBM sorts the atoms depending on both, the coarse-grained and the atomistic molecular topology: In an outer loop, the coarse-grained molecular graph is explored yielding a sorting $S_{CG}(I)$ for the beads $\mathbf{A}_I$. In an inner loop, deepBM generates atom positions for each atom $\mathbf{a}_i$ in the fragment $\psi_{I}$ according to an ordering $S_{\psi_{I}}(i)$.
 
 %In general, a molecular graph is an undirected graph that can be cyclic or acyclic. The ordering defined for the given graph structure basically converts the undirected graph into a directed graph. If the ordering allows to traverse the molecular graph such that each node is only visited after all of its dependencies are visited, it is called a \textit{topological sort}. Note, that a topological sort is only possible if the graph has no cycles.
 
-\subsection{Initial Structure}
+\subsection{Initial Structure with Forward Sampling}
 
-The first step of the proposed algorithm is to generate an initial structure based on the factorization
+The first step of the proposed algorithm is to generate an initial structure. To this end, \textit{forward sampling} is used based on the factorization in Eq.\ref{probability_factorization}. The algorithm starts by sampling the variables with no parents from a prior distribution, i.e. the atom position for the first atom in the ordering $S$. Subsequent variables are generated by sampling from the conditional probability distributions given the atoms generated in the previous steps. 
 
-\subsection{Refinement: Gibbs Sampling}
+Forward sampling yields accurate results if the underlying graph structure allows to define a topological ordering, i.e. a graph traversal in which each node is visited only after all of its dependencies are visited. Note, that a topological ordering exists only for directed acyclic graphs, which is generally not the case for molecular graphs. As a consequence, forward sampling applied for molecular graphs can yield structures with low statistical weight. Intuitively, forward sampling without topological order requires to sample variables without taking all of their dependencies into account. Therefore, the algorithm might get stuck, because previously sampled variables 
+
+if the atom positions are sampled without topological order, atoms are placed without  the generative process can easily get stuck  
+
+\subsection{Refinement with Gibbs Sampling}
 
 
 \section{Representation of Molecular Structures}

@@ -43,13 +43,11 @@ generates a set of coordinates $\phi_{\Theta}(\mathbf{A}_1, \dots, \mathbf{A}_N,
 
 \section{Autoregressive Reconstruction}
 
-Sampling from $p_{\mathcal{X}}(\mathbf{r}_1, \dots, \mathbf{r}_n | \mathbf{A}_1, \dots, \mathbf{A}_N, \mathbf{c}_1, \dots, \mathbf{c}_n)$ directly poses various challenges: (1) The number of coarse-grained beads and atoms is fixed, i.e. the model is only applicable to systems of the same size as the original system used for training. (2) Similarly, the ordering of the atoms and beads is not allowed to change. (3) The model becomes chemistry specific, i.e. it can only be deployed for molecules used during training and chemical transferability can not be achieved. (4) Most importantly, the number of particles in a molecular system is typically large. A method that generates all the coordinates at once would have to solve a unreasonable high-dimensional problem. As a consequence, applications would be limited to rather small system sizes, which would especially hinder the usage for condensed-phase systems.
+Sampling from $p_{\mathcal{X}}(\mathbf{r}_1, \dots, \mathbf{r}_n | \mathbf{A}_1, \dots, \mathbf{A}_N, \mathbf{c}_1, \dots, \mathbf{c}_n)$ directly poses significant challenges. At first, the complexity of the sampling problem rises with the number of particles $n$. Conversely, the size of molecular systems studied with computer simulations is typically large. As a consequence, a sampler $\phi_{\Theta}$ designated to generate all coordinates at once has to solve an unreasonable high-dimensional problem. Such an one-shot approach is ultimately limited to rather small system sizes. 
 
-In order to circumvent these limitations, $p_{\mathcal{X}}$ is factorized in terms of atomic contributions. More precisely, the generation of one specific atom becomes conditional on both, the coarse-grained beads as well as all the atoms previously reconstructed. To this end, the generative model $\phi_{\Theta}$ is trained to generate and refine atom coordinates sequentially. 
+Moreover, direct sampling restricts the transferability of the trained model. As an example, the number of coarse-grained beads and atoms is fixed, i.e. the model is only applicable to systems of the same size. This implies that the data required for training needs to be as high-dimensional as the target system. Such a strategy is questionable, as the purpose of most MS approaches is to extend the accesable system size. Additionally, the model becomes chemistry specific, as the trained sampler expects to generate the same kind molecules it was trained on. Therefore, it is not possible transfer the learned correlation across chemical space. 
 
-\subsection{Initial Structure}
-
-The first step of the proposed algorithm is to generate an initial structure based on the factorization
+The proposed method deepBM circumvents these limitations by factorizing $p_{\mathcal{X}}$ in terms of atomic contributions. More precisely, the generation of one specific atom becomes conditional on both, the coarse-grained beads as well as all the atoms previously reconstructed. Such a factorization can be obtained by applying the chain rule for probabilities
 
 \begin{equation}
 \label{probability_factorization}
@@ -57,19 +55,33 @@ The first step of the proposed algorithm is to generate an initial structure bas
  \prod_{i = 1}^{n}  p_{\mathcal{X}}(\mathbf{r}_{S(i)} | \mathbf{r}_{S(1)}, \dots, \mathbf{r}_{S(i-1)}, \mathbf{c}_{S(1)}, \dots, \mathbf{c}_{S(i)},  \mathbf{A}_1, \dots, \mathbf{A}_N),
 \end{equation}
 
-where $S$ sorts the atoms in the order of reconstruction and $\mathbf{r}_{S(1)}, \dots, \mathbf{r}_{S(i-1)}$ denotes the atoms that have already been generated. Eq. \ref{probability_factorization} allows to split a complex, high-dimensional problem into a sequence of rather simple tasks, namely to learn the conditionals $p_{\mathcal{X}}(\mathbf{r}_{S(i)} | \mathbf{r}_{S(1)}, \dots, \mathbf{r}_{S(i-1)}, \mathbf{c}_{S(1)}, \dots, \mathbf{c}_{S(i)},  \mathbf{A}_1, \dots, \mathbf{A}_N)$. 
+where $S$ sorts the atoms in the order of reconstruction and $\mathbf{r}_{S(1)}, \dots, \mathbf{r}_{S(i-1)}$ denotes the atoms that have already been generated. Eq. \ref{probability_factorization} allows to split a complex, high-dimensional problem into a sequence of rather simple tasks, namely to learn the conditionals $p_{\mathcal{X}}(\mathbf{r}_{S(i)} | \mathbf{r}_{S(1)}, \dots, \mathbf{r}_{S(i-1)}, \mathbf{c}_{S(1)}, \dots, \mathbf{c}_{S(i)},  \mathbf{A}_1, \dots, \mathbf{A}_N)$. To this end, the generative model $\phi_{\Theta}$ is trained to generate and refine atom coordinates sequentially. The dependence on earlier predictions of $\phi_{\Theta}$ makes the method \textit{autoregressive}. Note, that the modular reconstruction increases the flexibility of the model and offers a perspective to release the aforementioned resitrictions.
 
-The order of reconstruction $S$ can be defined in various ways. In the current implementation, a molecule is selected randomly and completely reconstructed before the next molecule is chosen. The traversal through the molecule depends on both, the coarse-grained and the atomistic molecular topology: Consider each molecule as a graph, where each node corresponds to an atom and edges represent the bonds. In an outer loop, DeepBM traverses through the coarse-grained molecular graph and reconstructs each bead before the next bead in the sequence is visited. Within each bead, deepBM generates atom positions 
+\subsection{Ordering of Molecular Graphs}
 
-At fist, the order of reconstruction on the level of coarse-grained beads is chosen.  Three different options are possible to traverse through the molecular structure: 
+The factorization proposed in Eq. \ref{probability_factorization} requires a strict ordering $S$ of the particles. In general, the ordering $S$ is not unique. In the current implementation, a molecule is selected randomly and completely reconstructed before the next molecule is chosen. Therefore, the sorting $S$ of the whole system is a random concatenation of the sortings for each individual molecule. 
+
+In order to sort the particles of each molecule, the molecular structure can be represented as a graph. More precisely, particles and bonds are mapped to the nodes and edges of the graph. Note, that molecular graphs are generally undirected and can be cyclic or acyclic. The graph representation allows to define the sorting of the particles as a graph traversal. Starting from a root node, the following strategies can be applied for traversing:
 
 \begin{itemize}
- \item \textit{depth-first-search}: Consider each molecule as a graph, where each node corresponds to an atom and edges represent the bonds. In the depth-first-search algorithm, a root node is selected from which each branch is explored as far as possible before backtracking.
- \item \textit{breadth-first-search}: A root node is selected from which all nodes at the present depth are explored before moving on to the nodes at the next depth level.
- \item \textit{random}: The order of reconstruction is chosen randomly.
+ \item \textit{depth-first-search}: Each branch of the graph is explored as far as possible before backtracking.
+ \item \textit{breadth-first-search}: All nodes at the present depth are explored before moving on to the nodes at the next depth level.
+ \item \textit{random}: If the current node has multiple unexplored edges, the subsequent node is chosen randomly. 
 \end{itemize}
 
-Practice has shown that an ordering based on the depth-first-search yields the best performance.
+Practice has shown that an ordering based on the depth-first-search yields the best performance regarding the quality of reconstructed molecules. More specifically, deepBM sorts the atoms depending on both, the coarse-grained and the atomistic molecular topology: In an outer loop, the coarse-grained molecular graph is explored yielding a sorting $S_{CG}(I)$ for the beads $\mathbf{A}_I$. In an inner loop, deepBM generates atom positions for each atom $\mathbf{a}_i$ in the fragment $\psi_{I}$ according to an ordering $S_{\psi_{I}}(i)$.
+
+%In general, a molecular graph is an undirected graph that can be cyclic or acyclic. The ordering defined for the given graph structure basically converts the undirected graph into a directed graph. If the ordering allows to traverse the molecular graph such that each node is only visited after all of its dependencies are visited, it is called a \textit{topological sort}. Note, that a topological sort is only possible if the graph has no cycles.
+
+\subsection{Initial Structure with Forward Sampling}
+
+The first step of the proposed algorithm is to generate an initial structure. To this end, \textit{forward sampling} is used based on the factorization in Eq.\ref{probability_factorization}. The algorithm starts by sampling the variables with no parents from a prior distribution, i.e. the atom position for the first atom in the ordering $S$. Subsequent variables are generated by sampling from the conditional probability distributions given the atoms generated in the previous steps. 
+
+Forward sampling yields accurate results if the underlying graph structure allows to define a topological ordering, i.e. a graph traversal in which each node is visited only after all of its dependencies are visited. Note, that a topological ordering exists only for directed acyclic graphs, which is generally not the case for molecular graphs. As a consequence, forward sampling applied for molecular graphs can yield structures with low statistical weight. Intuitively, forward sampling without topological order 
+
+if the atom positions are sampled without topological order, atoms are placed without  the generative process can easily get stuck  
+
+\subsection{Refinement with Gibbs Sampling}
 
 
 \section{Representation of Molecular Structures}
