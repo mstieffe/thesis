@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2020.1.2)  23 NOV 2021 12:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2020.1.2)  6 DEC 2021 15:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -29982,7 +29982,7 @@ Overfull \hbox (20.0pt too wide) in paragraph at lines 306--306
  []
 
 
-Overfull \hbox (112.70425pt too wide) detected at line 308
+Overfull \hbox (113.43878pt too wide) detected at line 308
 \OT1/cmr/bx/n/10 R[] \/cmr/m/n/10 = \OT1/cmr/bx/n/10 M[]\/cmr/m/n/10 (\OT1/cmr/
 bx/n/10 r\/cmr/m/n/10 ) = [] \OML/cmm/m/it/10 b[]\OT1/cmr/bx/n/10 r[]
  []
@@ -30244,8 +30244,8 @@ Overfull \hbox (3.44513pt too wide) in paragraph at lines 310--311
  []
 
 
-Overfull \hbox (18.91669pt too wide) in paragraph at lines 310--311
-\OML/cmm/m/it/10 ^^^\/cmr/m/n/10 (\OML/cmm/m/it/10 I\/cmr/m/n/10 )$
+Overfull \hbox (19.83104pt too wide) in paragraph at lines 310--311
+\OML/cmm/m/it/10  \/cmr/m/n/10 (\OML/cmm/m/it/10 I\/cmr/m/n/10 )$
  []
 
 
@@ -44372,8 +44372,8 @@ Missing character: There is no i in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no g in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 475--476
-[] 
+Overfull \hbox (20.0pt too wide) in paragraph at lines 475--477
+[]
  []
 
 
@@ -44383,7 +44383,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.477 R
+l.478 R
        educing the resolution is just one side of the MS philosophie. In ord...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -44626,17 +44626,17 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no m in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 477--478
+Overfull \hbox (20.0pt too wide) in paragraph at lines 478--479
 []
  []
 
 
-Overfull \hbox (43.3275pt too wide) in paragraph at lines 477--478
+Overfull \hbox (43.3275pt too wide) in paragraph at lines 478--479
 \OT1/cmr/m/it/10 Backmap-
  []
 
 
-Overfull \hbox (18.39989pt too wide) in paragraph at lines 477--478
+Overfull \hbox (18.39989pt too wide) in paragraph at lines 478--479
 \OT1/cmr/m/it/10 ping
  []
 
@@ -44647,7 +44647,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.479 C
+l.480 C
        ombining coarse-graining with a reverse-mapping procedure unlocks the...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -45418,7 +45418,7 @@ Missing character: There is no [ in font nullfont!
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.479 ...shkian2020backmapping, deshmukh2016water}
+l.480 ...shkian2020backmapping, deshmukh2016water}
                                                   
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -45427,14 +45427,14 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Citation `hess2006long' on page  undefined on input line 479.
+LaTeX Warning: Citation `hess2006long' on page  undefined on input line 480.
 
 Missing character: There is no , in font nullfont!
 \citation{shimizu2018reconstruction}
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.479 ...shkian2020backmapping, deshmukh2016water}
+l.480 ...shkian2020backmapping, deshmukh2016water}
                                                   
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -45444,14 +45444,14 @@ and I'll forget about whatever was undefined.
 
 
 LaTeX Warning: Citation `shimizu2018reconstruction' on page  undefined on input
- line 479.
+ line 480.
 
 Missing character: There is no , in font nullfont!
 \citation{brocos2012multiscale}
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.479 ...shkian2020backmapping, deshmukh2016water}
+l.480 ...shkian2020backmapping, deshmukh2016water}
                                                   
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -45461,14 +45461,14 @@ and I'll forget about whatever was undefined.
 
 
 LaTeX Warning: Citation `brocos2012multiscale' on page  undefined on input line
- 479.
+ 480.
 
 Missing character: There is no , in font nullfont!
 \citation{stansfeld2011coarse}
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.479 ...shkian2020backmapping, deshmukh2016water}
+l.480 ...shkian2020backmapping, deshmukh2016water}
                                                   
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -45478,14 +45478,14 @@ and I'll forget about whatever was undefined.
 
 
 LaTeX Warning: Citation `stansfeld2011coarse' on page  undefined on input line 
-479.
+480.
 
 Missing character: There is no , in font nullfont!
 \citation{pandey2014multiscale}
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.479 ...shkian2020backmapping, deshmukh2016water}
+l.480 ...shkian2020backmapping, deshmukh2016water}
                                                   
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -45495,14 +45495,14 @@ and I'll forget about whatever was undefined.
 
 
 LaTeX Warning: Citation `pandey2014multiscale' on page  undefined on input line
- 479.
+ 480.
 
 Missing character: There is no , in font nullfont!
 \citation{pezeshkian2020backmapping}
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.479 ...shkian2020backmapping, deshmukh2016water}
+l.480 ...shkian2020backmapping, deshmukh2016water}
                                                   
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -45512,14 +45512,14 @@ and I'll forget about whatever was undefined.
 
 
 LaTeX Warning: Citation `pezeshkian2020backmapping' on page  undefined on input
- line 479.
+ line 480.
 
 Missing character: There is no , in font nullfont!
 \citation{deshmukh2016water}
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.479 ...shkian2020backmapping, deshmukh2016water}
+l.480 ...shkian2020backmapping, deshmukh2016water}
                                                   
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -45528,8 +45528,8 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Citation `deshmukh2016water' on page  undefined on input line 47
-9.
+LaTeX Warning: Citation `deshmukh2016water' on page  undefined on input line 48
+0.
 
 Missing character: There is no ] in font nullfont!
 Missing character: There is no B in font nullfont!
@@ -46027,47 +46027,47 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 479--481
+Overfull \hbox (20.0pt too wide) in paragraph at lines 480--482
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 479--481
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 480--482
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 479--481
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 480--482
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 479--481
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 480--482
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 479--481
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 480--482
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 479--481
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 480--482
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 479--481
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 480--482
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 479--481
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 480--482
 []
  []
 
 ! Undefined control sequence.
-l.491 \subsection
+l.492 \subsection
                  {The Challenges of Reintroducing Degrees of Freedom}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -46082,7 +46082,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.491 \subsection{T
+l.492 \subsection{T
                    he Challenges of Reintroducing Degrees of Freedom}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -46132,7 +46132,7 @@ Missing character: There is no d in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no m in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 491--492
+Overfull \hbox (20.0pt too wide) in paragraph at lines 492--493
 []
  []
 
@@ -46143,7 +46143,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.493 W
+l.494 W
        hile mapping from a higher to a lower resolution is typically straigh...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -46494,74 +46494,74 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 493--494
+Overfull \hbox (20.0pt too wide) in paragraph at lines 494--495
 []
  []
 
 
-Overfull \hbox (28.83813pt too wide) in paragraph at lines 493--494
+Overfull \hbox (28.83813pt too wide) in paragraph at lines 494--495
 \OMS/cmsy/m/n/10 f\OT1/cmr/bx/n/10 A[] \/cmr/m/n/10 =
  []
 
 
-Overfull \hbox (56.84294pt too wide) in paragraph at lines 493--494
+Overfull \hbox (56.84294pt too wide) in paragraph at lines 494--495
 \/cmr/m/n/10 (\OT1/cmr/bx/n/10 R[]\OML/cmm/m/it/10 ; \OT1/cmr/bx/n/10 C[]\/cmr/
 m/n/10 )\OMS/cmsy/m/n/10 j\OML/cmm/m/it/10 I \/cmr/m/n/10 =
  []
 
 
-Overfull \hbox (41.34706pt too wide) in paragraph at lines 493--494
+Overfull \hbox (41.34706pt too wide) in paragraph at lines 494--495
 \/cmr/m/n/10 1\OML/cmm/m/it/10 ; [] ; N\OMS/cmsy/m/n/10 g$
  []
 
 
-Overfull \hbox (9.12497pt too wide) in paragraph at lines 493--494
+Overfull \hbox (9.12497pt too wide) in paragraph at lines 494--495
 \OML/cmm/m/it/10 N$
  []
 
 
-Overfull \hbox (13.21317pt too wide) in paragraph at lines 493--494
+Overfull \hbox (13.21317pt too wide) in paragraph at lines 494--495
 \OT1/cmr/bx/n/10 R[]$
  []
 
 
-Overfull \hbox (12.89372pt too wide) in paragraph at lines 493--494
+Overfull \hbox (12.89372pt too wide) in paragraph at lines 494--495
 \OT1/cmr/bx/n/10 C[]$
  []
 
 
-Overfull \hbox (12.89372pt too wide) in paragraph at lines 493--494
+Overfull \hbox (12.89372pt too wide) in paragraph at lines 494--495
 \OT1/cmr/bx/n/10 C[]$
  []
 
 
-Overfull \hbox (25.73396pt too wide) in paragraph at lines 493--494
+Overfull \hbox (25.73396pt too wide) in paragraph at lines 494--495
 \OMS/cmsy/m/n/10 f\OT1/cmr/bx/n/10 a[] \/cmr/m/n/10 =
  []
 
 
-Overfull \hbox (45.5064pt too wide) in paragraph at lines 493--494
+Overfull \hbox (45.5064pt too wide) in paragraph at lines 494--495
 \/cmr/m/n/10 (\OT1/cmr/bx/n/10 r[]\OML/cmm/m/it/10 ; \OT1/cmr/bx/n/10 c[]\/cmr/
 m/n/10 )\OMS/cmsy/m/n/10 j\OML/cmm/m/it/10 i \/cmr/m/n/10 =
  []
 
 
-Overfull \hbox (38.22444pt too wide) in paragraph at lines 493--494
+Overfull \hbox (38.22444pt too wide) in paragraph at lines 494--495
 \/cmr/m/n/10 1\OML/cmm/m/it/10 ; [] ; n\OMS/cmsy/m/n/10 g$
  []
 
 
-Overfull \hbox (6.00235pt too wide) in paragraph at lines 493--494
+Overfull \hbox (6.00235pt too wide) in paragraph at lines 494--495
 \OML/cmm/m/it/10 n$
  []
 
 
-Overfull \hbox (8.06538pt too wide) in paragraph at lines 493--494
+Overfull \hbox (8.06538pt too wide) in paragraph at lines 494--495
 \OT1/cmr/bx/n/10 r[]$
  []
 
 
-Overfull \hbox (8.44037pt too wide) in paragraph at lines 493--494
+Overfull \hbox (8.44037pt too wide) in paragraph at lines 494--495
 \OT1/cmr/bx/n/10 c[]$ 
  []
 
@@ -46572,7 +46572,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.495 A
+l.496 A
         backmapping function $\phi$ takes the coarse-grained information $\m...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -46696,44 +46696,44 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no , in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 495--496
+Overfull \hbox (20.0pt too wide) in paragraph at lines 496--497
 []
  []
 
 
-Overfull \hbox (5.95834pt too wide) in paragraph at lines 495--496
+Overfull \hbox (5.95834pt too wide) in paragraph at lines 496--497
 \OML/cmm/m/it/10 ^^^$
  []
 
 
-Overfull \hbox (19.24991pt too wide) in paragraph at lines 495--496
+Overfull \hbox (19.24991pt too wide) in paragraph at lines 496--497
 \OT1/cmr/bx/n/10 A \/cmr/m/n/10 =
  []
 
 
-Overfull \hbox (59.45952pt too wide) in paragraph at lines 495--496
+Overfull \hbox (59.45952pt too wide) in paragraph at lines 496--497
 \/cmr/m/n/10 (\OT1/cmr/bx/n/10 A[]\OML/cmm/m/it/10 ; [] ; \OT1/cmr/bx/n/10 A[]\
 /cmr/m/n/10 )$
  []
 
 
-Overfull \hbox (15.6666pt too wide) in paragraph at lines 495--496
+Overfull \hbox (15.6666pt too wide) in paragraph at lines 496--497
 \OT1/cmr/bx/n/10 c \/cmr/m/n/10 =
  []
 
 
-Overfull \hbox (50.15149pt too wide) in paragraph at lines 495--496
+Overfull \hbox (50.15149pt too wide) in paragraph at lines 496--497
 \/cmr/m/n/10 (\OT1/cmr/bx/n/10 c[]\OML/cmm/m/it/10 ; [] ; \OT1/cmr/bx/n/10 c[]\
 /cmr/m/n/10 )$
  []
 
 
-Overfull \hbox (15.29161pt too wide) in paragraph at lines 495--496
+Overfull \hbox (15.29161pt too wide) in paragraph at lines 496--497
 \OT1/cmr/bx/n/10 r \/cmr/m/n/10 =
  []
 
 
-Overfull \hbox (49.40152pt too wide) in paragraph at lines 495--496
+Overfull \hbox (49.40152pt too wide) in paragraph at lines 496--497
 \/cmr/m/n/10 (\OT1/cmr/bx/n/10 r[]\OML/cmm/m/it/10 ; [] ; \OT1/cmr/bx/n/10 r[]\
 /cmr/m/n/10 )$ 
  []
@@ -46745,18 +46745,18 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.497 \begin{equation}
+l.498 \begin{equation}
                       
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 497--497
+Overfull \hbox (20.0pt too wide) in paragraph at lines 498--498
 [] 
  []
 
 
-Overfull \hbox (52.83315pt too wide) detected at line 500
+Overfull \hbox (52.83315pt too wide) detected at line 501
 \OML/cmm/m/it/10 ^^^\/cmr/m/n/10 (\OT1/cmr/bx/n/10 A\OML/cmm/m/it/10 ; \OT1/cmr
 /bx/n/10 c\/cmr/m/n/10 ) = \OT1/cmr/bx/n/10 r\OML/cmm/m/it/10 :
  []
@@ -46768,7 +46768,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.502 D
+l.503 D
        eriving the function $\phi$ is not a trivial task, as it is constrain...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -47091,17 +47091,17 @@ Missing character: There is no r in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no , in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 502--503
+Overfull \hbox (20.0pt too wide) in paragraph at lines 503--504
 []
  []
 
 
-Overfull \hbox (5.95834pt too wide) in paragraph at lines 502--503
+Overfull \hbox (5.95834pt too wide) in paragraph at lines 503--504
 \OML/cmm/m/it/10 ^^^$
  []
 
 
-Overfull \hbox (10.91661pt too wide) in paragraph at lines 502--503
+Overfull \hbox (10.91661pt too wide) in paragraph at lines 503--504
 \OT1/cmr/bx/n/10 M$
  []
 
@@ -47112,18 +47112,18 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.504 \begin{equation}
+l.505 \begin{equation}
                       
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 504--504
+Overfull \hbox (20.0pt too wide) in paragraph at lines 505--505
 [] 
  []
 
 
-Overfull \hbox (75.41641pt too wide) detected at line 507
+Overfull \hbox (75.41641pt too wide) detected at line 508
 \OT1/cmr/bx/n/10 M\/cmr/m/n/10 (\OML/cmm/m/it/10 ^^^\/cmr/m/n/10 (\OT1/cmr/bx/n
 /10 A\OML/cmm/m/it/10 ; \OT1/cmr/bx/n/10 c\/cmr/m/n/10 )) = \OT1/cmr/bx/n/10 R\
 OML/cmm/m/it/10 :
@@ -47136,7 +47136,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.509 S
+l.510 S
        econdly, the mapping is not unique, since the reduced resolution impl...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -47437,23 +47437,23 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 509--510
+Overfull \hbox (20.0pt too wide) in paragraph at lines 510--511
 []
  []
 
 
-Overfull \hbox (8.62495pt too wide) in paragraph at lines 509--510
+Overfull \hbox (8.62495pt too wide) in paragraph at lines 510--511
 \OT1/cmr/bx/n/10 R$
  []
 
 
-Overfull \hbox (46.49992pt too wide) in paragraph at lines 509--510
+Overfull \hbox (46.49992pt too wide) in paragraph at lines 510--511
 \OMS/cmsy/m/n/10 f\OT1/cmr/bx/n/10 r\OMS/cmsy/m/n/10 j\OT1/cmr/bx/n/10 M\/cmr/m
 /n/10 (\OT1/cmr/bx/n/10 r\/cmr/m/n/10 ) =
  []
 
 
-Overfull \hbox (13.62497pt too wide) in paragraph at lines 509--510
+Overfull \hbox (13.62497pt too wide) in paragraph at lines 510--511
 \OT1/cmr/bx/n/10 R\OMS/cmsy/m/n/10 g$
  []
 
@@ -47464,7 +47464,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.511 T
+l.512 T
        o take the aforementioned aspects into account, the backmapping probl...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -47964,12 +47964,12 @@ Missing character: There is no . in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 511--512
+Overfull \hbox (20.0pt too wide) in paragraph at lines 512--513
 []
  []
 
 
-Overfull \hbox (43.88116pt too wide) in paragraph at lines 511--512
+Overfull \hbox (43.88116pt too wide) in paragraph at lines 512--513
 \OML/cmm/m/it/10 p[]\/cmr/m/n/10 (\OT1/cmr/bx/n/10 r\OMS/cmsy/m/n/10 j\OT1/cmr/
 bx/n/10 A\OML/cmm/m/it/10 ; \OT1/cmr/bx/n/10 c\/cmr/m/n/10 )$
  []
@@ -47981,18 +47981,18 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.513 \begin{equation}
+l.514 \begin{equation}
                       
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 513--513
+Overfull \hbox (20.0pt too wide) in paragraph at lines 514--514
 [] 
  []
 
 ! Undefined control sequence.
-l.515     \propto \text
+l.516     \propto \text
                        {exp} \Big( - \frac{U(\mathbf{r})}{k_B T} \Big) \;\;\...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -48001,7 +48001,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Misplaced alignment tab character &.
-l.515 ...ac{U(\mathbf{r})}{k_B T} \Big) \;\;\;\; &
+l.516 ...ac{U(\mathbf{r})}{k_B T} \Big) \;\;\;\; &
                                                    \text{if} \; \tilde{\math...
 I can't figure out why you would want to use a tab mark
 here. If you just want an ampersand, the remedy is
@@ -48011,7 +48011,7 @@ you're probably due for more error messages, and you
 might try typing `S' now just to see what is salvageable.
 
 ! Undefined control sequence.
-l.515 ...mathbf{r})}{k_B T} \Big) \;\;\;\; & \text
+l.516 ...mathbf{r})}{k_B T} \Big) \;\;\;\; & \text
                                                   {if} \; \tilde{\mathbf{M}}...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -48020,7 +48020,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Misplaced alignment tab character &.
-l.516     0 \;\;\;\; &
+l.517     0 \;\;\;\; &
                        \text{if} \; \tilde{\mathbf{M}}(\mathbf{r}, \mathbf{c...
 I can't figure out why you would want to use a tab mark
 here. If you just want an ampersand, the remedy is
@@ -48030,7 +48030,7 @@ you're probably due for more error messages, and you
 might try typing `S' now just to see what is salvageable.
 
 ! Undefined control sequence.
-l.516     0 \;\;\;\; & \text
+l.517     0 \;\;\;\; & \text
                             {if} \; \tilde{\mathbf{M}}(\mathbf{r}, \mathbf{c...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -48039,7 +48039,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-Overfull \hbox (337.81592pt too wide) detected at line 518
+Overfull \hbox (337.81592pt too wide) detected at line 519
 \OML/cmm/m/it/10 p[]\/cmr/m/n/10 (\OT1/cmr/bx/n/10 r\OMS/cmsy/m/n/10 j\OT1/cmr/
 bx/n/10 A\OML/cmm/m/it/10 ; \OT1/cmr/bx/n/10 c\/cmr/m/n/10 ) = [] [][] \OMS/cms
 y/m/n/10 ^^@ [][]    [] []\/cmr/m/n/10 (\OT1/cmr/bx/n/10 r\OML/cmm/m/it/10 ; \O
@@ -48056,7 +48056,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.520 H
+l.521 H
        ere, $\tilde{\mathbf{M}}$ is used as an extended coarse-graining mapp...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -48195,12 +48195,12 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no y in font nullfont!
 Missing character: There is no , in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 520--521
+Overfull \hbox (20.0pt too wide) in paragraph at lines 521--522
 []
  []
 
 
-Overfull \hbox (10.91661pt too wide) in paragraph at lines 520--521
+Overfull \hbox (10.91661pt too wide) in paragraph at lines 521--522
 []$
  []
 
@@ -48211,18 +48211,18 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.522 \begin{equation}
+l.523 \begin{equation}
                       
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 522--522
+Overfull \hbox (20.0pt too wide) in paragraph at lines 523--523
 [] 
  []
 
 
-Overfull \hbox (77.02315pt too wide) detected at line 524
+Overfull \hbox (77.02315pt too wide) detected at line 525
 []\/cmr/m/n/10 (\OT1/cmr/bx/n/10 r\OML/cmm/m/it/10 ; c\/cmr/m/n/10 ) = (\OT1/cm
 r/bx/n/10 R\OML/cmm/m/it/10 ; C\/cmr/m/n/10 )\OML/cmm/m/it/10 ;
  []
@@ -48234,7 +48234,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.526 w
+l.527 w
        here $c = (c_1, \dots, c_n)$ denotes the $n$ atom types and $C =(C_1,...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -48287,42 +48287,42 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 526--527
+Overfull \hbox (20.0pt too wide) in paragraph at lines 527--528
 []
  []
 
 
-Overfull \hbox (14.88307pt too wide) in paragraph at lines 526--527
+Overfull \hbox (14.88307pt too wide) in paragraph at lines 527--528
 \OML/cmm/m/it/10 c \/cmr/m/n/10 =
  []
 
 
-Overfull \hbox (48.58444pt too wide) in paragraph at lines 526--527
+Overfull \hbox (48.58444pt too wide) in paragraph at lines 527--528
 \/cmr/m/n/10 (\OML/cmm/m/it/10 c[]; [] ; c[]\/cmr/m/n/10 )$
  []
 
 
-Overfull \hbox (6.00235pt too wide) in paragraph at lines 526--527
+Overfull \hbox (6.00235pt too wide) in paragraph at lines 527--528
 \OML/cmm/m/it/10 n$
  []
 
 
-Overfull \hbox (18.418pt too wide) in paragraph at lines 526--527
+Overfull \hbox (18.418pt too wide) in paragraph at lines 527--528
 \OML/cmm/m/it/10 C \/cmr/m/n/10 =
  []
 
 
-Overfull \hbox (56.36516pt too wide) in paragraph at lines 526--527
+Overfull \hbox (56.36516pt too wide) in paragraph at lines 527--528
 \/cmr/m/n/10 (\OML/cmm/m/it/10 C[]; [] ; C[]\/cmr/m/n/10 )$
  []
 
 
-Overfull \hbox (9.12497pt too wide) in paragraph at lines 526--527
+Overfull \hbox (9.12497pt too wide) in paragraph at lines 527--528
 \OML/cmm/m/it/10 N$
  []
 
 ! Undefined control sequence.
-l.540 \subsection
+l.541 \subsection
                  {Overview of Existing Approaches}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -48337,7 +48337,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.540 \subsection{O
+l.541 \subsection{O
                    verview of Existing Approaches}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -48371,7 +48371,7 @@ Missing character: There is no h in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 540--541
+Overfull \hbox (20.0pt too wide) in paragraph at lines 541--542
 []
  []
 
@@ -48382,7 +48382,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.542 T
+l.543 T
        he idea of backmapping is as old as the idea of coarse-graining and s...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -48810,12 +48810,12 @@ Missing character: There is no o in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 542--543
+Overfull \hbox (20.0pt too wide) in paragraph at lines 543--544
 []
  []
 
 ! Undefined control sequence.
-l.544 \subsubsection
+l.545 \subsubsection
                     {Fragment-based Approaches}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -48830,7 +48830,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.544 \subsubsection{F
+l.545 \subsubsection{F
                       ragment-based Approaches}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -48860,7 +48860,7 @@ Missing character: There is no h in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 544--545
+Overfull \hbox (20.0pt too wide) in paragraph at lines 545--546
 []
  []
 
@@ -48871,7 +48871,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.546 M
+l.547 M
        ost traditional backmapping approaches follow a similar procedure: At...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -49137,7 +49137,7 @@ Missing character: There is no [ in font nullfont!
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.546 ...l, hess2006long, brasiello2012multiscale}
+l.547 ...l, hess2006long, brasiello2012multiscale}
                                                    Typically, rigid rotation...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -49147,14 +49147,14 @@ and I'll forget about whatever was undefined.
 
 
 LaTeX Warning: Citation `peter2009multiscale' on page  undefined on input line 
-546.
+547.
 
 Missing character: There is no , in font nullfont!
 \citation{zhang2019hierarchical}
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.546 ...l, hess2006long, brasiello2012multiscale}
+l.547 ...l, hess2006long, brasiello2012multiscale}
                                                    Typically, rigid rotation...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -49164,14 +49164,14 @@ and I'll forget about whatever was undefined.
 
 
 LaTeX Warning: Citation `zhang2019hierarchical' on page  undefined on input lin
-e 546.
+e 547.
 
 Missing character: There is no , in font nullfont!
 \citation{hess2006long}
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.546 ...l, hess2006long, brasiello2012multiscale}
+l.547 ...l, hess2006long, brasiello2012multiscale}
                                                    Typically, rigid rotation...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -49180,14 +49180,14 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Citation `hess2006long' on page  undefined on input line 546.
+LaTeX Warning: Citation `hess2006long' on page  undefined on input line 547.
 
 Missing character: There is no , in font nullfont!
 \citation{brasiello2012multiscale}
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.546 ...l, hess2006long, brasiello2012multiscale}
+l.547 ...l, hess2006long, brasiello2012multiscale}
                                                    Typically, rigid rotation...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -49197,7 +49197,7 @@ and I'll forget about whatever was undefined.
 
 
 LaTeX Warning: Citation `brasiello2012multiscale' on page  undefined on input l
-ine 546.
+ine 547.
 
 Missing character: There is no ] in font nullfont!
 Missing character: There is no T in font nullfont!
@@ -50211,27 +50211,27 @@ Missing character: There is no d in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no m in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 546--547
+Overfull \hbox (20.0pt too wide) in paragraph at lines 547--548
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 546--547
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 547--548
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 546--547
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 547--548
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 546--547
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 547--548
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 546--547
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 547--548
 []
  []
 
@@ -50242,18 +50242,18 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.548 \begin{equation}
+l.549 \begin{equation}
                       
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 548--548
+Overfull \hbox (20.0pt too wide) in paragraph at lines 549--549
 [] 
  []
 
 ! Undefined control sequence.
-l.549   U_{\text
+l.550   U_{\text
                 {restr}}(\mathbf{r}, \mathbf{R}) = b (\mathbf{M}(\mathbf{r})...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -50262,7 +50262,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-Overfull \hbox (123.85669pt too wide) detected at line 550
+Overfull \hbox (123.85669pt too wide) detected at line 551
 \OML/cmm/m/it/10 U[]\/cmr/m/n/10 (\OT1/cmr/bx/n/10 r\OML/cmm/m/it/10 ; \OT1/cmr
 /bx/n/10 R\/cmr/m/n/10 ) = \OML/cmm/m/it/10 b\/cmr/m/n/10 (\OT1/cmr/bx/n/10 M\/
 cmr/m/n/10 (\OT1/cmr/bx/n/10 r\/cmr/m/n/10 ) \OMS/cmsy/m/n/10 ^^@ \OT1/cmr/bx/n
@@ -50276,7 +50276,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.552 w
+l.553 w
        here the prefactor $b$ is used to scale the restraining potential.
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -50336,17 +50336,17 @@ Missing character: There is no a in font nullfont!
 Missing character: There is no l in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 552--553
+Overfull \hbox (20.0pt too wide) in paragraph at lines 553--554
 []
  []
 
 
-Overfull \hbox (4.29166pt too wide) in paragraph at lines 552--553
+Overfull \hbox (4.29166pt too wide) in paragraph at lines 553--554
 \OML/cmm/m/it/10 b$
  []
 
 ! Undefined control sequence.
-l.554 \subsubsection
+l.555 \subsubsection
                     {Generic Approaches}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -50361,7 +50361,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.554 \subsubsection{G
+l.555 \subsubsection{G
                       eneric Approaches}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -50384,7 +50384,7 @@ Missing character: There is no h in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 554--555
+Overfull \hbox (20.0pt too wide) in paragraph at lines 555--556
 []
  []
 
@@ -50395,7 +50395,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.556 G
+l.557 G
        eneric backmapping approaches are similar to fragment-based approache...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -50817,7 +50817,7 @@ Missing character: There is no [ in font nullfont!
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.556 ...la2010reconstruction, wassenaar2014going}
+l.557 ...la2010reconstruction, wassenaar2014going}
                                                    The resulting initial ato...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -50827,14 +50827,14 @@ and I'll forget about whatever was undefined.
 
 
 LaTeX Warning: Citation `rzepiela2010reconstruction' on page  undefined on inpu
-t line 556.
+t line 557.
 
 Missing character: There is no , in font nullfont!
 \citation{wassenaar2014going}
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.556 ...la2010reconstruction, wassenaar2014going}
+l.557 ...la2010reconstruction, wassenaar2014going}
                                                    The resulting initial ato...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -50844,7 +50844,7 @@ and I'll forget about whatever was undefined.
 
 
 LaTeX Warning: Citation `wassenaar2014going' on page  undefined on input line 5
-56.
+57.
 
 Missing character: There is no ] in font nullfont!
 Missing character: There is no T in font nullfont!
@@ -51125,22 +51125,22 @@ Missing character: There is no o in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 556--557
+Overfull \hbox (20.0pt too wide) in paragraph at lines 557--558
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 556--557
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 557--558
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 556--557
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 557--558
 []
  []
 
 ! Undefined control sequence.
-l.558 \subsubsection
+l.559 \subsubsection
                     {Machine Learning Approaches}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -51155,7 +51155,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.558 \subsubsection{M
+l.559 \subsubsection{M
                       achine Learning Approaches}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -51186,7 +51186,7 @@ Missing character: There is no h in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no s in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 558--559
+Overfull \hbox (20.0pt too wide) in paragraph at lines 559--560
 []
  []
 
@@ -51197,7 +51197,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.560 D
+l.561 D
        uring the course of this PhD several ML approaches have been publishe...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -51436,7 +51436,7 @@ Missing character: There is no r in font nullfont!
 Missing character: There is no k in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 560--561
+Overfull \hbox (20.0pt too wide) in paragraph at lines 561--562
 []
  []
 
@@ -51447,7 +51447,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.562 W
+l.563 W
        ang et. al utilized a variational autoencoder (see Sec. \ref{}) and t...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -51504,7 +51504,7 @@ Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 <write> ...Warning: Reference `' on page \thepage 
                                                   \space undefined\on@line .
-l.562 ... variational autoencoder (see Sec. \ref{}
+l.563 ... variational autoencoder (see Sec. \ref{}
                                                   ) and treated the coarse-g...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -51513,7 +51513,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Reference `' on page  undefined on input line 562.
+LaTeX Warning: Reference `' on page  undefined on input line 563.
 
 Missing character: There is no ) in font nullfont!
 Missing character: There is no a in font nullfont!
@@ -51587,7 +51587,7 @@ Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 <write> ...Warning: Reference `' on page \thepage 
                                                   \space undefined\on@line .
-l.562 ...edom as latent variables (see Sec. \ref{}
+l.563 ...edom as latent variables (see Sec. \ref{}
                                                   ).\cite{wang2019coarse} Th...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -51596,7 +51596,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Reference `' on page  undefined on input line 562.
+LaTeX Warning: Reference `' on page  undefined on input line 563.
 
 Missing character: There is no ) in font nullfont!
 Missing character: There is no . in font nullfont!
@@ -51605,7 +51605,7 @@ Missing character: There is no [ in font nullfont!
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.562 ...s (see Sec. \ref{}).\cite{wang2019coarse}
+l.563 ...s (see Sec. \ref{}).\cite{wang2019coarse}
                                                    Their framework unifies t...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -51614,7 +51614,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Citation `wang2019coarse' on page  undefined on input line 562.
+LaTeX Warning: Citation `wang2019coarse' on page  undefined on input line 563.
 
 Missing character: There is no ] in font nullfont!
 Missing character: There is no T in font nullfont!
@@ -52401,17 +52401,17 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no r in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 562--563
+Overfull \hbox (20.0pt too wide) in paragraph at lines 563--564
 []
  []
 
 
-Overfull \hbox (10.86105pt too wide) in paragraph at lines 562--563
+Overfull \hbox (10.86105pt too wide) in paragraph at lines 563--564
 []
  []
 
 
-Overfull \hbox (16.29158pt too wide) in paragraph at lines 562--563
+Overfull \hbox (16.29158pt too wide) in paragraph at lines 563--564
 [][]
  []
 
@@ -52422,7 +52422,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.564 A
+l.565 A
        n other approach by Li et. al used a convolutional conditional genera...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -52520,7 +52520,7 @@ Missing character: There is no . in font nullfont!
 ! Undefined control sequence.
 <write> ...Warning: Reference `' on page \thepage 
                                                   \space undefined\on@line .
-l.564 ...tive adversarial network (see Sec. \ref{}
+l.565 ...tive adversarial network (see Sec. \ref{}
                                                   ) for the reconstruction o...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -52529,7 +52529,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Reference `' on page  undefined on input line 564.
+LaTeX Warning: Reference `' on page  undefined on input line 565.
 
 Missing character: There is no ) in font nullfont!
 Missing character: There is no f in font nullfont!
@@ -52618,7 +52618,7 @@ Missing character: There is no [ in font nullfont!
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.564 ...d representation.\cite{li2020backmapping}
+l.565 ...d representation.\cite{li2020backmapping}
                                                    This approach is similar ...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -52628,7 +52628,7 @@ and I'll forget about whatever was undefined.
 
 
 LaTeX Warning: Citation `li2020backmapping' on page  undefined on input line 56
-4.
+5.
 
 Missing character: There is no ] in font nullfont!
 Missing character: There is no T in font nullfont!
@@ -53069,22 +53069,22 @@ Missing character: There is no o in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no . in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 564--565
+Overfull \hbox (20.0pt too wide) in paragraph at lines 565--566
 []
  []
 
 
-Overfull \hbox (10.86105pt too wide) in paragraph at lines 564--565
+Overfull \hbox (10.86105pt too wide) in paragraph at lines 565--566
 []
  []
 
 
-Overfull \hbox (5.43053pt too wide) in paragraph at lines 564--565
+Overfull \hbox (5.43053pt too wide) in paragraph at lines 565--566
 []
  []
 
 
-Overfull \hbox (10.00003pt too wide) in paragraph at lines 564--565
+Overfull \hbox (10.00003pt too wide) in paragraph at lines 565--566
 \/cmr/m/n/10 {{
  []
 
@@ -53095,7 +53095,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.566 F
+l.567 F
        inally, An et. al used several ML approaches including artificial neu...
 
 You're in trouble here.  Try typing  <return>  to proceed.
@@ -53274,7 +53274,7 @@ Missing character: There is no [ in font nullfont!
 ! Undefined control sequence.
 <write> ...: Citation `\@citeb ' on page \thepage 
                                                   \space undefined\on@line .
-l.566 ...dels for backmapping.\cite{an2020machine}
+l.567 ...dels for backmapping.\cite{an2020machine}
                                                    The regression was perfor...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -53283,7 +53283,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-LaTeX Warning: Citation `an2020machine' on page  undefined on input line 566.
+LaTeX Warning: Citation `an2020machine' on page  undefined on input line 567.
 
 Missing character: There is no ] in font nullfont!
 Missing character: There is no T in font nullfont!
@@ -53602,7 +53602,7 @@ Missing character: There is no . in font nullfont!
 Here is how much of TeX's memory you used:
  46 strings out of 492615
  629 string characters out of 6131391
- 96626 words of memory out of 5000000
+ 96663 words of memory out of 5000000
  4052 multiletter control sequences out of 15000+600000
  4913 words of font info for 18 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
