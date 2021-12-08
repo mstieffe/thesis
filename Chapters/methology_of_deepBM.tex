@@ -47,7 +47,7 @@ The proposed method deepBM circumvents these limitations by factorizing $p_{\mat
  \prod_{i = 1}^{n}  p_{\mathcal{X}}(\mathbf{r}_{S(i)} | \mathbf{r}_{S(1)}^{S(i-1)}, \mathbf{c}_{S(1)}^{S(i)},  \mathbf{A}_1^N),
 \end{equation}
 
-where $S$ sorts the atoms in the order of reconstruction and $\mathbf{r}_{S(1)}^{S(i-1)}$ denotes the atoms that have already been generated. Eq. \ref{probability_factorization} allows to split a complex, high-dimensional problem into a sequence of rather simple tasks, namely to learn the conditionals $p_{\mathcal{X}}(\mathbf{r}_{S(i)} | \mathbf{r}_{S(1)}^{S(i-1)}, \mathbf{c}_{S(1)}^{S(i)},  \mathbf{A}_1^N)$. To this end, the generative model $\phi_{\Theta}$ is trained to generate and refine atom coordinates sequentially. The dependence on earlier predictions of $\phi_{\Theta}$ makes the method \textit{autoregressive}. Note, that the modular reconstruction increases the flexibility of the model and offers a perspective to release the aforementioned restrictions.
+where $S$ sorts the atoms in the order of reconstruction and $\mathbf{r}_{S(1)}^{S(i-1)}$ denotes the atoms that have already been generated. Specifically, $S(i)$ denotes the atom index at the $i$th position in the ordering. Eq. \ref{probability_factorization} allows to split a complex, high-dimensional problem into a sequence of rather simple tasks, namely to learn the conditionals $p_{\mathcal{X}}(\mathbf{r}_{S(i)} | \mathbf{r}_{S(1)}^{S(i-1)}, \mathbf{c}_{S(1)}^{S(i)},  \mathbf{A}_1^N)$. To this end, the generative model $\phi_{\Theta}$ is trained to generate and refine atom coordinates sequentially. The dependence on earlier predictions of $\phi_{\Theta}$ makes the method \textit{autoregressive}. Note, that the modular reconstruction increases the flexibility of the model and offers a perspective to release the aforementioned restrictions.
 
 \subsection{Ordering of Molecular Graphs}
 
@@ -87,28 +87,41 @@ In order to leverage modern CNNs for the backmapping task, an explicit spatial d
   \gamma_i = \text{exp} \Big( - \frac{(\mathbf{x} - \mathbf{r}_i)^2}{2\sigma^2} \Big), 
 \end{equation}
 
-where $\mathbf{x}$ is a spatial location in Cartesian coordinates, expressed on a discretized grid due to voxelization, and $sigma$ is the Gaussian width, which is treated as a hyper parameter. The same concept is used to represent coarse-grained beads.
+where $\mathbf{x}$ is a spatial location in Cartesian coordinates, expressed on a discretized grid due to voxelization, and $\sigma$ is the Gaussian width, which is treated as a hyper parameter. The same concept is used to represent coarse-grained beads.
 
 \subsection{Local Environment}
 
 The proposed voxel-based representation is well suited for deploying CNNs. However, it does not adapt well to large molecular structures, as the computational cost scales exponentially with the grid size. To circumvent these limitations, the autoregressive approach is used to build-up larger structures incrementally, while restricting the receptive field of the CNN: Rather than representing the molecular structure as a whole, the model becomes conditional on \textit{local environments}, where the information is limited to a cutoff $r_{\text{cut}}$. Such a locality assumption makes the model scalable to arbitrary system sizes. 
 
-Each local environment $\epsilon_I$ is centered around the current bead of interest $I$, i.e. all atoms and beads are shifted around $\mathbf{R}_I$. The local environment sums over the densities of all particles within a cubic environment of size $2 r_{\text{cut}}$. Further, the local environment is rotated to a local axis system to improve generalization. Specifically, the bond between consecutive coarse-grained beads $I$ and $I-1$ is aligned to the local $z$ axis by a rotation matrix $\mathbf{M}_I$. This yields the definition for the local environment
+Beside introducing a cutoff $r_{\text{cut}}$, the local environments are centered and aligned. This improves generalization, as translational and rotational degrees of freedom are removed. In other words, the ML algorithm does not have to learn the corresponding equivariance from (additional) training data. This is especially important for regular CNNs, which are by construction equivariant with respect to translations, but not with respect to rotations. Although promising progress has been achieved recently regarding the design of rotational equivariant networks, it is not straightforward to extend these approaches to generative models.\cite{cohen2016steerable, xie2018crystal, thomas2018tensor} It is therefore desirable to use the given molecular geometry to reduce the rotational degrees of freedom. Experiments confirm that the alignment of the local environment improves the performance of the model significantly.
+
+Specfically, each local environment $\epsilon_I$ is centered around the current bead of interest $I$, i.e. all atoms and beads are shifted around $\mathbf{R}_I$. The local environment contains the densities of all particles within a cubic environment of size $2 r_{\text{cut}}$. Further, the local environment is rotated to a local axis. More precisely, the bond between consecutive coarse-grained beads $I$ and $I-1$ is aligned to the local $z$ axis by a rotation matrix $\mathbf{M}_I$. This yields the definition for the local environment
 
 \begin{align}
- \epsilon_I ( \mathbf{x} ) =& \sum_{i=1}^{n} \gamma_i(\mathbf{M}_I (\mathbf{x} - \mathbf{R}_I)) \\
+\label{simple_representation}
+ \epsilon_I ( \mathbf{x} ) =& \sum_{j=1}^{n} \gamma_j(\mathbf{M}_I (\mathbf{x} - \mathbf{R}_I)) \\
  +& \sum_{J=1}^{N} \Gamma_J(\mathbf{M}_I (\mathbf{x} - \mathbf{R}_I)) ,
 \end{align}
 
-which extends over the region $-r_{\text{cut}} < x_{\alpha} < r_{\text{cut}} $, where $\alpha$ runs over the three Cartesian coordinates. Note, that $\mathbf{x}$ is discretized over a regular grid. In practice, $r_{\text{cut}}$ is chosen such that several beads are contained in each local environment.
+which extends over the region $-r_{\text{cut}} < x_{\alpha} < r_{\text{cut}} $, where $\alpha$ runs over the three Cartesian coordinates. Note, that $\mathbf{x}$ is discretized over a regular grid. In practice, $r_{\text{cut}}$ is chosen such that several beads are present in each local environment. 
 
-Centering and alignment of $\epsilon_I$ removes three translational and two rotational degrees of freedom. In other words, the ML algorithm does not have to learn the corresponding equivariance from (additional) training data. This is especially important for regular CNNs, which are by construction equivariant with respect to translations, but not with respect to rotations. Experiments confirm that the alignment of the local environment improves the performance of the model significantly.
+In the case of forward-sampling, an incomplete representation $\tilde{\epsilon}_{i,I} ( \mathbf{x} )$ has to be used, where all atoms $S(j)$ are excluded for which $j \le i$, i.e.
+
+\begin{align}
+\label{simple_representation2}
+ \tilde{\epsilon}_{i,I} ( \mathbf{x} ) =& \sum_{j=1}^{i -1} \gamma_{S(j)}(\mathbf{M}_I (\mathbf{x} - \mathbf{R}_I)) \\
+ +& \sum_{J=1}^{N} \Gamma_J(\mathbf{M}_I (\mathbf{x} - \mathbf{R}_I)) .
+\end{align}
+
+Centering and alignment of $\epsilon_I$ and $\tilde{\epsilon}_{i,I}$ removes three translational and two rotational degrees of freedom. This leaves one rotational degree of freedom around the director axis, which the model is supposed to learn from the training data. For this reason, the training set is augmented by means of rotations around said axis.
 
 %To this end, only local information is used to position the atoms by restricting the receptive field of the applied CNN to rather small local environments. the autoregressive approach is used to build-up larger structures incrementally. Fortunately, the autoregressive approach does not require to represent the molecular structure as a whole, but allows to focus on rather small \textit{local environments}. Such a locality assumption is fueled by the coarse-graining philosophy, since a well parameterized coarse-grained model should already describe the behaviour beyond the atomistic resolution correctly. Therefore, it is reasonable to deploy the model only locally and limit the information about the environment to a cutoff $r_{{text{cut}}$. large scale behaviour beyond its resolution limits. 
 
-\subsection{Alignment}
-
 \subsection{Feature Embedding}
+
+The input of CNNs is typically a two or three dimensional image composed of multiple \textit{feature channels}, i.e. each pixel or voxel is vector-valued. The different channels provide different views on the data. As an example, an RGB image contains three seperate channels: One feature channel for every primary color. Similarly, the input for deepBM is composed of multiple channels to encode the presence of atoms and beads of a certain type. In the most basic version, the representation given in Eq. \ref{simple_representation} is used directly. This yields a single feature channel encoding all other atoms and beads. However, this leads to clutter in most cases and, even more importantly, a single feature channel does not allow to distinguish different types of atoms and beads. The opposite extreme is to assign each atom or bead to a different feature channel. Such a representation is also not flawless, because the permutational invariance of the atoms and beads is lost, i.e. atoms and beads have to be presented in a fixed order. This reduces the ability of the model to generalize dramatically.
+
+To improve the representation defined in Eq. \ref{simple_representation}, various feature channels can be created. Each channel reflects a different attribute of the atoms and beads. For example, an attribute can encode the chemical element or represent the set of force-field parameters assigned to one specific atom. In particular, it is also possible to introduce attributes that encode the functional form of the interaction to the current atom of interest. Interaction types distinguish between bond, bending angle, torsion or Lennard-Jones. In its core, such interaction attributes reflect the number of edges of two particles in the molecular graph  
 
 \section{Conditional GAN}
 
