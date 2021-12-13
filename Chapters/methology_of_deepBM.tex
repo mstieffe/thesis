@@ -95,25 +95,25 @@ The proposed voxel-based representation is well suited for deploying CNNs. Howev
 
 Beside introducing a cutoff $r_{\text{cut}}$, the local environments are centered and aligned. This improves generalization, as translational and rotational degrees of freedom are removed. In other words, the ML algorithm does not have to learn the corresponding equivariance from (additional) training data. This is especially important for regular CNNs, which are by construction equivariant with respect to translations, but not with respect to rotations. Although promising progress has been achieved recently regarding the design of rotational equivariant networks, it is not straightforward to extend these approaches to generative models.\cite{cohen2016steerable, xie2018crystal, thomas2018tensor} It is therefore desirable to use the given molecular geometry to reduce the rotational degrees of freedom. Experiments confirm that the alignment of the local environment improves the performance of the model significantly.
 
-Specifically, the local environment $\epsilon_i$ for an atom $\mathbf{a}_i$ is centered around the current bead of interest $\mathbf{A}_{\Psi(i)}$, i.e. all atoms and beads are shifted around $\mathbf{R}_{\Psi(i)}$. The local environment contains the densities of all particles within a cubic environment of size $2 r_{\text{cut}}$. Further, the local environment is rotated to a local axis. More precisely, the bond between consecutive coarse-grained beads $S(I)$ and $S(I-1)$ is aligned to the local $z$ axis by a rotation matrix $\mathbf{M}_{S(I)}$. This yields the definition for the local environment
+Specifically, the $i$th local environment $\epsilon_i$ for an atom $\mathbf{a}_{s(i)}$ is centered around the current bead of interest $\mathbf{A}_{\Psi(s(i))}$, i.e. all atoms and beads are shifted around $\mathbf{R}_{\Psi(s(i))}$. To improve readability, the notation $\Psi_i \coloneqq \Psi(s(i))$ is used in the following to denote the index of the coarse-grained bead associated with $\mathbf{a}_{s(i)}$. The local environment contains the densities of all particles within a cubic environment of size $2 r_{\text{cut}}$. Further, the local environment is rotated to a local axis. To this end, the bond between consecutive coarse-grained beads $\Psi_i$ and $\Psi_i -1$ is aligned to the local $z$ axis by a rotation matrix $\mathbf{M}_{\Psi_i}$. This yields the definition for the local environment
 
 \begin{align}
 \label{simple_representation}
- \epsilon_I ( \mathbf{x} ) =& \sum_{j=1}^{n} \gamma_j(\mathbf{M}_{I[i]} (\mathbf{x} - \mathbf{R}_{I[i]})) \\
- +& \sum_{J=1}^{N} \Gamma_J(\mathbf{M}_I (\mathbf{x} - \mathbf{R}_I)) ,
+ \epsilon_i ( \mathbf{x} ) =& \sum_{j=1, j \neq i}^{n} \gamma_{s(j)}(\mathbf{M}_{\Psi_i} (\mathbf{x} - \mathbf{R}_{\Psi_i})) \\
+ +& \sum_{J=1}^{N} \Gamma_J(\mathbf{M}_{\Psi_i} (\mathbf{x} - \mathbf{R}_{\Psi_i})) ,
 \end{align}
 
 which extends over the region $-r_{\text{cut}} < x_{\alpha} < r_{\text{cut}} $, where $\alpha$ runs over the three Cartesian coordinates. Note, that $\mathbf{x}$ is discretized over a regular grid. In practice, $r_{\text{cut}}$ is chosen such that several beads are present in each local environment. 
 
-In the case of forward-sampling, an incomplete representation $\tilde{\epsilon}_{i,I} ( \mathbf{x} )$ has to be used, where all atoms $S(j)$ are excluded for which $j \le i$, i.e.
+In the case of forward-sampling, an incomplete representation $\tilde{\epsilon}_{i} ( \mathbf{x} )$ has to be used, where all atoms $s(j)$ are excluded for which $j \geq i$, i.e.
 
 \begin{align}
 \label{simple_representation2}
- \tilde{\epsilon}_{i,I} ( \mathbf{x} ) =& \sum_{j=1}^{i -1} \gamma_{S(j)}(\mathbf{M}_I (\mathbf{x} - \mathbf{R}_I)) \\
- +& \sum_{J=1}^{N} \Gamma_J(\mathbf{M}_I (\mathbf{x} - \mathbf{R}_I)) .
+ \tilde{\epsilon}_{i} ( \mathbf{x} ) =& \sum_{j=1}^{i-1} \gamma_{s(j)}(\mathbf{M}_{\Psi_i} (\mathbf{x} - \mathbf{R}_{\Psi_i})) \\
+ +& \sum_{J=1}^{N} \Gamma_J(\mathbf{M}_{\Psi_i} (\mathbf{x} - \mathbf{R}_{\Psi_i})) .
 \end{align}
 
-Centering and alignment of $\epsilon_I$ and $\tilde{\epsilon}_{i,I}$ removes three translational and two rotational degrees of freedom. This leaves one rotational degree of freedom around the director axis, which the model is supposed to learn from the training data. For this reason, the training set is augmented by means of rotations around said axis.
+Centering and alignment of $\epsilon_I$ and $\tilde{\epsilon}_{i}$ removes three translational and two rotational degrees of freedom. This leaves one rotational degree of freedom around the director axis, which the model is supposed to learn from the training data. For this reason, the training set is augmented by means of rotations around said axis.
 
 %To this end, only local information is used to position the atoms by restricting the receptive field of the applied CNN to rather small local environments. the autoregressive approach is used to build-up larger structures incrementally. Fortunately, the autoregressive approach does not require to represent the molecular structure as a whole, but allows to focus on rather small \textit{local environments}. Such a locality assumption is fueled by the coarse-graining philosophy, since a well parameterized coarse-grained model should already describe the behaviour beyond the atomistic resolution correctly. Therefore, it is reasonable to deploy the model only locally and limit the information about the environment to a cutoff $r_{{text{cut}}$. large scale behaviour beyond its resolution limits. 
 
@@ -123,31 +123,35 @@ The input of CNNs is typically a two or three dimensional image composed of mult
 
 To improve the representation defined in Eq. \ref{simple_representation}, various feature channels can be created. The underlying idea is that each channel reflects a different attribute of the atoms and beads assigned to it. For example, an attribute can encode the chemical element or represent the set of force-field parameters associated with a specific atom type. Further, attributes can encode the functional form of the interaction to the current atom of interest. Interaction types distinguish between bond, bending angle, torsion or Lennard-Jones. In its core, such interaction attributes reflect the local structure of the molecular graph, as they represent short paths with one (bond), two (bending angle), three (torsion) or more (Lennard-Jones) edges originating from the current atom of interest. As such, deepBM is trained to place an atom that completes the given paths. Paths of the same length can be split up further into distinct feature channels in order to emphasize the difference of their associated force-field parameters. For example, a bending angle $C-C-C$ between carbon atoms might be treated differently than a bending angle $H-C-H$ between carbon and hydrogen atoms.
 
-Formally, let $f \in \{1,2,\dots,N_F\}$ denote the index of the $N_F$ different feature channels. The activation function, $h_f(S(j);S(i))$, is defined to denote association of an atom $S(j)$ with a channel $f$
+Formally, let $f \in \{1,2,\dots,N_F\}$ denote the index of the $N_F$ different feature channels. The activation function, $h_f(s(j);s(i))$, is defined to denote association of an atom $s(j)$ with a channel $f$
 
 \begin{equation}
- h_f(S(j); S(i)) =
+ h_f(s(j); s(i)) =
   \begin{cases}
-      1,& \text{if atom } S(j) \text{ has feature }f \text{ (relative to } S(i) \text{)}\\
+      1,& \text{if atom } s(j) \text{ has feature }f \text{ (relative to } s(i) \text{)}\\
       0,              & \text{otherwise}.
   \end{cases}
 \end{equation}
 
-Note, that some attributes, such as the associated atom types, are static, i.e. they have no dependence on the current atom of interest $S(i)$. Other attributes, like the interaction channels, are defined relative to atom $S(i)$. Similarly, an activation function $H_f(J)$ is defined to encode static attributes of the coarse-grained beads, i.e. the bead types.
+Note, that some attributes, such as the associated atom types, are static, i.e. they have no dependence on the current atom of interest $s(i)$. Other attributes, like the interaction channels, are defined relative to atom $s(i)$. Similarly, an activation function $H_f(J)$ is defined to encode static attributes of the coarse-grained beads, i.e. the bead types.
 
-This yields the following featurized representations for both atomic environments
+This yields the following featurized representation
 
-\begin{equation}
- \tilde{\epsilon}_{i,I} ( \mathbf{x} ) = \sum_{j=1}^{i -1} \gamma_{S(j)}(\mathbf{M}_I (\mathbf{x} - \mathbf{R}_I)) h_f(S(j);S(i)) 
-\end{equation}
+\begin{align}
+\label{featurized_representation_gibbs}
+ \epsilon_i ( \mathbf{x}, f ) =& \sum_{j=1, j \neq i}^{n} \gamma_{s(j)}(\mathbf{M}_{\Psi_i} (\mathbf{x} - \mathbf{R}_{\Psi_i})) h_f(s(j);s(i)) \\
+ +& \sum_{J=1}^{N} \Gamma_J(\mathbf{M}_{\Psi_i} (\mathbf{x} - \mathbf{R}_{\Psi_i})) H_f(J).
+\end{align}
 
-and coarse-grained environments
-
-\begin{equation}
- \Xi_{I(i)}(\mathbf{x},f) = \sum_{J=1}^{N} \Gamma_J(\mathbf{M}_{I(i)} (\mathbf{x} - \mathbf{R}_{I[i]})) H(J)
-\end{equation}
-
+The featurized representation for the forward-sampling $\tilde{\epsilon}_{i}$ is constructed similarly.
 
 \section{Conditional GAN}
+
+The autoregressive approach turns the complex problem of generating molecular structures into a sequence of much simpler decisions. However, learning the local placement of the atoms is still a challenging task. Implementing a rule based decision algorithm, for example grounded on the geometry or energy of the structure, quickly becomes tedious and problem specific. Even more importantly, such  methods would not be able to reproduce the desired Boltzmann distribution. On the other hand, ML models have shown the ability to learn complex distributions, such as the higher order dependencies in generating human faces. Deploying ML models also avoids tedious rule based programming, as the model learns decisions from training data. Additionally, many ML models generalize to a great extend.
+
+At this point, the engine of deepBM is introduced: A ML model to learn the placement of the atoms. The recent success of GANs in generating sharp, photo-realistic images has motivated the application of the adversarial training approach. As stated in Sec. \ref{ML_GAN}, a generator $g_{\Theta}$ maps samples $\mathbf{z} \in \mathbb{R}^d$ from a latent distribution $\mathcal{Z}$ into the ambient space $\mathbb{R}^D$. A second model, the discriminator $c_{\Psi}$, acts as a distance measure in ambient space $\mathbb{R}^D$ for the real distribution $\mathcal{X}$ and the distribution of synthetic samples $g_{\Theta}(\mathcal{Z})$. However, the standard GAN approach does not offer much control over the generative process, as the correlations between latent and data distribution are chosen arbitrarily. On the other hand, BM requires to condition the generative process on the coarse-grained structure and the autoregressive approach demands the information of prior atoms. To this end, both networks $g_{\Theta}$ and $c_{\Psi}$ are provided with auxiliary information to generate samples related to this additional input.  Such an approach is called a conditional generative adversarial network (cGAN).
+ 
+In the present work, the conditional input for both networks consists of the local environment representation $\epsilon_i$ and the atom type $c_i$, denoted with $u_i = (\elsilon_i, c_i)$.  
+
 
 \section{Potential Energy as Regularizer}
