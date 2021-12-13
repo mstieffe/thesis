@@ -151,7 +151,34 @@ The autoregressive approach turns the complex problem of generating molecular st
 
 At this point, the engine of deepBM is introduced: A ML model to learn the placement of the atoms. The recent success of GANs in generating sharp, photo-realistic images has motivated the application of the adversarial training approach. As stated in Sec. \ref{ML_GAN}, a generator $g_{\Theta}$ maps samples $\mathbf{z} \in \mathbb{R}^d$ from a latent distribution $\mathcal{Z}$ into the ambient space $\mathbb{R}^D$. A second model, the discriminator $c_{\Psi}$, acts as a distance measure in ambient space $\mathbb{R}^D$ for the real distribution $\mathcal{X}$ and the distribution of synthetic samples $g_{\Theta}(\mathcal{Z})$. However, the standard GAN approach does not offer much control over the generative process, as the correlations between latent and data distribution are chosen arbitrarily. On the other hand, BM requires to condition the generative process on the coarse-grained structure and the autoregressive approach demands the information of prior atoms. To this end, both networks $g_{\Theta}$ and $c_{\Psi}$ are provided with auxiliary information to generate samples related to this additional input.  Such an approach is called a conditional generative adversarial network (cGAN).
  
-In the present work, the conditional input for both networks consists of the local environment representation $\epsilon_i$ and the atom type $c_i$, denoted with $u_i = (\elsilon_i, c_i)$.  
+In the present work, the conditional input for both networks consists of the local environment representation $\epsilon_i$ and the atom type $c_i$, denoted with $\mathbf{u}_i = (\epsilon_i, c_i)$. The CNN architecture of the critic network $c_{\Psi}$ requires that the prediction of the generator has a smooth density representation to perform adversarial training. At the same time, the position of the atom has to be ultimtely expressed as a point coordinate. Two options are available to generate both consistently: 
 
+1) The generator $g_{\Theta}$ predicts a smooth-density representation $\hat{\gamma}_i \coloneqq g_{\Theta}(\mathbf{z}, \mathbf{u}_i)$, which is collapsed back to point coordinates $\hat{\mathbf{r}}_i$. To this end, a weighted average is computed, discretized over the voxel-grid
+
+\begin{equation}
+  \hat{\mathbf{r}}_i = \int d\mathbf{x} \hat{\gamma}_i (\mathbf{x}) \approx \sum_{m,k,l} x_{mkl} \hat{\gamma}_i (x_{mkl}) .
+\end{equation}
+
+2) The generator $g_{\Theta}$ directly predicts a point coordinate $\hat{\mathbf{r}}_i \coloneqq g_{\Theta}(\mathbf{z}, \mathbf{u}_i)$, which is mapped to a smooth density representation $\hat{\gamma}_i$. To this end, a Gaussian mapping is used
+
+\begin{equation}
+    \hat{\gamma}_i = \text{exp} \Big( - \frac{(\mathbf{x} - \hat{\mathbf{r}}_i)^2}{2\sigma^2} \Big).
+\end{equation}
+
+Experiments have shown that both versions perform equally well. In either case, both $\hat{\gamma}_i$ as well as $\hat{\mathbf{r}}_i$ are differentiable and thus can be easily incorporated in a cost function.
+
+The critic is trained to distinguish between reference densities $\gamma_i$ and generated densities $\hat{\gamma}_i$, which are both related to the conditional input $\mathbf{u}_i$. The adversarial cost function for the critic can be written as
+
+\begin{equation}
+  \mathcal{C}_{\text{adv}}(c_{\Psi}) = \mathbb{E}_{i} [ c_{\Psi}(\mathbf{u}_i, \boldsymbol{\gamma}_i) - c_{\Psi}(\mathbf{u}_i, \hat{\boldsymbol{\gamma}}_i) ] .
+\end{equation}
+
+As stated in Sec. \ref{theory_wgan}, the critic has to be constrained to a 1-Lipschitz function. To this end, gradient penalty as expressed in Eq. \ref{gradient_penalty} is added to the total cost function $\mathcal{C}_{\text{tot}}$ of the critic
+
+\begin{equation}
+  \mathcal{C}_{\text{tot}}(c_{\Psi}) = \mathcal{C}_{\text{adv}}(c_{\Psi}) + \lambda_{\text{gp}} \mathcal{C}_{\text{gp}}(c_{\Psi}), 
+\end{equation}
+
+where $\lambda_{\text{gp}}$ denots the weight of the gradient penalty.
 
 \section{Potential Energy as Regularizer}

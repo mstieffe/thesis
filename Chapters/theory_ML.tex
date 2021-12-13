@@ -576,6 +576,7 @@ Firstly, the minimax game is tackled iteratively with an alternating approach wh
 The loss in Eq. \ref{gan_nonsaturating_loss} provides strong gradients for the generator. However, other issues can occur upon application of the non-saturating cost function, such as numerical instability of the gradients and mode collapse, i.e. low sample variance.
   
 \subsubsection{Wasserstein Distance: Discriminator Estimates Transport Cost}
+\label{theory_wgan}
   
 Various variants of GANs have been developed to tackle the above mentioned challenges. A popular variant is the \textit{Wasserstein GAN} (WGAN) that uses the \textit{Earth Mover distance} (EMD) to measure the distance between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$. According to \cite{}, the EMD has some appealing properties compared to other probability distance functions, such as relative entropy, cross entropy or Jensen-Shannon divergence: If the distributions have disjoint support, the aforementioned distance measurments yield gradients that are always zero. This is a major concern when dealing with real-world high-dimensional data sets, as the manifold hypotheses states that most of the probability mass is concentrated in lower dimensional manifolds. Therefore, it is likely that the intersection of two probability distributions vanishes. The EMD circumvents these issues and guarantees continuity and differantiability.
 
@@ -601,5 +602,19 @@ In Eq. \ref{wasserstein_duality} the maximum is taken over all functions $f: \ma
   \underset{\Theta}{\text{min}} \; \underset{\Psi}{\text{max}} \; \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [c_{\Psi}(g_{\Theta}(\mathbf{z}))] - \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [c_{\Psi}(\mathbf{x})] .
 \end{equation}
 
+Various different methods exists to ensure the 1-Lipschitz continuity. A popular approach is \textit{gradient penalty}, where an additional term is introduced to the cost function of the critic. A differentiable function is one-Lipschitz if and only if it has gradients everywhere with norm at most one. A soft version of this constraint is enforced with a penalty on the gradient norm
+  
+\begin{equation}
+\label{gradient_penalty}
+  \mathcal{C}_{\text{gp}}(c_{\Psi}) = \mathbb{E}_{\bar{\mathbf{x}} \sim \bar{\mathcal{X}}} [ (|| \nabla_{\bar{\mathbf{x}}} c_{\Psi}(\bar{\mathbf{x}})||_2 - 1)^2  ] ,
+\end{equation}
+  
+where $\bar{\mathbf{x}}$ is interpolated linearly between pairs of points $\mathbf{x}$ and $g_{\Theta}(\mathbf{z})$. The additional term in the loss function may be considered a regularizer for the complexity of the critic $c_{\Psi}$.\cite{}
+  
+%Another option to ensure 1-Lipschitz continuity is \textit{spectral normalization}. The Lipschitz constant of a linear function is its largest singular value $\sigma$, which is also called \textit{spectral norm}. Therefore, spectral normalization can be applied to all the weights $\Psi$ in the network $c_{\Psi}$, i.e.
+%\begin{equation}
+%  \Psi \rightarrow \frac{\Psi}{\sigma(\Psi)}, 
+%\end{equation}
+%to enforce the 1-Lipschitz continuity. 
   
 \subsubsection{Limitations}
