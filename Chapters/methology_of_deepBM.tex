@@ -149,9 +149,11 @@ The featurized representation for the forward-sampling $\tilde{\epsilon}_{i}$ is
 
 The autoregressive approach turns the complex problem of generating molecular structures into a sequence of much simpler decisions. However, learning the local placement of the atoms is still a challenging task. Implementing a rule based decision algorithm, for example grounded on the geometry or energy of the structure, quickly becomes tedious and problem specific. Even more importantly, such  methods would not be able to reproduce the desired Boltzmann distribution. On the other hand, ML models have shown the ability to learn complex distributions, such as the higher order dependencies in generating human faces. Deploying ML models also avoids tedious rule based programming, as the model learns decisions from training data. Additionally, many ML models generalize to a great extend.
 
-At this point, the engine of deepBM is introduced: A ML model to learn the placement of the atoms. The recent success of GANs in generating sharp, photo-realistic images has motivated the application of the adversarial training approach. As stated in Sec. \ref{ML_GAN}, a generator $g_{\Theta}$ maps samples $\mathbf{z} \in \mathbb{R}^d$ from a latent distribution $\mathcal{Z}$ into the ambient space $\mathbb{R}^D$. A second model, the discriminator $c_{\Psi}$, acts as a distance measure in ambient space $\mathbb{R}^D$ for the real distribution $\mathcal{X}$ and the distribution of synthetic samples $g_{\Theta}(\mathcal{Z})$. However, the standard GAN approach does not offer much control over the generative process, as the correlations between latent and data distribution are chosen arbitrarily. On the other hand, BM requires to condition the generative process on the coarse-grained structure and the autoregressive approach demands the information of prior atoms. To this end, both networks $g_{\Theta}$ and $c_{\Psi}$ are provided with auxiliary information to generate samples related to this additional input.  Such an approach is called a conditional generative adversarial network (cGAN).
- 
-In the present work, the conditional input for both networks consists of the local environment representation $\epsilon_i$ and the atom type $c_i$, denoted with $\mathbf{u}_i = (\epsilon_i, c_i)$. The CNN architecture of the critic network $c_{\Psi}$ requires that the prediction of the generator has a smooth density representation to perform adversarial training. At the same time, the position of the atom has to be ultimtely expressed as a point coordinate. Two options are available to generate both consistently: 
+At this point, the engine of deepBM is introduced: A ML model to learn the placement of the atoms. The recent success of GANs in generating sharp, photo-realistic images has motivated the application of the adversarial training approach. As stated in Sec. \ref{ML_GAN}, a generator $g_{\Theta}$ maps samples $\mathbf{z} \in \mathbb{R}^d$ from a latent distribution $\mathcal{Z}$ into the ambient space $\mathbb{R}^D$. A second model, the discriminator $c_{\Psi}$, acts as a distance measure in ambient space $\mathbb{R}^D$ for the real distribution $\mathcal{X}$ and the distribution of synthetic samples $g_{\Theta}(\mathcal{Z})$. However, the standard GAN approach does not offer much control over the generative process, as the correlations between latent and data distribution are chosen arbitrarily. On the other hand, BM requires to condition the generative process on the coarse-grained structure and the autoregressive approach demands the information of prior atoms. To this end, both networks $g_{\Theta}$ and $c_{\Psi}$ are provided with auxiliary information to generate samples related to this additional input.  Such an approach is called a conditional generative adversarial network (cGAN). In the present work, the conditional input for both networks consists of the local environment representation $\epsilon_i$ and the atom type $c_i$, denoted with $\mathbf{u}_i = (\epsilon_i, c_i)$. 
+
+\subsection{Densities and Coordinates}
+
+The CNN architecture of the critic network $c_{\Psi}$ requires that the prediction of the generator has a smooth density representation to perform adversarial training. At the same time, the position of the atom has to be ultimtely expressed as a point coordinate. Two options are available to generate both consistently: 
 
 1) The generator $g_{\Theta}$ predicts a smooth-density representation $\hat{\gamma}_i \coloneqq g_{\Theta}(\mathbf{z}, \mathbf{u}_i)$, which is collapsed back to point coordinates $\hat{\mathbf{r}}_i$. To this end, a weighted average is computed, discretized over the voxel-grid
 
@@ -165,7 +167,9 @@ In the present work, the conditional input for both networks consists of the loc
     \hat{\gamma}_i = \text{exp} \Big( - \frac{(\mathbf{x} - \hat{\mathbf{r}}_i)^2}{2\sigma^2} \Big).
 \end{equation}
 
-Experiments have shown that both versions perform equally well. In either case, both $\hat{\gamma}_i$ as well as $\hat{\mathbf{r}}_i$ are differentiable and thus can be easily incorporated in a cost function.
+Experiments have shown that both versions perform equally well. If not stated otherwise, the first option is used in the following. In either case, both $\hat{\gamma}_i$ as well as $\hat{\mathbf{r}}_i$ are differentiable and thus can be easily incorporated in a cost function.
+
+\subsection{Adversarial Cost-Function}
 
 The critic is trained to distinguish between reference densities $\gamma_i$ and generated densities $\hat{\gamma}_i$, which are both related to the conditional input $\mathbf{u}_i$. The adversarial cost function for the critic can be written as
 
@@ -180,5 +184,21 @@ As stated in Sec. \ref{theory_wgan}, the critic has to be constrained to a 1-Lip
 \end{equation}
 
 where $\lambda_{\text{gp}}$ denots the weight of the gradient penalty.
+
+The adversarial cost function for the generator can be written as 
+
+\begin{equation}
+  \mathcal{C}_{\text{adv}}(g_{\Theta}) = \mathbb{E}_{i} [ c_{\Psi}(\mathbf{u}_i, g_{\Theta}(\mathbf{z}, \mathbf{u}_i)) ] .
+\end{equation}
+
+\subsection{Training on Sequences}
+
+Optimal positioning of an atom is only possible if the previous atoms are placed correctly. In other words, the autoregressive reconstruction of the molecular structure can accumulate errors. Therefore, the training protocol of the network has to take the autoregressive nature of the approach into account. More specifically, the generator has to be penalized for its actions in the past if they hinder the correct placement of the current atom. To this end, backpropagation of the error signal is applied to an entire sequence of generated atom positions.
+
+During training, the local environments presented to the network are composed of atoms taken from the training data and already generated atoms: The initial local environment for the first atom in a sequence is constructed from training data. After each step, the generated density is added to the local environment representation for the next atom in the sequence, as illustrated in Fig. \ref{}, until all atoms in the sequence are generated. As such, the computational graph for the sequence generation consists of $n$ copies of the generator, where $n$ is the length of the sequence. The critic judges each step and the error signals of all $n$ steps are accumulated. After a sequence is completed, the accumulated cost is backpropagated through the unrolled network. This approach allows to take dependencies among the different steps into account.
+
+Sequences for training can be created in many different ways. Intuitively, dividing 
+
+ 
 
 \section{Potential Energy as Regularizer}
