@@ -192,3 +192,33 @@ During training, the local environments presented to the network are composed of
 %Hydrogens are typically treated separately, such that all non-hydrogens of a system are placed first in order to avoid that misplaced hydrogens hinder $g_{\Theta}$ to find suitable positions for the heavy atoms.
 
 \section{Potential Energy as Regularizer}
+
+Ideally, the adversarial cost is already sufficient to drive the generator towards reproducing the desired Boltzmann distribution. However, training of a GAN is notoriously unstable and parameters of a GAN easily diverge. As a result, GANs have a number of failure modes, such as mode-collapse or failure to converge (see Sec. \ref{}). Various forms of regularization have been deployed to address those issues and improve generalization, including gradient penalties, weight normalization or architectural methods. 
+
+Unlike data sets commonly used in the ML community, the target distribution $p_{\mathcal{X}}(\mathbf{x}) \propto \text{exp}[\frac{U(\mathbf{x})}{k_b T}]$ for the desired molecular structures is already known up to a normalization constant, i.e. the partition function. This knowledge can be incorporated in the training of deepBM to improve its performance and to monitor the training process. Specifically, the potential energy $U$ of generated structures is utilized as an additional term $\mathcal{C}_{\text{pot}}$ in the cost function of the generator. As such, $\mathcal{C}_{\text{pot}}$ acts as a regularizer that effectively narrows down the functional space of the generator by penalizing structrues with high potential energy. In bayesian terms, $\mathcal{C}_{\text{pot}}$ incorporates prior believe about the model into the training, as it helps steering the optimization towards generating structures with high Boltzmann weight. It thereby effectively accelerates convergence and helps to improve accuracy.
+
+$\mathcal{C}_{\text{pot}}$ depends on the set of atoms $\psi_{I}$ corresponding to a coarse-grained bead $\mathbf{A}_I$ as well as reference atoms $N_I$ from the local neighborhood of different beads, i.e. $N_I = \{\mathbf{a}_j | \mathbf{a}_j \in \psi_J, J \neq I, |\mathbf{R}_J - \mathbf{R}_I| < r_{\text{cut}}\}$. In the following, $e_t$ denotes the potential energy of specific intramolecular and intermolecular interactions, as described in Sec. \ref{}. Specifically, $t$ runs over the interaction types: intramolecular bond, angle, and dihedral, and non-bonded Lennard-Jones. In this study, two different cost functions based on the potential energy are used.
+
+The first prior cost function $\mathcal{C}^{(1)}_{\text{pot}}$ aims at minimizing the potential energy of generated structures,
+
+\begin{equation}
+  \mathcal{C}^{(1)}_{\text{pot}}(\hat{\psi}_{I}, N_I) = \sum_{t} \lambda_t e_t(\hat{\psi}_{I}, N_I) ,
+\end{equation} 
+
+where $\hat{\psi}_{I}$ denotes atoms positioned by the generator $g_{\Theta}$ and $\lambda_t$ scales the different energy terms.
+
+The second prior cost function $\mathcal{C}^{(2)}_{\text{pot}}$ penalizes discrepancies between potential energies of generated and reference structures,
+
+\begin{equation}
+  \mathcal{C}^{(2)}_{\text{pot}}(\hat{\psi}_{I}, \psi_I, N_I) = \sum_{t} \lambda_t | e_t(\hat{\psi}_{I}, N_I) - e_t(\psi_{I}, N_I) | .
+\end{equation} 
+
+Overall, the following cost function for the generator is used
+
+\begin{equation}
+    \underset{\Theta}{\text{min}} \; \mathcal{C}_{\text{tot}}(g_{\Theta}) =  \underset{\Theta}{\text{min}} \; \mathbb{E}_{I} \Big[ \frac{1}{|\omega_I|} \sum_{i \in \omega_I} c_{\Psi}(\mathbf{u}_i, g_{\Theta}(\mathbf{z}, \mathbf{u}_i)) + \lambda_{\text{pot}} \mathcal{C}_{\text{pot}}(\hat{\psi}_{I}, \psi_I, N_I) \Big] .
+\end{equation}
+
+Importantly, $\mathcal{C}_{\text{pot}}$ might be in a conflict with the adversarial cost function. While the purely data driven adversarial cost ultimately aims at reproducing the target distribution, the prior cost function encurages the generator to produce structures with a certain potential energy. In an extreme case, where optimization is solely based on the prior cost function, the generator is likely to collapse, i.e it does not converge or produces unconditional structures without variations. Therefore, the prior cost function is scaled with an appropriately low weight $\lambda_{\text{pot}}$, such that it is not as dominant as the adversarial cost. Moreover, training typically starts with $\lambda_{\text{prior}} = 0.0$ and is increased slowly during the course of optimization.
+
+
