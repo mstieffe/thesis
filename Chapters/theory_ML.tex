@@ -230,6 +230,7 @@ A \textit{dense layer} or \textit{fully-connected layer} is the simplest and mos
 where $A$ is a matrix containing the weights and thresholds. The full-connectivity of each neuron makes it capable to detect global pattern in the data, but it also makes it impractical for large inputs, as $A$ grows with the size of $\vec{x}$.
 
 \subsubsection{Convolutional Layer}
+\label{theory_ML_CNN}
 
 Another idea originating from our understanding of the visual cortex is local connectivity: Neurons are only locally connected to neurons in a restricted area of the previous layer known as the \textit{receptive field} of the neuron.\cite{baer2009neurowissenschaften} The receptive field of the neurons becomes bigger the higher they are placed in the hierachy of the network. Therefore, this architecture is perfectly suited to learn hierachical pattern in the data. Layer architectures incorporating the idea of a limitted receptive field are called \textit{convolutional layer}.
 
@@ -618,3 +619,4 @@ where $\bar{\mathbf{x}}$ is interpolated linearly between pairs of points $\math
 %to enforce the 1-Lipschitz continuity. 
   
 \subsubsection{Limitations}
+\label{theory_ML_GAN_limitations}
