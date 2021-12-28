@@ -553,6 +553,7 @@ Most traditional backmapping approaches follow a similar procedure: At first, an
 where the prefactor $b$ is used to scale the restraining potential.
 
 \subsubsection{Generic Approaches}
+\label{SEC:bm_generic}
 
 Generic backmapping approaches are similar to fragment-based approaches, but differ in the way the initial atomistic structure is derived. Generic schemes do not rely on presampled fragments but project the atomistic degrees of freedom onto the coarse-grained structure using general rules. In the most basic version, the atoms are randomly placed close to their corresponding coarse-grained site, whereas more sophisticated approaches rely on geometric rules to place the atoms.\cite{rzepiela2010reconstruction, wassenaar2014going} The resulting initial atomistic structure is typically even more distorted as in the fragment-based approach. Therefore, the subsequent energy minimization and equilibration procedures have to be performed more carefully and typically involve multiple stages where the interaction potentials are gradually switched on.
 
