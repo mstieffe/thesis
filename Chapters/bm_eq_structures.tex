@@ -110,7 +110,7 @@ On the other hand, the baseline method does not adapt well to lower temperatures
 
 \subsubsection{Sketch-Map}
 
-Evaluating large-scale structural features beyond pair-statistics is challenging, since the high dimensionality of the system does not allow to directly visualize the configurational space. However, dimensionality reduction can be used to probe the model's accuracy at higher order. 
+Evaluating large-scale structural features beyond pair-statistics is challenging, since the high dimensionality of the system does not allow to directly visualize the configurational space. For this reason, dimensionality reduction is used to further examine the model's accuracy at higher order. However, linear dimensionality reduction techniques, such as principle component analysis, is insufficient to capture the global structure of data obtained from MD trajectories.\cite{} 
 
 Therefore, a dimensionality reduction algorithm called \textit{Sketch-Map} (SM) is applied to probe the model's accuracy at higher order. SM builds a two-dimensional map representing proximity relationships between sPS monomers and their environments. 
 
