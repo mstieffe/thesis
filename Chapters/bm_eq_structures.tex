@@ -78,7 +78,9 @@ Further, the radial distribution function is analyzed to probe the ability of DB
 
 \subsection{Discussion}
 
-The application of DBM to the high-temperature data set at $568$ K has shown that the method is able to reproduce local- and large-scale structural features as well as energetic properties of the reference system remarkably well. As such, DBM is capable of generating Boltzmann distributed configurations for the state point it was trained on. On the other hand, the baseline method based on energy minimization over stabilizes the system and therefore does not account for the diversity of microstates at a specific canonical state point. Consequently, further MD simulations controlled by a thermostat are required to recover the right state point.
+DBM is an ML approach for the backmapping of coarse-grained molecular structures. The DNN based model learns to reproduce local features guided by large-scale structures from a coarse-grained snapshot. Here, it is applied to the high-temperature data set of an complex condensed-phase molecular system made of sPS chains. The results are compared with a baseline method based on energy-minimization.
+
+It is shown that he method reproduces structural and energetic properties of the reference system remarkably well. DBM yields well-equilibrated configurations of a Boltzmann distribution at a state point it was trained on. On the other hand, the baseline method based on energy minimization over stabilizes the system. As such, it does not account for the diversity of microstates at a specific canonical state point. Consequently, further MD simulations controlled by a thermostat are required to recover the correct state point.
 
 \section{Temperature Transferability: From Melt to Crystal}
 
@@ -101,26 +103,40 @@ DBM adapts remarkbly well to the crystalline state points. Fig. \ref{FIG:sPS_tem
 
 On the other hand, the baseline method does not adapt well to lower temperatures. The method based on energy minimization is not able to generate the correct features at the crystalline state points, but retains much of its features found at high temperature. This becomes especially apparent for the side peak of the backbone dihedral and the flat pair correlation function $g(r)$.
 
+\subsubsection{Sketch-Map}
+
 \begin{figure}
   \centering
       \includegraphics[width=1.1\textwidth]{./Figures/adversarial_backmapping/sPS_temp_trans/sm_snapshots.pdf}
   \caption{ Low-dimensional structural space of condensed-phase configurations at (a) $T$ = 568 K, (b) $T$ = 453K and (c) $T$ = 313 K. For each panel, snapshots are backmapped from identical coarse-grained configurations, highlighting the overlap between reference and DeepBackmap, but disconnect from the baseline method.\cite{stieffenhofer2020adversarial}}
-  \label{fig_bm_intro}
+  \label{FIG:sPS_temp_trans_SM}
 \end{figure}
 
-\subsubsection{Sketch-Map}
+Evaluating large-scale structural features beyond pair-statistics is challenging, since the high dimensionality of the system does not allow to directly visualize the configuration space. For this reason, dimensionality reduction is applied to further examine the model's accuracy at higher order. As explained in Sec. \ref{SEC:ML_latent_variables}, linear dimensionality reduction techniques are insufficient in many cases to capture the global structure of data obtained from MD trajectories. Therefore, Sketch-Map (SM) is applied to build a two-dimensional map representing proximity relationships between sPS chains. 
 
-Evaluating large-scale structural features beyond pair-statistics is challenging, since the high dimensionality of the system does not allow to directly visualize the configurational space. For this reason, dimensionality reduction is used to further examine the model's accuracy at higher order. However, linear dimensionality reduction techniques, such as principle component analysis, is insufficient to capture the global structure of data obtained from MD trajectories.\cite{} 
+The descriptors for the sPS chains consist of a set of representations of the local environments $\mathcal{H}$ centered around alternating backbone carbon atoms that are directly linked to a phenyl group. The pairwise distance between two such environments is encoded using a similarity kernel $k(\mathcal{H}, \mathcal{H}') = \mathbf{p}(\mathcal{H}) \mathbf{p}(\mathcal{H'})$ based on the normalized many-body smooth overlap of atomic position (SOAP) representation $\mathbf{p}(\mathcal{H})$.\cite{} Hydrogen atoms are neglected in the SOAP representation. To compare two sPS chains $a$ and $b$, the covariance matrix 
 
-Therefore, a dimensionality reduction algorithm called \textit{Sketch-Map} (SM) is applied to probe the model's accuracy at higher order. SM builds a two-dimensional map representing proximity relationships between sPS monomers and their environments. 
+\begin{equation}
+ C_{ij}(a,b) = \mathbf{p}(\mathcal{H}^a_i) \mathbf{p}(\mathcal{H}^b_j)
+\end{equation}
+
+is computed, which contains the complete information of the pairwise similarity of all local environments taken into account between the two structures. In order to obtain a global similarity kernel $k(a,b)$, the covariance matrix $C_{ij}(a,b)$ has to be mapped to a single scalar value, which is achieved using a regularized entropy match kernel.\cite{}
+
+Fig. \ref{FIG:sPS_temp_trans_SM} displays the obtained two-dimensional map, where each point represents a single sPS polymer chain. A number of clusters is shown that correspond to different environments. The reference data (black) shows a single cluster for the low-temperature data at $313$ K (Fig. \ref{FIG:sPS_temp_trans_SM} (c)) corresponding to the $\beta$ polymorph. The high-temperature data at $568$ K (Fig. \ref{FIG:sPS_temp_trans_SM} (a)) is mapped to multiple clusters indicating more diversity, i.e. it includes amorphous, $\alpha$ and other structures. The data set at an intermediate temperature $453$ K (Fig. \ref{FIG:sPS_temp_trans_SM} (b)) shows less diversity and is mapped mostly to the cluster corresponding to the $\alpha$ polymorph, but still contains some amorphous and other structures.
+
+Structures obtained with DBM (blue) overlap significantly with the reference points for all three data sets indicating closeness in configuration space and high fidelity of the backmapped structures. This is in strong contrast to the energy-minimized structures obtained with the baseline method, which cover different areas in the two-dimensional projection of configuration space. Moreover, the baseline method fails to recover the correct number of clusters for all three temperatures highlighting a lack of temperature sensitivity.
 
 \subsubsection{MD Simulation}
 
 \subsection{Discussion}
 
-However, DBM retains its performance displayed in Sec. \ref{SEC:DBM_general_performance} and reproduces the reference distributions at different state points with remarkable accuracy.
+In this section, the temperature transferability of DBM is probed. While training of the model is fixed to melt configurations at high temperature, it is deployed at lower temperatures, where the sPS system is in a crystalline state. However, DBM retains its performance displayed in Sec. \ref{SEC:DBM_general_performance} and reproduces the reference distributions with remarkable accuracy. In addition, a higher-order investigation, facilitated by the Sketchmap algorithm, emphasizes the high structural fidelity. As such, the model learns to reproduce local correlations that are transferable across different state points. This is in strong contrast to the baseline method, which lacks accuracy and temperature sensitivity. 
+
+These remarkable transferability features of DBM can be rationalized in terms of a scale-separation: The model learns to reproduce well-equilibrated local correlations while large-scale features are dictated by the coarse-grained snapshot. As such, the backmapped structure is composed of two sources of information, i.e. 1) the learned local features and 2) the coarse-grained structure. However, most of the temperature dependence is carried by the latter, indicated by the coarse-grained model reproducing phase transition blabla while the local features are less temperature sensitive, since they correspond primarily to covalent interactions that operate on energy scales significantly larger than $k_B T$.
 
 \section{Chemical Transferability: From Small Molecules to Polymers}
+
+
 
 \subsection{Results}
 

@@ -161,8 +161,9 @@ While the afore mentioned challenges are examples for the curse of dimensionalit
 
 
 \subsection{Latent Variables}
+\label{SEC:ML_latent_variables}
 
-Switching between representations of different resolutions is a hallmark of MS modeling. However, such a concept is also well known in the ML community, where lower dimensional representations are described by so called \textit{latent variables}. ML algorithms based on the concept of latent variables are refered to as \textit{latent variable models} (LVM).\cite{van2009dimensionality, ge2018process} 
+Switching between representations of different resolutions is a hallmark of MS modeling. However, a similar concept is also well known in the ML community, where hidden and typically lower dimensional representations are described by so called \textit{latent variables}. ML models that relate latent variables with observable varibables are refered to as \textit{latent variable models} (LVM).\cite{van2009dimensionality, ge2018process} 
 
 LVMs are motivated by the assumption that real-world data is generally structured, which implies that it can be described through a lower-dimensional distribution $\mathcal{Z}$ supported in $\mathbb{R}^d$. This assumption is known as the \textit{manifold hypothesis}. Formally, it states that high-dimensional data $x \in \mathbb{R}^D$ tends to lie on a low-dimensional manifold $\mathcal{M} \subset \mathbb{R}^D$ embedded in the high-dimensional space $\mathbb{R}^D$.\cite{fefferman2016testing} Therefore, real-world data is assumed to have an intrinsic lower dimensionality $d < D$ and the oberservations $x$ can be explained through some hidden variables $z \in \mathbb{R}^d$. 
 
@@ -174,7 +175,7 @@ The concept of coarse-graining and latent variables ultimately follow the same p
 
 One of the most commonly used methods for dimensionalty reduction is principle component analysis (PCA). It performs a change of basis by projecting the data onto a linear combinations of the original basis vectors called principle components. The new coordinate system is thereby chosen such that they align with the directions showing the highest variance in the data set. PCA is typically used for dimensinality reduction by discarding principle components with low variance, i.e. the new representation preserves most of the dataś variance.
 
-Despite its wide range of applications, linear dimensionality reduction techniques are typically insufficient to capture the global structure of data obtained from MD trajectories, since the accessable regions of phase space can have a complex, nonlinear structure with nonuniform dimensionality.\cite{} As such, nonlinear dimensionality reduction techniques are more appropriate to analyze the phase space of molecular systems. 
+Despite its wide range of applications, linear dimensionality reduction techniques like PCA are typically insufficient to capture the global structure of data obtained from MD trajectories, since the accessable regions of phase space can have a complex, nonlinear structure with nonuniform dimensionality.\cite{} As such, nonlinear dimensionality reduction techniques are more appropriate to analyze the phase space of molecular systems. 
 
 A promising approach introduced by Ceriotti \emph{et al.} is called \textit{Sketch-Map}. Related to the curse of dimensionality, Ceriotti et al state that two points in phase space with small distance correspond to thermal fluctuations, while large distances are uniformily distributed. COnsequently, the focus has to be set on an intermediate scale capturing most of the valuable topological information of the phase space. Such a characteristic length scale is found by minimizing the cost-function
 
@@ -182,7 +183,7 @@ A promising approach introduced by Ceriotti \emph{et al.} is called \textit{Sket
   \mathcal{C}(\{\mathbf{z}_1, \dots, \mathbf{z}_N\}) = \sum_i^N \sum_j^N \Big( f(r_{ij}) - F(R_{ij}) \Big)^2, 
 \end{equation}
 
-where $r_{ij}$ and $R_{ij}$ correspond to the low-dimensional and high-dimensional distance of two points $\mathbf{z}_i$ and $\mathbf{z}_j$, and $\mathbf{x}_i$ and $\mathbf{x}_j$, respectively. $F$ and $f$ are sigmoid functions of the form
+where $r_{ij}$ and $R_{ij}$ correspond to the low-dimensional and high-dimensional distance of two points $\mathbf{z}_i$ and $\mathbf{z}_j$, as well as $\mathbf{x}_i$ and $\mathbf{x}_j$, respectively. $F$ and $f$ are sigmoid functions of the form
 
 \begin{equation}
   F(R) = 1 - (1 + (2^{A/B} - 1)(R/\sigma)^A)^{-B/A}
