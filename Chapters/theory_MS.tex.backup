@@ -1,9 +1,24 @@
 
 \chapter{Multiscale Modeling} % Main chapter title
 
+Condensed matter can be studied at various levels of resolution ranging from a classical thermodynamic description of macroscopic quantities to a fundamental, quantum mechanical description that takes electronic degrees of freedom into account. Ideally, all emergend phenomenas of matter should be treated with ab initio methods, i.e. methods based on first principles. However, even performed on modern supercomputers, ab initio molecular dynamics simulations quickly reach their limits and are currently restricted to systems involving a few thousands of atoms.\cite{lahnsteiner2016room, paquet2018computational} Therefore, it is often necessarry to resign to a coarser description of matter in order to push the limits of length and time scales reachable with computer simulations. 
+
+In general, the actual choice of resolution depents on the length and time scale of the phenomena of interest. The applied model has to be detailed enough to capture locally relevant length scales, while still providing the capability to study the phenomena in its whole extent. Often, it is not possible to capture all the relevant scales in a single model. This is especially true for soft matter systems, where processes occuring on atomistic length and time scales can impact meso- to macroscopic changes. The reason for this is a rather low characteristic energy scale of soft matter systems that is in the order of magnitude of the thermal energy $k_b T$.\cite{praprotnik2008multiscale, peter2010multiscale, peter2009multiscale} Therefore, entropic contributions to the free energy due to large scale conformational and structural changes can be in the same order of magnitude as local interactions. Thus, soft matter systems are charaterized by large thermal fluctuations. Consequently, a thorough exploration of soft matter systems demands for methods that allow to capture the interplay of processes that are inherently linked to various different scales.
+
+\begin{figure}
+  \centering
+      \includegraphics[width=0.7\textwidth]{./Figures/ms/ms_intro2.pdf}
+  \caption{Multiscale Modelling takes different length and time scales into account. Various resolution levels of polystyrene are shown. Mesoscale illustration taken from \cite{lee2014facile}.}
+  \label{FIG:MS_intro}
+\end{figure}
+
+Multiscale Modeling (MM) offers a solution to study phenomenas that require a description on multiple levels of resolution. It refers to methods that include multiple models of various resolution providing the ability to address the phenomena at different length and time scales. The models can be linked or combined following different strategies: In the sequential approach, models are treated seperatly and information is passed between them without directly influencing each other, wheres hybrid methods provide a direct interaction between models to use different resolutions simultanousely.\cite{ayton2007multiscale, voth2008coarse, peter2010multiscale} Alternatively, the resolution of single molecules can be changed adaptively during the course of the simulation.\cite{praprotnik2005adaptive, praprotnik2007macromolecule}
+
+This chapter gives an introduction to MM and is organized as follows: At first, basics of thermodynamics and statistical mechanics are recalled followed by a review of Molecular Dynamics simulations. Afterwards, a section about coarse-graining outlines strategies to reduce the resolution. Finally, the inverse problem, i.e. increasing the resolution, is introduced to motivate the main theme of this thesis.
+
 \label{theory_ms} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-\cite{peter2010multiscale}, \cite{peter2009multiscale}
+
 
 % -----------------------------------
 %   Statistical Mechanics
@@ -131,6 +146,7 @@ Fortunately, Computer simulations can circumvent these issues. The two main bran
 The following introducting to MD is based on the book by Frenkel and Smit and the lecture notes of M. Scott Shell, which are excellent sources providing the interested reader with more detailed explanations on this topic.\cite{shell2019lecturenotes, frenkel2001understanding}
 
 \subsection{Molecular Force Fields}
+\label{molecular_forcefield}
 
 Calculating forces acting on the particles is crucial to evolve the system in time. To this end, a definition for the potential energy function is required describing the interactions between the particles. These potentials can be defined on vary different levels of resolution. In the following, the classical description is used, which ignores the motion of the electrons and focuses solely on the motion of the nuclei. However, MD simulations including electronic degrees of freedom are also possible.\cite{marx2000ab, lemkul2016empirical} In this regard, the classical description approximates the effect of electrons as a potential energy surface representing the quantum ground-state.\cite{shell2019lecturenotes} This description is reasonable in cases where the Born-Oppenheimer approximation is valid and the electronic structure is not of interest.\cite{shell2019lecturenotes} Furthermore, bond breaking or forming is prohebitted.\cite{shell2019lecturenotes}
 
@@ -167,7 +183,7 @@ Obviously, calculating the nonbonded interactions is computationally more expens
 \subsection{Numerical Integration}
 \label{numerical_integration}
 
-The time evolution of the molecular system is described by Newton's equations of motion, i.e. given the potential energy function $U(\mathbf{r})$ the forces $m \frac{d^2 \mathbf{r}}{d t^2}$ acting on the $N$ atoms are computed as
+The time evolution of the molecular system is described by Newton's equations of motion: Given the potential energy function $U(\mathbf{r})$ the forces $m \frac{d^2 \mathbf{r}}{d t^2}$ acting on the $N$ atoms are computed as
 
 \begin{equation}
 \label{newtons_eq_motion}
@@ -286,7 +302,7 @@ Typically, The Nosé-Hoover thermostat and the Parinello-Rahman barostat are use
 
 \section{Coarse-Graining}
 
-Coarse-Graining is the process of building a simplified model of a complex system. To this end, a coarse-grained model represents the system at a lower level of resolution, i.e. it reduces the number of degrees of freedom. Obviously, the goal is to keep essential features while ignoring or averaging over less important details. In other words, the simplified model still has to maintain the correct physical behaviour. The benefits of coarse-grained models are twofold: Firstly, the reduced representation allows to access longer length an time scales, as the computational cost is reduced as well. Secondly, coarse-graining helps to put the essential features driving the emergend phenomena of interest into the spot light, as disturbing and unnecessary details are removed.
+Coarse-Graining is the process of building a simplified model of a complex system. To this end, a coarse-grained model represents the system at a lower level of resolution, i.e. it reduces the number of degrees of freedom. Obviously, the goal is to keep essential features while ignoring or averaging over less important details. In other words, the simplified model still has to maintain the correct physical behaviour. The benefits of coarse-grained models are twofold: Firstly, the reduced representation allows to access longer length an time scales. This is a direct consequence of the reduced molecular friction and smoothed energy landscape of the coarse-grained model, which effectively accelerates equlibration of the molecular system. In addition, the computational cost reduces with the number of degrees of freedom. Secondly, coarse-graining helps to put the essential features driving the emergend phenomena of interest into the spot light, as disturbing and unnecessary details are removed.
 
 \subsection{Representation}
 
@@ -295,28 +311,24 @@ The basis of a coarse-grained model is the representation of the particles captu
 It is often required to not only specify the representation but also define a concrete mapping for the coordinates, i.e. a function $\mathbf{M}$ of the atomistic coordinates $\mathbf{r}$ to the coordinates of the CG beads $\mathbf{R}$. Typically, a linear mapping is chosen,
 
 \begin{equation}
-  \mathbf{R}_I = \sum_{i \in \phi(I)} c_{iI} \mathbf{r}_i ,
+  \mathbf{R}_I = \mathbf{M}_{I}(\mathbf{r}) = \sum_{i \in \psi(I)} b_{iI} \mathbf{r}_i 
 \end{equation}
 
-where $I$ and $i$ are the indices of the CG bead and atom respectively, $\phi(I)$ is the set of indices of atoms the CG bead $I$ corresponds to and $c_{iI}$ are coefficients of the mapping. In many cases, the coordinate mapping is chosen such that it reflects the center of mass geometry of the group of atoms. 
+where $I$ and $i$ are the indices of the CG bead and atom respectively, $\psi(I)$ is the set of indices of atoms the CG bead $I$ corresponds to and $b_{iI}$ are coefficients of the mapping. In many cases, the coordinate mapping is chosen such that it reflects the center of mass geometry of the group of atoms. 
 
 \subsection{Top-down vs Bottom-up}
 
 Once the representation of the coarse-grained model is defined, the forcefield has to be determined. For this task, a wide range of different schemes have been developed and two schools of thoughts have been established, refered to as bottom-up and top-down approaches. Note, that while a distinction between those two approaches is instructive, a clear classification is not always possible as many coarse-graining schemes incorporate aspects both ideas.
 
-The bottom-up approach utilizes a more detailed model and aims at reproducing the thermodynamic and structural properties of the higher resolution system as closely as possible. In general, the choice of the underlying fine-grained model is not bound to a specific resolution. A common choice is to use the classical atomistic model as a basis. In this case, the accuracy of the coarse-grained model depends on the quality of the fine-grained model, as the atomistic model itself is a approximation of the quantum mechanical description. Once the high-resolution model is chosen, statistical mechanics provides a framework to rigorously derive the forcefield for the coarse-grained system. In theory, the many-body potential of mean force (PMF, see below) is central for this derivation. However, practical application of the PMF is provides significant challenges as it is extremely costly to evaluate for high dimensional systems.
+The bottom-up approach utilizes a more detailed model and aims at reproducing the thermodynamic and structural properties of the higher resolution system as closely as possible. In general, the choice of the underlying fine-grained model is not bound to a specific resolution. A common choice is to use the classical atomistic model as a basis. In this case, the accuracy of the coarse-grained model depends on the quality of the fine-grained model, as the atomistic model itself is a approximation of the quantum mechanical description. Once the high-resolution model is chosen, statistical mechanics provides a framework to rigorously derive the forcefield for the coarse-grained system. In theory, the many-body potential of mean force (PMF, see below) is central for this derivation.\cite{noid2013perspective} However, practical application of the PMF is provides significant challenges as it is extremely costly to evaluate for high dimensional systems.
 
-While the spirit of bottom-up approaches is related to inductive reasoning, i.e. generalizing from something that is more specific, the top-down approach can be associated with deduction, i.e. applying general rules to derive a conclusion. Top-down coarse-graining starts with universal physical principles or experimentally observed phenomenas that the model aims to reproduce. In general, top-down models are used to study the consequences of the rules incorporated in the model. In this regard, top-down models are often not chemically-specific, as the set of rules yielding a specific phenomena might not be unique. Furthermore, it is often not sufficient to link a single phenomena to a specific chemical compound, as a full range of properties have to be reproduced to characterize the compound with high confidence. In this sense, top-down models are often under-constrained.
+While the spirit of bottom-up approaches is related to inductive reasoning, i.e. generalizing from something that is more specific, the top-down approach can be associated with deduction, i.e. applying general rules to derive a conclusion. Top-down coarse-graining starts with universal physical principles or experimentally observed phenomenas that the model aims to reproduce. In general, top-down models are used to study the consequences of the rules incorporated in the model.\cite{schmid2009toy} In this regard, top-down models are often not chemically-specific, as the set of rules yielding a specific phenomena might not be unique.\cite{noid2013perspective} Furthermore, it is often not sufficient to link a single phenomena to a specific chemical compound, as a full range of properties have to be reproduced to characterize the compound with high confidence. In this sense, top-down models are often under-constrained.
 
 %While a coarse-grained model implies the existence of more fundamental, higher resolution model, the question of how the coarse-grained model is built upon this fine-grained 
 
-\cite{noid2013perspective}
-
-\cite{noid2008multiscale}
-
 \subsection{Consistency Criteria and the Many-Body Potential of Mean Force}
 
-Deriving the coarse-grained potential $U(\mathbf{R})$ for the coarse-grained model is the most challenging task. In the case of bottom-up coarse-graining, the potential $U(\mathbf{R})$ can theoretically derived exactly from the fine-grained potential $u(\mathbf{r})$ and the mapping $\mathbf{M}(\mathbf{r})$. The underlying criteria for the derivation is called consistency criteria and states that the equilibrium joint probability density in phase space of the coarse-grained coordinates $\mathbf{R}$ and momenta $\mathbf{P}$ have to match the implied atomistic probability density.\cite{noid2008multiscale} For simplicity, the following considerations are restricted to the configuration space, i.e. exluding momenta, such that the consistency criteria can be written as
+Deriving the coarse-grained potential $U_{\text{CG}}(\mathbf{R})$ for the coarse-grained model is the most challenging task. In the case of bottom-up coarse-graining, the potential $U(\mathbf{R})$ can theoretically be derived exactly from the fine-grained potential $U_{\text{AA}}(\mathbf{r})$ and the mapping $\mathbf{M}(\mathbf{r})$. The underlying criteria for the derivation is called consistency criteria and states that the equilibrium joint probability density $p_{CG} (\mathbf{R}, \mathbf{P})$ in phase space of the coarse-grained coordinates $\mathbf{R}$ and momenta $\mathbf{P}$ have to match the implied atomistic probability density $p_{AA} (\mathbf{R}, \mathbf{P})$.\cite{noid2008multiscale} For simplicity, the following considerations are restricted to the configuration space, i.e. exluding momenta, such that the consistency criteria can be written as
 
 \begin{equation}
 \label{consistency1}
@@ -327,78 +339,237 @@ where $p_{CG} (\mathbf{R})$ is is the equilibrium probability density for a conf
 
 \begin{equation}
 \label{consistency2}
-  p_{CG} (\mathbf{R}) \propto \text{exp} \Big[ \frac{U(\mathbf{R})}{k_B T} \Big]
+  p_{CG} (\mathbf{R}) \propto \text{exp} \Big[ - \frac{U_{\text{CG}}(\mathbf{R})}{k_B T} \Big]
 \end{equation}
 
-and $p_{AA} (\mathbf{R})$ is the implied equilibrium probability density for a coarse-grained configuration $\mathbf{R}$ by the mapping $\mathbf{M}(\mathbf{r})$ expressed in terms of the fine-grained model
+and $p_{AA} (\mathbf{R})$ is the equilibrium probability density for a coarse-grained configuration $\mathbf{R}$ implied by the mapping $\mathbf{M}(\mathbf{r})$ expressed in terms of the fine-grained model
 
 \begin{equation}
 \label{consistency3}
-  p_{AA} (\mathbf{R}) \propto \mathcal{Z}(\mathbf{R}) := \int  \text{exp} \Big[ \frac{u(\mathbf{r})}{k_B T} \Big] \delta(\mathbf{M}(\mathbf{r}) - \mathbf{R}) d\mathbf{r} .
+  p_{AA} (\mathbf{R}) \propto \mathcal{Z}(\mathbf{R}) := \int  \text{exp} \Big[ - \frac{U_{\text{AA}}(\mathbf{r})}{k_B T} \Big] \delta(\mathbf{M}(\mathbf{r}) - \mathbf{R}) d\mathbf{r} .
 \end{equation}
 
 Plugging Eq. \ref{consistency2} and \ref{consistency3} into \ref{consistency1} and reordering yields
 
 \begin{equation}
+\label{mbpmf}
  U(\mathbf{R}) = - k_B T \; \text{ln} (\mathcal{Z}(\mathbf{R})) + \text{const} .
 \end{equation}
 
-\cite{frenkel2001understanding}, \cite{noid2008multiscale}
+Eq. \ref{mbpmf} defines the many-body PMF as a projection of the free energy function onto the coarse-grained degrees of freedom. It assigns a weight to each coarse-grained configuration associated with the sum of all the Boltzmann weights for the corresponding atomistic configurations. Recalling the free energy  $F$
 
-\subsection{Consistency Criteria}
+\begin{equation}
+  F = U - TS = - k_B T \; \text{ln}(\mathcal{Z}) ,
+\end{equation}
 
-\cite{noid2008multiscale}
+where $U$ is the internal energy, makes it clear that the many-body PMF is not a regular potential, as it contains both, energetic as well as entropic contributions.\cite{noid2008multiscale} Moreover, as the name suggests, this potential generates the average atomistic forces associated with the atomistic configurations that map to the specific coarse-grained configuration.\cite{noid2013perspective} 
 
-\subsection{Coarse-Grained Force Field}
+Importantly, $U(\mathbf{R})$ typically introduces many-body interactions that can not be expressed with simple classical force fields as outlined in Sec. \ref{molecular_forcefield}.\cite{noid2013perspective} This is a direct consequence for integrating over degrees of freedom. Moreover, the many-body PMF is extremely high dimensional and therefore becomes infeasible to compute for most systems.\cite{noid2013perspective} For those reasons, a wide range of techniques have been developed to obtain a tractable approximation of the many-body PMF (see below). 
+
+
+\subsection{Overview of Bottom-Up Approaches and Top-Down Force Fields}
+
+In this section, some popular bottom-up approaches to determine the coarse-grained potential are reviewed. Those approaches include structure based techniques, such as direct Boltzmann inversion (DBI) and iterative Boltzmann inversion (IBI), as well as variational approaches, like the multiscale coarse-graining approach (MS-CG) and the relative entropy (RE) framework. Moreover, two generic top-down force fields are presented, namely the Martini forcefield and the Kremer-Grest model.
 
 \subsubsection{Direct Boltzmann Inversion}
 
-\cite{tschop1998simulation}
+The most simple approach to obtain an approximate coarse-grained potential is direct Boltzmann inversion (DBI).\cite{tschop1998simulation} This approach aims at reproducing certain structural distributions computed from atomistic reference data that is mapped onto the coarse-grained degrees of freedom. The distribution functions for given interactions $\xi$ are denoted with $p_{\xi}(x)$, where $x$ is a scalar variable, such as pairwise distances, angles or dihedrals. The goal is then to find the corresponding potential $U_{\xi}$ that yields the desired distribution. Based on the assumption, that the distribution functions for different mechanical variables $x$ factorize, the probability distributions can be written as Boltzmann factors \cite{tschop1998simulation}
+
+\begin{equation}
+  p_{\xi}(x) \propto \text{exp} \Big[ \frac{- U_{\xi}(x)}{k_B T} \Big] .
+\end{equation}
+
+In addition, the corresponding volume elements for each distribution has to be taken into account, i.e. the Jacobian element $J_{\xi}(x)$.\cite{tschop1998simulation} The potential can then directly computed as 
+
+\begin{equation}
+  U_{\xi} (x) = -k_b T \text{ln} \Big( \frac{p_{\xi}(x)}{J_{\xi}(x)} \Big) .
+\end{equation}
+
+Note, that factorizing the probability distributions is a very severe approximation. Therefore, this approach yields accurate results only for interactions that can be regarded as isolated in the coarse-grained model.\cite{noid2013perspective} However, in cases where the coupling between the interactions can not be ignored, DBI yields inaccurate potentials that do not corretly reproduce the sturctural distributions as important cross-correlations are not taken into account.
+
 
 \subsubsection{Iterative Boltzmann Inversion}
 
-\cite{reith2003deriving}
+To improve the potentials derived with DBI, an iterative scheme can be applied. This scheme is called iterative Boltzmann inversion (IBI) and consists of the following steps:\cite{muller2002coarse, reith2003deriving} (1) Initial potentials are derived using DBI. (2) Use the derived coarse-grained potentials in a MD simulations to compute the corresponding structural distributions $p_{\xi}(x|U)$. (3) Update the coarse-grained potentials via
+
+\begin{equation}
+  U_{\xi, \text{new}} (x) = U_{\xi, \text{old}} (x) - k_B T \text{ln} \Big( \frac{p_{\xi}(x)}{p_{\xi}(x|U)} \Big) .
+\end{equation}
+
+Steps (2) and (3) are repeated until the potentials converge. Despite its simplicity, IBI has become very popular and is used especially for complex liquids and polymers. While IBI still treads every interaction $\xi$ seperatly, it implicitly accounts for correlations between the interactions through the iterative scheme.\cite{noid2013perspective} However, convergence of the potentials is not guaranteed.\cite{noid2013perspective}
 
 \subsubsection{Multiscale Coarse-Graining}
 
-\cite{noid2008multiscale}
+Beside approaches that focus on reproducing certain structural properties, variational approaches can be applied to find an approximation of the many-body PMF. A very early work in this field is the Multiscale coarse-graining (MS-CG) method, which introduces a force-matching functional \cite{ercolessi1994interatomic, izvekov2005multiscale, izvekov2005multiscale2}
+
+\begin{equation}
+  \chi^2 [\mathbf{F}] = \frac{1}{3N} \Big \langle \sum_{I=1}^N | \mathbf{F}_I(\mathbf{M}(\mathbf{r})) - \mathbf{f}_I(\mathbf{r}) |^2 \Big \rangle_{\text{AA}}  ,
+\end{equation}
+
+where $\mathbf{F}_I(\mathbf{M}(\mathbf{r}))$ is the force acting on the coarse-grained site $I$ mapped from the atomistic configuration implied by the trial potential of the coarse-grained model and $\mathbf{f}_I(\mathbf{r})$ is the net force acting the group of atoms associated with site $I$. The angular brackets with subscript \textit{AA} denotes the atomistic canonical ensemble average, which is typically approximated using trajectories obtained in a simulation. The MS-CG method states, that the coarse-grained potential yielding the best approximation of the average net atomistic forces should be used and therefore $\chi^2 [\mathbf{F}]$ has to be minimized. Indeed, the functional $\chi^2 [\mathbf{F}]$ has a unique global minimum given by the actual many-body PMF.\cite{noid2013perspective} In practice, the coarse-grained force $F$ is expressed as a linear combination of basis functions leading to a coupled system of linear equations that can be solved directly.\cite{noid2013perspective} 
 
 \subsubsection{Relative Entropy}
 
-\cite{shell2008relative}, \cite{chaimovich2010relative}, \cite{chaimovich2011coarse}
+Another variational approach is based on the relative entropy, also knwon as Kullback-Leibler divergence, which is widely used as a asymmetric distance metric between probability distributions.\cite{kullback1951information, shell2008relative, chaimovich2010relative, chaimovich2011coarse} Applied to the coarse-graining problem, the relative entropy can be written 
+
+\begin{equation}
+\label{relative_entropy}
+  S_{\text{rel}} = \int p_{\text{AA}}(\mathbf{r}) \; \text{ln} \Big( \frac{p_{\text{AA}(\mathbf{r})}}{p_{\text{CG}}(\mathbf{M}(\mathbf{r}))} \Big) d\mathbf{r} + \langle S_{\text{map}} \rangle_{\text{AA}} ,
+\end{equation}
+
+where
+
+\begin{equation}
+  S_{\text{map}}(\mathbf{R}) = \text{ln} \int \delta [\mathbf{M}(\mathbf{r}) - \mathbf{R}] d\mathbf{r} 
+\end{equation}
+
+is the mapping entropy, which accounts for the degeneracy of the mapping $\mathbf{M}$, i.e. a single coarse-grained configuration corresponds to multiple atomistic configurations. The relative entropy $S_{\text{rel}}$ can be interpreted as a measure for the loss of information when changing from an atomistic to a coarse-grained description.\cite{shell2008relative} Moreover, it is related to many different coarse-graining errors and vanishes only if $p_{\text{CG}}(\mathbf{r}) \propto p_{\text{AA}}(\mathbf{r})$.\cite{chaimovich2010relative} 
+
+Inserting the distributions known for the canonical ensemble, i.e. $p_{\text{CG}}(\mathbf{R}) = \mathcal{Z}_{\text{CG}}^{-1} \text{exp} \Big[- \frac{U_{\text{CG}}(\mathbf{R})}{k_B T} \Big]$ and $p_{\text{AA}}(\mathbf{r}) = \mathcal{Z}_{\text{AA}}^{-1} \text{exp} \Big[- \frac{U_{\text{AA}}(\mathbf{r})}{k_B T} \Big]$, into Eq. \ref{relative_entropy} yields
+
+\begin{equation}
+  S_{\text{rel}} = \frac{\langle U_{\text{CG}} - U_{\text{AA}} \rangle_{\text{AA}}}{k_B T} - \frac{F_{\text{CG}} - F_{\text{AA}}}{k_B T} + \langle S_{\text{map}} \rangle_{\text{AA}} ,
+\end{equation}
+
+where $F = - k_b T \; \text{ln}(\mathcal{Z})$ is the free energy. In order to optimize the parameters $\lambda$ of the coarse-grained potential $U_{\text{CG}}$ the derivative of the relative entropy can be used
+
+\begin{equation}
+  \frac{\partial S_{\text{rel}}}{\partial \lambda} = \frac{1}{k_B T} \Big[ \Big \langle \frac{\partial U_{\text{CG}}}{\partial \lambda} \Big \rangle_{\text{AA}} -\Big \langle \frac{\partial U_{\text{CG}}}{\partial \lambda} \Big \rangle_{\text{CG}} \Big] ,
+\end{equation}
+
+i.e. the derivatives of $U_{\text{CG}}$ with respect to its parameters have to average to the same value for both, the atomistic and the coarse-grained ensemble.\cite{shell2008relative} Importantly, this approach reproduces the expectation values for every observable, such as distances or angles, that are included in the coarse-grained potential.\cite{shell2008relative} Therefore, the relative entropy framework can be used to generate potentials that capture the correct structural distributions. Numerical minimization of the relative entropy is typically achieved using advanced algorithms, such as the Newton-Raphson method.\cite{shell2008relative}
 
 \subsubsection{Martini Force Field}
 
-\cite{marrink2007martini}, \cite{marrink2013perspective}
+The Martini force field is a generic coarse-grained potential for a wide range of soft matter systems. It was developed with an emphasize on biomolecules and its various applications include lipid membranes, proteins, sugars and nucleotides.\cite{marrink2007martini, monticelli2008martini, lopez2009martini, uusitalo2015martini} The parametrization of the martini force field incorporates both coarse-graining philosophies, a top-down approach for the non-bonded interactions and a bottom-up approach for the bonded interactions. While the nonbonded parameters of the model are tuned to reproduce experimental partitioning free energies of water-alkane mixtures, the bonded interactions are optimized to capture the correct conformational distributions of atomistic reference data.\cite{marrink2013perspective} 
+
+Central to the to the Martini model is a robust transferablity across soft matter systems. For this reason, the model is based on modular building blocks, i e. coarse-grained beads, and introduces rules for the mapping from groups of atoms to the beads. On average, four heavy atoms and their associated hydrogens are represented by a single coarse-grained site. The four main building blocks are denoted with charged (Q), polar (P), nonpolar(N), and apolar (C). Each of the main bead types have further subtypes distinguishing either their hydrogen bonding capability (Q and N types) or their degree of polarity (P and C types). The assignment of the specific bead types is based on the hydrophobicity, i.e. the water/organic partition free energy, of the corresponding group of atoms.
+
+Despite its wide use, the Martini model also has its limitations linked to its ambition of being broadly transferable. A major drawback of the Martini model is a less accurate reproduction of structural features. For example, the model does not include size-dependent Lennard-Jones parameters which may lead to artifacts such as increased barriers in dimerization profiles.\cite{alessandri2019pitfalls}
 
 \subsubsection{Kremer-Grest Polymer Model}
 
-\cite{kremer1990dynamics}, \cite{grest1986molecular}, \cite{faller1999local}, \cite{everaers2020kremer}
+The Kremer-Grest (KG) model is top-down model widely used to study generic polymer properties.\cite{kremer1990dynamics, grest1986molecular} The model represents polymers as chains of beads connected via non-linear springs. The spring potential is tuned such that crossing of two polymer chains is avoided in order to correctly simulate the dynamics of polymer melts, in especially entanglement effects of long chains.
+More specifically, the potential for bonded beads is given by the finite-extensible-nonlinear spring (FENE) potential
+
+\begin{equation}
+  U_{\text{FENE}}(r) = -15 k_B T \Big( \frac{R}{\sigma} \Big)^2 \text{ln} \Big[ 1 - \Big(\frac{r}{R}\Big)^2 \Big] ,
+\end{equation}
+
+where $r$ is the distance between the two bonded beads, $\sigma$ is the bead diameter and $R$ defines the distance where the potential divergences. A typical choice is to set $R = 1.5 \sigma$. Additionally, the beads interact through a truncated and shifted Lennard-Jones potential, which is purely repulsive:
+
+\begin{equation}
+  U_{\text{WCA}}(r) = \begin{cases}
+    4 k_B T \Big[ \Big( \frac{\sigma}{r} \Big)^{-12} - \frac{\sigma}{r} \Big)^{-6} + \frac{1}{4} \Big] \;\; , \;\; \text{if} \; r < 2^{1/6} \sigma \\
+    0 \;\; , \;\; \text{otherwise}
+  \end{cases} ,
+\end{equation}
+
+In order to vary the stiffness of the chains, an additional bending potential can be introduced
+
+\begin{equation}
+  U_{\text{bend}}(\Theta) = \kappa k_B T (1 - \text{cos}(\Theta)) , 
+\end{equation}
+
+where $\Theta$ is the the bond angle and $\kappa$ defines the stiffness.\cite{faller1999local}
+
+While the KG model is a generic model to study universal phenomenas of polymer melts, the stiffness of the chains can be used to relate the model to real polymers.\cite{everaers2020kremer, svaneborg2020characteristic} To this end, simulated polymer melts can be linked to commodity polymers via their Kuhn length, which is the scale indicating the crossover from a chemistry-specific to a universal random-walk like behaviour.
 
 % -----------------------------------
 %   Backmapping
 % -----------------------------------
 
 \section{Backmapping}
+\label{theory_backmapping}
+
+Reducing the resolution is just one side of the MS philosophie. In order to close the loop, a reverse-mapping that allows to go the other direction is required as well. Such a reverse-mapping, also refered to as \textit{Backmapping}, can be regarded as a magnifying glass to zoom in to the molecular system.
+
+Combining coarse-graining with a reverse-mapping procedure unlocks the true power of MS modeling, as it provides a strategy to take the best of both worlds: Coarse-graining can be used to obtain trajectories of long time scale and large length scale processes that would have been to costly and time consuming to perform using a higher resolution model. However, the coarse-grained model lacks the accuracy and details provided in an atomistic simulation. Those atomistic details are often required for one or more of the following reasons: (1) to rigorously analyze the simulation results on a local scale, (2) to enable a direct comparison to experimental data, for example obtained with spectroscopic methods, (3) to serve as starting point for further simulations, or (4) to asses the stability and accuracy of the obtained coarse-grained structures in order to improve the coarse-grained model.\cite{hess2006long, shimizu2018reconstruction, brocos2012multiscale, stansfeld2011coarse, pandey2014multiscale, pezeshkian2020backmapping, deshmukh2016water} 
+Backmapping can circumenvent these limitations by efficiently reintroducing details along the coarse-grained degrees of freedom. Typically, the large scale behaviour of the system is already captured correctly by the coarse-grained model and therefore reintroducing the missing degrees of freedom becomes feasable as they have to be equilibrated only locally. Hence, connecting a coarse-grained model with a backmapping scheme is an efficient approach to yield well equlibrated, high-resolution molecular structures and trajectories for long time and large length scales. 
+
+%protein-DNA complexes. asses stabilities and accuracy of structures sampled in coarse-grained model. Use backmapped structures for further AA MD simulation. Need atomistic details to compare with experiment. \cite{shimizu2018reconstruction}
+%generation and subsequent examination of self-assembled structures, including the fine characterization of structural and dynamic properties of the resulting aggregate \cite{brocos2012multiscale}
+%assembly and the interactions of membrane protein/lipid complexes
+%complex, mixed lipid systems around a membrane protein. backmapping needed to provide models of more specific lipid/protein interactions, including local distortions of bilayer thickness and/or selective interactions with lipid headgroups.\cite{stansfeld2011coarse}
+%allow for a direct, unambiguous comparison to experiments, such as neutron spin echo or more specifically dielectric relaxation and NMR spectroscopy. \cite{hess2006long}
+%polymer-solid interface. large atomistic structures created serve as starting points for further MD simulations that shed insight into local dynamics of PI on graphite.\cite{pandey2014multiscale}
+%temporal enhancement of interactions between viruses, vesicles, and nanoparticles with a membrane \cite{pezeshkian2020backmapping}
+%Our findings illustrate how the chemical nature and molecular details of aqueous interfaces control the early stages of PA assembly and provide quantitative insights into the unique role of water by drawing on the interfacial nature of hydration and aggregation kinetics associated with peptide assemblies.\cite{deshmukh2016water}
 
 \subsection{The Challenges of Reintroducing Degrees of Freedom}
 
-\cite{tschop1998simulation}
+While mapping from a higher to a lower resolution is typically straightforward, the opposite direction is more challenging. Formally, let $\{\mathbf{A}_{I} = (\mathbf{R}_I, \mathbf{C}_I) | I = 1, \dots, N \}$ denote the set of $N$ coarse-grained beads. Each bead has position $\mathbf{R}_I$ and an associated type $\mathbf{C}_I$. The type $\mathbf{C}_I$ reflects various attributes, such as the bead mass, the connectivity or associated force field parameters. Similarly, let $\{\mathbf{a}_{I} = (\mathbf{r}_i, \mathbf{c}_i) | i = 1, \dots, n \}$ denote the set of $n$ atoms, with position $\mathbf{r}_i$ and types $\mathbf{c}_i$.
+ 
+A backmapping function $\phi$ takes the coarse-grained information $\mathbf{A} = (\mathbf{A}_1, \dots, \mathbf{A}_N)$ as well as the desired atom types $ \mathbf{c} = (\mathbf{c}_1, \dots, \mathbf{c}_n)$ as input and generates a set of coordinates $\mathbf{r} = (\mathbf{r}_1, \dots, \mathbf{r}_n)$,
 
-\subsubsection{Consistency with Coarse-Grained Mapping}
+\begin{equation}
+  %\phi \Big( (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) = (\mathbf{r}_1, \dots, \mathbf{r}_n) .
+  \phi ( \mathbf{A}, \mathbf{c} ) = \mathbf{r}.
+\end{equation}
 
-\subsubsection{One-to-Many Mapping}
+Deriving the function $\phi$ is not a trivial task, as it is constrained by two important aspects. First of all, the mapping has to be consistent, i.e. the missing degrees of freedom have to be reinserted along the coarse-grained degrees of freedom. In other words, applying the coarse-grained mapping $\mathbf{M}$ to the backmapped structure has to yield the original coarse-grained structure,
+
+\begin{equation}
+  %\mathbf{M} \Big( \phi \Big( (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) \Big) = \mathbf{R} .
+  \mathbf{M} ( \phi  (\mathbf{A}, \mathbf{c}) ) = \mathbf{R}.
+\end{equation}
+
+Secondly, the mapping is not unique, since the reduced resolution implies that many atomistic structures can map to the same coarse-grained configuration. As a consequence, a single coarse-grained structure $\mathbf{R}$ will correspond to an ensemble of atomistic microstates $\{\mathbf{r} | \mathbf{M}(\mathbf{r}) = \mathbf{R}\}$. Therefore, strictly speaking, the coarse-grained mapping is not invertable. 
+
+To take the aforementioned aspects into account, the backmapping problem has to be expressed as a joint conditional probablity distribution $p_{\phi} ( \mathbf{r} | \mathbf{A}, \mathbf{c})$ that assigns a statistical weight to each atomistic microstate given the coarse-grained information as well as the atomistic attributes. Ideally, the coarse-grained model generates the Boltzmann distribution expressed in the coarse-grained degrees of freedom, i.e. the many-body PMF is reproduced perfectly. Consequently, an ideal backmapping scheme also has to reinsert atomistic details with the correct statistical weight, i.e.
+
+\begin{equation}
+  p_{\phi} ( \mathbf{r} | \mathbf{A}, \mathbf{c}) = \begin{cases}
+    \propto \text{exp} \Big( - \frac{U(\mathbf{r})}{k_B T} \Big) \;\;\;\; & \text{if} \; \tilde{\mathbf{M}}(\mathbf{r}, \mathbf{c}) = (\mathbf{R}, \mathbf{C}) \\
+    0 \;\;\;\; & \text{if} \; \tilde{\mathbf{M}}(\mathbf{r}, \mathbf{c}) \neq (\mathbf{R}, \mathbf{C})
+  \end{cases}.
+\end{equation}
+
+Here, $\tilde{\mathbf{M}}$ is used as an extended coarse-graining mapping function that includes both, the coordinates as well as the types of the atoms and beads, respectively, 
+
+\begin{equation}
+  \tilde{\mathbf{M}}(\mathbf{r}, c) = (\mathbf{R}, C),
+\end{equation}
+
+where $c = (c_1, \dots, c_n)$ denotes the $n$ atom types and $C =(C_1, \dots, C_N)$ denots the $N$ bead types.
+
+%\begin{equation}
+%  p_{\phi}\Big( (\mathbf{r}_1, \dots, \mathbf{r}_n) \Big | (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) = \begin{cases}
+%    \propto \text{exp} \Big( - \frac{E(\mathbf{r})}{k_B T} \Big) \;\;\;\; & \text{if} \; \mathbf{M}(\mathbf{r}) = \mathbf{R} \\
+%    0 \;\;\;\; & \text{if} \; \mathbf{M}(\mathbf{r}) \neq \mathbf{R}
+%  \end{cases} 
+%\end{equation}
+
+%\begin{equation}
+  %p_{\phi}\Big( (\mathbf{r}_1, \dots, \mathbf{r}_n) \Big | (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) ,
+  %p_{\phi} ( \mathbf{r} | \mathbf{A}, \mathbf{c}) ,
+%\end{equation}
 
 \subsection{Overview of Existing Approaches}
 
-\subsubsection{Generic Approaches}
-
-\cite{rzepiela2010reconstruction}, \cite{wassenaar2014going}
+The idea of backmapping is as old as the idea of coarse-graining and several approaches to tackle the backmapping problem exist. Traditional methods include fragment-based approaches that utilize a chemistry specific library of molecular fragments and generic approaches that rely on geometric rules or simple random placement of the atoms. More recently, approaches based on ML techniques emerged that rely on data-driven methods to reconstruct molecular structures from a lower resolution.
 
 \subsubsection{Fragment-based Approaches}
 
-\cite{peter2009multiscale}, \cite{zhang2019hierarchical}, \cite{hess2006long}, \cite{brasiello2012multiscale}
+Most traditional backmapping approaches follow a similar procedure: At first, an initial atomistic structure is proposed. In the case of fragment-based backmapping, several trial atomistic fragments corresponding to a single or a small set of beads are superimposed onto the coarse-grained sites.\cite{peter2009multiscale, zhang2019hierarchical, hess2006long, brasiello2012multiscale} Typically, rigid rotation and translation is used to optimize the orientation of the given fragment with respect to some geometric or energetic properties. The trial fragments are usually taken from a presampled library that has to be simulated beforehand. The resulting initial atomistic structure is most likely not representative for the Boltzmann distribution, as a simple projection of fragments onto the coarse-grained sites typically leads to overlaps between reconstructed atoms and distorted bonded structures. It is therefore necessarry to relaxe the initial structure by means of energy minimization based on the atomistic forcefield. Subsequently, the relaxed structure has to be equilibrated using MD simulation. In some cases, where the overall equilibration and diffusion is rather slow compared to the equilibration of local features, the equilibration process is straight forward. In other cases, restraints have to be introduced to prevent the reconstructed atoms to drift to far away from the center of the coarse-grained site. Therefore, an additional potential can be applied that couples the atomistic degrees of freedom to the coarse-grained degrees of freedom
 
-\subsubsection{Machine Laarning Approaches}
+\begin{equation}
+  U_{\text{restr}}(\mathbf{r}, \mathbf{R}) = b (\mathbf{M}(\mathbf{r}) - \mathbf{R})^2 ,
+\end{equation}
 
-\cite{wang2019coarse}, \cite{li2020backmapping}
+where the prefactor $b$ is used to scale the restraining potential.
+
+\subsubsection{Generic Approaches}
+\label{SEC:bm_generic}
+
+Generic backmapping approaches are similar to fragment-based approaches, but differ in the way the initial atomistic structure is derived. Generic schemes do not rely on presampled fragments but project the atomistic degrees of freedom onto the coarse-grained structure using general rules. In the most basic version, the atoms are randomly placed close to their corresponding coarse-grained site, whereas more sophisticated approaches rely on geometric rules to place the atoms.\cite{rzepiela2010reconstruction, wassenaar2014going} The resulting initial atomistic structure is typically even more distorted as in the fragment-based approach. Therefore, the subsequent energy minimization and equilibration procedures have to be performed more carefully and typically involve multiple stages where the interaction potentials are gradually switched on.
+
+\subsubsection{Machine Learning Approaches}
+
+During the course of this PhD several ML approaches have been published to tackle the backmapping problem. This is encouraging, as it indicates an increasing interest to integrate ML techniques to the field of MS simulations and emphasizes the importance of the present work.
+
+Wang et. al utilized a variational autoencoder (see Sec. \ref{}) and treated the coarse-grained degrees of freedom as latent variables (see Sec. \ref{}).\cite{wang2019coarse} Their framework unifies the task of learning the coarse-grained variables, parametrizing the coarse-grained force field and decoding back to atomistic resolution. In contrast to standard variational autoencoder, where the latent distribution is regularized to resemble a Gaussian distribution, the proposed coarse-graining autoencoder utilizes a force-matching functional for regularization. Despite its elegance, the quality of decoded structures regarding some structural quantities, such as the bond length distribution, is rather low. The deterministic decoder trained with mean-square error as reconstruction loss leads unavoidably to a loss of mapping entropy. Therefore, decoded structures represent a mean reconstruction of an ensemble of microstates. However, their work already gives a prospect to improve the model to yield high fidelity reconstructions utilizing a probabilitistic decoder. 
+
+An other approach by Li et. al used a convolutional conditional generative adversarial network (see Sec. \ref{}) for the reconstruction of cis-1,4-polyisoprene melts from a coarse-grained representation.\cite{li2020backmapping} This approach is similar in spirit to the method proposed in this thesis but is based on an image representation where XYZ components of vectors are converted into red–green–blue (RGB) values. While being computational efficient, the method does not fully take the local environment of the polymer chains into account. As a consequence, the overall quality of reconstructed molecular structures is rather low, especially steric overlapps can not be resolved and demand for further relaxation via energy minimization.
+
+Finally, An et. al used several ML approaches including artificial neural networks, k-nearest neighbor, Gaussian process regression and random forest to built regression models for backmapping.\cite{an2020machine} The regression was performed for small molecules in vacuum and the coordinates of the coarse-grained and atomistic structures were directly used as input and output representations for the models. The best performances was achieved using an artificial neural network. However, all of the reported models failed to generate a high quality structure for hexane.
