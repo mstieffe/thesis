@@ -254,6 +254,7 @@ As illustrated in Fig. \ref{fig_autoregressive}, the local environments presente
 %Hydrogens are typically treated separately, such that all non-hydrogens of a system are placed first in order to avoid that misplaced hydrogens hinder $g_{\Theta}$ to find suitable positions for the heavy atoms.
 
 \section{Potential Energy as Regularizer}
+\label{SEC:DBM_regularization}
 
 Ideally, the adversarial cost is already sufficient to drive the generator towards reproducing the desired Boltzmann distribution. However, training of a GAN is notoriously unstable and the parameters of a GAN easily diverge. As a result, GANs have a number of failure modes, such as mode-collapse or failure to converge (see Sec. \ref{theory_ML_GAN_limitations}). Various forms of regularization have been deployed to address those issues and improve generalization, including gradient penalties, weight normalization or architectural methods.\cite{kurach2018gan, lee2020regularization}
 
@@ -282,5 +283,4 @@ Overall, the following cost function is minimized by the generator
 \end{equation}
 
 Note that $\mathcal{C}_{\text{pot}}$ might be in a conflict with the adversarial cost function. While the purely data driven adversarial cost ultimately aims at reproducing the target distribution, the prior cost function encourages the generator to produce structures with a certain potential energy. In an extreme case, where optimization is solely based on the prior cost function, the generator is likely to collapse. Therefore, $\mathcal{C}_{\text{pot}}$ aims at supporting the adversarial optimization, which might suffer from resolution limits of the voxel representation, for fine tuning of the generated structures. As such, the prior cost function is scaled with an appropriately low weight $\lambda_{\text{pot}}$, such that it provides a significant contribution to the total cost only for high-energy structures. Moreover, training typically starts with $\lambda_{\text{prior}} = 0.0$ and is increased slowly during the course of optimization.
-
 

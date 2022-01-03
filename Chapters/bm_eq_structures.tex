@@ -112,15 +112,15 @@ On the other hand, the baseline method does not adapt well to lower temperatures
   \label{FIG:sPS_temp_trans_SM}
 \end{figure}
 
-Evaluating large-scale structural features beyond pair-statistics is challenging, since the high dimensionality of the system does not allow to directly visualize the configuration space. For this reason, dimensionality reduction is applied to further examine the model's accuracy at higher order. As explained in Sec. \ref{SEC:ML_latent_variables}, linear dimensionality reduction techniques are insufficient in many cases to capture the global structure of data obtained from MD trajectories. Therefore, Sketch-Map (SM) is applied to build a two-dimensional map representing proximity relationships between sPS chains. 
+Evaluating large-scale structural features beyond pair-statistics is challenging, since the high dimensionality of the system does not allow to directly visualize the configuration space. For this reason, dimensionality reduction is applied to further examine the model's accuracy at higher order. As explained in Sec. \ref{SEC:ML_latent_variables}, linear dimensionality reduction techniques are insufficient in many cases to capture the global structure of data obtained from MD trajectories. Therefore, Sketch-Map (SM) is applied to build a two-dimensional map representing proximity relationships between sPS chains.\cite{ceriotti2011simplifying, tribello2012using}
 
-The descriptors for the sPS chains consist of a set of representations of the local environments $\mathcal{H}$ centered around alternating backbone carbon atoms that are directly linked to a phenyl group. The pairwise distance between two such environments is encoded using a similarity kernel $k(\mathcal{H}, \mathcal{H}') = \mathbf{p}(\mathcal{H}) \mathbf{p}(\mathcal{H'})$ based on the normalized many-body smooth overlap of atomic position (SOAP) representation $\mathbf{p}(\mathcal{H})$.\cite{} Hydrogen atoms are neglected in the SOAP representation. To compare two sPS chains $a$ and $b$, the covariance matrix 
+The descriptors for the sPS chains consist of a set of representations of the local environments $\mathcal{H}$ centered around alternating backbone carbon atoms that are directly linked to a phenyl group. The pairwise distance between two such environments is encoded using a similarity kernel $k(\mathcal{H}, \mathcal{H}') = \mathbf{p}(\mathcal{H}) \mathbf{p}(\mathcal{H'})$ based on the normalized many-body smooth overlap of atomic position (SOAP) representation $\mathbf{p}(\mathcal{H})$.\cite{bartok2013representing} Hydrogen atoms are neglected in the SOAP representation. To compare two sPS chains $a$ and $b$, the covariance matrix 
 
 \begin{equation}
  C_{ij}(a,b) = \mathbf{p}(\mathcal{H}^a_i) \mathbf{p}(\mathcal{H}^b_j)
 \end{equation}
 
-is computed, which contains the complete information of the pairwise similarity of all local environments taken into account between the two structures. In order to obtain a global similarity kernel $k(a,b)$, the covariance matrix $C_{ij}(a,b)$ has to be mapped to a single scalar value, which is achieved using a regularized entropy match kernel.\cite{}
+is computed, which contains the complete information of the pairwise similarity of all local environments taken into account between the two structures. In order to obtain a global similarity kernel $k(a,b)$, the covariance matrix $C_{ij}(a,b)$ has to be mapped to a single scalar value, which is achieved using a regularized entropy match kernel.\cite{de2016comparing}
 
 Fig. \ref{FIG:sPS_temp_trans_SM} displays the obtained two-dimensional map, where each point represents a single sPS polymer chain. A number of clusters is shown that correspond to different environments. The reference data (black) shows a single cluster for the low-temperature data at $313$ K (Fig. \ref{FIG:sPS_temp_trans_SM} (c)) corresponding to the $\beta$ polymorph. The high-temperature data at $568$ K (Fig. \ref{FIG:sPS_temp_trans_SM} (a)) is mapped to multiple clusters indicating more diversity, i.e. it includes amorphous, $\alpha$ and other structures. The data set at an intermediate temperature $453$ K (Fig. \ref{FIG:sPS_temp_trans_SM} (b)) shows less diversity and is mapped mostly to the cluster corresponding to the $\alpha$ polymorph, but still contains some amorphous and other structures.
 
@@ -128,12 +128,18 @@ Structures obtained with DBM (blue) overlap significantly with the reference poi
 
 \subsubsection{MD Simulation}
 
+Backmapped structures that serve as a starting point for further MD simulations typically require lengthy preparations, such as energy minimization, temperature ramp up phase and thermostat/barostat equilibration. Here the high quality of backmapped structures obtained with DBM is highlighted by running MD simulations \textit{without} any heat-up.
+
+The simulations are carried out in the NPT ensemble using the velocity rescaling thermostat and the Parrinello-Rahman barostat. Initial velocities are generated according to a Maxwell distribution and an integration timestep of $1$ fs is used. 
+
+Fig. \ref{FIG:sPS_eq} displays the evolution of the potential energy during the simulations at (a) $T = 313$ K and (b) $T = 568$ K. Simulations starting from reference or backmapped structures obtained with DBM show a similar evolution of the potential energy at both temperatures and reach a steady value after $\approx 100$ ps. On the other hand, simulations starting from backmapped structures obtained with the baseline method show a different behaviour. The potential energy of simulations performed at $313$ K settles at significantly higher energies compared to reference and DBM structures. This indicates badly initialized structures that get trapped into local minima with high energy barriers. However, this issue is not apparent anymore at $568$ K and all simulations show a similar behaviour independent of their initialization. This can be rationalized with the high temperature that allows to escape local minima with higher probability. 
+
 \begin{figure}
   \centering
   \captionsetup{width=1.0\linewidth}
       \includegraphics[width=1.0\textwidth]{./Figures/adversarial_backmapping/sPS_temp_trans/eq.pdf}
-  \caption{ \cite{stieffenhofer2020adversarial}}
-  \label{fig_bm_intro}
+  \caption{Evolution of the potential energy in MD simulations without heat-up starting from reference structures (black), backmapped structures obtained with the baseline method (red) and backmapped structures obtained with DBM (blue).\cite{stieffenhofer2020adversarial}}
+  \label{FIG:sPS_eq}
 \end{figure}
 
 \subsection{Discussion}
@@ -144,6 +150,13 @@ These remarkable transferability features of DBM can be rationalized in terms of
 
 \section{Chemical Transferability: From Small Molecules to Polymers}
 
+In this section the transferability of DBM across chemical space is explored. To this end, the generalization of the model beyond the chemistry used for training is probed by recycling the learned local correlations to make predictions for molecules absent from the training data set. 
+
+DBM is based on the locality assumption, i.e. the placement of one atom is assumed to rely only on short-range force-field related features. As such, DBM only learns local correlations while large-scale features are adapted from the coarse-grained structure. It can be hypothesized that such local environments strongly overlap across chemical space, and thus, it is likely that small-scale features can be shared between different molecules. This makes DBM a promosing candidate towards achieving chemical transferability. 
+
+The model is trained on molecular liquids of octane and cumene molecules. After training, the model is reused for a more complex polymeric system consisting of sPS molecules. While sPS shares some features with cumene and octane, it is still sufficiently complex to study the limitations of the generalization. As such, the pertinent but imperfect match between the small molecules and polymer offers a stringent backmapping exercise.
+
+In addition, the role of the different types of force-field based regularization introduced in Sec. \ref{SEC:DBM_regularization} is explored by comparing their impact on the performance of the model, especially regarding chemical transferability.
 
 
 \subsection{Results}
