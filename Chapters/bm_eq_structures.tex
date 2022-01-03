@@ -128,6 +128,14 @@ Structures obtained with DBM (blue) overlap significantly with the reference poi
 
 \subsubsection{MD Simulation}
 
+\begin{figure}
+  \centering
+  \captionsetup{width=1.0\linewidth}
+      \includegraphics[width=1.0\textwidth]{./Figures/adversarial_backmapping/sPS_temp_trans/eq.pdf}
+  \caption{ \cite{stieffenhofer2020adversarial}}
+  \label{fig_bm_intro}
+\end{figure}
+
 \subsection{Discussion}
 
 In this section, the temperature transferability of DBM is probed. While training of the model is fixed to melt configurations at high temperature, it is deployed at lower temperatures, where the sPS system is in a crystalline state. However, DBM retains its performance displayed in Sec. \ref{SEC:DBM_general_performance} and reproduces the reference distributions with remarkable accuracy. In addition, a higher-order investigation, facilitated by the Sketchmap algorithm, emphasizes the high structural fidelity. As such, the model learns to reproduce local correlations that are transferable across different state points. This is in strong contrast to the baseline method, which lacks accuracy and temperature sensitivity. 
