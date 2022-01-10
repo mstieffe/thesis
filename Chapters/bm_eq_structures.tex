@@ -210,36 +210,47 @@ angle backbone& 0.0183 & 0.2144 \\
 angle phenyl ring& 0.1084 & 0.0305 \\ 
 proper dihedral backbone& 0.0196 & 0.1214 \\ 
 improper dihedral phenyl ring& 0.1898 & 0.0783 \\ 
-\caption{ Jenson-Shannon divergence of reference and backmapped distributions using either a chemically specific or chemically transferred model. Angle and dihedral distributions of the carbon backbone and phenyl ring of sPS are displayed.}
+\caption{ Jenson-Shannon divergence of reference and backmapped distributions using either a chemically specific or chemically transferred model. Angle and dihedral distributions of the carbon backbone and phenyl ring of sPS are displayed. Models used this analysis are trained without regularization.}
 \label{TAB:sPS_chem_trans}
 \end{tabular}
 \end{table}
 
-Table \ref{TAB:sPS_chem_trans} reports Jenson-Shannon divergences between reference and backmapped distributions for a further comparison of the chemically-specific and the chemically-transferred models. The Jenson-Shannon divergences are reported for the carbon angles and dihedrals of the backbone and the phenyl ring of sPS. While the absolute values of the JS divergences are not informative as they are sensitive to the considered range of the distributions, they reveal a clear trend: Chemically-transferred models lack the accuracy of the chemically-specific models in terms of the backbone structure but are able to reproduce aromatic rings with high accuracy.
+Table \ref{TAB:sPS_chem_trans} reports Jenson-Shannon divergences between reference and backmapped distributions for a further comparison of the chemically-specific and the chemically-transferred models. The Jenson-Shannon divergences are computed for the carbon angles and dihedrals of the backbone and the phenyl ring of sPS. While the absolute values of the JS divergences are not informative as they are sensitive to the considered range of the distributions, they reveal a clear trend: Chemically-transferred models lack the accuracy of the chemically-specific models in terms of the backbone structure but are able to reproduce aromatic rings with high accuracy.
 
 \begin{figure}
   \centering
   \captionsetup{width=1.0\linewidth}
       \includegraphics[width=1.05\textwidth]{./Figures/adversarial_backmapping/sPS_chem_trans/non_bonded.pdf}
-  \caption{ \cite{stieffenhofer2020adversarial}}
+  \caption{Canonical distributions for sPS at $T = 568$ K. Lennard-Jones energies for all atoms (a) and (b), Lennard-Jones energies for carbon atoms (c) and (d), and radial distribution functions, $g(r)$, of the non-bonded carbon atoms (e) and (f) for reference structures and structures generated with DBM using different regularizations during training are shown. Left: Chemically specific model trained on the sPS liquid at $T = 568$ K. Right: Chemically transferred model trained on octane and cumene liquids at $T = 350$ K.\cite{stieffenhofer2020adversarial}}
   \label{FIG:sPS_chem_trans_nb}
 \end{figure}
 
+The ramification of the applied regularization during training becomes most evident in the distribution of the Lennard-Jones energies obtained for each sPS chain separately, which are displayed in Fig. \ref{FIG:sPS_chem_trans_nb} (a)-(d). Chemically specific models trained with regularization $\mathcal{C}^{(2)}_{\text{pot}}$ or without regularization reproduce the reference Lennard-Jones energies with high accuracy. Carbon-only Lennard-Jones energies match the reference distribution almost perfectly. However,  Lennard-Jones energies taking hydrogens into account show slightly too large high-energy tails for the backmapped structures. In contrast, applying regularization $\mathcal{C}^{(1)}_{\text{pot}}$ overstabilizes the system and yields a signficant shift of the distribution towards lower energies. However, these finding turn around for the chemically-transferred models: Here, regularization $\mathcal{C}^{(1)}_{\text{pot}}$ improves the performance dramatically compared to models trained with $\mathcal{C}^{(2)}_{\text{pot}}$ or without regularization. While the chemically-transferred model trained with $\mathcal{C}^{(1)}_{\text{pot}}$ reproduces the Lennard-Jones energies remarkably well except for high-energy tails, the other models yield backmapped structures with systematically too large Lennard-Jones energies.
+
+The pair correlation function, $g(r)$, obtained for pairs of non-bonded carbon atoms is shown in Fig. \ref{FIG:sPS_chem_trans_nb} (e)-(f). All models are able to reproduce the pair correlation with high accuracy indicating a good agreement of the local packing of sPS chains with the reference structures.
+
+\subsubsection{Sketch-Map}
+
+Similarly to the previous evaluation the accuracy of backmapped structures shall be probed at higher order deploying the SM algorithm, as described in \ref{} and \ref{}. Specifically, local environments of sPS monomers are considered centered at backbone carbon connected with the phenyl group. The environments are encoded and compared using the SOAP representation, which yields a $N \times N$ similarity matrix for $N$ monomers. SM is applied to project this high dimensional representation of conformational space onto a two-dimensional embedding repesenting proximity relationships.
+
+Fig. \ref{FIG:sPS_chem_tran_sm} (a) displays the obtained embedding for reference structures. $720$ landmarks (grey) are generated upon optimizing Eq. \ref{}, which are then used for further projections of $1440$ local environments (black). Fig. \ref{FIG:sPS_chem_tran_sm} (b) shows the projections of backmapped structures obtained with a chemically-specific model (blue) and a chemically-transferred model (red). The underlying coarse-grained structures correspond to the atomistic structures used for the projections of reference structures in Fig. \ref{FIG:sPS_chem_tran_sm} (a). Both models are trained with $\mathcal{C}^{(1)}_{\text{pot}}$. Further plots for models trained with $\mathcal{C}^{(2)}_{\text{pot}}$ or without regularization can be found in Fig. \ref{} of the supplementary material. The high structural fidelity of both, the chemically-specific and the chemically-transferred model, is highlighted by the strong overlap of the projections obtained for reference and backmapped structures.
 
 \begin{figure}
   \centering
   \captionsetup{width=1.0\linewidth}
       \includegraphics[width=1.05\textwidth]{./Figures/adversarial_backmapping/sPS_chem_trans/sm_ref_p1.pdf}
-  \caption{ \cite{stieffenhofer2020adversarial}}
-  \label{fig_bm_intro}
+  \caption{Low-dimensional representation of condensed-phase configurations at $T = 568$ K. For each panel, snapshots are backmapped from identical coarse-grained configurations, highlighting the overlap between reference and DBM structures. (a) Landmarks and projections of reference structures and the obtained cluster centers. (b) Landmarks of reference structures and projections of structures generated with chemically-specific (red) and chemically-transferred (blue) models trained with $\mathcal{C}^{(1)}_{\text{pot}}$.\cite{stieffenhofer2020adversarial}}
+  \label{FIG:sPS_chem_tran_sm}
 \end{figure}
+
+The two dimensional representations obtained with the SM algorithm form a number of distinct clusters. As such, points assigned to the same cluster indicate closeness in conformational space. For a further analysis, cluster centers are identified using the k-means algorithm. Each monomer embedding is assigned to the closest cluster. This yields a confusion matrix that allows to compare the cluster assignment of reference and backmapped structures. While the diagonal elements of the confusion matrix hereby refers to reference and backmapped structures that get mapped onto the same cluster, off-diagonal elements indicate a change of the cluster assignment upon coarse-graining and backmapping. The results for chemically-specific and chemically-transferred models trained with different regularization configurations can be found in Fig. \ref{FIG:sPS_chem_trans_hm}. Interestingly, the confusion matrix becomes most diagonal for models trained without regularization displayed in panels (c) and (g), respectively. However, the reduced resolution of the coarse-grained conformational space implies that an ensemble of microstates is associated with a single coarse-grained structure, as described in Sec. \ref{}. The ensemble of microstates associated with the same coarse-grained structure might span a broad region in conformational space, which is not guaranteed to map onto the same cluster. As such, the diagonality of the confusion matrix is not necessarily a proper indicator for the quality of the backmapped distribution. More importantly, the relative populations of the clusters have to be reproduced, as this implies an accurate covarage of conformational space. Results comparing the relative cluster populations can be found below each confusion matrix in Fig. \ref{FIG:sPS_chem_trans_hm}. Chemically-specific models trained with $\mathcal{C}^{(2)}_{\text{pot}}$ or without regularization yield an excellent match of the relative populations. On the other hand, all chemically-transferred models lead to comparable accuracy independent of the regularization configuration: None of the chemically-transferred models reproduce the relative populations accurately.
 
 \begin{figure}
 \hspace*{-1cm}
   \centering
   \captionsetup{width=1.0\linewidth}
       \includegraphics[width=1.2\textwidth]{./Figures/adversarial_backmapping/sPS_chem_trans/hm.pdf}
-  \caption{ \cite{stieffenhofer2020adversarial}}
-  \label{fig_bm_intro}
+  \caption{(Top) Confusion matrix for the different clusters obtained in the two-dimensional Sketchmap. (Bottom) Relative populations of the clusters. (a)–(c) chemically-specific models trained with (a) $\mathcal{C}^{(1)}_{\text{pot}}$, (b) $\mathcal{C}^{(2)}_{\text{pot}}$, and (c) no regularization. (d)–(f) chemically-transferred models trained with (d) $\mathcal{C}^{(1)}_{\text{pot}}$, (e) $\mathcal{C}^{(2)}_{\text{pot}}$, and (f) no regularization. “ol” refers to the outlier.\cite{stieffenhofer2020adversarial}}
+  \label{FIG:sPS_chem_trans_hm}
 \end{figure}
 \subsection{Discussion}
