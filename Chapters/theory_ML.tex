@@ -8,13 +8,13 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\textit{Machine Learning} is a prominent subfield of \textit{Artificial Intelligence (AI)} and is already used in a wide range of applications, such as computer vision, speech recognition or medical image analysis.\cite{voulodimos2018deep, nassif2019speech, fatima2017survey} It is a study of computer algorithms that use data to construct statistical models trained to perform some specific task. The models improve their performance automatically by learning from examples instead of relying on static program instructions. Importantly, learning in this context aims at extracting patterns or rules from the training data that generalize rather than simply memorizing specific examples. 
+\textit{Machine Learning} is a prominent subfield of \textit{Artificial Intelligence (AI)} and is already used in a wide range of applications, such as computer vision, speech recognition or medical image analysis.\cite{voulodimos2018deep, nassif2019speech, fatima2017survey} It is a study of computer algorithms that use data to construct statistical models trained to perform specific tasks. The models improve their performance automatically by learning from examples instead of relying on static program instructions. Importantly, learning in this context aims at extracting patterns or rules from the training data that generalize rather than simply memorizing specific examples. 
 
 Recently, ML is gaining significant attention in many fields of modern science, especially computational chemistry and particle physics \cite{noe2020machine, vamathevan2019applications, radovic2018machine} Beside the massive increase in computational power, the growing interest for ML algorithms in those research areas is fuelled by the availability of large data sets. \cite{hachmann2011harvard, jain2013commentary, calderon2015aflow} The massive amount of raw data collected in experiments or computer simulations demands for efficient algorithms to process and analyze it. Self-learning algorithms that improve their performance with increased data set size are therefore very appealing. This is especially true when the data is also high-dimensional, as ML algorithms can help to spot complex patterns or reduce the dimensionality for further processing. 
 
-Data analysis is also a hallmark of classical statistics. Indead, ML and classical statistics are related and many techniques and concepts used in ML have their origin is physics, such as variational methods, simulated annealing or Monte-Carlo methods.\cite{mehta2019high} A famous example is the Boltzmann Machine that has a direct analogy to a spin-glas model known from statistical mechanics.\cite{ackley1985learning} Despite their similarities, ML and classical statistics might differ in their general philosophie: While ML algorithms are typically designed to predict new observations, a classical staitistician is more concerned with estimation problems, i.e. the accuracy of the model.\cite{mehta2019high}
+Data analysis is also a hallmark of classical statistics. Indead, ML and classical statistics are related and many techniques and concepts used in ML have their origin is physics, such as variational methods, simulated annealing or Monte-Carlo methods.\cite{mehta2019high} A famous example is the Boltzmann Machine that has a direct analogy to a spin-glas model known from statistical mechanics.\cite{ackley1985learning} However, despite their similarities, ML and classical statistics differ in their general philosophie: While ML algorithms are typically designed to make predictions for new observations, classical statistic methods aim at discovering dependencies between variables and are more concerned with estimation problems, i.e. evaluating the uncertainty of the model.\cite{mehta2019high}
 
-ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods, decision trees or Deep Neural Networks (DNNs). It is out of scope of this work to give an overview of all existing ML algorithms and the interested reader is refered to one of the many excellent books available.\cite{sarker2021machine, bonaccorso2017machine, ayodele2010types} Instead, this chapter focuses on generative modeling using DNNs, as this is the main method used in this thesis. The rest of this chapter is structured as follows: Firstly, some basic concepts of ML are introduced. Secondly, DNNs are explained in detail. Finally, the purpose and methods of generative modeling is outlined. 
+ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods, decision trees or Deep Neural Networks (DNNs). It is out of scope of this work to give an overview of all branches in the field of ML and the interested reader is refered to one of the many excellent books available.\cite{sarker2021machine, bonaccorso2017machine, ayodele2010types} Instead, this chapter focuses on generative modeling using DNNs, as this is the main method used in this thesis. The rest of this chapter is structured as follows: Firstly, some basic concepts of ML are introduced. Secondly, DNNs are explained in detail. Finally, the purpose and methods of generative modeling is outlined. 
 
 %difference of in-sample and out-of-sample error represents the difference between fitting and prediction.
 %Self-learning algorithms are therefore very appealing and help to automate processes that traditionally require a significant amount of human effort.
@@ -32,7 +32,7 @@ Most problems in ML are tackled by a common scheme: The first step is to collect
   \mathcal{C}: \mathrm{R}^S \rightarrow \mathrm{R}
 \end{equation}
 
-that maps the output $\mathbf{y}$ of $f_{\Theta}(\mathbf{x})$ to a real number representing the error the model has made on $\mathbf{x}$. That is, $\mathcal{C}$ is used to judge the performance of the model. During training the model is fit by finding the set of parameters $\Theta^{*}$ that minimizes the cost function.
+that maps the output $\mathbf{y}$ of $f_{\Theta}(\mathbf{x})$ to a real number representing the error the model has made on $\mathbf{x}$. That is, $\mathcal{C}$ is used to judge the performance of the model. During training the parameters of the model $\Theta$ are tuned such that the cost function is minimized, ultimately aiming at discovering the optimal set of parameters $\Theta^{*}$.
 
 \subsection{Supervised vs Unsupervised Learning}
 
@@ -41,6 +41,34 @@ Broadly speaking, ML algorithms can be split into \textit{supervised} and \texti
 The unsupervised approach does not use labels explicitly to train the ML model. It aims at learning the underlying structure of the data. Examples for the unsupervised approach include generative modeling, clustering and dimensionality reduction. 
 
 In some ML algorithms the distinction between supervised and unsupervised learning becomes fuzzy. Such approaches are often refered to as \textit{semi-supervised}. An example for semi-supervised learning is the generative adversarial approach that is explained in section \ref{ML_GAN}.
+
+\subsection{Interpretation of Probability: Baysian vs Frequentist}
+\label{bayes_vs_frequentist}
+
+In the field of statistical inference two different interpretations of probability can be found, known as the \textit{bayesian} and the \textit{frequentist} paradigm. The debate over the different views of probability is going on for more than 250 years and dates back to a puplication of Thomas Bayes titled "An Essay towards solving a Problem in the Doctrine of Chances".\cite{bayes1763lii}
+
+In the frequentist view, probability is objective and refers to the relative frequency of an event with which it occurs in many trials.\cite{hajek2002interpretations} For frequentists, probabilities are only discussed for well defined random-experiments. As the relative frequency of an event can vary for different experiments, true probabilities can only be found in the limit of infinite trials where the difference in the relative frequencies diminish,
+
+\begin{equation}
+p = \underset{N \rightarrow \infty}{\text{lim}} \frac{K}{N}
+\end{equation}
+
+where $N$ is the number of trials and $K$ the number of occurences of the event of interest.
+
+The frequentist view is often associated with an deductive approach: The data is regarded as a random variable and the consistency of the data with a given model has to be tested. As such, the frequentist approach focuses on the \textit{likelihood} $p(\mathcal{D} | \Theta)$ of observing the data given the model parameters.
+
+In the bayesian view, probability is subjective and quantifies uncertainty or the degree of personal belief.\cite{gelman1995bayesian} In this regard, bayesians do not seek a point estimate for the parameters of a model but a distribution over the model parameters $p(\Theta | \mathcal{D})$, called \textit{posterior distribution}. The bayesian view is often associated with an inductive approach: Starting from the observations the model is built. As such, the parameters $\Theta$ are treated as random variables and the question bayesians are concerned with is how well does the porposed model fit to the data.
+
+To evaluate the posterior probability, a \textit{prior probability} $p(\Theta)$ is introduced that expresses the belief in the models parameters prior to observing any data. The data is then used to update this belief usig the likelihood $p(\mathcal{D} | \Theta)$. Using Bayes theorem, the posterior can be computed as
+
+\begin{equation}
+ p(\Theta | \mathcal{D}) = \frac{p(\mathcal{D} | \Theta) p(\Theta)}{p(\mathcal{D})} ,
+\end{equation}
+
+where $p(\mathcal{D}) = \int p(\mathcal{D} | \Theta) p(\Theta) d \Theta$ is the \textit{evidence} or marginal likelihood.\cite{gelman1995bayesian} 
+
+While a distinction between the bayesian and the frequentist probability interpretation is instructive, it is not always possible to strictly assign a given method to one of both paradigms.\cite{gelman2011induction} Typically, both interpretations are commonly used and many ML algorithms incorporate both ideas.
+%The incorporation of prior knowledge makes the bayesian approach more data efficient than the frequentist approach and helps to improve generalizability. On the other hand, the bayesian approach is computationally more challenging as computing the evidence $p(\Theta)$ is very expensive. Therefore, the frequentist approach was more dominant in the past century. Nowadays, both interpretations are commonly used and many ML algorithms incorporate both ideas.
 
 \subsection{Bias-Variance Tradeoff}
 
@@ -97,6 +125,7 @@ Both errors depend on the complexity of the model, which is related to the numbe
 
 The bias-variance tradeoff explains the importance of large data sets for ML, as it offers the ability to train more complex models. Beside increasing the training set size, generalization can be enforced using \textit{regularization}. In the bayesian view, regularization refers to a prior distribution on the model parameters. In practice, this is realized using an additional term in the loss function penalizing over-specialized models. 
 
+\comment{
 \subsection{Discriminative vs Generative Models}
 
 ML algorithms are typically divided into two broad categories, namely \textit{generative} and \textit{discriminative} models. While the former aims to learn about the dependencies of all the variables in a system, the goal of the latter is to learn decision boundaries. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
@@ -120,34 +149,7 @@ Therefore, generative models can be used for classification and regression as we
 Obviously, the underlying task for generative models is more complex compared to the discriminative task as the generative model has to be more informative. Therefore, generative models typically require more parameters than discriminative models. Regarding experiments for a binary classification task, logistic regression, i.e. a discriminative model, outperforms Gaussian Naive Bayes, i.e. a generative model, in terms of asymptotic errors.\cite{ng2002discriminative} However, in a low data regime generative models can give superior performance.\cite{ng2002discriminative}
 
 While both approaches can be used for classification and regression, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to Deep Generative Models (DGMs) for simplicity.
-
-\subsection{Interpretation of Probability: Baysian vs Frequentist}
-\label{bayes_vs_frequentist}
-
-In the field of statistical inference two different interpretations of probability can be found, known as the \textit{bayesian} and the \textit{frequentist} paradigm. The debate over the different views of probability is going on for more than 250 years and dates back to a puplication of Thomas Bayes titled "An Essay towards solving a Problem in the Doctrine of Chances".\cite{bayes1763lii}
-
-In the frequentist view, probability is objective and refers to the relative frequency of an event with which it occurs in many trials.\cite{hajek2002interpretations} For frequentists, probabilities are only discussed for well defined random-experiments. As the relative frequency of an event can vary for different experiments, true probabilities can only be found in the limit of infinite trials where the difference in the relative frequencies diminish,
-
-\begin{equation}
-p = \underset{N \rightarrow \infty}{\text{lim}} \frac{K}{N}
-\end{equation}
-
-where $N$ is the number of trials and $K$ the number of occurences of the event of interest.
-
-The frequentist view is often associated with a deductive approach: The data is regarded as a random variable and the question frequentists are concerned with is how well does the data fit to a given distribution. In other words, the frequentist approach starts with a model and tests whether the observed data is consistent with this model. Therefore, the frequentist approach focuses on the \textit{likelihood} $p(\mathcal{D} | \Theta)$ of observing the data given the model parameters.
-
-In the bayesian view, probability is subjective and quantifies uncertanity or the degree of personal belief.\cite{gelman1995bayesian} In this regard, bayesians do not seek a point estimate for the parameters of a model but a distribution over the model parameters $p(\Theta | \mathcal{D})$, called \textit{posterior distribution}. The bayesian view is often associated with an inductive approach: Starting from the observations the model is built. Therefore, the parameters $\Theta$ are treated as random variables and the question bayesians are concerned with is how well does the porposed model fit to the data.
-
-To evaluate the posterior probability, a \textit{prior probability} $p(\Theta)$ is introduced that expresses the belief in the models parameters prior to observing any data. The data is then used to update this belief usig the likelihood $p(\mathcal{D} | \Theta)$. Using Bayes theorem, the posterior can be computed as
-
-\begin{equation}
- p(\Theta | \mathcal{D}) = \frac{p(\mathcal{D} | \Theta) p(\Theta)}{p(\mathcal{D})} ,
-\end{equation}
-
-where $p(\mathcal{D}) = \int p(\mathcal{D} | \Theta) p(\Theta) d \Theta$ is the \textit{evidence} or marginal likelihood.\cite{gelman1995bayesian} 
-
-While a distinction between the bayesian and the frequentist probability interpretation is instructive, it is not always possible to strictly assign a given method to one of both paradigms.\cite{gelman2011induction} Typically, both interpretations are commonly used and many ML algorithms incorporate both ideas.
-%The incorporation of prior knowledge makes the bayesian approach more data efficient than the frequentist approach and helps to improve generalizability. On the other hand, the bayesian approach is computationally more challenging as computing the evidence $p(\Theta)$ is very expensive. Therefore, the frequentist approach was more dominant in the past century. Nowadays, both interpretations are commonly used and many ML algorithms incorporate both ideas.
+}
 
 \subsection{Curse and Blessing of Dimensionality}
 

@@ -161,21 +161,43 @@ While the afore mentioned challenges are examples for the curse of dimensionalit
 
 
 \subsection{Latent Variables}
+\label{SEC:ML_latent_variables}
 
-ML algorithms utilizing a lower dimensional representation are refered to as latent variable models (LVM).\cite{van2009dimensionality, ge2018process} The key assumption of LVMs is that real-world data is generally structured, which implies that it can be described through a lower-dimensional distribution $\mathcal{Z}$ supported in $\mathbb{R}^d$. This assumption is known as the manifold hypothesis, which states that high-dimensional data $x \in \mathbb{R}^D$ tends to lie on a low-dimensional manifold $\mathcal{M} \subset \mathbb{R}^D$ embedded in the high-dimensional space $\mathbb{R}^D$.\cite{fefferman2016testing} Therefore, real-world data is assumed to have an intrinsic lower dimensionality $d < D$ and our oberservations $x$ can be explained through some hidden variables $z \in \mathbb{R}^d$. 
+Switching between representations of different resolutions is a hallmark of MS modeling. However, a similar concept is also well known in the ML community, where hidden and typically lower dimensional representations are described by so called \textit{latent variables}. ML models that relate latent variables with observable varibables are refered to as \textit{latent variable models} (LVM).\cite{van2009dimensionality, ge2018process} 
 
-In general, the point $z$ that maps to a point $x$ is unknown and therefore $z$ is refered to as a latent variable and $\mathcal{Z}$ is the latent distribution. The high-dimensional space $\mathbb{R}^D$ that supports the actual distribution $\mathcal{X}$ is often called ambient space. The low-dimensional space $\mathbb{R}^d$ that supports the latent distribution $\mathcal{Z}$ is refered to as the latent space. Note that the actual dimension $d$ of the latent space is often unknown. 
+LVMs are motivated by the assumption that real-world data is generally structured, which implies that it can be described through a lower-dimensional distribution $\mathcal{Z}$ supported in $\mathbb{R}^d$. This assumption is known as the \textit{manifold hypothesis}. Formally, it states that high-dimensional data $x \in \mathbb{R}^D$ tends to lie on a low-dimensional manifold $\mathcal{M} \subset \mathbb{R}^D$ embedded in the high-dimensional space $\mathbb{R}^D$.\cite{fefferman2016testing} Therefore, real-world data is assumed to have an intrinsic lower dimensionality $d < D$ and the oberservations $x$ can be explained through some hidden variables $z \in \mathbb{R}^d$. 
+
+The point $z$ that maps to a point $x$ is unknown in general. As such, $z$ is refered to as a latent variable and $\mathcal{Z}$ is the latent distribution. The high-dimensional space $\mathbb{R}^D$ that supports the actual distribution $\mathcal{X}$ is called \textit{ambient space}. The low-dimensional space $\mathbb{R}^d$ that supports the latent distribution $\mathcal{Z}$ is refered to as the \textit{latent space}. The actual dimension $d$ of the latent space is typically unknown. 
 
 \subsubsection{Dimensionality Reduction}
 
-The attentive reader will note a strong similarity to the concept of coarse-graining explained in Sec. \ref{}. Indeed, coarse-grained models and LVM follow the same philosophy: Both aim at reducing the complexity by mapping a high dimensional representation to a lower dimensional, simpler representation that still captures the essential features while noise and redundant features are removed. However, while coarse-grained representations of molecular systems are frequently based on physical and chemical intuition, ML based dimensionality reduction seeks to learn the mapping by minimizing a cost function instead. Recently ML techniques have been applied to the coarse-graining of molecular systems.\cite{chakraborty2018encoding, webb2018graph, wang2019coarse}
+The concept of coarse-graining and latent variables ultimately follow the same philosophy: Both aim at reducing the complexity by mapping a high dimensional representation to a lower dimensional, simpler representation that still captures the essential features while noise and redundant features are removed. However, coarse-grained representations of molecular systems are frequently based on physical and chemical intuition, whereas ML based dimensionality reduction seeks to learn the mapping by minimizing a cost function instead. 
 
-Sketch-Map
+One of the most commonly used methods for dimensionalty reduction is principle component analysis (PCA). It performs a change of basis by projecting the data onto a linear combinations of the original basis vectors called principle components. The new coordinate system is thereby chosen such that they align with the directions showing the highest variance in the data set. PCA is typically used for dimensinality reduction by discarding principle components with low variance, i.e. the new representation preserves most of the dataś variance.
+
+Despite its wide range of applications, linear dimensionality reduction techniques like PCA are typically insufficient to capture the global structure of data obtained from MD trajectories, since the accessable regions of phase space can have a complex, nonlinear structure with nonuniform dimensionality.\cite{garcia1992large, hegger2007complex, rohrdanz2011determination} As such, nonlinear dimensionality reduction techniques are more appropriate to analyze the phase space of molecular systems. 
+
+A promising approach introduced by Ceriotti \emph{et al.} is called \textit{Sketch-Map}.\cite{ceriotti2011simplifying, tribello2012using} Related to the curse of dimensionality, Ceriotti et al state that two points in phase space with small distance correspond to thermal fluctuations, while large distances are uniformily distributed. Consequently, the focus has to be set on an intermediate scale capturing most of the valuable topological information of the phase space. Such a characteristic length scale is found by minimizing the cost-function
+
+\begin{equation}
+  \mathcal{C}(\{\mathbf{z}_1, \dots, \mathbf{z}_N\}) = \sum_i^N \sum_j^N \Big( f(r_{ij}) - F(R_{ij}) \Big)^2, 
+\end{equation}
+
+where $r_{ij}$ and $R_{ij}$ correspond to the low-dimensional and high-dimensional distance of two points $\mathbf{z}_i$ and $\mathbf{z}_j$, as well as $\mathbf{x}_i$ and $\mathbf{x}_j$, respectively. $F$ and $f$ are sigmoid functions of the form
+
+\begin{equation}
+  F(R) = 1 - (1 + (2^{A/B} - 1)(R/\sigma)^A)^{-B/A}
+\end{equation}
+
+\begin{equation}
+  f(r) = 1 - (1 + (2^{a/b} - 1)(r/\sigma)^a)^{-b/a} ,
+\end{equation}
+
+where $\sigma$, $A$, $B$, $a$ and $b$ are the parameters of the model. The sigmoid function transforms distances such that distances far below or far apart from $\sigma$ are mapped close to zero or unity, respectively. As such, distances in the vicinity of $\sigma$ are highlighted and dictate the characteristic length scale of the lower dimensional embedding.
 
 \subsubsection{Inverse Mapping}
 
-Similar to backmapping...
-LVMs can be applied to the inverse task, i.e. to generate a new instance of $\mathbf{x}' \sim \mathcal{X}$. For this purpose, the generative process is decomposed into two steps: (1) Draw a sample $z \sim \mathcal{Z}$ from the latent distribution with probability $p_{\mathcal{Z}}(z)$. (2) Introduce a parametrized mapping function 
+Similarly to the concept of backmapping, LVMs can be applied to the inverse task as well, i.e. to generate a new instance of $\mathbf{x}' \sim \mathcal{X}$. For this purpose, the generative process is decomposed into two steps: (1) Draw a sample $z \sim \mathcal{Z}$ from the latent distribution with probability $p_{\mathcal{Z}}(z)$. (2) Introduce a parametrized mapping function 
 
 \begin{equation}
   g_{\Theta}: \mathbb{R}^d \rightarrow \mathbb{R}^D ,
@@ -183,9 +205,9 @@ LVMs can be applied to the inverse task, i.e. to generate a new instance of $\ma
 
 where $\Theta$ are the parameters of the mapping, that transforms points from $\mathcal{Z}$ to the (intractable) distribution $\mathcal{X}$. The mapped distribution is denoted with $g(\mathcal{Z})$ and the overall goal is that the mapped distribution resembles the actual data distribution $g(\mathcal{Z}) \approx \mathcal{X}$ .
 
-In many cases a tractable distribution, such as a Gaussian distribution, is assumed to resemble the latent distribution. However, the proposed $\mathcal{Z}$ can differ signficantly from the actual manifold the data resides. Therefore, a linear transformation is not sufficient to deform $\mathcal{Z}$ such that is resembles $\mathcal{X}$.\cite{lopez2020deep} Consequently, a highly nonlinear transformation is seeked. In addition, deriving $g_{\Theta}$ from first principles is infeasible for most real-world applications. This motivates the use of DNNs for the transformation, as they are highly nonlinear and have the ability to efficiently approximate functions in high dimensions.\cite{hornik1989multilayer, cybenko1992approximation, naitzat2020topology}
+In many cases a tractable distribution, such as a Gaussian distribution, is assumed to resemble the latent distribution. However, the proposed $\mathcal{Z}$ can differ signficantly from the actual manifold the data resides. Therefore, a linear transformation is not sufficient to deform $\mathcal{Z}$ such that is resembles $\mathcal{X}$.\cite{lopez2020deep} Consequently, a highly nonlinear transformation is seeked. In addition, deriving $g_{\Theta}$ from first principles is infeasible for most real-world applications. 
 
-
+The strong similarity between the concept of latent and coarse-grained variables suggests to apply LVMs to MS modeling. Indead, ML techniques have been applied recently to the coarse-graining of molecular systems.\cite{chakraborty2018encoding, webb2018graph, wang2019coarse} In this thesis, the general approach is to build a LVM for the inverse task, i.e. for the backmapping of molecular structures. In the following, it will be shown that Deep Neural Networks provide an excellent tool learn such complex transformations, as they have the ability to efficiently approximate functions in high dimensions.\cite{hornik1989multilayer, cybenko1992approximation, naitzat2020topology} Moreover, the concept of generative modelling will be introduced providing the techniques to train such models.
 
 \section{Artificial Neural Networks}
 
