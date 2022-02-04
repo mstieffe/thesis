@@ -72,6 +72,13 @@ While a distinction between the bayesian and the frequentist probability interpr
 
 \subsection{Bias-Variance Tradeoff}
 
+\begin{figure}
+  \centering
+      \includegraphics[width=0.5\textwidth]{./Figures/ml/bias_variance.pdf}
+  \caption{Illustration of the typical dependence of the in-sample and out-of-sample error with respect to the training set size. The out-of-sample error is composed of two terms: the bias and variance. Initial drop of the error is omitted in the figure.}
+  \label{FIG:ML_bias_variance}
+\end{figure}
+
 It is common practice to split the data set $\mathcal{D}$ randomly into two exclusive subsets: The training set $\mathcal{D}_{\text{train}}$ and the test set $\mathcal{D}_{\text{test}}$. Typically, the training set $\mathcal{D}_{\text{train}}$ contains the majority of the data. During training, the parameters $\Theta$ of the model $f_{\Theta}$ are tuned to minimize the cost function $\mathcal{C}$ evaluated on the training set $\mathcal{D}_{\text{train}}$ only. The error on the training set
 
 \begin{equation}
@@ -84,9 +91,9 @@ is called the \textit{in-sample-error}. After training, the performance of the m
   E_{\text{out}} = \sum_{(\mathbf{x}, \mathbf{y}) \in \mathcal{D}_{\text{test}}}\mathcal{C}(\mathbf{y}, f_{\Theta}(\mathbf{x})) ,
 \end{equation}
 
-which is called the \textit{in-sample-error}. This procedure is known as \textit{cross-validation} and its purpose is to find an unbiased estimate for the predictive performance of the model. In most cases, the out-of-sample error is greater than the in-sample error.\cite{mehta2019high}
+which is called the \textit{out-of-sample-error}. This procedure is known as \textit{cross-validation} and its purpose is to find an unbiased estimate for the predictive performance of the model. In most cases, the out-of-sample error is greater than the in-sample error.\cite{mehta2019high}
 
-The general relationship between the training error $E_{in}$ and the generalization error $E_{out}$ is summarized in Fig. \ref{}, where both errors are plotted as a function of training set size. The following consideration is based on the assumption that the underlying data distribution is sufficiently complex such that the model will not be able to perfectly reproduce it. Therefore, after an initial drop (excluded in the figure), the in-sample error $E_{in}$ will increase with the amount of training data as the model is not powerful enough to capture all the regularities of the training set accurately. On the other hand, the out-of-sample error $E_{out}$ will decrease with the training set size as the sampling noise decreases and the training set becomes more representative of the true data distribution. Consequently, both errors will converge to the same value in the limit of inifite training set size.\cite{mehta2019high} The error in the inifite data limit is called the \textit{bias} and the fluctuation of $E_{out}$ due to a finite training set size is refered to as the \textit{variance} of the model.
+The general relationship between the training error $E_{in}$ and the generalization error $E_{out}$ is summarized in Fig. \ref{FIG:ML_bias_variance}, where both errors are plotted as a function of training set size. The following consideration is based on the assumption that the underlying data distribution is sufficiently complex such that the model will not be able to perfectly reproduce it. Therefore, after an initial drop (excluded in the figure), the in-sample error $E_{in}$ will increase with the amount of training data as the model is not powerful enough to capture all the regularities of the training set accurately. On the other hand, the out-of-sample error $E_{out}$ will decrease with the training set size as the sampling noise decreases and the training set becomes more representative of the true data distribution. Consequently, both errors will converge to the same value in the limit of inifite training set size.\cite{mehta2019high} The error in the inifite data limit is called the \textit{bias} and the fluctuation of $E_{out}$ due to a finite training set size is refered to as the \textit{variance} of the model.
 
 The out-of-sample error $E_{out}$ is a combination of both, the bias and the variance. Given a regression model trained with mean-square-error (MSE), an exact decomposition for the expectation of $E_{out}$ can be derived:\cite{mehta2019high} Consider a dataset $\mathcal{D} = \{(\mathbf{x}, \mathbf{y})\}$ sampled from a noisy model
 
@@ -151,11 +158,13 @@ Obviously, the underlying task for generative models is more complex compared to
 While both approaches can be used for classification and regression, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to Deep Generative Models (DGMs) for simplicity.
 }
 
+\section{High-Dimensional Data}
+
+The increase of computational power makes it possible to collect extremely large data sets $\mathcal{D} = \{ \mathbf{x} \}$ and the use of \textit{big data} is a hallmark of modern ML. In many cases, the data sets do not only contain a large number of observations $\mathbf{x} = (x_1, x_2, .., x_D)$ but also the observations become high dimensional, i.e. $D$ becomes very large. Various phenomena occuring when dealing with high-dimensional spaces are counter intuitive and provide challenges as well as opportunities for modern ML.
+
 \subsection{Curse and Blessing of Dimensionality}
 
-The increase of computational power makes it possible to collect extremely large data sets $\mathcal{D} = \{ \mathbf{x} \}$ and the use of \textit{big data} is a hallmark of modern ML. In many cases, the data sets do not only contain a large number of observations $\mathbf{x} = (x_1, x_2, .., x_D)$ but also the observations become high dimensional, i.e. $D$ becomes very large. Various phenomena occuring when dealing with high-dimensional spaces are counter intuitive and provide challenges as well as opportunities for modern ML. Depending on the point of view, such phenomenas are refered to as \textit{curse} or \textit{blessing of dimensionality}.\cite{donoho2000high}
-
-Beside a performance degradation of algorithms in high dimensional spaces, more fundamental challenges appear. A common theme of such problems is the sparsity of available data.\cite{donoho2000high} As an example, consider a set of points with spacing $\frac{1}{10}$ on a cartesian grid. The number of points $n$ will grow expontentially with the dimension, i.e. $n = 10^D$. Conversly, increasing the dimension for a fixed number of points in a data set lets the distances between those points grow exponentially leading to an almost empty space. Therefore, approximating a function in a high-dimensional space becomes intractable as there is never enough data to support the result.\cite{donoho2000high, verleysen2003effects}
+ Depending on the point of view, phenomenas related to the high-dimensionality of the data are refered to as \textit{curse} or \textit{blessing of dimensionality}.\cite{donoho2000high} Beside a performance degradation of algorithms in high dimensional spaces, more fundamental challenges appear. A common theme of such problems is the sparsity of available data.\cite{donoho2000high} As an example, consider a set of points with spacing $\frac{1}{10}$ on a cartesian grid. The number of points $n$ will grow expontentially with the dimension, i.e. $n = 10^D$. Conversly, increasing the dimension for a fixed number of points in a data set lets the distances between those points grow exponentially leading to an almost empty space. Therefore, approximating a function in a high-dimensional space becomes intractable as there is never enough data to support the result.\cite{donoho2000high, verleysen2003effects}
 
 Another difficulty in high-dimensional spaces is the choice of an appropriate metric. The Euclidian distance is a well suited distance measure in the three-dimensional physical space, but in higher dimensions the distances grow more and more alike. It can be shown, that for a wide range of distributions and distance functions the ratio of distances of the nearest and farthest neighbors to a given target is almost unity.\cite{aggarwal2001surprising} Therefore, the distribution of distances tend to concentrate and lose contrast. For this reason, the concept of nearest neighbour becomes meaningsless and similarity search ill posed.\cite{aggarwal2001surprising, verleysen2003effects}
 
@@ -171,11 +180,31 @@ LVMs are motivated by the assumption that real-world data is generally structure
 
 The point $z$ that maps to a point $x$ is unknown in general. As such, $z$ is refered to as a latent variable and $\mathcal{Z}$ is the latent distribution. The high-dimensional space $\mathbb{R}^D$ that supports the actual distribution $\mathcal{X}$ is called \textit{ambient space}. The low-dimensional space $\mathbb{R}^d$ that supports the latent distribution $\mathcal{Z}$ is refered to as the \textit{latent space}. The actual dimension $d$ of the latent space is typically unknown. 
 
-\subsubsection{Dimensionality Reduction}
+The concept of coarse-graining and latent variables ultimately follow the same philosophy: Both aim at reducing the complexity by mapping a high dimensional representation to a lower dimensional, simpler representation that still captures the essential features while noise and redundant features are removed. However, coarse-grained representations of molecular systems are frequently based on physical and chemical intuition, whereas dimensionality reduction based on LVMs seeks to discover hidden and potentially lower-dimensional variables by minimizing a cost function instead. Recently, LVMs have been applied to the coarse-graining of molecular systems.\cite{wang2019coarse}
 
-The concept of coarse-graining and latent variables ultimately follow the same philosophy: Both aim at reducing the complexity by mapping a high dimensional representation to a lower dimensional, simpler representation that still captures the essential features while noise and redundant features are removed. However, coarse-grained representations of molecular systems are frequently based on physical and chemical intuition, whereas ML based dimensionality reduction seeks to learn the mapping by minimizing a cost function instead. 
+Similarly to the concept of backmapping, LVMs can be applied to the inverse task as well, i.e. to generate a new instance of $\mathbf{x}' \sim \mathcal{X}$. For this purpose, the generative process is decomposed into two steps: (1) Draw a sample $z \sim \mathcal{Z}$ from the latent distribution with probability $p_{\mathcal{Z}}(z)$. (2) Introduce a parametrized mapping function 
+
+\begin{equation}
+  g_{\Theta}: \mathbb{R}^d \rightarrow \mathbb{R}^D ,
+\end{equation}
+
+where $\Theta$ are the parameters of the mapping, that transforms points from $\mathcal{Z}$ to the (intractable) distribution $\mathcal{X}$. The mapped distribution is denoted with $g(\mathcal{Z})$ and the overall goal is that the mapped distribution resembles the actual data distribution $g(\mathcal{Z}) \approx \mathcal{X}$ .
+
+In many cases a tractable distribution, such as a Gaussian distribution, is assumed to resemble the latent distribution. However, the proposed $\mathcal{Z}$ can differ signficantly from the actual manifold the data resides. Therefore, a linear transformation is not sufficient to deform $\mathcal{Z}$ such that is resembles $\mathcal{X}$.\cite{lopez2020deep} Consequently, a highly nonlinear transformation is seeked. In addition, deriving $g_{\Theta}$ from first principles is infeasible for most real-world applications. 
+
+The strong similarity between the concept of latent and coarse-grained variables suggests to apply LVMs to MS modeling. In this thesis, the general approach is to build a LVM for the inverse task, i.e. for the backmapping of molecular structures. It will be shown in Sec. \ref{} that Deep Neural Networks provide an excellent tool learn such complex transformations, as they have the ability to efficiently approximate functions in high dimensions.\cite{hornik1989multilayer, cybenko1992approximation, naitzat2020topology} 
+
+%Indead, ML techniques have been applied recently to the coarse-graining of molecular systems.\cite{chakraborty2018encoding, webb2018graph, wang2019coarse}
+%Moreover, the concept of generative modelling will be introduced providing the techniques to train such models.
+\subsection{Dimensionality Reduction Algorithms}
+
+Reducing the dimensionality has become an important aspect in modern data analysis. Algorithms designed for this purpose are numberous and range from classical linear techniques, such as principle component analysis, to non-linear ML approaches, such as LVMs. While this section being far from complete, it shall give a brief overview of some techniques that are used in this thesis for analysiing molecular configurations.
+
+\subsubsection{Principle Component Analysis}
 
 One of the most commonly used methods for dimensionalty reduction is principle component analysis (PCA). It performs a change of basis by projecting the data onto a linear combinations of the original basis vectors called principle components. The new coordinate system is thereby chosen such that they align with the directions showing the highest variance in the data set. PCA is typically used for dimensinality reduction by discarding principle components with low variance, i.e. the new representation preserves most of the dataś variance.
+
+\subsubsection{Sketch-Map}
 
 Despite its wide range of applications, linear dimensionality reduction techniques like PCA are typically insufficient to capture the global structure of data obtained from MD trajectories, since the accessable regions of phase space can have a complex, nonlinear structure with nonuniform dimensionality.\cite{garcia1992large, hegger2007complex, rohrdanz2011determination} As such, nonlinear dimensionality reduction techniques are more appropriate to analyze the phase space of molecular systems. 
 
@@ -197,19 +226,9 @@ where $r_{ij}$ and $R_{ij}$ correspond to the low-dimensional and high-dimension
 
 where $\sigma$, $A$, $B$, $a$ and $b$ are the parameters of the model. The sigmoid function transforms distances such that distances far below or far apart from $\sigma$ are mapped close to zero or unity, respectively. As such, distances in the vicinity of $\sigma$ are highlighted and dictate the characteristic length scale of the lower dimensional embedding.
 
-\subsubsection{Inverse Mapping}
+\subsubsection{Time-structure Independent Components Analysis}
 
-Similarly to the concept of backmapping, LVMs can be applied to the inverse task as well, i.e. to generate a new instance of $\mathbf{x}' \sim \mathcal{X}$. For this purpose, the generative process is decomposed into two steps: (1) Draw a sample $z \sim \mathcal{Z}$ from the latent distribution with probability $p_{\mathcal{Z}}(z)$. (2) Introduce a parametrized mapping function 
-
-\begin{equation}
-  g_{\Theta}: \mathbb{R}^d \rightarrow \mathbb{R}^D ,
-\end{equation}
-
-where $\Theta$ are the parameters of the mapping, that transforms points from $\mathcal{Z}$ to the (intractable) distribution $\mathcal{X}$. The mapped distribution is denoted with $g(\mathcal{Z})$ and the overall goal is that the mapped distribution resembles the actual data distribution $g(\mathcal{Z}) \approx \mathcal{X}$ .
-
-In many cases a tractable distribution, such as a Gaussian distribution, is assumed to resemble the latent distribution. However, the proposed $\mathcal{Z}$ can differ signficantly from the actual manifold the data resides. Therefore, a linear transformation is not sufficient to deform $\mathcal{Z}$ such that is resembles $\mathcal{X}$.\cite{lopez2020deep} Consequently, a highly nonlinear transformation is seeked. In addition, deriving $g_{\Theta}$ from first principles is infeasible for most real-world applications. 
-
-The strong similarity between the concept of latent and coarse-grained variables suggests to apply LVMs to MS modeling. Indead, ML techniques have been applied recently to the coarse-graining of molecular systems.\cite{chakraborty2018encoding, webb2018graph, wang2019coarse} In this thesis, the general approach is to build a LVM for the inverse task, i.e. for the backmapping of molecular structures. In the following, it will be shown that Deep Neural Networks provide an excellent tool learn such complex transformations, as they have the ability to efficiently approximate functions in high dimensions.\cite{hornik1989multilayer, cybenko1992approximation, naitzat2020topology} Moreover, the concept of generative modelling will be introduced providing the techniques to train such models.
+hier fehlt noch etwas
 
 \section{Artificial Neural Networks}
 
