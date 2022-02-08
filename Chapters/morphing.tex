@@ -1,10 +1,10 @@
 % Chapter Template
 
-\chapter{Morphing of Molecular Structures Generated with Top-Down Approaches ???} % Main chapter title
+\chapter{Morphing of Local Statistics: A Strategy to Backmap Structures of Top-Down Coarse-Grained Models} % Main chapter title
 
-While bottom-up models aim at reproducing thermodynamic and/or structural properties of a yet more detailed system, top-down coarse-grained models are designed to study general phenomenas. As such, it is challenging to relate structures obtained with top-down approaches to a specific chemistry and backmapping such structures to a higher resolution is ill-posed in many cases. However, 
+Top-Down coarse-grained models aim at reproducing certain experimentally observed phenomenas or to study the consequences upon application of general rules. As such, top-down coarse-grained models are typically not chemically specific. However, in many cases the coarse-grained model is not solely based on general considerations but also incorporate bottom-up aspects that allow to link them to a certain chemistry. Examples for such semi top-down methods include the Martini forcefield, which deploys structure based coarse-graining for bonded interactions, as well as the KG polymer model with additional bending potential. While those models can be considered as chemically-specific, they lack the structural fidelity of solely structure based coarse-grained models. Consequently, backmapping such imperfect molecular structures to a higher resolution is expected to yield unphysical artifacts.
 
-Relating coarse-grained structures obtained with a bottom-up coarse-grained model 
+In this chapter, a method to improve the quality of molecular structures obtained with semi top-down models is investigated that aims at morphing local statistics. To this end, a local scale is introduced that defines to what extend features are allowed to change. Specifically, molecular structures are further coarse-grained up to this extend and DBM is applied to reintroduce local features learned from examples of the target system. The general goal of this approach is to introduce a two-step backmapping scheme for semi top-down coarse-grained models: Firstly, the local statistics of the coarse-grained structure are changed in order to resemble the statistics of a higher resolution target system more closely. Secondly, the corrected coarse-grained structure serves as input for a backmapping scheme to increase the resolution.
 
 \label{morphing} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
