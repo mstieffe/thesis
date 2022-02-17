@@ -26,8 +26,52 @@ Specifically, $e_n$ computes the center of mass for groups of $n$ particles. Aft
 
 Deploying different values for the coarse-graining factor $s$ allows to scale the extent to which local features are allowed to change. Assuming that the backmapping scheme yields a perfect reconstruction, the mapping $g_{\Theta}(e_s(\mathcal{X}))$ is expected to yield a more accurate reproduction of $\mathcal{Y}$ the larger $s$ becomes, since the reinsertion of details becomes less restricted by the coarse-grained representation. However, larger values of $s$ lead to a more complex backmapping excercise. As such, chosing the value for $s$ is a trade-off between the complexity of the backmapping task and the impact of the morphing. 
 
-\cite{yoo2019image}
+The proposed method is solely data driven, i.e it avoids to parametrize a forcefield for the given target distribution. However, the quality of morphed structures can be improved by incorporating an artificial energy landscape that penalizes forbitten configurations in terms of bond lengths, angles and non-bonded distances. In particular, a harmonic potential of the form
+
+\begin{equation}
+ U(s) =
+  \begin{cases}
+      a(s - s_{\text{min}})^2,& s < s_{\text{min}}\\
+      a(s - s_{\text{max}})^2,& s > s_{\text{max}}\\
+      0,              & \text{otherwise},
+  \end{cases}
+\end{equation}
+
+is applied as bonded interaction, where $s$ represents bond lengths and angles, respectively, and $a$ is a scaling factor.  Similarly, a harmonic potential for non-bonded distances $d$
+
+\begin{equation}
+ U(d) =
+  \begin{cases}
+      a(1 - \frac{d}{d_{\text{min}}})^2,& d < d_{\text{min}}\\
+      0,              & \text{otherwise},
+  \end{cases}
+\end{equation}
+
+is introduced, where $d_{\text{min}}$ is the minimum distance for non-bonded particles. The values for the minimum and maximum distances/angles are obtained from distributions of the target system.
+
+
 \section{Martini Model: Tetracosane}
+
+\begin{figure}
+  \centering
+      \includegraphics[width=0.8\textwidth]{./Figures/morphing/tetracosane/morphbm_ff_dists.pdf}
+  \caption{morphbm}
+  \label{FIG:TET_morphbm}
+\end{figure}
+
+\begin{figure}
+  \centering
+      \includegraphics[width=0.8\textwidth]{./Figures/morphing/tetracosane/morphgibbs_ff_dists.pdf}
+  \caption{morphgibbs}
+  \label{FIG:TET_morphgibbs}
+\end{figure}
+
+\begin{figure}
+  \centering
+      \includegraphics[width=1.1\textwidth]{./Figures/morphing/tetracosane/free_energy.pdf}
+  \caption{SM free energy}
+  \label{FIG:TET_morphgibbs}
+\end{figure}
 
 \section{Kremer-Grest Model: Synditactic Polystyrene}
 
