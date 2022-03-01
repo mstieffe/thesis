@@ -62,23 +62,34 @@ is introduced, where $d_{\text{min}}$ is the minimum distance for non-bonded par
 
 \begin{figure}
   \centering
-      \includegraphics[width=0.8\textwidth]{./Figures/morphing/tetracosane/morphbm_ff_dists.pdf}
+      \includegraphics[width=0.8\textwidth]{./Figures/morphing/tetracosane/morph_ff_dists.pdf}
   \caption{morphbm}
   \label{FIG:TET_morphbm}
 \end{figure}
 
 \begin{figure}
   \centering
-      \includegraphics[width=0.8\textwidth]{./Figures/morphing/tetracosane/morphgibbs_ff_dists.pdf}
-  \caption{morphgibbs}
+      \includegraphics[width=1.1\textwidth]{./Figures/morphing/tetracosane/free_energy_with_snapshots.pdf}
+  \caption{SM free energy}
   \label{FIG:TET_morphgibbs}
 \end{figure}
 
+\begin{table}
+\begin{tabular}{ c|c|c } 
+ & scheme A & scheme B \\
+\hline
+s = 2 & 2.338 & 1.213 \\ 
+s = 3 & 2.925 &  1.197 
+\caption{ Jenson-Shannon divergence. martini: 2.239 }
+\label{TAB:sPS_chem_trans}
+\end{tabular}
+\end{table}
+
 \begin{figure}
   \centering
-      \includegraphics[width=1.1\textwidth]{./Figures/morphing/tetracosane/free_energy.pdf}
-  \caption{SM free energy}
-  \label{FIG:TET_morphgibbs}
+      \includegraphics[width=0.8\textwidth]{./Figures/morphing/tetracosane/dbm_morphed.pdf}
+  \caption{morphbm}
+  \label{FIG:TET_morphbm}
 \end{figure}
 
 \section{Kremer-Grest Model: Synditactic Polystyrene}
@@ -94,6 +105,26 @@ is introduced, where $d_{\text{min}}$ is the minimum distance for non-bonded par
   \centering
       \includegraphics[width=1.1\textwidth]{./Figures/morphing/sPS/free_energy_with_snapshots.pdf}
   \caption{SM free energy}
+  \label{FIG:TET_morphgibbs}
+\end{figure}
+
+
+\begin{table}
+\begin{tabular}{ c|c|c } 
+ & scheme A & scheme B \\
+\hline
+s = 2 & 0.436 & 4.654 \\ 
+s = 4 & 1.953 & 0.646 \\ 
+s = 6 & 3.589 & 3.495  
+\caption{ Jenson-Shannon divergence. KG: 4.661 }
+\label{TAB:sPS_chem_trans}
+\end{tabular}
+\end{table}
+
+\begin{figure}
+  \centering
+      \includegraphics[width=0.8\textwidth]{./Figures/morphing/sPS/dbm_morphed.pdf}
+  \caption{morphgibbs}
   \label{FIG:TET_morphgibbs}
 \end{figure}
 
