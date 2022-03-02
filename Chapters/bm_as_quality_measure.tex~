@@ -38,23 +38,8 @@
 reference & 0.0056 & 0.0423 \\ 
 model 1 & 0.0064 &  0.0868 \\ 
 model 2 & 0.0063 &  0.0866 \\ 
-model 3 & 0.0064 & 0.0884  
+model 3 & 0.0064 0.0884 &  
 \caption{ RMSD CG - CG(BM)}
 \label{TAB:sPS_chem_trans}
 \end{tabular}
 \end{table}
-
-\begin{table}
-\begin{tabular}{ c|c|c } 
- & DBM & EM \\
-\hline
-reference & 0.0473 & 4.9364 \\ 
-model 1 & 0.4571 &  4.8580 \\ 
-model 2 & 0.5988 &  4.7915 \\ 
-model 3 & 0.7161 & 4.8574 
-\caption{ JS divergence}
-\label{TAB:sPS_chem_trans}
-\end{tabular}
-\end{table}
-
-
