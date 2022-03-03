@@ -57,7 +57,15 @@ is applied as bonded interaction, where $s$ represents bond lengths and angles, 
 
 is introduced, where $d_{\text{min}}$ is the minimum distance for non-bonded particles. The values for the minimum and maximum distances/angles are obtained from distributions of the target system.
 
-\section{Kremer-Grest Model: Synditactic Polystyrene}
+\section{Kremer-Grest Model: Syndiotactic Polystyrene}
+
+An important characteristic of polymeric systems is their universal large-scale behavior. 
+
+The Kremer-Grest (KG) model is a standart model for computer simulations of polymeric systems. It was designed to study generic polymer properties with an emphasise on computational efficiency and simplicity. As outlined in Sec. \ref{}, the KG model is a bead-spring model, where consecutive beads are connected via strong nonlinear springs, i.e. the FENE potential (Eq. \ref{}), and mutual interactions between all beads are modeled via a truncated Lennard-Jones potential (Eq. \ref{}). 
+
+The deployed interaction potentials aim at reproducing local topological contraints of real polymeric systems, i.e. chain backbones are prohibitted to pass through each other, ultimately yielding large scale entanglement properties that are charateristic for long-chain polymers. For polymer melt the large-scale behaviour becomes universal
+
+
 
 \begin{figure}
   \centering
