@@ -59,13 +59,52 @@ is introduced, where $d_{\text{min}}$ is the minimum distance for non-bonded par
 
 \section{Kremer-Grest Model: Syndiotactic Polystyrene}
 
-An important characteristic of polymeric systems is their universal large-scale behavior. 
+The Kremer-Grest (KG) model is a standart model for computer simulations of polymeric systems. It is designed to study generic polymer properties with an emphasise on computational efficiency and simplicity. As outlined in Sec. \ref{}, the KG model is a bead-spring model, where consecutive beads are connected via strong nonlinear springs, i.e. the FENE potential (Eq. \ref{}), and mutual interactions between all beads are modeled via a truncated Lennard-Jones potential (Eq. \ref{}). The deployed interaction potentials aim at reproducing topological contraints of real polymeric systems, i.e. chain backbones are prohibitted to pass through each other. As such, the KG model is able to yield large scale entanglement properties that are characteristic for long-chain polymers. In order to modify the stiffness of the polymer chains, an additional bending potential can be introduced (Eq. \ref{}) scaled by the prefactor $\kappa$.
 
-The Kremer-Grest (KG) model is a standart model for computer simulations of polymeric systems. It was designed to study generic polymer properties with an emphasise on computational efficiency and simplicity. As outlined in Sec. \ref{}, the KG model is a bead-spring model, where consecutive beads are connected via strong nonlinear springs, i.e. the FENE potential (Eq. \ref{}), and mutual interactions between all beads are modeled via a truncated Lennard-Jones potential (Eq. \ref{}). 
+An important characteristic of many polymeric systems is their universal large-scale behavior that manifests in scaling relations. Specifally, the mean square end-to-end distance $\langle R^2_e \rangle$ of a polymer chain scales with the number of beads $N$, i.e. $\langle R^2_e \rangle \propto N^{2\nu}$. In a melt state, polymers resemble the charateristics of a random-walk and $\nu = \frac{1}{2}$. However, local interactions of real polymers introduce correlations between monomers that ultimately increase $\langle R^2_e \rangle$. In order to account for such correlations, the results known for ideal chains, i.e. the random-walk behavior $\langle R^2_e \rangle = l^2 N$, requires a correction
 
-The deployed interaction potentials aim at reproducing local topological contraints of real polymeric systems, i.e. chain backbones are prohibitted to pass through each other, ultimately yielding large scale entanglement properties that are charateristic for long-chain polymers. For polymer melt the large-scale behaviour becomes universal
+\begin{equation}
+  \langle R^2_e \rangle = C_{\infty} l^2 N ,
+\end{equation}
 
+where $l$ is the bond length between consecutive monomers and $C_{\infty}$ is Flory's charateristic ratio. Note that $C_{\infty}$ depends on the local stiffness of the polymer chain.
 
+The Kuhn length $b$ characterizes the crossover from local, chemistry specific to universal, random-walk behavior. It is defined by mapping the real chain onto an equivalent ideal chain with $n$ segments of length $b$ that reproduces $\langle R^2_e \rangle$ and the contour length $L = N l$, i.e.
+
+\begin{equation}
+    \langle R^2_e \rangle =  b^2 n ,
+\end{equation}
+
+\begin{equation}
+    L = nb .
+\end{equation}
+
+The Kugn number $n_k$ is a dimensionless parameter, which defines the number of Kuhn segments within a cube of length $b$,
+
+\begin{equation}
+\label{kuhn_number}
+  n_k = \rho_k b^3 ,
+\end{equation}
+
+where $\rho_k$ is the number density of Kuhn segments. It is observed that $n_k$ systematically correlate with emergend properties such as the entanglement length.\cite{}. As such, the Kuhn number $n_k$ is a key parameter characterizing a specific polymer chemistry and therefore allows to link experimentally observed commodity polymers with model polymers melts, such as the KG model.
+
+While the Kuhn number $n_k$ is material specific and depends on atomic details it is not straight forward to infer its dependence on the deployed interaction potentials. However, Everes et. al have found a direct relation between the chain stiffness $\kappa$ of the KG model and the implied Kuhn number $n_k$,
+
+\begin{equation}
+  b(\kappa) = b^{(0)} + \Delta b ,
+\end{equation}
+
+\begin{equation}
+  \Delta b = 0.77 \sigma (\text{tanh}(-.03\kappa^2 - 0.41 \kappa + 0.16) + 1),
+\end{equation}
+
+where $b^{(0)}$ is the bare Kuhn length in the absence of excluded volume interactions and $sigma$ is the bead diameter. Given the Kuhn length $b$ it is straight forward to infer to corresponding Kuhn number $n_k$ from Eq. \ref{kuhn_number}. 
+
+In summary, the KG model with additional bending potential offers a one parameter model that covers a wide range of experimentally relevant commodity polymers. Such Kuhn scale matched model polymers can be regarded as a special case of structure-based coarse-graining. By controlling the Kuhn number with the parameter for the chain stiffness $\kappa$ allows to reproduce emergent universal large length and time scale behavior. However, this remarkable simple model only allows to retain the behavior above the Kuhn scale, whereas particular properties below the Kuhn scale, i.e. local properties, are not expected to resemble the target system. Specifically, solely structure-based coarse-grained models on a similar level of resolution are presumed to yield a locally more faithful representation.
+
+To underpin the above statement, the moderately coarse-grained model for syndiotactic polystyrene by Fritz et. al is considered, which is already deployed in Sec. \ref{}. The model is parametrized based on detailed all-atom simulations of stereoregular PS sequences in vacuum and reproduces the target thermodynamic properties with remarkable accuracy.\cite{} A simulation of the Fritz forcefield is carried out in the NPT ensemble using ... In the following, the model is referred to as \textit{Fritz} model. 
+
+In order to compare the the ensembles obtained with the Fritz model and KG model, the former is mapped onto the resolution of the KG model. Following \cite{}, three polystyrene monomers are mapped onto a single KG bead, which is positioned according to the center of mass of the corresponding monomers. Snapshots of the KG model are obtained by an NVT simulation performed with Espresso++.\cite{} The standard paramteres for the KG model are deployed, i.e. $\sigma =$ and $blabla =$. The chain stiffness is set to $\kappa = 0.8815$ in order to obtain the correct large scale behavior. While \cite{} only lists values for the stiffness corresponding to isotactic and atactic polystyrene, the mean value of both is deployed in this study to model syndiotactic polystyrene. Distances in the KG model are rescaled such that the particle density obtained with the Fritz model is reproduced.
 
 \begin{figure}
   \centering
