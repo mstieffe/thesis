@@ -135,7 +135,7 @@ The bias-variance tradeoff explains the importance of large data sets for ML, as
 \comment{
 \subsection{Discriminative vs Generative Models}
 
-ML algorithms are typically divided into two broad categories, namely \textit{generative} and \textit{discriminative} models. While the former aims to learn about the dependencies of all the variables in a system, the goal of the latter is to learn decision boundaries. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
+ML algorithms are typically divided into two broad categories, namely \textit{generative} and \textit{discriminative} models. While the former aims to learn about the dependencies of all the variables in a system, the goal of the latter is to learn decision boundaries. Generative models are typically linked to unsupervised training and discriminative models to supervised training, but a clear dichotomy is not always possible.
 
 Formally, consider a set of labelled data $\mathcal{D} = \{ \mathbf{(x, y)} \}$ following the joint probability distribution $p(\mathbf{x}, \mathbf{y})$. The goal of a discriminative model is to learn the conditional probability $p \mathbf{(y|x)}$ of the class labels $\mathbf{y}$ given the obsersvation $\mathbf{x}$. To fulfill this goal, a discriminative model does not necessarily have to learn about the depencies of all the variables in the system as it only has to make use of the variables that are important for labeling the observations.
 

@@ -8,13 +8,13 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\textit{Machine Learning} is a prominent subfield of \textit{Artificial Intelligence (AI)} and is already used in a wide range of applications, such as computer vision, speech recognition or medical image analysis.\cite{voulodimos2018deep, nassif2019speech, fatima2017survey} It is a study of computer algorithms that use data to construct statistical models trained to perform some specific task. The models improve their performance automatically by learning from examples instead of relying on static program instructions. Importantly, learning in this context aims at extracting patterns or rules from the training data that generalize rather than simply memorizing specific examples. 
+\textit{Machine Learning} is a prominent subfield of \textit{Artificial Intelligence (AI)} and is already used in a wide range of applications, such as computer vision, speech recognition or medical image analysis.\cite{voulodimos2018deep, nassif2019speech, fatima2017survey} It is a study of computer algorithms that use data to construct statistical models trained to perform specific tasks. The models improve their performance automatically by learning from examples instead of relying on static program instructions. Importantly, learning in this context aims at extracting patterns or rules from the training data that generalize rather than simply memorizing specific examples. 
 
 Recently, ML is gaining significant attention in many fields of modern science, especially computational chemistry and particle physics \cite{noe2020machine, vamathevan2019applications, radovic2018machine} Beside the massive increase in computational power, the growing interest for ML algorithms in those research areas is fuelled by the availability of large data sets. \cite{hachmann2011harvard, jain2013commentary, calderon2015aflow} The massive amount of raw data collected in experiments or computer simulations demands for efficient algorithms to process and analyze it. Self-learning algorithms that improve their performance with increased data set size are therefore very appealing. This is especially true when the data is also high-dimensional, as ML algorithms can help to spot complex patterns or reduce the dimensionality for further processing. 
 
-Data analysis is also a hallmark of classical statistics. Indead, ML and classical statistics are related and many techniques and concepts used in ML have their origin is physics, such as variational methods, simulated annealing or Monte-Carlo methods.\cite{mehta2019high} A famous example is the Boltzmann Machine that has a direct analogy to a spin-glas model known from statistical mechanics.\cite{ackley1985learning} Despite their similarities, ML and classical statistics might differ in their general philosophie: While ML algorithms are typically designed to predict new observations, a classical staitistician is more concerned with estimation problems, i.e. the accuracy of the model.\cite{mehta2019high}
+Data analysis is also a hallmark of classical statistics. Indead, ML and classical statistics are related and many techniques and concepts used in ML have their origin is physics, such as variational methods, simulated annealing or Monte-Carlo methods.\cite{mehta2019high} A famous example is the Boltzmann Machine that has a direct analogy to a spin-glas model known from statistical mechanics.\cite{ackley1985learning} However, despite their similarities, ML and classical statistics differ in their general philosophie: While ML algorithms are typically designed to make predictions for new observations, classical statistic methods aim at discovering dependencies between variables and are more concerned with estimation problems, i.e. evaluating the uncertainty of the model.\cite{mehta2019high}
 
-ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods, decision trees or Deep Neural Networks (DNNs). It is out of scope of this work to give an overview of all existing ML algorithms and the interested reader is refered to one of the many excellent books available.\cite{sarker2021machine, bonaccorso2017machine, ayodele2010types} Instead, this chapter focuses on generative modeling using DNNs, as this is the main method used in this thesis. The rest of this chapter is structured as follows: Firstly, some basic concepts of ML are introduced. Secondly, DNNs are explained in detail. Finally, the purpose and methods of generative modeling is outlined. 
+ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods, decision trees or Deep Neural Networks (DNNs). It is out of scope of this work to give an overview of all branches in the field of ML and the interested reader is refered to one of the many excellent books available.\cite{sarker2021machine, bonaccorso2017machine, ayodele2010types} Instead, this chapter focuses on generative modeling using DNNs, as this is the main method used in this thesis. The rest of this chapter is structured as follows: Firstly, some basic concepts of ML are introduced. Secondly, DNNs are explained in detail. Finally, the purpose and methods of generative modeling is outlined. 
 
 %difference of in-sample and out-of-sample error represents the difference between fitting and prediction.
 %Self-learning algorithms are therefore very appealing and help to automate processes that traditionally require a significant amount of human effort.
@@ -32,7 +32,7 @@ Most problems in ML are tackled by a common scheme: The first step is to collect
   \mathcal{C}: \mathrm{R}^S \rightarrow \mathrm{R}
 \end{equation}
 
-that maps the output $\mathbf{y}$ of $f_{\Theta}(\mathbf{x})$ to a real number representing the error the model has made on $\mathbf{x}$. That is, $\mathcal{C}$ is used to judge the performance of the model. During training the model is fit by finding the set of parameters $\Theta^{*}$ that minimizes the cost function.
+that maps the output $\mathbf{y}$ of $f_{\Theta}(\mathbf{x})$ to a real number representing the error the model has made on $\mathbf{x}$. That is, $\mathcal{C}$ is used to judge the performance of the model. During training the parameters of the model $\Theta$ are tuned such that the cost function is minimized, ultimately aiming at discovering the optimal set of parameters $\Theta^{*}$.
 
 \subsection{Supervised vs Unsupervised Learning}
 
@@ -42,7 +42,42 @@ The unsupervised approach does not use labels explicitly to train the ML model. 
 
 In some ML algorithms the distinction between supervised and unsupervised learning becomes fuzzy. Such approaches are often refered to as \textit{semi-supervised}. An example for semi-supervised learning is the generative adversarial approach that is explained in section \ref{ML_GAN}.
 
+\subsection{Interpretation of Probability: Baysian vs Frequentist}
+\label{bayes_vs_frequentist}
+
+In the field of statistical inference two different interpretations of probability can be found, known as the \textit{bayesian} and the \textit{frequentist} paradigm. The debate over the different views of probability is going on for more than 250 years and dates back to a puplication of Thomas Bayes titled "An Essay towards solving a Problem in the Doctrine of Chances".\cite{bayes1763lii}
+
+In the frequentist view, probability is objective and refers to the relative frequency of an event with which it occurs in many trials.\cite{hajek2002interpretations} For frequentists, probabilities are only discussed for well defined random-experiments. As the relative frequency of an event can vary for different experiments, true probabilities can only be found in the limit of infinite trials where the difference in the relative frequencies diminish,
+
+\begin{equation}
+p = \underset{N \rightarrow \infty}{\text{lim}} \frac{K}{N}
+\end{equation}
+
+where $N$ is the number of trials and $K$ the number of occurences of the event of interest.
+
+The frequentist view is often associated with an deductive approach: The data is regarded as a random variable and the consistency of the data with a given model has to be tested. As such, the frequentist approach focuses on the \textit{likelihood} $p(\mathcal{D} | \Theta)$ of observing the data given the model parameters.
+
+In the bayesian view, probability is subjective and quantifies uncertainty or the degree of personal belief.\cite{gelman1995bayesian} In this regard, bayesians do not seek a point estimate for the parameters of a model but a distribution over the model parameters $p(\Theta | \mathcal{D})$, called \textit{posterior distribution}. The bayesian view is often associated with an inductive approach: Starting from the observations the model is built. As such, the parameters $\Theta$ are treated as random variables and the question bayesians are concerned with is how well does the porposed model fit to the data.
+
+To evaluate the posterior probability, a \textit{prior probability} $p(\Theta)$ is introduced that expresses the belief in the models parameters prior to observing any data. The data is then used to update this belief usig the likelihood $p(\mathcal{D} | \Theta)$. Using Bayes theorem, the posterior can be computed as
+
+\begin{equation}
+ p(\Theta | \mathcal{D}) = \frac{p(\mathcal{D} | \Theta) p(\Theta)}{p(\mathcal{D})} ,
+\end{equation}
+
+where $p(\mathcal{D}) = \int p(\mathcal{D} | \Theta) p(\Theta) d \Theta$ is the \textit{evidence} or marginal likelihood.\cite{gelman1995bayesian} 
+
+While a distinction between the bayesian and the frequentist probability interpretation is instructive, it is not always possible to strictly assign a given method to one of both paradigms.\cite{gelman2011induction} Typically, both interpretations are commonly used and many ML algorithms incorporate both ideas.
+%The incorporation of prior knowledge makes the bayesian approach more data efficient than the frequentist approach and helps to improve generalizability. On the other hand, the bayesian approach is computationally more challenging as computing the evidence $p(\Theta)$ is very expensive. Therefore, the frequentist approach was more dominant in the past century. Nowadays, both interpretations are commonly used and many ML algorithms incorporate both ideas.
+
 \subsection{Bias-Variance Tradeoff}
+
+\begin{figure}
+  \centering
+      \includegraphics[width=0.5\textwidth]{./Figures/ml/bias_variance.pdf}
+  \caption{Illustration of the typical dependence of the in-sample and out-of-sample error with respect to the training set size. The out-of-sample error is composed of two terms: the bias and variance. Initial drop of the error is omitted in the figure.}
+  \label{FIG:ML_bias_variance}
+\end{figure}
 
 It is common practice to split the data set $\mathcal{D}$ randomly into two exclusive subsets: The training set $\mathcal{D}_{\text{train}}$ and the test set $\mathcal{D}_{\text{test}}$. Typically, the training set $\mathcal{D}_{\text{train}}$ contains the majority of the data. During training, the parameters $\Theta$ of the model $f_{\Theta}$ are tuned to minimize the cost function $\mathcal{C}$ evaluated on the training set $\mathcal{D}_{\text{train}}$ only. The error on the training set
 
@@ -56,9 +91,9 @@ is called the \textit{in-sample-error}. After training, the performance of the m
   E_{\text{out}} = \sum_{(\mathbf{x}, \mathbf{y}) \in \mathcal{D}_{\text{test}}}\mathcal{C}(\mathbf{y}, f_{\Theta}(\mathbf{x})) ,
 \end{equation}
 
-which is called the \textit{in-sample-error}. This procedure is known as \textit{cross-validation} and its purpose is to find an unbiased estimate for the predictive performance of the model. In most cases, the out-of-sample error is greater than the in-sample error.\cite{mehta2019high}
+which is called the \textit{out-of-sample-error}. This procedure is known as \textit{cross-validation} and its purpose is to find an unbiased estimate for the predictive performance of the model. In most cases, the out-of-sample error is greater than the in-sample error.\cite{mehta2019high}
 
-The general relationship between the training error $E_{in}$ and the generalization error $E_{out}$ is summarized in Fig. \ref{}, where both errors are plotted as a function of training set size. The following consideration is based on the assumption that the underlying data distribution is sufficiently complex such that the model will not be able to perfectly reproduce it. Therefore, after an initial drop (excluded in the figure), the in-sample error $E_{in}$ will increase with the amount of training data as the model is not powerful enough to capture all the regularities of the training set accurately. On the other hand, the out-of-sample error $E_{out}$ will decrease with the training set size as the sampling noise decreases and the training set becomes more representative of the true data distribution. Consequently, both errors will converge to the same value in the limit of inifite training set size.\cite{mehta2019high} The error in the inifite data limit is called the \textit{bias} and the fluctuation of $E_{out}$ due to a finite training set size is refered to as the \textit{variance} of the model.
+The general relationship between the training error $E_{in}$ and the generalization error $E_{out}$ is summarized in Fig. \ref{FIG:ML_bias_variance}, where both errors are plotted as a function of training set size. The following consideration is based on the assumption that the underlying data distribution is sufficiently complex such that the model will not be able to perfectly reproduce it. Therefore, after an initial drop (excluded in the figure), the in-sample error $E_{in}$ will increase with the amount of training data as the model is not powerful enough to capture all the regularities of the training set accurately. On the other hand, the out-of-sample error $E_{out}$ will decrease with the training set size as the sampling noise decreases and the training set becomes more representative of the true data distribution. Consequently, both errors will converge to the same value in the limit of inifite training set size.\cite{mehta2019high} The error in the inifite data limit is called the \textit{bias} and the fluctuation of $E_{out}$ due to a finite training set size is refered to as the \textit{variance} of the model.
 
 The out-of-sample error $E_{out}$ is a combination of both, the bias and the variance. Given a regression model trained with mean-square-error (MSE), an exact decomposition for the expectation of $E_{out}$ can be derived:\cite{mehta2019high} Consider a dataset $\mathcal{D} = \{(\mathbf{x}, \mathbf{y})\}$ sampled from a noisy model
 
@@ -97,6 +132,7 @@ Both errors depend on the complexity of the model, which is related to the numbe
 
 The bias-variance tradeoff explains the importance of large data sets for ML, as it offers the ability to train more complex models. Beside increasing the training set size, generalization can be enforced using \textit{regularization}. In the bayesian view, regularization refers to a prior distribution on the model parameters. In practice, this is realized using an additional term in the loss function penalizing over-specialized models. 
 
+\comment{
 \subsection{Discriminative vs Generative Models}
 
 ML algorithms are typically divided into two broad categories, namely \textit{generative} and \textit{discriminative} models. While the former aims to learn about the dependencies of all the variables in a system, the goal of the latter is to learn decision boundaries. Generative models are typically linked to unsupervised training and discriminative models to supervised trainig, but a clear dichotomy is not always possible.
@@ -120,40 +156,15 @@ Therefore, generative models can be used for classification and regression as we
 Obviously, the underlying task for generative models is more complex compared to the discriminative task as the generative model has to be more informative. Therefore, generative models typically require more parameters than discriminative models. Regarding experiments for a binary classification task, logistic regression, i.e. a discriminative model, outperforms Gaussian Naive Bayes, i.e. a generative model, in terms of asymptotic errors.\cite{ng2002discriminative} However, in a low data regime generative models can give superior performance.\cite{ng2002discriminative}
 
 While both approaches can be used for classification and regression, only the generative approach can be used to sample new instances of the data which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to Deep Generative Models (DGMs) for simplicity.
+}
 
-\subsection{Interpretation of Probability: Baysian vs Frequentist}
-\label{bayes_vs_frequentist}
+\section{High-Dimensional Data}
 
-In the field of statistical inference two different interpretations of probability can be found, known as the \textit{bayesian} and the \textit{frequentist} paradigm. The debate over the different views of probability is going on for more than 250 years and dates back to a puplication of Thomas Bayes titled "An Essay towards solving a Problem in the Doctrine of Chances".\cite{bayes1763lii}
-
-In the frequentist view, probability is objective and refers to the relative frequency of an event with which it occurs in many trials.\cite{hajek2002interpretations} For frequentists, probabilities are only discussed for well defined random-experiments. As the relative frequency of an event can vary for different experiments, true probabilities can only be found in the limit of infinite trials where the difference in the relative frequencies diminish,
-
-\begin{equation}
-p = \underset{N \rightarrow \infty}{\text{lim}} \frac{K}{N}
-\end{equation}
-
-where $N$ is the number of trials and $K$ the number of occurences of the event of interest.
-
-The frequentist view is often associated with a deductive approach: The data is regarded as a random variable and the question frequentists are concerned with is how well does the data fit to a given distribution. In other words, the frequentist approach starts with a model and tests whether the observed data is consistent with this model. Therefore, the frequentist approach focuses on the \textit{likelihood} $p(\mathcal{D} | \Theta)$ of observing the data given the model parameters.
-
-In the bayesian view, probability is subjective and quantifies uncertanity or the degree of personal belief.\cite{gelman1995bayesian} In this regard, bayesians do not seek a point estimate for the parameters of a model but a distribution over the model parameters $p(\Theta | \mathcal{D})$, called \textit{posterior distribution}. The bayesian view is often associated with an inductive approach: Starting from the observations the model is built. Therefore, the parameters $\Theta$ are treated as random variables and the question bayesians are concerned with is how well does the porposed model fit to the data.
-
-To evaluate the posterior probability, a \textit{prior probability} $p(\Theta)$ is introduced that expresses the belief in the models parameters prior to observing any data. The data is then used to update this belief usig the likelihood $p(\mathcal{D} | \Theta)$. Using Bayes theorem, the posterior can be computed as
-
-\begin{equation}
- p(\Theta | \mathcal{D}) = \frac{p(\mathcal{D} | \Theta) p(\Theta)}{p(\mathcal{D})} ,
-\end{equation}
-
-where $p(\mathcal{D}) = \int p(\mathcal{D} | \Theta) p(\Theta) d \Theta$ is the \textit{evidence} or marginal likelihood.\cite{gelman1995bayesian} 
-
-While a distinction between the bayesian and the frequentist probability interpretation is instructive, it is not always possible to strictly assign a given method to one of both paradigms.\cite{gelman2011induction} Typically, both interpretations are commonly used and many ML algorithms incorporate both ideas.
-%The incorporation of prior knowledge makes the bayesian approach more data efficient than the frequentist approach and helps to improve generalizability. On the other hand, the bayesian approach is computationally more challenging as computing the evidence $p(\Theta)$ is very expensive. Therefore, the frequentist approach was more dominant in the past century. Nowadays, both interpretations are commonly used and many ML algorithms incorporate both ideas.
+The increase of computational power makes it possible to collect extremely large data sets $\mathcal{D} = \{ \mathbf{x} \}$ and the use of \textit{big data} is a hallmark of modern ML. In many cases, the data sets do not only contain a large number of observations $\mathbf{x} = (x_1, x_2, .., x_D)$ but also the observations become high dimensional, i.e. $D$ becomes very large. Various phenomena occuring when dealing with high-dimensional spaces are counter intuitive and provide challenges as well as opportunities for modern ML.
 
 \subsection{Curse and Blessing of Dimensionality}
 
-The increase of computational power makes it possible to collect extremely large data sets $\mathcal{D} = \{ \mathbf{x} \}$ and the use of \textit{big data} is a hallmark of modern ML. In many cases, the data sets do not only contain a large number of observations $\mathbf{x} = (x_1, x_2, .., x_D)$ but also the observations become high dimensional, i.e. $D$ becomes very large. Various phenomena occuring when dealing with high-dimensional spaces are counter intuitive and provide challenges as well as opportunities for modern ML. Depending on the point of view, such phenomenas are refered to as \textit{curse} or \textit{blessing of dimensionality}.\cite{donoho2000high}
-
-Beside a performance degradation of algorithms in high dimensional spaces, more fundamental challenges appear. A common theme of such problems is the sparsity of available data.\cite{donoho2000high} As an example, consider a set of points with spacing $\frac{1}{10}$ on a cartesian grid. The number of points $n$ will grow expontentially with the dimension, i.e. $n = 10^D$. Conversly, increasing the dimension for a fixed number of points in a data set lets the distances between those points grow exponentially leading to an almost empty space. Therefore, approximating a function in a high-dimensional space becomes intractable as there is never enough data to support the result.\cite{donoho2000high, verleysen2003effects}
+ Depending on the point of view, phenomenas related to the high-dimensionality of the data are refered to as \textit{curse} or \textit{blessing of dimensionality}.\cite{donoho2000high} Beside a performance degradation of algorithms in high dimensional spaces, more fundamental challenges appear. A common theme of such problems is the sparsity of available data.\cite{donoho2000high} As an example, consider a set of points with spacing $\frac{1}{10}$ on a cartesian grid. The number of points $n$ will grow expontentially with the dimension, i.e. $n = 10^D$. Conversly, increasing the dimension for a fixed number of points in a data set lets the distances between those points grow exponentially leading to an almost empty space. Therefore, approximating a function in a high-dimensional space becomes intractable as there is never enough data to support the result.\cite{donoho2000high, verleysen2003effects}
 
 Another difficulty in high-dimensional spaces is the choice of an appropriate metric. The Euclidian distance is a well suited distance measure in the three-dimensional physical space, but in higher dimensions the distances grow more and more alike. It can be shown, that for a wide range of distributions and distance functions the ratio of distances of the nearest and farthest neighbors to a given target is almost unity.\cite{aggarwal2001surprising} Therefore, the distribution of distances tend to concentrate and lose contrast. For this reason, the concept of nearest neighbour becomes meaningsless and similarity search ill posed.\cite{aggarwal2001surprising, verleysen2003effects}
 
@@ -161,40 +172,15 @@ While the afore mentioned challenges are examples for the curse of dimensionalit
 
 
 \subsection{Latent Variables}
+\label{SEC:ML_latent_variables}
 
-Switching between representations of different resolutions is a hallmark of MS modeling. However, a similar concept is also well known in the ML community, where hidden and typically lower dimensional representations are described by so called \textit{latent variables}. ML algorithms based on the concept of latent variables are refered to as \textit{latent variable models} (LVM).\cite{van2009dimensionality, ge2018process} 
+Switching between representations of different resolutions is a hallmark of MS modeling. However, a similar concept is also well known in the ML community, where hidden and typically lower dimensional representations are described by so called \textit{latent variables}. ML models that relate latent variables with observable varibables are refered to as \textit{latent variable models} (LVM).\cite{van2009dimensionality, ge2018process} 
 
 LVMs are motivated by the assumption that real-world data is generally structured, which implies that it can be described through a lower-dimensional distribution $\mathcal{Z}$ supported in $\mathbb{R}^d$. This assumption is known as the \textit{manifold hypothesis}. Formally, it states that high-dimensional data $x \in \mathbb{R}^D$ tends to lie on a low-dimensional manifold $\mathcal{M} \subset \mathbb{R}^D$ embedded in the high-dimensional space $\mathbb{R}^D$.\cite{fefferman2016testing} Therefore, real-world data is assumed to have an intrinsic lower dimensionality $d < D$ and the oberservations $x$ can be explained through some hidden variables $z \in \mathbb{R}^d$. 
 
 The point $z$ that maps to a point $x$ is unknown in general. As such, $z$ is refered to as a latent variable and $\mathcal{Z}$ is the latent distribution. The high-dimensional space $\mathbb{R}^D$ that supports the actual distribution $\mathcal{X}$ is called \textit{ambient space}. The low-dimensional space $\mathbb{R}^d$ that supports the latent distribution $\mathcal{Z}$ is refered to as the \textit{latent space}. The actual dimension $d$ of the latent space is typically unknown. 
 
-\subsubsection{Dimensionality Reduction}
-
-The concept of coarse-graining and latent variables ultimately follow the same philosophy: Both aim at reducing the complexity by mapping a high dimensional representation to a lower dimensional, simpler representation that still captures the essential features while noise and redundant features are removed. However, coarse-grained representations of molecular systems are frequently based on physical and chemical intuition, whereas ML based dimensionality reduction seeks to learn the mapping by minimizing a cost function instead. 
-
-One of the most commonly used methods for dimensionalty reduction is principle component analysis (PCA). It performs a change of basis by projecting the data onto a linear combinations of the original basis vectors called principle components. The new coordinate system is thereby chosen such that they align with the directions showing the highest variance in the data set. PCA is typically used for dimensinality reduction by discarding principle components with low variance, i.e. the new representation preserves most of the dataś variance.
-
-Despite its wide range of applications, linear dimensionality reduction techniques are typically insufficient to capture the global structure of data obtained from MD trajectories, since the accessable regions of phase space can have a complex, nonlinear structure with nonuniform dimensionality.\cite{} As such, nonlinear dimensionality reduction techniques are more appropriate to analyze the phase space of molecular systems. 
-
-A promising approach introduced by Ceriotti \emph{et al.} is called \textit{Sketch-Map}. Related to the curse of dimensionality, Ceriotti et al state that two points in phase space with small distance correspond to thermal fluctuations, while large distances are uniformily distributed. COnsequently, the focus has to be set on an intermediate scale capturing most of the valuable topological information of the phase space. Such a characteristic length scale is found by minimizing the cost-function
-
-\begin{equation}
-  \mathcal{C}(\{\mathbf{z}_1, \dots, \mathbf{z}_N\}) = \sum_i^N \sum_j^N \Big( f(r_{ij}) - F(R_{ij}) \Big)^2, 
-\end{equation}
-
-where $r_{ij}$ and $R_{ij}$ correspond to the low-dimensional and high-dimensional distance of two points $\mathbf{z}_i$ and $\mathbf{z}_j$, and $\mathbf{x}_i$ and $\mathbf{x}_j$, respectively. $F$ and $f$ are sigmoid functions of the form
-
-\begin{equation}
-  F(R) = 1 - (1 + (2^{A/B} - 1)(R/\sigma)^A)^{-B/A}
-\end{equation}
-
-\begin{equation}
-  f(r) = 1 - (1 + (2^{a/b} - 1)(r/\sigma)^a)^{-b/a} ,
-\end{equation}
-
-where $\sigma$, $A$, $B$, $a$ and $b$ are the parameters of the model. The sigmoid function transforms distances such that distances far below or far apart from $\sigma$ are mapped close to zero or unity, respectively. As such, distances in the vicinity of $\sigma$ are highlighted and dictate the characteristic length scale of the lower dimensional embedding.
-
-\subsubsection{Inverse Mapping}
+The concept of coarse-graining and latent variables ultimately follow the same philosophy: Both aim at reducing the complexity by mapping a high dimensional representation to a lower dimensional, simpler representation that still captures the essential features while noise and redundant features are removed. However, coarse-grained representations of molecular systems are frequently based on physical and chemical intuition, whereas dimensionality reduction based on LVMs seeks to discover hidden and potentially lower-dimensional variables by minimizing a cost function instead. Recently, LVMs have been applied to the coarse-graining of molecular systems.\cite{wang2019coarse}
 
 Similarly to the concept of backmapping, LVMs can be applied to the inverse task as well, i.e. to generate a new instance of $\mathbf{x}' \sim \mathcal{X}$. For this purpose, the generative process is decomposed into two steps: (1) Draw a sample $z \sim \mathcal{Z}$ from the latent distribution with probability $p_{\mathcal{Z}}(z)$. (2) Introduce a parametrized mapping function 
 
@@ -206,7 +192,43 @@ where $\Theta$ are the parameters of the mapping, that transforms points from $\
 
 In many cases a tractable distribution, such as a Gaussian distribution, is assumed to resemble the latent distribution. However, the proposed $\mathcal{Z}$ can differ signficantly from the actual manifold the data resides. Therefore, a linear transformation is not sufficient to deform $\mathcal{Z}$ such that is resembles $\mathcal{X}$.\cite{lopez2020deep} Consequently, a highly nonlinear transformation is seeked. In addition, deriving $g_{\Theta}$ from first principles is infeasible for most real-world applications. 
 
-The strong similarity between the concept of latent and coarse-grained variables suggests to apply LVMs to MS modeling. Indead, ML techniques have been applied recently to the coarse-graining of molecular systems.\cite{chakraborty2018encoding, webb2018graph, wang2019coarse} In this thesis, the general approach is to build a LVM for the inverse task, i.e. for the backmapping of molecular structures. In the following, it will be shown that Deep Neural Networks provide an excellent tool learn such complex transformations, as they have the ability to efficiently approximate functions in high dimensions.\cite{hornik1989multilayer, cybenko1992approximation, naitzat2020topology} Moreover, the concept of generative modelling will be introduced providing the techniques to train such models.
+The strong similarity between the concept of latent and coarse-grained variables suggests to apply LVMs to MS modeling. In this thesis, the general approach is to build a LVM for the inverse task, i.e. for the backmapping of molecular structures. It will be shown in Sec. \ref{} that Deep Neural Networks provide an excellent tool learn such complex transformations, as they have the ability to efficiently approximate functions in high dimensions.\cite{hornik1989multilayer, cybenko1992approximation, naitzat2020topology} 
+
+%Indead, ML techniques have been applied recently to the coarse-graining of molecular systems.\cite{chakraborty2018encoding, webb2018graph, wang2019coarse}
+%Moreover, the concept of generative modelling will be introduced providing the techniques to train such models.
+\subsection{Dimensionality Reduction Algorithms}
+
+Reducing the dimensionality has become an important aspect in modern data analysis. Algorithms designed for this purpose are numberous and range from classical linear techniques, such as principle component analysis, to non-linear ML approaches, such as LVMs. While this section being far from complete, it shall give a brief overview of some techniques that are used in this thesis for analysiing molecular configurations.
+
+\subsubsection{Principle Component Analysis}
+
+One of the most commonly used methods for dimensionalty reduction is principle component analysis (PCA). It performs a change of basis by projecting the data onto a linear combinations of the original basis vectors called principle components. The new coordinate system is thereby chosen such that they align with the directions showing the highest variance in the data set. PCA is typically used for dimensinality reduction by discarding principle components with low variance, i.e. the new representation preserves most of the dataś variance.
+
+\subsubsection{Sketch-Map}
+
+Despite its wide range of applications, linear dimensionality reduction techniques like PCA are typically insufficient to capture the global structure of data obtained from MD trajectories, since the accessable regions of phase space can have a complex, nonlinear structure with nonuniform dimensionality.\cite{garcia1992large, hegger2007complex, rohrdanz2011determination} As such, nonlinear dimensionality reduction techniques are more appropriate to analyze the phase space of molecular systems. 
+
+A promising approach introduced by Ceriotti \emph{et al.} is called \textit{Sketch-Map}.\cite{ceriotti2011simplifying, tribello2012using} Related to the curse of dimensionality, Ceriotti et al state that two points in phase space with small distance correspond to thermal fluctuations, while large distances are uniformily distributed. Consequently, the focus has to be set on an intermediate scale capturing most of the valuable topological information of the phase space. Such a characteristic length scale is found by minimizing the cost-function
+
+\begin{equation}
+  \mathcal{C}(\{\mathbf{z}_1, \dots, \mathbf{z}_N\}) = \sum_i^N \sum_j^N \Big( f(r_{ij}) - F(R_{ij}) \Big)^2, 
+\end{equation}
+
+where $r_{ij}$ and $R_{ij}$ correspond to the low-dimensional and high-dimensional distance of two points $\mathbf{z}_i$ and $\mathbf{z}_j$, as well as $\mathbf{x}_i$ and $\mathbf{x}_j$, respectively. $F$ and $f$ are sigmoid functions of the form
+
+\begin{equation}
+  F(R) = 1 - (1 + (2^{A/B} - 1)(R/\sigma)^A)^{-B/A}
+\end{equation}
+
+\begin{equation}
+  f(r) = 1 - (1 + (2^{a/b} - 1)(r/\sigma)^a)^{-b/a} ,
+\end{equation}
+
+where $\sigma$, $A$, $B$, $a$ and $b$ are the parameters of the model. The sigmoid function transforms distances such that distances far below or far apart from $\sigma$ are mapped close to zero or unity, respectively. As such, distances in the vicinity of $\sigma$ are highlighted and dictate the characteristic length scale of the lower dimensional embedding.
+
+\subsubsection{Time-structure Independent Components Analysis}
+
+hier fehlt noch etwas
 
 \section{Artificial Neural Networks}
 
