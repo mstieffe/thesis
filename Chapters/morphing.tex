@@ -106,9 +106,30 @@ In summary, the KG model with additional bending potential offers a one paramete
 
 \subsection{Set-up and Reference Data}
 
-To underpin the above statement, the moderately coarse-grained model for syndiotactic polystyrene by Fritz \emph{et al.} is considered, which is already discussed in Sec. \ref{SEC:sPS}. The model is parametrized based on detailed all-atom simulations of stereoregular PS sequences in vacuum and reproduces the target thermodynamic properties with remarkable accuracy.\cite{fritz2009coarse} A simulation of the Fritz forcefield is carried out in the NPT ensemble using the molecular dynamics package GROMACS 5.0.\cite{hess2008gromacs} Temperature and pressure of the system are controlled using the velocity rescaling thermostat and the Parrinello-Rahman barostat. An integration timestep of 1 fs is used. In the following, the model is referred to as \textit{Fritz} model. 
+To underpin the above statement, the moderately coarse-grained model for syndiotactic polystyrene by Fritz \emph{et al.} is considered, which is already discussed in Sec. \ref{SEC:sPS}. The model, which will be referred to as \textit{Fritz} model is the following, is parametrized based on detailed all-atom simulations of stereoregular PS sequences in vacuum and reproduces the target thermodynamic properties with remarkable accuracy.\cite{fritz2009coarse} A simulation of the Fritz forcefield is carried out in the NPT ensemble at $T = 496$K using the molecular dynamics package GROMACS 5.0.\cite{hess2008gromacs} Temperature and pressure of the system are controlled using the velocity rescaling thermostat and the Parrinello-Rahman barostat. An integration timestep of $1$ fs is used and samples are recorded every $2.5$ns. The simulation box contains 24 molecules consisting of 96 monomers each. In order to compare thermodynamic properties of the Fritz model and KG model, the former is mapped onto the resolution of the KG model. Following \cite{}, three polystyrene monomers are mapped onto a single KG bead, which is positioned according to the center of mass of the corresponding monomers. 
 
-In order to compare thermodynamic properties of the Fritz model and KG model, the former is mapped onto the resolution of the KG model. Following \cite{}, three polystyrene monomers are mapped onto a single KG bead, which is positioned according to the center of mass of the corresponding monomers. Snapshots of the KG model are sampled by an NVT simulation performed with \textit{ESPResSo++}.\cite{} The standard parameters for the KG model are deployed, i.e. the bead density $\rho = 0.85\sigma^{-3}$, the distance at which the FENE potential diverges $R = \sigma$ and the bond length $l = 0.965 \sigma$. Note that the model is athermal since all interaction potentials scale with $k_B T$. While \cite{} only lists values for the stiffness parameter $\kappa$ associated with isotactic and atactic polystyrene, the mean value of both, i.e. $\kappa = 0.8815$, is deployed in this study to model syndiotactic polystyrene. The bead diameter is set to $\sigma = 1.0$ throughout the simulation, but distances are rescaled in order to match the particle density of the Fritz model.
+Snapshots of the KG model with an equivalent number of polymers and chain size are sampled by an NVT simulation performed with \textit{ESPResSo++}.\cite{} The standard parameters for the KG model are deployed, i.e. the bead density $\rho = 0.85\sigma^{-3}$, the distance at which the FENE potential diverges $R = \sigma$ and the bond length $l = 0.965 \sigma$. Note that the model is athermal since all interaction potentials scale with $k_B T$. While \cite{} only provides values for the stiffness parameter $\kappa$ associated with isotactic and atactic polystyrene, the mean value of both, i.e. $\kappa = 0.8815$, is deployed as an educated guess in this study to model syndiotactic polystyrene. In general, the stiffness parameters listet in \cite{} are only valid in the reference temperature $T = 413$ K. Here, a higher temperature was chosen to sample the Fritz model since sPS undergoes a phase transition from melt to crystalline phase at $T \approx 450$K. However, the authors state that static melt properties are relatively insensitive to changes of temperatur.\cite{} The bead diameter is set to $\sigma = 1.0$ throughout the simulation, but distances are rescaled in order to match the particle density of the Fritz model. 
+
+\subsection{Results}
+
+Morphing of the local statistics for snapshots obtained with the KG model is performed for $s = 2,4,6$. The training set for DBM consists of 22 snapshots obtained with the Fritz model. For validation, 500 samples of the KG model are morphed deploying both schemes outlined in \ref{}. Another 500 samples of the Fritz model are used as reference.
+
+\begin{table}
+\begin{tabular}{ c|c|c|c } 
+ & $\sqrt{\langle R^2_e \rangle}$ & $\sqrt{\langle R^2_g \rangle}$ & $L$ \\
+\hline
+Fritz model & 6.06 & 2.51 & 22.92 \\  
+KG model & 6.01 & 2.43 & 22.58 \\ 
+$s=2$, scheme A & 6.02 & 2.43 & 22.63 \\  
+$s=4$, scheme A & 6.05 & 2.43 & 22.36 \\  
+$s=6$, scheme A & 6.01 & 2.39 & 20.87 \\  
+$s=2$, scheme B & 6.01 & 2.43 & 22.56 \\  
+$s=4$, scheme B & 6.00 & 2.44 & 22.53 \\  
+$s=6$, scheme B & 6.01 & 2.45 & 21.81 
+\caption{ Jenson-Shannon divergence. KG: 4.661 }
+\label{TAB:sPS_chem_trans}
+\end{tabular}
+\end{table}
 
 \begin{figure}
   \centering
