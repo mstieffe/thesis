@@ -114,7 +114,7 @@ Snapshots of the KG model with an equivalent number of polymers and chain size a
 
 Morphing of the local statistics for snapshots obtained with the KG model is performed for $s = 2,4,6$. The training set for DBM consists of 22 snapshots obtained with the Fritz model. For validation, 500 samples of the KG model are morphed deploying both schemes outlined in \ref{}. As a reference, 500 samples of the Fritz model are used.
 
-Table \ref{TAB:morph_sps_large_scale} summarizes large-scale properties, such as the mean square end-to-end distance, radius of gyration and contour length $L$. As expected, the Kuhn scale matched KG model yields similar large-scale characteristics as the Fritz model. The biggest impact upon morphing is observed for $s=6$in terms of the contour length. However, the overall impact of DBM on the large-scale properties is not significant.
+Table \ref{TAB:morph_sps_large_scale} summarizes large-scale properties, such as the mean square end-to-end distance $\langle R^2_e \rangle$, radius of gyration $\langle R^2_g \rangle$ and contour length $L$. As expected, the Kuhn scale matched KG model yields similar large-scale characteristics as the Fritz model. The biggest impact upon morphing is observed for $s=6$ in terms of the contour length $L$. However, the overall impact of DBM on the large-scale properties is not significant.
 
 \begin{table}
 \begin{tabular}{ c|c|c|c } 
@@ -133,24 +133,38 @@ $s=6$, scheme B & 6.01 & 2.45 & 21.81
 \end{tabular}
 \end{table}
 
+The difference between the Fritz and KG model becomes more apparent for local structural features. Fig. \ref{morph_sps_ff_dists} a) and b) display distribution functions for the bond length. While the KG model yields polymers with a sharp bond length distribution that has a peak at $0.72$nm, polymers obtained with the Fritz model display a broader distribution peaked at $0.79$nm. The impact of the morphing on the bond length distribution is mixed and depends on the morphing scale $s$ as well as the applied morhing scheme. The best results deploying morphing scheme A are obtained for $s=2$, where the bond length distribution of the morphed structures match remarkably well with the reference Fritz model. Higher values of $s$ deteriorate the morphing capability for the bond lengths. Regarding scheme B, the best results are obtained for the intermediate morphing scale $s=4$, while $s=2$ has an neglectable impact on the distribution and $s=6$ yields a distribution that is too broad.
 
+The angle distributions shown in Fig. \ref{morph_sps_ff_dists} c) and d) reveal that KG as well as the Fritz model yield polymeric structures that cover a wide range of angles between consecutive bonds. However, the angle distribution for the Fritz model displays a single peak at $\approx 135^{\circ}$, while the distribution for the KG model has two peaks: A major peak at $\approx 130^{\circ}$ and a sidepeak at $\approx 70^{\circ}$. As such, the KG model puts higher statistical weight on small angles $< 100^{\circ}$ compared to the Fritz model. Both morphing schemes are able to surpress small angles for $s=6$. Smaller values of $s$ reduce the impact of the morphing on the angle distribution. Especially, morphing scheme B at $s=2$ has no noticeable impact.
+
+Fig. \ref{morph_sps_ff_dists} e) and f) display the pair correlation $g(r)$ between nonbonded beads. Polymer melts generated with the KG model yield a sharply peaked pair correlation function, while the $g(r)$ for melts obtained with the Fritz model are less peaked and reveal a shorter minimum distance between nonbonded beads. Both morphing schemes smooth the pair correlation of KG structures. The best match with the reference Fritz model is obtained for scheme A and $s=2$.
 
 \begin{figure}
   \centering
       \includegraphics[width=0.8\textwidth]{./Figures/morphing/sPS/morph_ff_dists.pdf}
   \caption{morphgibbs}
-  \label{FIG:TET_morphgibbs}
+  \label{FIG:morph_sps_ff_dists}
 \end{figure}
+
+Further analysis of the chain statistics for the polymer melts is accomplished by a free energy calculation deploying sketch-map coordinates, as shown in Fig \ref{FIG:morph_sps_free_energy}. Similar to the analysis in Sec. \ref{}, local environments $\mathcal{H}$ centered along the polymer beads are constructed and the pairwise distance between two such environemnts is encoded using a similarity kernel $k(\mathcal{H}, \mathcal{H}') = \mathbf{p}(\mathcal{H}) \mathbf{p}(\mathcal{H'})$ based on the normalized many-body SOAP representation $\mathbf{p}(\mathcal{H})$.\cite{bartok2013representing} In order to obtain a global similarity kernel $k(a,b)$ for two polymer chains $a$ and $b$, the covariance matrix $C_{ij}(a,b) = \mathbf{p}(\mathcal{H}^a_i) \mathbf{p}(\mathcal{H}^b_j)$ is mapped to a single scalar value using an average kernel.\cite{de2016comparing} Landmarks for the sketch-map coordinates are obtained for 524 polymer chains sampled from both, the KG as well as the Fritz model. 
+
+Fig. \ref{} displays the free energy landscape expressed in sketch-map coordinates. For each panel, 12000 polymer chains are projected onto the sketch-map space guided by the landmarks. The projections are used to construct a two-dimensional histogram with 50 bins along each dimension. The relative populations $N$ for each bin are then used to compute free energy differences between two states $A$ and $B$ as
+
+\begin{equation}
+  \Delta F_{AB} = - k_B T ln (N_A/N_B) .
+\end{equation}
+
+Comparing the free energy landscapes obtained for the Fritz model in Fig. \ref{} a) an the KG model in Fig. \ref{} b) 
 
 \begin{figure}
   \centering
       \includegraphics[width=1.1\textwidth]{./Figures/morphing/sPS/free_energy_with_snapshots.pdf}
   \caption{SM free energy}
-  \label{FIG:TET_morphgibbs}
+  \label{FIG:morph_sps_free_energy}
 \end{figure}
 
 
-\begin{table}
+\begin{table}[h]
 \begin{tabular}{ c|c|c } 
  & scheme A & scheme B \\
 \hline
@@ -185,7 +199,7 @@ s = 6 & 3.589 & 3.495
   \label{FIG:TET_morphgibbs}
 \end{figure}
 
-\begin{table}
+\begin{table}[h]
 \begin{tabular}{ c|c|c } 
  & scheme A & scheme B \\
 \hline
