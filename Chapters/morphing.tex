@@ -114,6 +114,8 @@ Snapshots of the KG model with an equivalent number of polymers and chain size a
 
 Morphing of the local statistics for snapshots obtained with the KG model is performed for $s = 2,4,6$. The training set for DBM consists of 22 snapshots obtained with the Fritz model. For validation, 500 samples of the KG model are morphed deploying both schemes outlined in \ref{}. As a reference, 500 samples of the Fritz model are used.
 
+\subsubsection{Large-scale Characteristics}
+
 Table \ref{TAB:morph_sps_large_scale} summarizes large-scale properties, such as the mean square end-to-end distance $\langle R^2_e \rangle$, radius of gyration $\langle R^2_g \rangle$ and contour length $L$. As expected, the Kuhn scale matched KG model yields similar large-scale characteristics as the Fritz model. The biggest impact upon morphing is observed for $s=6$ in terms of the contour length $L$. However, the overall impact of DBM on the large-scale properties is not significant.
 
 \begin{table}
@@ -128,23 +130,27 @@ $s=6$, scheme A & 6.01 & 2.39 & 20.87 \\
 $s=2$, scheme B & 6.01 & 2.43 & 22.56 \\  
 $s=4$, scheme B & 6.00 & 2.44 & 22.53 \\  
 $s=6$, scheme B & 6.01 & 2.45 & 21.81 
-\caption{Large-scale characteristics of the Fritz model, KG model and morphed structures for both morphing schemes A and B, as well as different morphing scales $s = 2,4,6$. }
+\caption{Large-scale characteristics of the Fritz model, KG model and morphed structures deploying both morphing schemes A and B with different morphing scales $s = 2,4,6$. }
 \label{TAB:morph_sps_large_scale}
 \end{tabular}
 \end{table}
 
+\subsubsection{Structural Distributions}
+
 The difference between the Fritz and KG model becomes more apparent for local structural features. Fig. \ref{morph_sps_ff_dists} a) and b) display distribution functions for the bond length. While the KG model yields polymers with a sharp bond length distribution that has a peak at $0.72$nm, polymers obtained with the Fritz model display a broader distribution peaked at $0.79$nm. The impact of the morphing on the bond length distribution is mixed and depends on the morphing scale $s$ as well as the applied morhing scheme. The best results deploying morphing scheme A are obtained for $s=2$, where the bond length distribution of the morphed structures match remarkably well with the reference Fritz model. Higher values of $s$ deteriorate the morphing capability for the bond lengths. Regarding scheme B, the best results are obtained for the intermediate morphing scale $s=4$, while $s=2$ has an neglectable impact on the distribution and $s=6$ yields a distribution that is too broad.
 
-The angle distributions shown in Fig. \ref{morph_sps_ff_dists} c) and d) reveal that KG as well as the Fritz model yield polymeric structures that cover a wide range of angles between consecutive bonds. However, the angle distribution for the Fritz model displays a single peak at $\approx 135^{\circ}$, while the distribution for the KG model has two peaks: A major peak at $\approx 130^{\circ}$ and a sidepeak at $\approx 70^{\circ}$. As such, the KG model puts higher statistical weight on small angles $< 100^{\circ}$ compared to the Fritz model. Both morphing schemes are able to surpress small angles for $s=6$. Smaller values of $s$ reduce the impact of the morphing on the angle distribution. Especially, morphing scheme B at $s=2$ has no noticeable impact.
+The angle distributions shown in Fig. \ref{morph_sps_ff_dists} c) and d) reveal that KG as well as the Fritz model yield polymeric structures that cover a wide range of angles between consecutive bonds. However, the angle distribution for the Fritz model displays a single peak at $\approx 135^{\circ}$, while the distribution for the KG model has two peaks: A major peak at $\approx 130^{\circ}$ and a sidepeak at $\approx 70^{\circ}$. As such, the KG model puts higher statistical weight on small angles $< 100^{\circ}$ compared to the Fritz model. Both morphing schemes are able to suppress small angles for $s=6$. Smaller values of $s$ reduce the impact of the morphing on the angle distribution. Especially, morphing scheme B at $s=2$ has no noticeable impact.
 
 Fig. \ref{morph_sps_ff_dists} e) and f) display the pair correlation $g(r)$ between nonbonded beads. Polymer melts generated with the KG model yield a sharply peaked pair correlation function, while the $g(r)$ for melts obtained with the Fritz model are less peaked and reveal a shorter minimum distance between nonbonded beads. Both morphing schemes smooth the pair correlation of KG structures. The best match with the reference Fritz model is obtained for scheme A and $s=2$.
 
-\begin{figure}
+\begin{figure}[h]
   \centering
       \includegraphics[width=0.8\textwidth]{./Figures/morphing/sPS/morph_ff_dists.pdf}
-  \caption{morphgibbs}
+  \caption{Canonical distributions for sPS at the KG resolution. (a) and (b) bond length distribution, (c) and (d) angle distribution, (e) and (f) radial distribution function $g(r)$. Left: morphing scheme A. Right: Morphing scheme B }
   \label{FIG:morph_sps_ff_dists}
 \end{figure}
+
+\subsubsection{Sketch-Map Free Energy}
 
 Further analysis of the chain statistics for the polymer melts is accomplished by a free energy calculation deploying sketch-map coordinates, as shown in Fig \ref{FIG:morph_sps_free_energy}. Similar to the analysis in Sec. \ref{}, local environments $\mathcal{H}$ centered along the polymer beads are constructed and the pairwise distance between two such environemnts is encoded using a similarity kernel $k(\mathcal{H}, \mathcal{H}') = \mathbf{p}(\mathcal{H}) \mathbf{p}(\mathcal{H'})$ based on the normalized many-body SOAP representation $\mathbf{p}(\mathcal{H})$.\cite{bartok2013representing} In order to obtain a global similarity kernel $k(a,b)$ for two polymer chains $a$ and $b$, the covariance matrix $C_{ij}(a,b) = \mathbf{p}(\mathcal{H}^a_i) \mathbf{p}(\mathcal{H}^b_j)$ is mapped to a single scalar value using an average kernel.\cite{de2016comparing} Landmarks for the sketch-map coordinates are obtained for 524 polymer chains sampled from both, the KG as well as the Fritz model. 
 
@@ -154,17 +160,23 @@ Fig. \ref{} displays the free energy landscape expressed in sketch-map coordinat
   \Delta F_{AB} = - k_B T ln (N_A/N_B) .
 \end{equation}
 
-Comparing the free energy landscapes obtained for the Fritz model in Fig. \ref{} a) an the KG model in Fig. \ref{} b) 
+The sketch-map free energy landscape obtained for the Fritz model is depicted in Fig. \ref{} a). The diverse set of conformations obtained in the melt yields a single blob in the sketch-map space. The rich conformational space does not allow to identify distinct clusters associated with certain conformations indicating a smooth distribution. However, a trend within the projected blob is observed when analyzing the positioning of selected chain structures, as shown for a few examples at the bottom of Fig. \ref{}: The majority of the sPS chains associated with an mean square end-to-end distance close to the observed average are mapped onto the blob center (example (2)). The second sketch-map axis $a_2$ correlates with the extension of the chain, i.e. elongated chain are mapped to low values of $a_2$ (example (3)) while collapsed chains are mapped to high values of $a_2$ (example (1)). The role of first sketch-map axis $a_1$ is more ambiguous. While high values of $a_1$ can be associated with an u-shaped chains (example (4), lower values of $a_1$ can not be associated with specific shapes of the sPS chains.  
 
-\begin{figure}
+The free energy landscape for the KG model displayed in Fig. \ref{} b) clearly differs from the free energy landscape obtained for the Fritz model. The overall shape of the obtained blob is more condensed and has an elliptic shape. The intersection between the two free energy distributions is small, as KG chains are mapped to lower values for the sketch-map axis $a_1$ compared with the Fritz model.
+
+The morphed structures yield sketch-map free energy landscapes that vary in shape. While both morphing schemes yield distinct results, a shift of the obtained blobs towards higher values for the second sketch-map axis $a_2$ is observed for higher values of the morphing scale $s$ for both schemes. The best match with the Fritz model is visually obtained for scheme A and $s=2$. On the other hand, deploying morphing scheme B with $s=2$ has no significant impact on the free energy landscape, i.e. the results for the original KG model are reproduced. Example structures (5)-(8) illustrate the impact of the morphing deploying different morphing models. While example (5) displays an original KG structure, examples (6)-(8) illustrate corresponding morphed structures. Deploying scheme A and $s=2$ (example (6)) has visually only a minor impact on the overall chain structure but the resulting modifications are sufficient to reposition it to an area associated with a statistical weight in terms of the free energy landscape obtained for the Fritz model. Applying scheme A and $s=6$ (example (7) yields a smooth chain structure that is mapped to an area associated with low statistical weight. Morphing scheme B and $s=4$ (example (8)) results in an obviously false structure as indicated by an overstretched bond that gets mapped to an area not covered by Fritz distribution.
+
+
+\begin{figure}[h!]
   \centering
       \includegraphics[width=1.1\textwidth]{./Figures/morphing/sPS/free_energy_with_snapshots.pdf}
-  \caption{SM free energy}
+  \caption{Free energy landscapes in sketch-map coordinates for the coarse-grained Fritz model, KG model and morphed structures deploying both morphing schemes A and B for $s= 2,4,6$. }
   \label{FIG:morph_sps_free_energy}
 \end{figure}
 
+Table \ref{} displays the Jenson-Shannon divergences computed for the free energy distributions of the morphed structures and the reference Fritz model. The reported Jenson-Shannon divergences underpin the results obtained from visually inspecting Fig. \ref{}, i.e. the lowest value is obtained for morphing scheme A and $s=2$.
 
-\begin{table}[h]
+\begin{table}[h!]
 \begin{tabular}{ c|c|c } 
  & scheme A & scheme B \\
 \hline
@@ -176,12 +188,28 @@ s = 6 & 3.589 & 3.495
 \end{tabular}
 \end{table}
 
+\subsubsection{Backmapping}
+
+The motivation to morph local statistics stems from the idea to reduce artifacts upon backmapping due to the imperfection of coarse-grained structures. Therefore, the impact of the morphing on the quality on sPS melts backmapped to the original resolution of the moderately coarse-grained Fritz model is investigated. To this end, DBM is trained on 10 snapshots obtained with the Fritz model to reintroduce missing degrees of freedom. Specifically, each coarse-grained bead at the KG resolution maps to three Fritz beads of type A and three Fritz beads of type B. DBM is trained using regularization $\mathcal{C}^{(1)}_{\text{pot}}$ based on the forcefield of Fritz \emph{et al.} After training, backmapping is performed for coarse-grained Fritz configurations, KG configurations, and morphed KG configurations. Morphed structures are obtained with the best performing morphing model, i.e. schema A and $s=2$. 
+
+Fig. \ref{} displays selected structural distributions for the reference Fritz model and backmapped configurations. The baseline accuracy of DBM is probed by its ability to backmap coarse-grained Fritz configurations. DBM is capable of reproducing bond length distribution with remarkable accuracy, as illustrated exemplary for the A-B bond depicted in Fig. \ref{} a). Distributions for the angles of backmapped structures, shown in Fig \ref{} (b) and (c) are slightly too broad and fail to reproduce the correct height of the main peak. Similar issues are observed for the dihedrals of backmapped structures displayed in Fig \ref{} (d). However, the overall accuracy of intra-molecular structural distributions is satisfactory. The pair correlation function $g(r)$ depicted in Fig. \ref{} (e)-(f) reveals a discrepancy between reference and backmapped structures in terms of distances for nonbonded beads. 
+
+The quality of backmapped structures from the KG model does not significantly differ from the baseline quality. As such, the influence of the morphing on the quality of backmapped structures is neglectable.
+
 \begin{figure}
   \centering
       \includegraphics[width=0.8\textwidth]{./Figures/morphing/sPS/dbm_morphed.pdf}
-  \caption{morphgibbs}
+  \caption{Canonical distribution for configurations backmapped to the Fritz resolution. (a) bond A-B, (b) angle A-B-A, (c) angle B-A-B, (d) dihedrals A-B-A-B, (e) radial distribution function for nonbonded beads of type A, (f) radial distribution function for nonbonded beads of type B. Backmapping is performed for coarse-grained Fritz configurations (blue), KG configurations (red), and morphed KG configurations (green). Morphed structures are obtained with the best performing morphing model, i.e. scheme A and $s=2$. }
   \label{FIG:TET_morphgibbs}
 \end{figure}
+
+\subsection{Discussion}
+
+Kuhn scale matched KG sPS melts display similar large-scale characteristics as the higher resolution and solely-structure based model by Fritz et. al. However, Kuhn scale matching neglects local features below the Kuhn scale. As such, local structural distributions of both models differ, which is demonstrated by coarse-graining of the melt structures obtained with the Fritz model onto the KG resolution. In order to correct local discrepancies of KG structures, DBM is deployed to morph local features up to a certain scale. To this end, DBM is trained to reinsert local features learned from more faithful representations obtained with the Fritz model. 
+
+Two different morphing schemes A and B are applied for three different morphing scales, i.e. $s = 2,4,6$. While DBM has no significant impact on large-scale characteristics, such as the mean square end-to-end distance, it is able to correct local structural features such that they resemble the distributions of the Fritz model. The best performing morphing model for scheme A is observed for $s=2$ and for scheme B for $s=4$. Note that scheme B introduces stronger constraints on the local features, since the original KG structure is deployed as an initial structure. Therefore, scheme B with $s=2$ has no significant impact and leaves local features of the KG structures unchanged. Large values for the morphing scale, i.e. $s=6$, allow to recover the distribution for the angles and pair correlation of the Fritz model but fail to capture the correct distribution for the bond lengths. In general, larger values for the morphing scale $s$ lead to a more difficult backmapping exercise. The aforementioned results are underpinned by an analysis of the free energy landscapes fasciliated by the sketch-map algorithm. 
+
+While morphing improves the structural fidelity of configurations at the KG resolution, it has no significant impact on the quality of backmapped structures at the Fritz resolution. Specifically, backmapping of unchanged KG configurations yield similar results to the baseline, i.e. backmapping of Fritz structures, presumably due to the limited accuracy of the backmapping scheme.
 
 \section{Martini Model: Tetracosane}
 
