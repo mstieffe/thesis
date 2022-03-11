@@ -367,6 +367,7 @@ Importantly, $U(\mathbf{R})$ typically introduces many-body interactions that ca
 
 
 \subsection{Overview of Bottom-Up Approaches and Top-Down Force Fields}
+\label{Theory_MS:cg_methods}
 
 In this section, some popular bottom-up approaches to determine the coarse-grained potential are reviewed. Those approaches include structure based techniques, such as direct Boltzmann inversion (DBI) and iterative Boltzmann inversion (IBI), as well as variational approaches, like the multiscale coarse-graining approach (MS-CG) and the relative entropy (RE) framework. Moreover, two generic top-down force fields are presented, namely the Martini forcefield and the Kremer-Grest model.
 
@@ -452,12 +453,14 @@ The Kremer-Grest (KG) model is top-down model widely used to study generic polym
 More specifically, the potential for bonded beads is given by the finite-extensible-nonlinear spring (FENE) potential
 
 \begin{equation}
+\label{KG_fene}
   U_{\text{FENE}}(r) = -15 k_B T \Big( \frac{R}{\sigma} \Big)^2 \text{ln} \Big[ 1 - \Big(\frac{r}{R}\Big)^2 \Big] ,
 \end{equation}
 
 where $r$ is the distance between the two bonded beads, $\sigma$ is the bead diameter and $R$ defines the distance where the potential divergences. A typical choice is to set $R = 1.5 \sigma$. Additionally, the beads interact through a truncated and shifted Lennard-Jones potential, which is purely repulsive:
 
 \begin{equation}
+\label{KG_wca}
   U_{\text{WCA}}(r) = \begin{cases}
     4 k_B T \Big[ \Big( \frac{\sigma}{r} \Big)^{-12} - \frac{\sigma}{r} \Big)^{-6} + \frac{1}{4} \Big] \;\; , \;\; \text{if} \; r < 2^{1/6} \sigma \\
     0 \;\; , \;\; \text{otherwise}
@@ -467,6 +470,7 @@ where $r$ is the distance between the two bonded beads, $\sigma$ is the bead dia
 In order to vary the stiffness of the chains, an additional bending potential can be introduced
 
 \begin{equation}
+\label{KG_bending}
   U_{\text{bend}}(\Theta) = \kappa k_B T (1 - \text{cos}(\Theta)) , 
 \end{equation}
 
