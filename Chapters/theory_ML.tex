@@ -34,7 +34,7 @@ Most problems in ML are tackled by a common scheme: At first, a \textit{data set
 
 that maps the output $\mathbf{y}$ of $f_{\Theta}(\mathbf{x})$ to a real number representing the error the model has made on $\mathbf{x}$. That is, $\mathcal{C}$ is used to judge the performance of the model. During training, the parameters of the model $\Theta$ are tuned such that the cost function is minimized aiming at discovering the optimal set of parameters $\Theta^{*}$.
 
-ML algorithms split into \textit{supervised} and \textit{unsupervised} learning approaches. The supervised learning approach deploys labeled data $\mathcal{D} = \{ \mathbf{(x, y)} \}$ that consists of pairs of input variables $\mathbf{x}$ and associated output variables $\mathbf{y}$. Consequently, the model $f_{\Theta}(\mathbf{x})$ is trained to predict the desired output $\mathbf{y}$ and the cost function $\mathcal{C}(\mathbf{y}, f_{\Theta}(\mathbf{x}))$ becomes a function of both, the output of $f_{\Theta}(\mathbf{x})$ as well as the actual label $\mathbf{y}$. For discrete outputs $\mathbf{y}$ the task becomes classification, while continues variables refer to regression. The unsupervised approach does not use labels explicitly to train the ML model, but aims at learning the underlying structure of the data instead. Examples for the unsupervised approach include generative modeling, clustering and dimensionality reduction.\cite{} However, in some ML algorithms the distinction between supervised and unsupervised learning becomes fuzzy. An example of such \textit{semi-supervised} algorithms is the generative adversarial approach (Sec. \ref{ML_GAN}), which will be an important ML algorithm throughout this thesis.
+ML algorithms split into \textit{supervised} and \textit{unsupervised} learning approaches. The supervised learning approach deploys labeled data $\mathcal{D} = \{ \mathbf{(x, y)} \}$ that consists of pairs of input variables $\mathbf{x}$ and associated output variables $\mathbf{y}$. Consequently, the model $f_{\Theta}(\mathbf{x})$ is trained to predict the desired output $\mathbf{y}$ and the cost function $\mathcal{C}(\mathbf{y}, f_{\Theta}(\mathbf{x}))$ becomes a function of both, the output of $f_{\Theta}(\mathbf{x})$ as well as the actual label $\mathbf{y}$. For discrete outputs $\mathbf{y}$ the task becomes classification, while continues variables refer to regression.\cite{kotsiantis2007supervised} The unsupervised approach does not use labels explicitly to train the ML model, but aims at learning the underlying structure of the data instead. Examples for the unsupervised approach include generative modeling, clustering and dimensionality reduction.\cite{sorzano2014survey, saxena2017review, ruthotto2021introduction} However, in some ML algorithms the distinction between supervised and unsupervised learning becomes fuzzy. An example of such \textit{semi-supervised} algorithms is the generative adversarial approach (Sec. \ref{ML_GAN}), which will be an important ML algorithm throughout this thesis.
 
 \subsection{Interpretation of Probability: Baysian vs Frequentist}
 \label{bayes_vs_frequentist}
@@ -185,7 +185,7 @@ where $\sigma$, $A$, $B$, $a$ and $b$ are the parameters of the model. The sigmo
 
 \subsubsection{Time-structure Independent Components Analysis}
 
-Time-lagged independent component analysis (tICA) is a linear transformation algorithm that is widely used for dimensionality reduction of MD trajectories. While PCA finds coordinates of maximal variance, TICA aims at a mapping that maximizes the autocorrelation at the given lag time, i.e. it identifies the slow degrees of freedom. As such, tICA explores a subspace of good reaction coordinates and is well suited to prepare high-dimensional input data for Markov model construction.
+Time-lagged independent component analysis (tICA) is a linear transformation algorithm that is widely used for dimensionality reduction of MD trajectories.\cite{molgedey1994separation, hyvarinen2001independent, perez2013identification, schwantes2013improvements} While PCA finds coordinates of maximal variance, TICA aims at a mapping that maximizes the autocorrelation at the given lag time, i.e. it identifies the slow degrees of freedom. As such, tICA explores a subspace of good reaction coordinates and is well suited to prepare high-dimensional input data for Markov model construction.
 
 Consider a mean-free trajectory of configurations $\mathbf{x}(t) \in \mathbb{R}^D$, where $t$ is an integer denoting the time step. The covariance matrix $\mathbf{C}(\tau)$ of the data is obtained as
 
@@ -548,7 +548,7 @@ The convergence of such Markov models might be very slow in practice and difficu
 \subsection{Implicit Generative Model: The Generative Adversarial Network}
 \label{ML_GAN}
 
-\textit{Generative adversarial networks} (GANs) were introduced by Ian Goodfellow \emph{et al.} in 2014.\cite{goodfellow2014generative} They have become one of the most successful implicit generative models known in the ML community. A GAN is a LVM, but unlike VAEs or NF models, they do not infer the distribution of latent variables underlie the samples, but learn a transformation from a given prior distribution $\mathcal{Z}$ to the ambient distribution $\mathcal{X}$ instead.
+\textit{Generative adversarial networks} (GANs) were introduced by Ian Goodfellow \emph{et al.} in 2014.\cite{goodfellow2014generative} They have become one of the most successful implicit generative models known in the ML community.\cite{creswell2018generative, gui2021review} A GAN is a LVM, but unlike VAEs or NF models, they do not infer the distribution of latent variables underlie the samples, but learn a transformation from a given prior distribution $\mathcal{Z}$ to the ambient distribution $\mathcal{X}$ instead.
 
 In its core, a GAN consists of two competing models trained in a game: A generator $g_{\Theta}$ maps samples $\mathbf{z} \in \mathbb{R}^d$ from a latent distribution $\mathcal{Z}$ into the ambient space $\mathbb{R}^D$. A second model, the discriminator $c_{\Psi}$, has to distinguish between synthetic samples $g_{\Theta}(\mathbf{z})$ from the generator and real samples $\mathbf{x}$ from the training set $\mathcal{D} = \{\mathbf{x}\}$, where $\mathbf{x}$ are drawn from $\mathcal{X}$. Thereby, the discriminator $c_{\Psi}$ acts as a distance measure in ambient space for the real distribution $\mathcal{X}$ and the distribution of synthetic samples $g_{\Theta}(\mathcal{Z})$. While the discriminator $c_{\Psi}$ is trained as a classifier in a supervised manner, the generator $g_{\Theta}$ is trained to fool the discriminator $c_{\Psi}$. Therefore, the generator $g_{\Theta}$ is indirectly pushed towards minimizing the difference between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$.
 The whole training process of a GAN is considered a likelihood-free method as neither the likelihood of the model $p_{\Theta}(\mathbf{x})$ itself nor a lower bound of it is used explicitly. 
@@ -578,13 +578,13 @@ The natural choice for the loss function for a binary-classification problem is 
   \mathcal{C}(g_{\Theta}, c_{\Psi}) = \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [log(c_{\Psi}(\mathbf{x}))] + \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [log(1 - c_{\Psi}(g_{\Theta}(\mathbf{z})))] .
 \end{equation}
   
-As a result, the GAN training becomes a mini-max game, where the discriminator aims at maximizing $J(\Theta, \Psi)$ while the generator tries to minimize $J(\Theta, \Psi)$:\cite{goodfellow2014generative}
+As a result, the GAN training becomes a mini-max game, where the discriminator aims at maximizing $J(\Theta, \Psi)$, while the generator tries to minimize $J(\Theta, \Psi)$:\cite{goodfellow2014generative}
 
 \begin{equation}
   \Psi^{*} = \underset{\Psi}{\text{arg max}} \; \mathcal{C}(g_{\Theta}, c_{\Psi}) \;\; \text{and} \;\; \Theta^{*} = \underset{\Theta}{\text{arg min}} \; \mathcal{C}(g_{\Theta}, c_{\Psi})
 \end{equation}
   
-This refers to a zero-sum game where the gain of one player is the loss of the other. The training of a GAN converges when a saddle point $(\Psi^{*}, \Theta^{*})$ is reached, which is also called \textit{Nash equilibrium} in game theory: For both networks, the loss can not be optimized any further given the weights of the other. However, the Nash equilibrium is a saddle point and therefore difficult to find numerically.
+This refers to a zero-sum game where the gain of one player is the loss of the other. The training of a GAN converges when a saddle point $(\Psi^{*}, \Theta^{*})$ is reached, which is also called \textit{Nash equilibrium} in game theory: For both networks, the loss can not be optimized any further given the weights of the other. 
 
 Using the loss defined in \ref{gan_loss_binary}, it can be shown that the optimal discriminator $c_{\Psi^{*}, \Theta}$ for a fixed generator $g_{\Theta}$ is given by \cite{goodfellow2014generative}
 
@@ -593,33 +593,41 @@ Using the loss defined in \ref{gan_loss_binary}, it can be shown that the optima
   c_{\Psi^{*}, \Theta} (\mathbf{x}) = \frac{p_{\mathcal{X}}(\mathbf{x})}{p_{\mathcal{X}}(\mathbf{x}) + p_{\Theta}(\mathbf{x})} .
 \end{equation}
 
-Moreover, assuming on optimal discriminator, it can be shown that the cost function for the generator is related to the Jensen-Shannon divergence $JS$. The $JS$ divergence is a symmetrized variant of the relative entropy defined in Eq. \ref{relative_entropy}:
+Plugging Eq. \ref{optimal_discriminator} into Eq. \ref{gan_loss_binary} yields the cost function for the generator given an optimal discriminator,
+
+\begin{equation}
+  \mathcal{C}(g_{\Theta}, c_{\Psi^{*}}) = 2 JS(p_{\mathcal{X}}|| p_{\Theta}) - 2 \text{log}(2) ,
+\end{equation}
+
+where $JS$ is the Jenson-Shannon divergence
 
 \begin{equation}
   \label{jensen_shannon}
-  JS(p_{\mathcal{X}}|| p_{\Theta}) = \frac{1}{2} D\Big(p_{\mathcal{X}}|| \frac{p_{\mathcal{X}} + p_{\Theta}}{2} \Big) + \frac{1}{2} D\Big(p_{\Theta}|| \frac{p_{\mathcal{X}} + p_{\Theta}}{2} \Big)
+  JS(p_{\mathcal{X}}|| p_{\Theta}) = \frac{1}{2} D\Big(p_{\mathcal{X}}|| \frac{p_{\mathcal{X}} + p_{\Theta}}{2} \Big) + \frac{1}{2} D\Big(p_{\Theta}|| \frac{p_{\mathcal{X}} + p_{\Theta}}{2} \Big) .
 \end{equation}
 
-Plugging Eq. \ref{optimal_discriminator} into Eq. \ref{gan_loss_binary} yields the cost function for the generator given an optimal discriminator:
+As such, an optimal discriminator yields a cost function for the generator that minimizes the Jensen-Shannon divergence $JS$, which is a symmetrized variant of the relative entropy defined in Eq. \ref{relative_entropy}. 
 
-\begin{equation}
-  \mathcal{C}(g_{\Theta}, c_{\Psi^{*}}) = 2 JS(p_{\mathcal{X}}|| p_{\Theta}) - 2 \text{log}(2)
-\end{equation}
+\subsubsection{Challenges of the GAN Approach}
 
-The above analysis is instructive and motivates the usage of the GAN approach. However, the theoretical analysis does not hold in practice for several reasons: 
-(1) The minimax game is tackled iteratively with an alternating approach, where the discriminator $c_{\Psi}$ is trained for $k$ steps in order to reach optimality followed by a single training step for $g_{\Theta}$. Typically, a rather small number of training steps $k$ for the discriminator is chosen in order to maintain a feasible optimization. Therefore, the assumption of an optimal discriminator does not apply and the convexity of the cost function is not guaranteed.\cite{gui2021review} (2) Convergence to an equilibrium where $p_{\Theta}(\mathbf{x}) = p_{\mathcal{X}}(\mathbf{x})$ is hindered by the limited capacity of the generator and the discriminator:\cite{gui2021review} A direct optimization in function space would be required to guarantee convergence. However, both models are represented as DNNs and optimization takes place in the finite parameter space. (3) Optimizing the generator with the cross entropy defined in Eq. \ref{gan_loss_binary} does not perform well in practice, as the cost can easily saturate:\cite{goodfellow2014generative} If the discriminator can reject samples produced by the generator with high confidence, the generator's gradients vanish making it impossible to improve. This limitation is especially severe in the beginning of the training, where generated samples are clearly different from the training data. To circumvent this limitation, a heuristic loss for the generator is typically used instead:
+While the above analysis is instructive and motivates the usage of the GAN approach, the theoretical analysis does not hold in practice for several reasons: 
+(1) The minimax game is tackled iteratively with an alternating approach, where the discriminator $c_{\Psi}$ is trained for $k$ steps in order to reach optimality followed by a single training step for $g_{\Theta}$. Typically, a rather small number of training steps $k$ for the discriminator is chosen in order to maintain a feasible optimization. Therefore, the assumption of an optimal discriminator does not apply and the convexity of the cost function is not guaranteed.\cite{goodfellow2014generative} (2) Convergence to an equilibrium where $p_{\Theta}(\mathbf{x}) = p_{\mathcal{X}}(\mathbf{x})$ is hindered by the limited capacity of the generator and the discriminator: A direct optimization in function space would be required to guarantee convergence. However, both models are represented as DNNs and optimization takes place in the finite parameter space.\cite{goodfellow2014generative, goodfellow2016nips} (3) Optimizing the generator with the cross entropy defined in Eq. \ref{gan_loss_binary} does not perform well in practice, as the cost can easily saturate:\cite{goodfellow2014generative, goodfellow2016nips} If the discriminator can reject samples produced by the generator with high confidence, the generator's gradients vanish making it impossible to improve. This limitation is especially severe in the beginning of the training when generated samples are clearly different from the training examples. To circumvent this limitation, a heuristic loss for the generator 
 
 \begin{equation}
 \label{gan_nonsaturating_loss}
-    \mathcal{C}(g_{\Theta}) = \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [- log( c_{\Psi}(g_{\Theta}(\mathbf{z})))] .
+    \mathcal{C}(g_{\Theta}) = \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [- log( c_{\Psi}(g_{\Theta}(\mathbf{z})))] 
 \end{equation}
   
-The loss in Eq. \ref{gan_nonsaturating_loss} provides strong gradients for the generator. However, other issues can occur upon application of the non-saturating cost function, such as numerical instability of the gradients and mode collapse, i.e. low sample variance.
-  
+is typically used instead that provides strong gradients. 
+
+A more general issue of the GAN approach is mode collapse, which refers to a lack of diversity.\cite{salimans2016improved, zhang2017stackgan, arjovsky2017towards, arora2017generalization} If the generator has learned to generate a plausible output, it might overemphasize that specific output and put a overwhelmingly high statistical weight on it. Consequently, GANs tend to generate from very few modes and miss many other modes present in the data distribution. In its core, the generator is over-specialized for a given discriminator, which is stuck in a local minimum.
+
+Moreover, training of a GAN is notoriously unstable.\cite{arjovsky2017wasserstein} While the non-saturating loss in Eq. \ref{gan_nonsaturating_loss} remedies the vanishing gradient problem early in the training, the discriminator feedback still gets less meaningful over time and hence the generator might collapse. In particular, the desired Nash equilibrium displays a saddle point that is difficult to find numerically.\cite{lee2016gradient, salimans2016improved} In addition, detecting convergence of a GAN is difficult as a universal metric for the fidelity of samples synthesized by the generator is missing.\cite{theis2015note}
+ 
 \subsubsection{Wasserstein Distance: Discriminator Estimates Transport Cost}
 \label{theory_wgan}
   
-Various variants of GANs have been developed to tackle the above mentioned challenges. A popular variant is the \textit{Wasserstein GAN} (WGAN) that uses the \textit{Earth Mover distance} (EMD) to measure the distance between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$.\cite{arjovsky2017wasserstein} According to \cite{arjovsky2017wasserstein}, the EMD has some appealing properties compared to other probability distance functions, such as relative entropy, cross entropy or Jensen-Shannon divergence: If the distributions have disjoint support, the aforementioned distance measurements yield gradients that are always zero. This is a major concern when dealing with real-world high-dimensional data sets, as the manifold hypotheses states that most of the probability mass is concentrated in lower dimensional manifolds. Therefore, it is likely that the intersection of two probability distributions vanishes. The EMD circumvents these issues and guarantees continuity and differentiability.
+Various variants of GANs have been developed to tackle the above mentioned challenges. A promising route is to improve the objective function of a GAN. A popular variant is the \textit{Wasserstein GAN} (WGAN) that uses the \textit{Earth Mover distance} (EMD) to measure the distance between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$.\cite{arjovsky2017wasserstein} According to \cite{arjovsky2017wasserstein}, the EMD has some appealing properties compared to other probability distance functions, such as relative entropy, cross entropy or Jensen-Shannon divergence: If the distributions have disjoint support, the aforementioned distance measurements yield gradients that are always zero. This is a major concern when dealing with real-world high-dimensional data sets, as the manifold hypotheses states that most of the probability mass is concentrated in lower dimensional manifolds. Therefore, it is likely that the intersection of two probability distributions vanishes. The EMD circumvents these issues and guarantees continuity and differentiability. As such, the EMD allows to train the discriminator until optimality without vanishing gradients and prevents it from getting stuck in local minima.
 
 The EMD is defined as
 
@@ -630,7 +638,7 @@ The EMD is defined as
   
 where $\Gamma (p_{\mathcal{X}}, p_{\Theta})$ denotes the set of all joint distributions $\gamma(\mathbf{x}, \mathbf{y})$ whose marginals are $(p_{\mathcal{X}}$ and $p_{\Theta})$, respectively. The $\gamma(\mathbf{x}, \mathbf{y})$ can be interpreted as a transport plan indicating how much probability mass has to be moved from $\mathbf{x}$ to $\mathbf{y}$ in order to make the two distributions match. Therefore, the EMD seeks the minimal transport cost. 
 
-The formulation of the EMD in Eq. \ref{EMD} is highly intractable and most practical implementations apply an equivalent formulation of the EMD known as Kantorovich-Rubinstein duality:
+The formulation of the EMD in Eq. \ref{EMD} is highly intractable and most practical implementations apply an equivalent formulation of the EMD known as \textit{Kantorovich-Rubinstein duality}:
 
 \begin{equation}
 \label{wasserstein_duality}
@@ -644,7 +652,7 @@ In Eq. \ref{wasserstein_duality}, the maximum is taken over all functions $f: \m
   \underset{\Theta}{\text{min}} \; \underset{\Psi}{\text{max}} \; \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [c_{\Psi}(g_{\Theta}(\mathbf{z}))] - \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [c_{\Psi}(\mathbf{x})] .
 \end{equation}
 
-Various different methods exist to ensure the 1-Lipschitz continuity. A popular approach is \textit{gradient penalty}, where an additional term is introduced to the cost function of the critic, acting as a regularizer for the complexity of the critic.\cite{gulrajani2017improved} A differentiable function is one-Lipschitz if and only if it has gradients everywhere with norm at most one. A soft version of this constraint is enforced with a penalty on the gradient norm
+Various different methods exist to ensure the 1-Lipschitz continuity. A popular approach is \textit{gradient penalty} (GP) that introduces an additional term to the cost function of the critic.\cite{gulrajani2017improved} A differentiable function is one-Lipschitz if and only if it has gradients everywhere with norm at most one. A soft version of this constraint is enforced with a penalty on the gradient norm
   
 \begin{equation}
 \label{gradient_penalty}
@@ -659,5 +667,4 @@ where $\bar{\mathbf{x}}$ is interpolated linearly between pairs of points $\math
 %\end{equation}
 %to enforce the 1-Lipschitz continuity. 
   
-\subsubsection{Limitations}
-\label{theory_ML_GAN_limitations}
+

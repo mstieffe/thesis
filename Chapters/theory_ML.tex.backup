@@ -185,7 +185,7 @@ where $\sigma$, $A$, $B$, $a$ and $b$ are the parameters of the model. The sigmo
 
 \subsubsection{Time-structure Independent Components Analysis}
 
-Time-lagged independent component analysis (tICA) is a linear transformation algorithm that is widely used for dimensionality reduction of MD trajectories. While PCA finds coordinates of maximal variance, TICA aims at a mapping that maximizes the autocorrelation at the given lag time, i.e. it identifies the slow degrees of freedom. As such, tICA explores a subspace of good reaction coordinates and is well suited to prepare high-dimensional input data for Markov model construction.
+Time-lagged independent component analysis (tICA) is a linear transformation algorithm that is widely used for dimensionality reduction of MD trajectories.\cite{molgedey1994separation, hyvarinen2001independent, perez2013identification, schwantes2013improvements} While PCA finds coordinates of maximal variance, TICA aims at a mapping that maximizes the autocorrelation at the given lag time, i.e. it identifies the slow degrees of freedom. As such, tICA explores a subspace of good reaction coordinates and is well suited to prepare high-dimensional input data for Markov model construction.
 
 Consider a mean-free trajectory of configurations $\mathbf{x}(t) \in \mathbb{R}^D$, where $t$ is an integer denoting the time step. The covariance matrix $\mathbf{C}(\tau)$ of the data is obtained as
 
@@ -210,7 +210,7 @@ Similar to PCA, the eigenvector-matrix $\mathbf{U}$ can be truncated to establis
 \section{Artificial Neural Networks}
 \label{Theory_ML:NN}
 
-\textit{Artificial neural networks} (ANNs) are inspired by nervous systems, such as our human brain. A nervous system processes information and is capable to perform extremely complex tasks: It coordinates incoming signals, such as information about the environment captured by sensory cells, and creates actions accordingly. Their ability to organize themselves and learn from experience distinguishes them from conventional computers and has motivated researchers to develop artificial models of its biological counterpart.
+\textit{Artificial neural networks} (ANNs) are inspired by nervous systems, such as our human brain. A nervous system processes information and is capable to perform extremely complex tasks: It coordinates incoming signals, such as information about the environment captured by sensory cells, and creates actions accordingly. Their ability to organize themselves and learn from experience distinguishes them from conventional computers and has motivated researchers to develop artificial models of its biological counterpart.\cite{mcculloch1943logical, rosenblatt1958perceptron, minsky2017perceptrons} Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.\cite{schmidhuber2015deep}
 
 %The history of ANNs began in 1943 with the creation of the first computational model of a neural network by McCulloch and Pitts based on algorithms called threshold logits.\cite{mcculloch1943logical} The next milestone was taken by Rosenblatt in 1958 with the invention of the perceptron: A two-layer neural network able to perform pattern recognition.\cite{rosenblatt1958perceptron} Research in the field stagnated with the publication of the book 'perceptron' by Minsky and Papert in 1969, as they stated that basic two-layer networks are incapable of solving the exclusive or circuit, i.e. non-linearly separable data.\cite{minsky2017perceptrons} Larger networks were needed to solve the problem but could not be realized because of a lack of computational processing power and efficient algorithms at that time. Fortunately, the research field was not completely abandoned and ANNS were revived in the early 1980s. The increased computational processing power in combination with the backpropagation algorithm, which was introduced in 1975 by Werbos, made it possible to train multi-layer networks.\cite{werbos1982applications} Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.\cite{schmidhuber2015deep}
 
@@ -235,23 +235,44 @@ In this example, $\mathbf{x}$ and $mathbf{w}$ are vectors but higher rank tensor
 
 To explain the mechanism of information processing in a neural network, visual object recognition can serve as an example: The retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond yielding a response vector.\cite{dicarlo2012does} The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefore, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors.\cite{dicarlo2012does} At early stages of processing, the object identity manifolds for different objects might be tangled. As such, it becomes impossible to introduce an accurate decision boundary for object recognition. However, the special structure of the visual cortex allows to untangle the object manifolds. In particular, neurons are grouped into subsequent layers and the further the signals are processed the more flattened and separated the manifolds become.\cite{dicarlo2012does}
 
-The same idea is applied in modern ANNs that are referred to as \textit{Deep Neural Networks} (DNN) or simply \textit{Deep Learning} (DL): Multiple layers are arranged subsequently and each layer transforms its input into a more abstract and composite representation. While the first layer learns rather basic features, such as the positions of edges, subsequent layers learn more high-level features composed of the preceding ones. 
+\subsubsection{Composition of Layer}
 
-The layers arranged between the input layer and the output layer are referred to as \textit{hidden layers}. In the simplest case, information only flows forward in the network, i.e. a \textit{feedforward neural network} (FNN), from the input layer through the hidden layers to the output layer. More complex network architectures allow cyclic connections between the layers, i.e. \textit{recurrent neural networks} (RNNs), such that a layer can receive information from subsequent layers as well.
+The same idea is applied in modern ANNs that are referred to as \textit{Deep Neural Networks} (DNNs): Multiple layers are arranged subsequently and each layer transforms its input into a more abstract and composite representation. While the first layer learns rather basic features, such as the positions of edges, subsequent layers learn more high-level features composed of the preceding ones. 
+
+The layers arranged between the input layer and the output layer are referred to as \textit{hidden layers}. In the most simple case of a \textit{Feedforward Neural Network} (FNN), information only flows forward in the network, i.e. from the input layer through the hidden layers to the output layer. In particular, a simple FNN $f$ consisting of $L$ layer can be written as
+
+\begin{equation}
+  f(\mathbf{x}) = \mathbf{u}^{(L)}(...\mathbf{u}^{(1)}(\mathbf{u}^{(0)}(\mathbf{x}))) ,
+\end{equation}
+
+where $\mathbf{u}^{(l)}$ denotes the nodes in the $l$'th layer of the network.
+
+Different to FNNs, \textit{Recurrent Neural Networks} (RNNs) can have a more complex architecture. RNNs allow cyclic connections between layers, such that a layer can receive information from subsequent layers as well in order to create feedback loops.\cite{lipton2015critical} This is usually neccessary for sequential data, like text or video, where the current state has a dependence on past states. A RNN can be described as a recursive process where a recurring function is called in each iteration. Unrolling the recursive process allows to write the recurrent process as a nested function as well. For example, consider a network $f$ that reuses its previous output in addition to a current input. The unrolled network $F$ for an input sequence $(\mathbf{x}_1, \mathbf{x}_2, .., \mathbf{x}_n)$ can be written as
+
+\begin{equation}
+\label{rnn_unrolled}
+  F(\mathbf{x}_1, \mathbf{x}_2, .., \mathbf{x}_n) = f(\mathbf{x}_n, ..f(\mathbf{x}_2,f(\mathbf{x}_1, 0))..).
+\end{equation}
+
+Note, that Eq. \ref{rnn_unrolled} implies that multiple states of the network have to be stored simultaneously in memory in order to compute the gradients for training (see Sec. \ref{NN_training}).
+
+\subsubsection{Universal Function Approximator}
 
 The mathematical foundation for DNNs is given by the \textit{universal function approximation theorem} that was first proven by Cybenko in 1989.\cite{cybenko1992approximation} The classical formulation of the theorem states that any continuous function $f$ on a compact set $K$ can be approximated by a FNN $F$ with just one hidden layer within arbitrary accuracy $|F(x) - f(x)| < \epsilon$, where $\epsilon > 0$ and $x \in K$. Importantly, the \textit{width} of the hidden layer, i.e. the number of neurons, needs to be unbound in this formulation of the theorem. A dual formulation states that the theorem holds true for bounded width but arbitrary \textit{depth}, i.e.  the number of layers, as well.\cite{lu2017expressive} While both cases guarantee the existence of an appropriately tuned network capable to approximate any continuous function, DNNs are preferable to shallow networks in most cases, as the hierarchical structure reduces the required number of parameters compared to shallow networks. As such, training becomes more robust and avoids common issues, such as overfitting.\cite{mhaskar2017and}
 
 %that DNNs perform better in many applications and suffer less from training issues, such as overfitting.\cite{mhaskar2017and}
 %A single neuron is a very simple processing unit, but a network of neurons becomes a powerful information processing system: Signals from the environment captured by sensory cells are encoded and processed by the network to create an appropriate response. 
 
-Modern ANNs are built up from various different layer architectures. In the following, an overview of the most commonly used layer architectures is given.
+\subsection{Feature Extraction}
+
+An ANN is a composition of layer, where each layer generates features based on the representation produced by the previous layer. The feature extraction at each level of an ANN can be achieved in various different ways. In the following, an overview of the two most commonly used layer architectures is given.
 
 \subsubsection{Dense Layer}
 
 A \textit{dense layer} or \textit{fully-connected layer} is the simplest and most common layer of an ANN. Each neuron in a dense layer receives signals from all the neurons of the preceding layer. A dense layer can be expressed as
 
 \begin{equation}
-  \mathbf{y} = a( \matbf{A} \mathbf{x}) ,
+  \mathbf{y} = a( \mathbf{A} \mathbf{x}) ,
 \end{equation}
 
 where $\mathbf{A}$ is a matrix containing the weights and thresholds. The full-connectivity of each neuron makes it capable to detect global pattern in the data. However, dense layer are impractical for high-dimensional inputs, as $\mathbf{A}$ grows with the size of $\mathbf{x}$.
@@ -261,23 +282,23 @@ where $\mathbf{A}$ is a matrix containing the weights and thresholds. The full-c
 
 Another idea inspired by the visual cortex is local connectivity: Neurons are only locally connected to neurons in a restricted area of the previous layer, known as the \textit{receptive field}.\cite{baer2009neurowissenschaften} The receptive field of a neuron becomes bigger the higher it is placed in the hierarchy of the network. Therefore, this architecture is perfectly suited to learn hierarchical pattern in the data. Layer architectures incorporating the idea of a limited receptive field are called \textit{convolutional layer}.
 
-A convolutional layer consists of a bank of parameterized \textit{filters} that are sliced over the input. At each position the descrete convolution of the filter with the segment of the image it overlaps is computed and stored into a so called \textit{feature map}. Convolutional layer can be applied to tensors of arbitrary rank. In the following, the two dimensional case is considered, where the inputs are images $X_j \in \mathbb{R}^{N_x \times N_y}$ with $N_x$ the width, $N_y$ the height of the image and $j \in \{0, .., N_c\}$ is the index for the $N_c$ \textit{feature channels}. The different feature channels provide different views on the data, such as the different colour channels of an RGB image. The bank of filters is denoted with $K_{i,j} \in \mathbb{R}^{m_x \times m_y}$, where $m_x$ is the width, $m_y$ is the height, connecting the $j$th feature channel of the input with the $i$th feature channel of the output. The $i$th feature map $Y_i \in \mathbb{R}^{n_x \times n_y}$ of the output can be computed as
+A convolutional layer consists of a bank of parameterized \textit{filters} that are sliced over the input. At each position the discrete convolution of the filter with the segment of the image it overlaps is computed and stored into a so called \textit{feature map}. Convolutional layer can be applied to tensors of arbitrary rank. In the following, the two dimensional case is considered, i.e. images $\mathbf{X}_j \in \mathbb{R}^{N_x \times N_y}$ with $N_x$ the width, $N_y$ the height of the image and $j \in \{0, .., N_c\}$ is the index for the $N_c$ \textit{feature channels}. The different feature channels provide different views on the data, such as the different color channels of an RGB image. The bank of filters is denoted with $\mathbf{K}_{i,j} \in \mathbb{R}^{m_x \times m_y}$, where $m_x$ is the width, $m_y$ is the height, connecting the $j$th feature channel of the input with the $i$th feature channel of the output. The $i$th feature map $\mathbf{Y}_i \in \mathbb{R}^{n_x \times n_y}$ of the output can be computed as
 
 \begin{equation}
-  Y_i = a(\Phi + \sum_j^{N_c} K_{i,j} * X_j)
+  \mathbf{Y}_i = a(\mathbf{\Phi} + \sum_j^{N_c} \mathbf{K}_{i,j} * \mathbf{X}_j)
 \end{equation}
 
-where $\Phi$ is a bias matrix. The size of the output $(n_x, n_y)$ can be derived as:
+where $\mathbf{\Phi}$ is a bias matrix. The size of the output $(n_x, n_y)$ can be derived as:
 
 \begin{equation}
   (n_x, n_y) = (N_x - m_x + 1, N_y - m_y + 1)
 \end{equation}
 
-Additionally, the size of the output is affected by \textit{zero-padding} and \textit{slicing}:
+Additionally, the size of the output can be controlled by \textit{zero-padding} and \textit{slicing}:
 
 \begin{itemize}
-  \item Zero-padding: The size of the input tensor can be artificially extended by adding zeros at the border or between input units. $P$ denots the number of zeros concatenated at each side.
-  \item Strides: While the filter is sliced over the input the step size $S$, called \textit{stride}, for the translation can be greater than one effectively reducing the output size.
+  \item Zero-padding: The size of the input tensor can be artificially extended by adding zeros at the border or between input units. $P$ denotes the number of zeros concatenated at each side.
+  \item Strides: While the filter is sliced over the input, the step size $S$, called \textit{stride}, for the translation can be greater than one effectively reducing the output size.
 \end{itemize}
 
 In summary, the output size can be computed as
@@ -286,44 +307,24 @@ In summary, the output size can be computed as
   (n_x, n_y) = \Big( \frac{N_x - m_x + 2P}{S}+1, \frac{N_y - m_y + 2P}{S}+1 \Big)
 \end{equation}
 
-Depending on the choice of zero-padding and strides the size of the output can either decrease (downsampling) or increase (upsampling) compared to the size of the input. The latter is often referred to as \textit{transposed} (or \textit{fractionally-strided}) convolution. It is typically used in a decoder architecture to learn the upsampling transformation. Note, that it is possible to express convolutional layer as a fully-connected layer as well. However, this is not done in practice, as this involves many unneccessary multiplications with zero.
-%While this concept correctly describes the concept of upsampling, it incolves many useless multiplcations with zero which are avoided by efficient implementations in real-world applications.
+Depending on the choice of zero-padding and strides, the size of the output can either decrease (downsampling) or increase (upsampling) compared to the size of the input. The latter is often referred to as \textit{transposed} (or \textit{fractionally-strided}) convolution. It is typically used in a decoder architecture to learn the upsampling transformation. Note that it is possible to express convolutional layer as a fully-connected layer as well. However, this is not done in practice, as this involves many unneccessary multiplications with zero. In general, a convolutional layer requires less parameters compared to a dense layer, since the size of the filters are independent from the size of the input and the parameters of each filter are shared between all neurons of the layer. Moreover, weight sharing makes a convolutional layer equivariant with respect to translations. 
 
-Typically, a convolutional layer needs less parameters than a dense layer, as the size of the filters are independent from the size of the input and the parameters of each filter are shared between all neurons of the layer. Additionally, weight sharing makes a convolutional layer equivariant with respect to translations, as the same filters are applied over the hole input. 
+\subsection{Training}
+\label{NN_training}
 
-\subsubsection{Composition of Layer}
-
-A DNN is composed of multiple layers. Therefore, it can be described as a nested function. A simple feed-forward DNN $F$ with $L$ layer can be written as
-
-\begin{equation}
-  F(x;W) = y^L(...y^1(y^0(x;W^0);W^1)...;W^L) ,
-\end{equation}
-
-where $y^l$ is the $l$'th layer in the network with the corresponding weights $W^l$ and the collection of all weights is denoted with $W=(W^0, W^1,..,W^L)$.
-
-A RNN also allows feedback loops by introducing cyclic connections between the layers, such that the output of subsequent layer can be reused as input for preceding layer in the next iteration.\cite{lipton2015critical} This is often necessarry for sequential data, like text or video, where the current state has a dependence on past states. A recurrent network can be described as a recursive process where a recurring function is called in each iteration. Unrolling the recursive process makes it possible to write the recurrent process as a nested function as well. For example, consider a network $F$ that takes a current input as well as a previous output as arguments. The unrolled network $G$ for an input sequence $(x_1, x_2, .., x_n)$ can be written as
-
-\begin{equation}
-\label{rnn_unrolled}
-  G((x_1, x_2, .., n_n);W) = F((x_n, ..F((x_2,F((x_1, 0);W));W)..);W).
-\end{equation}
-
-Note, that Eq. \ref{rnn_unrolled} implies that multiple states of the network have to be stored simultaneously in memory in order to compute the gradients for training (see below).
-
-\subsection{Backpropagation Algorithm and Stochastic Optimization}
-
-Training of a NN $f_{\Theta}$ refers to tuning the weights $\Theta$ such that a desired output is produced. To achieve this, a measurement for the error the network makes is required as well as an efficient optimization algorithm.
+Training of a NN $f_{\mathbf{\Theta}}$ refers to tuning the weights $\mathbf{\Theta}$ in order to minimize a cost function. To achieve this, an efficient optimization algorithm is required.
 
 \subsubsection{Cost Function}
 
-The cost function $\mathcal{C}$ (or loss-function, error-function) maps the output of the network $f_{\Theta}(\mathbf{x})$ to a real number representing the error. It has to fulfill two requirements: Firstly, it has be differentiable in order to be used for the optimization of the weights. Secondly, it has be written as an average
+The cost function $\mathcal{C}$ (or loss-function, error-function) maps the output of the network $f_{\mathbf{\Theta}}(\mathbf{x})$ to a real number representing the error. It has to fulfill two requirements: (1) It has be differentiable in order to apply gradient based optimization algorithms. (2) It has be written as an average
 
 \begin{equation}
   \overline{\mathcal{C}}_{T} = \frac{1}{n} \sum_{(\mathbf{x}, \mathbf{y}) \in T} \mathcal{C}(f_{\Theta}(\mathbf{x}), \mathbf{y})
 \end{equation}
 
-over cost functions $\mathcal{C}(f_{\Theta}(\mathbf{x}), \mathbf{y})$ for individual instances of the training batch $T = \{(\mathbf{x}_1, \mathbf{y}_1), \dots, (\mathbf{x}_n, \mathbf{y}_n)\}$. This is crucial in order to generalize the gradient of the error computed for a single example to the overall error of the training batch.
+over cost functions $\mathcal{C}(f_{\mathbf{\Theta}}(\mathbf{x}), \mathbf{y})$ for individual instances of the training batch $T = \{(\mathbf{x}_1, \mathbf{y}_1), \dots, (\mathbf{x}_n, \mathbf{y}_n)\}$. This is crucial in order to generalize the gradient of the error computed for a single example to the overall error of the training batch (see Stochastic Gradient Descent below).
 
+\begin{comment}
 The actual choice for the functional form of the cost function $\mathcal{C}$ is problem dependent. The mean-squared-error (MSE)
 
 \begin{equation}
@@ -339,58 +340,71 @@ Classification tasks typically require to predict a probability distribution ove
 \end{equation}
 
 is frequently used. Other common choices include the Kullback-Leibler divergence, Jensen-Shannon divergence or the Wasserstein distance.
+\end{comment}
 
 \subsubsection{Backpropagation}
 
-During training, the weights of the network $\Theta$ are adjusted such that the cost function $\mathcal{C}$ will be minimized. To this end, gradient methods, such as gradient descent, are applied for single input-output pairs $(\mathbf{x},\mathbf{y})$ in the weight space,
+In order to adjust the weights $\mathbf{\Theta}$ of the network, gradient methods are deployed. Typically, Gradient Descent is applied for single input-output pairs $(\mathbf{x},\mathbf{y})$ in the weight space,
 
 \begin{eqnarray}
-  \Theta \rightarrow \Theta + \eta \frac{\partial \mathcal{C}(f_{\Theta}(\mathbf{x}), \mathbf{y})}{\partial \theta}
+\label{gradient_descent}
+  \mathbf{\Theta}_{t+1} = \mathbf{\Theta}_{t} + \eta \frac{\partial \mathcal{C}(f_{\mathbf{\Theta}_t}(\mathbf{x}), \mathbf{y})}{\partial \mathbf{\Theta}_t}
 \end{eqnarray}
 
-where $\eta$ is the learning rate.
+where $\eta$ is the learning rate and $t$ is an integer denoting the optimization step.
 
-A naive, direct computation of the gradients with respect to each weight individually is computationally expensive and is not feasable for a DNN. To circumvent these limitations, \textit{backpropagation} (BP) was invented.\cite{werbos1982applications} BP is an algorithm to compute the gradients efficiently enabling the application of gradient methods for DNNs. It is based on the chain rule and benefits from the nested structure of a NN allowing to compute the gradients layer by layer: Starting from the last layer, it iterates backward through the network, whereby avoiding duplicate and unnecessary intermediate calculations.
+A naive, direct computation of the gradients with respect to each weight individually is computationally expensive and not feasable for DNNs. To circumvent these limitations, \textit{backpropagation} (BP) was invented.\cite{werbos1982applications} BP is an algorithm to compute the gradients efficiently enabling the application of gradient methods for DNNs. It is based on the chain rule and benefits from the nested structure of a NN allowing to compute the gradients layer by layer: Starting from the last layer, it iterates backward through the network, whereby avoiding duplicate and unnecessary intermediate calculations.
 
-Consider a feed-forward NN with $L$ layers. In the following, each layer is treated as a fully connected layer for simplicity. A single node $u_i^l$ in layer $l$ can be written as
+Consider a feed-forward NN with $L$ layers. In the following, each layer is treated as a fully connected layer for simplicity. A single node $u_i^{(l)}$ in layer $l$ can be written as
 
 \begin{equation}
-  u^l_j = a ( \underbrace{ \sum_i \Theta^l_{i,j} u^{l-1}_i }_{z^l_j}) ,
+  u^{(l)}_j = a ( \underbrace{ \sum_i \Theta^{(l)}_{i,j} u^{(l-1)}_i }_{z^{(l)}_j}) ,
 \end{equation}
 
-where $ \Theta^l$ is the weight matrix for layer $l$ and $a()$ is the activation function. 
+where $ \mathbf{\Theta}^{(l)}$ is the weight matrix for layer $l$ and $a()$ is the activation function. 
 
-The chain rule has to be applied to derive the gradients for the weights, since the output of nodes placed lower in the hierarchy impacts the output of nodes placed higher in the hierarchy. Conveniently, the BP algorithm introduces a recursive notation to derive the gradients,
+The chain rule has to be applied to derive the gradients for the weights due to the nested structure of the NN. Conveniently, the BP algorithm introduces a recursive notation to derive the gradients,
 
 \begin{equation}
-  \frac{\partial \mathcal{C}(f_{\Theta}(\mathbf{x}), \mathbf{y})}{\partial \Theta_{i,j}^l} = \delta_j^l u_i^{l-1}
+  \frac{\partial \mathcal{C}(f_{\mathbf{\Theta}}(\mathbf{x}), \mathbf{y})}{\partial \Theta_{i,j}^{(l)}} = \delta_j^{(l)} u_i^{(l-1)} ,
 \end{equation}
 
-where $\delta_j^l$ is referred to as the \textit{delta-error} or \textit{error at the level} $l$. It is computed as
+where $\delta_j^{(l)}$ is referred to as the \textit{delta-error} or \textit{error at the level} $l$. It is computed as
 
 \begin{equation}
-\delta_j^l =
+\delta_j^{(l)} =
 \begin{cases} 
-  \mathcal{C}'a'(z_j^l), & \text{for } l=L\\
-  a'(z_j^l)\sum_i{\Theta^l_{i,j}\delta_j^{l+1}}, & \text{for } l<L
-   \end{cases}.
+  \mathcal{C}'a'(z_j^{(l)}), & \text{for } l=L\\
+  a'(z_j^{(l)})\sum_i{\Theta^{(l)}_{i,j}\delta_j^{(l+1)}}, & \text{for } l<L
+   \end{cases},
 \end{equation}
 
-where $\mathcal{C}'$ and $a'$ are the derivatives of the cost function $\mathcal{C}$ and the activation function $a$. The recursive notation for the delta-error allows to compute the required gradients from back to front by reusing the delta-error from subsequent layers, whereby avoiding redundant computations.
+where $\mathcal{C}'$ and $a'$ are the derivatives of the cost function $\mathcal{C}$ and the activation function $a$, respectively. The recursive notation for the delta-error allows to compute the required gradients from back to front by reusing the delta-error from subsequent layers, i.e. avoiding redundant computations.
 
 %It focuses on computer algorithms that have the ability to improve their performance automatically by the use of data or through experience. 
 %It focuses on computer algorithms that construct statistical models based on training data:
 
 \subsubsection{Stochastic Optimization}
 
+Finding the global minima in a high-dimensional energy landscape is challenging. In particular, naive deterministic optimization algorithms, such as gradient descent (Eq. \ref{gradient_descent}), are prone to get stuck in local minima. To this end, stochastic optimization algorithms are typically deployed that permit less optimal local decisions in order increase the probability of eventually deriving the global minima.
+
+A widely used stochastic optimization algorithm is \textit{Stochastic Gradient Descent} (SGD): The size of a training set is typically large and does not allow to compute the gradient in Eq. \ref{gradient_descent} over the whole set in each optimization step. Therefore, the training set is usually shuffled and split into mini-batches $T = \{(\mathbf{x}_1, \mathbf{y}_1), \dots, (\mathbf{x}_n, \mathbf{y}_n)\}$ of size $n$, where $n$ is treated as a hyper parameter. Since the gradient is not computed exactly but only for a part of the data, the optimization algorithm contains a stochastic element. However, the gradient estimation can vary significantly for different training batches in SGD. To this end, SGD can be augmented by a momentum term 
+
+\begin{equation}
+    \mathbf{\Theta}_{t+1} = \mathbf{\Theta}_{t} + \eta \mathbf{v}_{t} ,
+\end{equation}
+
+\begin{equation}
+    \mathbf{v}_{t} = \beta \mathbf{v}_{t-1} + (1-\beta) \frac{\partial \mathcal{C}(f_{\mathbf{\Theta}_t}(\mathbf{x}), \mathbf{y})}{\partial \mathbf{\Theta}_t} ,
+\end{equation}
+
+where $\beta$ is the momentum parameter. Incorporating momentum smooths the gradient and improves consistency between optimization steps.
 
 \section{Generative Modeling}
 
 ML algorithms are divided into two broad categories, namely \textit{generative} and \textit{discriminative} models.\cite{jebara2012machine} While the former aims at learning the dependencies of all the variables in a system, the goal of the latter is to learn decision boundaries. Generative models are typically linked to unsupervised training and discriminative models to supervised training, but a clear dichotomy is not always possible.
 
-Consider a set of labeled data $\mathcal{D} = \{ \mathbf{(x, y)} \}$ drawn from a distribution $\mathcal{X}$ with joint probability $p_{\mathcal{X}}(\mathbf{x}, \mathbf{y})$. The goal of a discriminative model is to learn the conditional probability $p_{\mathcal{X}} (\mathbf{y}|\mathbf{x})$ of the class labels $\mathbf{y}$ given the observation $\mathbf{x}$. To this end, a discriminative model does not necessarily have to learn about the dependencies of all the variables in the system, as it only has to focus on the variables that are important for labeling the observations.
-
-On the other hand, generative approaches model the joint probability $p_{\mathcal{X}} \mathbf{(x,y)}$ (or simply $p_{\mathcal{X}} \mathbf{(x)}$ if no labels are given). They are framed generative as the probability $p_{\mathcal{X}} \mathbf{(x,y)}$ can be used to generate new instances of the underlying distribution. However, it is straightforward to compute marginalized probabilities 
+Consider a set of labeled data $\mathcal{D} = \{ \mathbf{(x, y)} \}$ drawn from a distribution $\mathcal{X}$ with joint probability $p_{\mathcal{X}}(\mathbf{x}, \mathbf{y})$. The goal of a discriminative model is to learn the conditional probability $p_{\mathcal{X}} (\mathbf{y}|\mathbf{x})$ of the class labels $\mathbf{y}$ given the observation $\mathbf{x}$. To this end, a discriminative model does not necessarily have to learn about the dependencies of all the variables in the system, as it only has to focus on the variables that are important to label the observations. On the other hand, generative approaches model the joint probability $p_{\mathcal{X}} \mathbf{(x,y)}$ (or simply $p_{\mathcal{X}} \mathbf{(x)}$ if no labels are given). As such, they can be used to generate new instances of the underlying distribution. However, it is straightforward to compute marginalized probabilities 
 
 \begin{equation}
   p_{\mathcal{X}} \mathbf{(x)} = \sum_{\mathbf{y}} p_{\mathcal{X}} \mathbf{(x,y)}
@@ -402,9 +416,9 @@ or conditional probabilities
   p_{\mathcal{X}} \mathbf{(y|x)} = \frac{p_{\mathcal{X}} \mathbf{(x,y)}}{p_{\mathcal{X}} \mathbf{(x)}} .
 \end{equation}
 
-Therefore, generative models can be used for classification and regression as well. Obviously, the underlying task for generative models is more complex compared to the discriminative task, as the generative model has to be more informative. As a consequence, generative models require more parameters than discriminative models. Moreover, experiments have shown, that discriminative models outperform generative models in classification tasks in terms of asymptotic error.\cite{ng2002discriminative} However, generative models reach the higher asymptotic error faster. 
+Therefore, generative models can be used for classification and regression as well. However, the underlying task for generative models is more complex compared to the discriminative task, as the generative model has to be more informative. Consequently, generative models require more parameters than discriminative models. Experiments have shown, that discriminative models outperform generative models in classification tasks in terms of asymptotic error, but generative models reach the asymptotic error faster. \cite{ng2002discriminative}
 
-While both approaches can be used for classification and regression, only the generative approach can be used to sample new instances of the data, which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter will focus on the generative approach. More specifically, the following discussion is restricted to \textit{Deep Generative Models} (DGMs) for simplicity.
+While both approaches can be used for classification and regression, only the generative approach can be used to sample new instances of the data, which is a mandatory requirement for the overall goal of this thesis. Therefore, the rest of this chapter focuses on the generative approach. More specifically, the following discussion is restricted to \textit{Deep Generative Models} (DGMs), i.e. generative models based on DNNs.
 
 %Generative models learn an estimate for a distribution $\mathcal{X}$ defined over $\mathbb{R}^D$, where the dimension $D$ is typically large. In general, the distribution $\mathcal{X}$ is complicated and intractable. In practice, models are trained using a set of indipendently and identically distributed training samples $\{x\}$, where the samples $x \sim \mathcal{X}$. The probability for a sample $x$ is denoted with $p_{\mathcal{X}}(x)$ and the probability defined by the model is $p_{\Theta}(x)$, where $\Theta$ refers to the parameters of the model. The overall goal of a generative model is find the set of optimal parameters $\Theta^{*}$ such that the model probability $p_{\Theta^{*}}(x)$ converges to the true probability $p_{\mathcal{X}}(x)$. 
 
@@ -412,7 +426,7 @@ While both approaches can be used for classification and regression, only the ge
 
 \subsection{Maximum likelihood and the Relative Entropy}
 
-A DGM with parameters $\Theta$ provides an estimate for the probability $p_{\Theta}(\mathbf{x})$ of an observation $\mathbf{x}$. The general goal is to approximate the true probability distribution, i.e. find the optimal parameters $\Theta^{*}$ such that  $p_{\Theta^{*}}(\mathbf{x}) \approx p_{\mathcal{X}}(\mathbf{x})$.
+A DGM provides an estimate for the probability $p_{\Theta}(\mathbf{x})$ of an observation $\mathbf{x}$. The general goal is to approximate the true probability distribution, i.e. find the optimal parameters $\Theta^{*}$ such that  $p_{\Theta^{*}}(\mathbf{x}) \approx p_{\mathcal{X}}(\mathbf{x})$.
 The major route to train a DGM is to maximize the data \textit{likelihood}. The underlying idea of this approach is to find a model that best explains the observed data. The likelihood $\mathcal{L}$ for the data under the parametric model can be written as
 
 \begin{equation}
@@ -463,7 +477,7 @@ Both, cross-entropy and relative entropy, reach a minima when the two distributi
 
 \subsection{Explicit Generative Models: An Overview}
 
-Generative models are further distinguished between those that access the models probability distribution $p_{\Theta}(\mathbf{x})$ \textit{explicitly} through some functional form and those that define it \textit{implicitly} through a sampler. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straightforward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{\Theta}(\mathbf{x})$, which often becomes a bottleneck for the expressive power of the model. Therefore, the design of an explicit model is often a trade-off between the complexity of the true data distribution and tractability. Implicit models on the other hand do not require direct access of the likelihood function but define a stochastic procedure to directly generate new samples. 
+Generative models are further distinguished between those that access the model probability distribution $p_{\Theta}(\mathbf{x})$ \textit{explicitly} through some functional form and those that define it \textit{implicitly} through a sampler. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straightforward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{\Theta}(\mathbf{x})$, which often becomes a bottleneck for the expressive power of the model. Therefore, the design of an explicit model is often a trade-off between the complexity of the true data distribution and tractability. On the other hand, implicit models do not require direct access of the likelihood function but define a stochastic procedure to generate new samples. 
 
 The various variants of explicit DGMs fall into two categories: Models that carefully construct a tractable functional form for the likelihood $\mathcal{L}$ and models that use a tractable approximation.\cite{goodfellow2020generative} Two major examples for tractable explicit models are autoregressive models and normalizing flow models. Examples for explicit models that require approximation are the variational auto encoder and the Boltzmann machine. The most prominent member of implicit generative models is the generative adversarial approach.
 
@@ -475,11 +489,11 @@ The autoregressive approach decomposes a complex probability distribution into s
   p_{\Theta}(\mathbf{x}) = \prod_i^n p_{\Theta}(x_i | x_1, x_2, .., x_{i-1}) .
 \end{equation}
 
-Splitting up the problem into conditional probailities often allows for a tractable explicit model. The drawback of such autoregressive models is that they can only generate one entry at a time prohibiting parallel computation. However, this approach is well suited for data that is sequential in nature, such as human speech.
+Splitting the problem into conditional probailities often allows for a tractable explicit model. The drawback of such autoregressive models is that they can only generate one entry at a time prohibiting parallel computation. However, this approach is well suited for data that is sequential in nature, such as human speech.
 
 \subsubsection{Normalizing Flow}
 
-Normalizing Flow (NF) models are LVMs that transform a simple prior distribution into a more complex distribution using invertible and differentiable mappings.\cite{rezende2015variational, dinh2014nice, kobyzev2020normalizing} NF models are based on the change of variables formula for invertable transformations $g$ that map from the data distribution $\mathcal{X}$ to the latent distribution $\mathcal{Z}$. Given a transformation
+Normalizing Flow (NF) models are LVMs that transform a simple prior distribution into a more complex distribution using invertible and differentiable mappings.\cite{rezende2015variational, dinh2014nice, kobyzev2020normalizing} NF models are based on the change of variables formula for invertible transformations $g$ that map from the data distribution $\mathcal{X}$ to the latent distribution $\mathcal{Z}$. Given a transformation
 
 \begin{equation}
   g: \mathrm{R}^D \rightarrow \mathrm{R}^D
@@ -491,72 +505,71 @@ that is invertible and both $g$ and $g^{-1}$ are continuously differentiable, as
   p_{\mathcal{X}} (\mathbf{x}) = p_{\mathcal{Z}} (g^{-1}(\mathbf{x})) \Big| \text{det} \left( \frac{\partial g^{-1}(\mathbf{x})}{\partial \mathbf{x}} \right) \Big| .
 \end{equation}
 
-NF models have the advantage that they allow for direct optimization and evaluation of the likelihood. The major drawback of NF models are the required restrictions on the transformation $g$ that are difficult to fulfill in practice and limit their applicability.\cite{ruthotto2021introduction} The most important restriction to be named is the equality of the dimensions of the latent and the data space.
+NF models have the advantage that they allow a direct optimization and evaluation of the likelihood. However, major drawbacks of NF models are the required restrictions on the transformation $g$ that are difficult to fulfill in practice and limit their applicability.\cite{ruthotto2021introduction} The most severe restriction is the equality of the dimensions of the latent and the data space.
 
 \subsubsection{Variational Autoencoder}
 
 A Variational Autoencoder (VAE) is a LVM consisting of two parts:\cite{kingma2013auto, kingma2019introduction, rezende2014stochastic} An encoder $e_{\Psi}(\mathbf{z}|\mathbf{x})$ compresses a given input $\mathbf{x}$ into a constraint distribution in the latent space $\mathbb{R}^d$ and a decoder $p_{\Theta}(\mathbf{x}|\mathbf{z})$ reconstructs a distribution in the ambient space $\mathbb{R}^D$. 
 
-Typically, $e_{\Psi}(\mathbf{z}|\mathbf{x})$ and $p_{\Theta}(\mathbf{x}|\mathbf{z})$ are represented as a family of parametrized distributions, such as multivariate Gaussian distributions $\mathcal{N}(\boldsymbol{\mu}_{\Psi}, \boldsymbol{\Sigma}_{\Psi})$ and $\mathcal{N}(\boldsymbol{\mu}_{\Theta}, \boldsymbol{\Sigma}_{\Theta})$ with means $\boldsymbol{\mu}$ and variances $\boldsymbol{\Sigma}$ as parameters. Those parameters are learned by DNNs with weights $\Psi$ and $\Theta$, respectively. Importantly, unlike NF models, the dimensions of latent and ambient space do not have to match. In general, the dimension of the latent space $d$ is chosen much smaller than the dimension of the data space $D$. As a consequence, the mapping between the spaces is not invertable anymore and thus the likelihood can not be computed directly.
+Typically, $e_{\Psi}(\mathbf{z}|\mathbf{x})$ and $p_{\Theta}(\mathbf{x}|\mathbf{z})$ are represented as a family of parameterized distributions, such as multivariate Gaussian distributions $\mathcal{N}(\boldsymbol{\mu}_{\Psi}, \boldsymbol{\Sigma}_{\Psi})$ and $\mathcal{N}(\boldsymbol{\mu}_{\Theta}, \boldsymbol{\Sigma}_{\Theta})$ with means $\boldsymbol{\mu}$ and variances $\boldsymbol{\Sigma}$ as parameters. Those parameters are learned by DNNs with weights $\Psi$ and $\Theta$, respectively. Importantly, unlike NF models, the dimensions of latent and ambient space do not have to match. In general, the dimension of the latent space $d$ is chosen much smaller than the dimension of the ambient space $D$. As a consequence, the mapping between the spaces is not invertible and the likelihood can not be computed directly.
 %The goal of a Variational Autoencoder (VAE) is to introduce a map $g_{\Theta}$ (decoder) from a latent space $\mathrm{Z}$ to the data space $\mathrm{X}$, but unlike NF models the dimensions of latent and data space do not have to match. Typically the dimension of the latent space is much smaller than the dimension of the data space. As a consequence the map $g_{\Theta}$ is not invertable anymore and thus the likelihood can not be computed directly. 
 
-Typically, a standard normal distribution is used as a prior distribution $p_{\mathcal{Z}}(\mathbf{z})$ for the latent variables. Using Bayes's rule, the likelihood for a data point $\mathbf{x}$ can be written as
+A standard normal distribution is used typically as a prior distribution $p_{\mathcal{Z}}(\mathbf{z})$ for the latent variables. Using Bayes's rule, the likelihood for a data point $\mathbf{x}$ can be written as
 
 \begin{equation}
   p_{\Theta}(\mathbf{x}) = \frac{p_{\Theta}(\mathbf{x}|\mathbf{z})p_{\mathcal{Z}}(\mathbf{z})}{p_{\Theta}(\mathbf{z}|\mathbf{x})} .
 \end{equation}
 
-Unfortunately, the posterior distribution $p_{\Theta}(\mathbf{z}|\mathbf{x})$ is typically intractable. Therefore, the VAE approach aims to approximate it with the encoder $e_{\Psi}(\mathbf{z}|\mathbf{x})$,
+Unfortunately, the posterior distribution $p_{\Theta}(\mathbf{z}|\mathbf{x})$ is intractable in most cases. Therefore, the VAE approach approximates it deploying the encoder $e_{\Psi}(\mathbf{z}|\mathbf{x})$,
 
 \begin{equation}
   e_{\Psi}(\mathbf{z}|\mathbf{x}) \approx p_{\Theta}(\mathbf{z}|\mathbf{x}) .
 \end{equation}
 
-Using Jensen's inequlity, a variational lower bound, also called evidence lower bound (ELBO), can be derived to train both, the encoder $e_{\Psi}$ and the decoder $p_{\Theta}(z|x)$:
+Using Jensen's inequality, a variational lower bound, also called evidence lower bound (ELBO), can be derived to train both, the encoder $e_{\Psi}$ and the decoder $p_{\Theta}(z|x)$:
 
 \begin{align}
   log(p_{\Theta}(\mathbf{x})) &\geq \mathbb{E}_{e_{\Psi}(\mathbf{z}|\mathbf{x})} \Big[ log \big( \frac{p_{\Theta}(\mathbf{x},\mathbf{z})}{e_{\Psi}(\mathbf{z}|\mathbf{x})} \big) \Big] \\
     &= \underbrace{ \mathbb{E}_{e_{\Psi}(\mathbf{z}|\mathbf{x})} \Big[ log \big( p_{\Theta}(\mathbf{x}|\mathbf{z})\big) \Big] } _\text{reconstruction} -  \underbrace{  \text{KL}(e_{\Psi}(\mathbf{z}|\mathbf{x})||p_{\mathcal{Z}}(\mathbf{z}))  }_\text{regularization}
 \end{align}
   
-The negative ELBO is then minimized. The first term reduces the approximation error in ambient space (reconstruction error) that arises due to the restriction for the dimensionality of the latent space and the approximation error for the posterior. The second term acts as a regularizer that biases the the approximate posterior towars the prior distribution $p_{\mathcal{Z}}(\mathbf{z})$. Note that both terms might be in a conflict with each other. 
+The negative ELBO is then minimized. The first term reduces the approximation error in ambient space (reconstruction error) that arises due to the restriction for the dimensionality of the latent space and the approximation error for the posterior. The second term acts as a regularizer that biases the the approximate posterior towards the prior distribution $p_{\mathcal{Z}}(\mathbf{z})$. Note that both terms might be in a conflict with each other. 
 
-The main drawback of VAEs is that the gap between the ELBO used for optimization and the actual likelihood might be very big resulting in a model that is very different from the true distribution.\cite{ruthotto2021introduction} Empirically, vanilla VAEs have a tendency to ignore some of the latent variables and produce blurred samples in ambient space.\cite{asperti2021survey}
+The main drawback of VAEs is a potentially large gap between the ELBO used for optimization and the actual likelihood resulting in a model that differs significantly from the true distribution.\cite{ruthotto2021introduction} Empirically, vanilla VAEs have a tendency to ignore some of the latent variables and produce blurred samples in ambient space.\cite{asperti2021survey}
   
 \subsubsection{Markov Chain approximation}
   
-Some generative models generate samples using a markov chain technique: A sample $\mathbf{x}$ is repeatly updated according to some transition operator $\mathbf{x}' \sim q(\mathbf{x}'|\mathbf{x})$. 
+Some generative models generate samples using a Markov chain technique: A sample $\mathbf{x}$ is repeatly updated according to some transition operator $\mathbf{x}' \sim q(\mathbf{x}'|\mathbf{x})$. 
 
-An example for such a model is the Boltzmann machine (BM):\cite{fahlman1983massively, ackley1985learning, hinton1986learning, hinton1984boltzmann} A BM is a LVM that concists of binary units connected with each other. The units of a BM are divided into visible units receicing information from the environment and hidden (latent) units. The weights $\Theta$ of the network are the parameters of an energy function $E(\Theta)$ which is used to define the probability distribution over binary patterns of the units. During training, the weights are updated such that the likelihood for the given training data is maximized. To sample a new state the units are repeatly updated stochastically until an equilibrium state is reached. 
+An example is the Boltzmann machine (BM):\cite{fahlman1983massively, ackley1985learning, hinton1986learning, hinton1984boltzmann} A BM is a LVM that consists of binary units connected with each other. The units of a BM are divided into visible units receiving information from the environment and hidden (latent) units. The weights $\Theta$ of the network are essentially the parameters of an energy function $E(\Theta)$, which is used to define the probability distribution over binary patterns of the units. During training, the weights are updated such that the likelihood for the given training data is maximized. To sample a new state, the units are repeatly updated stochastically until an equilibrium state is reached. 
   
-The convergence of such model might be very slow in practice and there is not a clear criterion whether a chain has converged or not.\cite{goodfellow2020generative} BMs and its variants are barely used nowadays, because they do not scale well to high dimensional data.
-  
+The convergence of such Markov models might be very slow in practice and difficult to detect.\cite{goodfellow2020generative} BMs and its variants are barely used nowadays, because they do not scale well to high dimensional data.
   
 \subsection{Implicit Generative Model: The Generative Adversarial Network}
 \label{ML_GAN}
 
-\textit{Generative adversarial networks} (GANs) were introduced by Ian Goodfellow et al. in 2014.\cite{goodfellow2014generative} They have become one of the most successful implicit generative models known in ML community. A GAN is a LVM, but unlike VAEs or NF models, they are not aiming to infer the distribution of latent variables underlie the samples, but learn a transformation from a given prior distribution $\mathcal{Z}$ to the data distribution $\mathcal{X}$.
+\textit{Generative adversarial networks} (GANs) were introduced by Ian Goodfellow \emph{et al.} in 2014.\cite{goodfellow2014generative} They have become one of the most successful implicit generative models known in the ML community.\cite{creswell2018generative, gui2021review} A GAN is a LVM, but unlike VAEs or NF models, they do not infer the distribution of latent variables underlie the samples, but learn a transformation from a given prior distribution $\mathcal{Z}$ to the ambient distribution $\mathcal{X}$ instead.
 
-In its core, a GAN consists of two competing models trained in a game: A generator $g_{\Theta}$ maps samples $\mathbf{z} \in \mathbb{R}^d$ from a latent distribution $\mathcal{Z}$ into the ambient space $\mathbb{R}^D$. A second model, the discriminator $c$, has to distinguish between synthetic samples $g_{\Theta}(\mathbf{z})$ from the generator and real samples $\mathbf{x}$ from the training set $\mathcal{D} = \{\mathbf{x}\}$, where $\mathbf{x}$ are drawn from $\mathcal{X}$. Thereby, the discriminator $c_{\Psi}$ acts as a distance measure in ambient space for the real distribution $\mathcal{X}$ and the distribution of synthetic samples $g_{\Theta}(\mathcal{Z})$. While the discriminator $c_{\Psi}$ is trained as a classifier in a supervised manner, the generator $g_{\Theta}$ is trained to fool the discriminator $c_{\Psi}$. Therefore, the generator $g_{\Theta}$ is indirectly pushed towards minimizing the difference between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$.
+In its core, a GAN consists of two competing models trained in a game: A generator $g_{\Theta}$ maps samples $\mathbf{z} \in \mathbb{R}^d$ from a latent distribution $\mathcal{Z}$ into the ambient space $\mathbb{R}^D$. A second model, the discriminator $c_{\Psi}$, has to distinguish between synthetic samples $g_{\Theta}(\mathbf{z})$ from the generator and real samples $\mathbf{x}$ from the training set $\mathcal{D} = \{\mathbf{x}\}$, where $\mathbf{x}$ are drawn from $\mathcal{X}$. Thereby, the discriminator $c_{\Psi}$ acts as a distance measure in ambient space for the real distribution $\mathcal{X}$ and the distribution of synthetic samples $g_{\Theta}(\mathcal{Z})$. While the discriminator $c_{\Psi}$ is trained as a classifier in a supervised manner, the generator $g_{\Theta}$ is trained to fool the discriminator $c_{\Psi}$. Therefore, the generator $g_{\Theta}$ is indirectly pushed towards minimizing the difference between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$.
 The whole training process of a GAN is considered a likelihood-free method as neither the likelihood of the model $p_{\Theta}(\mathbf{x})$ itself nor a lower bound of it is used explicitly. 
 
-Both, the generator $g_{\Theta}$ and the discriminator $c_{\Psi}$ are typically implemented as DNNs with weights $\Theta$ and $\Psi$, respectively. The generator is a function
+Both, the generator $g_{\Theta}$ and the discriminator $c_{\Psi}$ are typically implemented as DNNs with weights $\Theta$ and $\Psi$, respectively. The generator is an inverse LVM (see Sec. \ref{SEC:ML_latent_variables}) 
 
 \begin{equation}
   g_{\Theta}: \mathbb{R}^d \rightarrow \mathbb{R}^D,
 \end{equation}
 
-of latent samples $\mathbf{z}$. The prior distribution $\mathcal{Z}$ is typically defined as a high-dimensional Gaussian distribution or uniform distribution over a hypercube. Intuitively, the latent samples $\mathbf{z}$ provide a source of randomness for the model.
+that maps latent samples $\mathbf{z} \in \mathbb{R}^d$ into the ambient space $\mathbb{R}^D$. The prior distribution $\mathcal{Z}$ is typically defined as a high-dimensional Gaussian distribution or uniform distribution over a hypercube. Intuitively, the latent samples $\mathbf{z}$ provide a source of randomness for the model.
 
 \subsubsection{Vanilla Approach: Discriminator as Binary Classifier}
 
-In the seminal work of Ian Goodfellow et al. the GAN training is set up as a binary classification problem, where the discriminator $c_{\Psi}$ is a function
+In the seminal work of Ian Goodfellow \emph{et al.}, the GAN training is set up as a binary classification problem, where the discriminator $c_{\Psi}$ is a function
 
 \begin{equation}
   c_{\Psi}: \mathbb{R}^D \rightarrow [0,1],
 \end{equation}
   
-aiming to predict the probability whether a given sample is drawn from the training true distribution $\mathcal{X}$ or from the generator $g_{\Theta}(\mathcal{Z})$.\cite{goodfellow2014generative} In this spirit, an optimal discriminator $c_{\Psi^{*}}$ is supposed to predict $c_{\Psi^{*}}(x) \approx 1$ and $c_{\Psi^{*}}(g(\mathbf{z})) \approx 0$. Obviously, the training of both networks is coupled, since the goal of the generator is to reproduce the data distribution $\mathcal{X}$ and therefore the samples it produces are supposed to be indistinguishable from the training set.
+aiming to predict the probability whether a given sample is drawn from the training true distribution $\mathcal{X}$ or from the generator $g_{\Theta}(\mathcal{Z})$.\cite{goodfellow2014generative} As such, an optimal discriminator $c_{\Psi^{*}}$ is supposed to predict $c_{\Psi^{*}}(\mathbf{x}) \approx 1$ and $c_{\Psi^{*}}(g(\mathbf{z})) \approx 0$. %Obviously, the training of both networks is coupled, since the goal of the generator is to reproduce the data distribution $\mathcal{X}$ and therefore the samples it produces are supposed to be indistinguishable from the training set.
 
 The natural choice for the loss function for a binary-classification problem is the cross entropy. Therefore, the original cost function for the GAN $\mathcal{C}(g_{\Theta}, c_{\Psi})$ is defined as \cite{goodfellow2014generative}
 
@@ -565,13 +578,13 @@ The natural choice for the loss function for a binary-classification problem is 
   \mathcal{C}(g_{\Theta}, c_{\Psi}) = \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [log(c_{\Psi}(\mathbf{x}))] + \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [log(1 - c_{\Psi}(g_{\Theta}(\mathbf{z})))] .
 \end{equation}
   
-As a result, the GAN training becomes a minimax game, where the discriminator aims at maximizing $J(\Theta, \Psi)$ while the generator tries to minimize $J(\Theta, \Psi)$:\cite{goodfellow2014generative}
+As a result, the GAN training becomes a mini-max game, where the discriminator aims at maximizing $J(\Theta, \Psi)$, while the generator tries to minimize $J(\Theta, \Psi)$:\cite{goodfellow2014generative}
 
 \begin{equation}
   \Psi^{*} = \underset{\Psi}{\text{arg max}} \; \mathcal{C}(g_{\Theta}, c_{\Psi}) \;\; \text{and} \;\; \Theta^{*} = \underset{\Theta}{\text{arg min}} \; \mathcal{C}(g_{\Theta}, c_{\Psi})
 \end{equation}
   
-This refers to a zero-sum game where the gain of one player is the loss of the other. The training of a GAN converges when a saddle point $(\Psi^{*}, \Theta^{*})$ is reached, which is also called \textit{Nash equilibrium} in game theory: For both networks, the loss can not be optimized any further given the weights of the other. However, being a saddle point, makes it difficult to find the Nash equiibrium numerically.
+This refers to a zero-sum game where the gain of one player is the loss of the other. The training of a GAN converges when a saddle point $(\Psi^{*}, \Theta^{*})$ is reached, which is also called \textit{Nash equilibrium} in game theory: For both networks, the loss can not be optimized any further given the weights of the other. 
 
 Using the loss defined in \ref{gan_loss_binary}, it can be shown that the optimal discriminator $c_{\Psi^{*}, \Theta}$ for a fixed generator $g_{\Theta}$ is given by \cite{goodfellow2014generative}
 
@@ -580,64 +593,73 @@ Using the loss defined in \ref{gan_loss_binary}, it can be shown that the optima
   c_{\Psi^{*}, \Theta} (\mathbf{x}) = \frac{p_{\mathcal{X}}(\mathbf{x})}{p_{\mathcal{X}}(\mathbf{x}) + p_{\Theta}(\mathbf{x})} .
 \end{equation}
 
-Moreover, assuming on optimal discriminator, it can be shown that the cost function for the generator is related to the Jensen-Shannon divergence $JS$. The $JS$ divergence is symmetrized variant of the relative entropy defined in Eq. \ref{relative_entropy}:
+Plugging Eq. \ref{optimal_discriminator} into Eq. \ref{gan_loss_binary} yields the cost function for the generator given an optimal discriminator,
+
+\begin{equation}
+  \mathcal{C}(g_{\Theta}, c_{\Psi^{*}}) = 2 JS(p_{\mathcal{X}}|| p_{\Theta}) - 2 \text{log}(2) ,
+\end{equation}
+
+where $JS$ is the Jenson-Shannon divergence
 
 \begin{equation}
   \label{jensen_shannon}
-  JS(p_{\mathcal{X}}|| p_{\Theta}) = \frac{1}{2} D\Big(p_{\mathcal{X}}|| \frac{p_{\mathcal{X}} + p_{\Theta}}{2} \Big) + \frac{1}{2} D\Big(p_{\Theta}|| \frac{p_{\mathcal{X}} + p_{\Theta}}{2} \Big)
+  JS(p_{\mathcal{X}}|| p_{\Theta}) = \frac{1}{2} D\Big(p_{\mathcal{X}}|| \frac{p_{\mathcal{X}} + p_{\Theta}}{2} \Big) + \frac{1}{2} D\Big(p_{\Theta}|| \frac{p_{\mathcal{X}} + p_{\Theta}}{2} \Big) .
 \end{equation}
 
-Plugging Eq. \ref{optimal_discriminator} into Eq. \ref{gan_loss_binary} yields the cost function for the generator given an optimal discriminator:
+As such, an optimal discriminator yields a cost function for the generator that minimizes the Jensen-Shannon divergence $JS$, which is a symmetrized variant of the relative entropy defined in Eq. \ref{relative_entropy}. 
 
-\begin{equation}
-  \mathcal{C}(g_{\Theta}, c_{\Psi^{*}}) = 2 JS(p_{\mathcal{X}}|| p_{\Theta}) - 2 \text{log}(2)
-\end{equation}
+\subsubsection{Challenges of the GAN Approach}
 
-The above analysis is instructive and motivates the usage of the GAN approach. However, the theoretical analysis does not hold in practice for several reasons: 
-Firstly, the minimax game is tackled iteratively with an alternating approach where the discriminator $c_{\Psi}$ is trained for $k$ steps in order to reach optimality followed by one training step for $g_{\Theta}$. Typically, a rather small number of training steps $k$ for the discriminator is chosen in order to maintain a feasable optimization. Therefore, the assumption of an optimal discriminator does not apply and the convexity of the cost function is not guaranteed. Secondly, convergence to an equilibrium where $p_{\Theta}(\mathbf{x}) = p_{\mathcal{X}}(\mathbf{x})$ is hindered by the limited capacity of the generator and the discriminator: A direct optimization in function space would be required to guarantee convergence. However, both models are represented as DNNs and optimization takes place in the finite parameter space.  Finally, optimizing the generator with the cross entropy defined in Eq. \ref{gan_loss_binary} does not perform well in practice, as the cost can easily saturate: If the discriminator can reject samples produced by the generator with high confidence, the generator's gradients vanish making it impossible to improve. This limitation is especially severe in the beginning of the training, where generated samples are clearly different from the training data. To circumvent this limitation, a heuristic loss for the generator is typically used instead:
+While the above analysis is instructive and motivates the usage of the GAN approach, the theoretical analysis does not hold in practice for several reasons: 
+(1) The minimax game is tackled iteratively with an alternating approach, where the discriminator $c_{\Psi}$ is trained for $k$ steps in order to reach optimality followed by a single training step for $g_{\Theta}$. Typically, a rather small number of training steps $k$ for the discriminator is chosen in order to maintain a feasible optimization. Therefore, the assumption of an optimal discriminator does not apply and the convexity of the cost function is not guaranteed.\cite{goodfellow2014generative} (2) Convergence to an equilibrium where $p_{\Theta}(\mathbf{x}) = p_{\mathcal{X}}(\mathbf{x})$ is hindered by the limited capacity of the generator and the discriminator: A direct optimization in function space would be required to guarantee convergence. However, both models are represented as DNNs and optimization takes place in the finite parameter space.\cite{goodfellow2014generative, goodfellow2016nips} (3) Optimizing the generator with the cross entropy defined in Eq. \ref{gan_loss_binary} does not perform well in practice, as the cost can easily saturate:\cite{goodfellow2014generative, goodfellow2016nips} If the discriminator can reject samples produced by the generator with high confidence, the generator's gradients vanish making it impossible to improve. This limitation is especially severe in the beginning of the training when generated samples are clearly different from the training examples. To circumvent this limitation, a heuristic loss for the generator 
 
 \begin{equation}
 \label{gan_nonsaturating_loss}
-    \mathcal{C}(g_{\Theta}) = \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [- log( c_{\Psi}(g_{\Theta}(\mathbf{z})))] .
+    \mathcal{C}(g_{\Theta}) = \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [- log( c_{\Psi}(g_{\Theta}(\mathbf{z})))] 
 \end{equation}
   
-The loss in Eq. \ref{gan_nonsaturating_loss} provides strong gradients for the generator. However, other issues can occur upon application of the non-saturating cost function, such as numerical instability of the gradients and mode collapse, i.e. low sample variance.
-  
+is typically used instead that provides strong gradients. 
+
+A more general issue of the GAN approach is mode collapse, which refers to a lack of diversity.\cite{salimans2016improved, zhang2017stackgan, arjovsky2017towards, arora2017generalization} If the generator has learned to generate a plausible output, it might overemphasize that specific output and put a overwhelmingly high statistical weight on it. Consequently, GANs tend to generate from very few modes and miss many other modes present in the data distribution. In its core, the generator is over-specialized for a given discriminator, which is stuck in a local minimum.
+
+Moreover, training of a GAN is notoriously unstable.\cite{arjovsky2017wasserstein} While the non-saturating loss in Eq. \ref{gan_nonsaturating_loss} remedies the vanishing gradient problem early in the training, the discriminator feedback still gets less meaningful over time and hence the generator might collapse. In particular, the desired Nash equilibrium displays a saddle point that is difficult to find numerically.\cite{lee2016gradient, salimans2016improved} In addition, detecting convergence of a GAN is difficult as a universal metric for the fidelity of samples synthesized by the generator is missing.\cite{theis2015note}
+ 
 \subsubsection{Wasserstein Distance: Discriminator Estimates Transport Cost}
 \label{theory_wgan}
   
-Various variants of GANs have been developed to tackle the above mentioned challenges. A popular variant is the \textit{Wasserstein GAN} (WGAN) that uses the \textit{Earth Mover distance} (EMD) to measure the distance between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$. According to \cite{}, the EMD has some appealing properties compared to other probability distance functions, such as relative entropy, cross entropy or Jensen-Shannon divergence: If the distributions have disjoint support, the aforementioned distance measurments yield gradients that are always zero. This is a major concern when dealing with real-world high-dimensional data sets, as the manifold hypotheses states that most of the probability mass is concentrated in lower dimensional manifolds. Therefore, it is likely that the intersection of two probability distributions vanishes. The EMD circumvents these issues and guarantees continuity and differantiability.
+Various variants of GANs have been developed to tackle the above mentioned challenges. A promising route is to improve the objective function of a GAN. A popular variant is the \textit{Wasserstein GAN} (WGAN) that uses the \textit{Earth Mover distance} (EMD) to measure the distance between $\mathcal{X}$ and $g_{\Theta}(\mathcal{Z})$.\cite{arjovsky2017wasserstein} According to \cite{arjovsky2017wasserstein}, the EMD has some appealing properties compared to other probability distance functions, such as relative entropy, cross entropy or Jensen-Shannon divergence: If the distributions have disjoint support, the aforementioned distance measurements yield gradients that are always zero. This is a major concern when dealing with real-world high-dimensional data sets, as the manifold hypotheses states that most of the probability mass is concentrated in lower dimensional manifolds. Therefore, it is likely that the intersection of two probability distributions vanishes. The EMD circumvents these issues and guarantees continuity and differentiability. As such, the EMD allows to train the discriminator until optimality without vanishing gradients and prevents it from getting stuck in local minima.
 
 The EMD is defined as
 
 \begin{equation}
+\label{EMD}
   W(p_{\mathcal{X}}, p_{\Theta}) = \underset{\gamma \in \Gamma (p_{\mathcal{X}}, p_{\Theta})}{\text{inf}} \;  \mathbb{E}_{(\mathbf{x}, \mathbf{y}) \sim \gamma} [ \lVert \mathbf{x} - \mathbf{y} \rVert ] ,
 \end{equation}
   
 where $\Gamma (p_{\mathcal{X}}, p_{\Theta})$ denotes the set of all joint distributions $\gamma(\mathbf{x}, \mathbf{y})$ whose marginals are $(p_{\mathcal{X}}$ and $p_{\Theta})$, respectively. The $\gamma(\mathbf{x}, \mathbf{y})$ can be interpreted as a transport plan indicating how much probability mass has to be moved from $\mathbf{x}$ to $\mathbf{y}$ in order to make the two distributions match. Therefore, the EMD seeks the minimal transport cost. 
 
-The formulation of the EMD in Eq. \ref{} is highly intractable and most practical implementations apply a equivalent formulation of the EMD knwon as Kantorovich-Rubinstein duality:
+The formulation of the EMD in Eq. \ref{EMD} is highly intractable and most practical implementations apply an equivalent formulation of the EMD known as \textit{Kantorovich-Rubinstein duality}:
 
 \begin{equation}
 \label{wasserstein_duality}
   W(p_{\mathcal{X}}, p_{\Theta}) = \underset{f \in \text{Lip}(f)\leq 1}{\text{max}} \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [f(g_{\Theta}(\mathbf{z}))] - \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [f(\mathbf{x})]
 \end{equation}
   
-In Eq. \ref{wasserstein_duality} the maximum is taken over all functions $f: \mathbb{R}^D \rightarrow \mathbb{R}$ that are 1-Lipschitz. In practice, the function $f$ is approximated with a NN $c_{\Psi}$ and additional constraints are applied to ensure the 1-Lipschitz continuity. The minimax game for WGAN can be written as
+In Eq. \ref{wasserstein_duality}, the maximum is taken over all functions $f: \mathbb{R}^D \rightarrow \mathbb{R}$ that are 1-Lipschitz. In practice, the function $f$ is approximated with a NN $c_{\Psi}$ and additional constraints are applied to ensure the 1-Lipschitz continuity. The mini-max game for WGAN can be written as
 
 \begin{equation}
 \label{wasserstein_loss}
   \underset{\Theta}{\text{min}} \; \underset{\Psi}{\text{max}} \; \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [c_{\Psi}(g_{\Theta}(\mathbf{z}))] - \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [c_{\Psi}(\mathbf{x})] .
 \end{equation}
 
-Various different methods exists to ensure the 1-Lipschitz continuity. A popular approach is \textit{gradient penalty}, where an additional term is introduced to the cost function of the critic. A differentiable function is one-Lipschitz if and only if it has gradients everywhere with norm at most one. A soft version of this constraint is enforced with a penalty on the gradient norm
+Various different methods exist to ensure the 1-Lipschitz continuity. A popular approach is \textit{gradient penalty} (GP) that introduces an additional term to the cost function of the critic.\cite{gulrajani2017improved} A differentiable function is one-Lipschitz if and only if it has gradients everywhere with norm at most one. A soft version of this constraint is enforced with a penalty on the gradient norm
   
 \begin{equation}
 \label{gradient_penalty}
   \mathcal{C}_{\text{gp}}(c_{\Psi}) = \mathbb{E}_{\bar{\mathbf{x}} \sim \bar{\mathcal{X}}} [ (|| \nabla_{\bar{\mathbf{x}}} c_{\Psi}(\bar{\mathbf{x}})||_2 - 1)^2  ] ,
 \end{equation}
   
-where $\bar{\mathbf{x}}$ is interpolated linearly between pairs of points $\mathbf{x}$ and $g_{\Theta}(\mathbf{z})$. The additional term in the loss function may be considered a regularizer for the complexity of the critic $c_{\Psi}$.\cite{}
+where $\bar{\mathbf{x}}$ is interpolated linearly between pairs of points $\mathbf{x}$ and $g_{\Theta}(\mathbf{z})$. 
   
 %Another option to ensure 1-Lipschitz continuity is \textit{spectral normalization}. The Lipschitz constant of a linear function is its largest singular value $\sigma$, which is also called \textit{spectral norm}. Therefore, spectral normalization can be applied to all the weights $\Psi$ in the network $c_{\Psi}$, i.e.
 %\begin{equation}
@@ -645,5 +667,4 @@ where $\bar{\mathbf{x}}$ is interpolated linearly between pairs of points $\math
 %\end{equation}
 %to enforce the 1-Lipschitz continuity. 
   
-\subsubsection{Limitations}
-\label{theory_ML_GAN_limitations}
+
