@@ -232,6 +232,7 @@ An artificial neuron is constructed similarly: An \textit{input tensor} $\mathbf
 In this example, $\mathbf{x}$ and $mathbf{w}$ are vectors but higher rank tensors are common as well.\cite{rojas2013neural}
 
 \subsection{Deep Learning: Multiple Levels of Resolution}
+\label{ML_NN_DL}
 
 To explain the mechanism of information processing in a neural network, visual object recognition can serve as an example: The retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond yielding a response vector.\cite{dicarlo2012does} The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefore, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors.\cite{dicarlo2012does} At early stages of processing, the object identity manifolds for different objects might be tangled. As such, it becomes impossible to introduce an accurate decision boundary for object recognition. However, the special structure of the visual cortex allows to untangle the object manifolds. In particular, neurons are grouped into subsequent layers and the further the signals are processed the more flattened and separated the manifolds become.\cite{dicarlo2012does}
 
@@ -476,6 +477,7 @@ and the scaling factor $\frac{1}{N}$ is irrelevant, as it does not affect the $\
 Both, cross-entropy and relative entropy, reach a minima when the two distributions match, i.e. $p_{\Theta}(\mathbf{x}) = p_{\mathcal{X}}(\mathbf{x})$. Therefore, an ideal model trained with the maximum likelihood approach yields a model that perfectly reproduces the true data distribution $\mathcal{X}$. 
 
 \subsection{Explicit Generative Models: An Overview}
+\label{ML:explicit_models}
 
 Generative models are further distinguished between those that access the model probability distribution $p_{\Theta}(\mathbf{x})$ \textit{explicitly} through some functional form and those that define it \textit{implicitly} through a sampler. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straightforward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{\Theta}(\mathbf{x})$, which often becomes a bottleneck for the expressive power of the model. Therefore, the design of an explicit model is often a trade-off between the complexity of the true data distribution and tractability. On the other hand, implicit models do not require direct access of the likelihood function but define a stochastic procedure to generate new samples. 
 
@@ -667,4 +669,3 @@ where $\bar{\mathbf{x}}$ is interpolated linearly between pairs of points $\math
 %\end{equation}
 %to enforce the 1-Lipschitz continuity. 
   
-
