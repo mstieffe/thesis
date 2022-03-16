@@ -1,0 +1,8 @@
+% Chapter Template
+
+\chapter{Temporal Coherent Backmapping of Molecular Trajectories} % Main chapter title
+
+\label{temp_coherent_bm} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+\section{Motivation and Problem Description}
+
