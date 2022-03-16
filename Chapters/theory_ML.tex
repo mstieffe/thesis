@@ -207,10 +207,10 @@ where $\mathbf{U}$ is a eigenvector-matrix composed of the independent component
 
 Similar to PCA, the eigenvector-matrix $\mathbf{U}$ can be truncated to establish dimensionality-reduction that keeps the slowest modes.
 
-\section{Artificial Neural Networks}
+\section{Deep Learning}
 \label{Theory_ML:NN}
 
-\textit{Artificial neural networks} (ANNs) are inspired by nervous systems, such as our human brain. A nervous system processes information and is capable to perform extremely complex tasks: It coordinates incoming signals, such as information about the environment captured by sensory cells, and creates actions accordingly. Their ability to organize themselves and learn from experience distinguishes them from conventional computers and has motivated researchers to develop artificial models of its biological counterpart.\cite{mcculloch1943logical, rosenblatt1958perceptron, minsky2017perceptrons} Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.\cite{schmidhuber2015deep}
+\textit{Deep Learning} is a part of ML that is based on \textit{Artificial neural networks} (ANNs). ANNs are inspired by nervous systems, such as our human brain. A nervous system processes information and is capable to perform extremely complex tasks: It coordinates incoming signals, such as information about the environment captured by sensory cells, and creates actions accordingly. Their ability to organize themselves and learn from experience distinguishes them from conventional computers and has motivated researchers to develop artificial models of its biological counterpart.\cite{mcculloch1943logical, rosenblatt1958perceptron, minsky2017perceptrons} Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.\cite{schmidhuber2015deep}
 
 %The history of ANNs began in 1943 with the creation of the first computational model of a neural network by McCulloch and Pitts based on algorithms called threshold logits.\cite{mcculloch1943logical} The next milestone was taken by Rosenblatt in 1958 with the invention of the perceptron: A two-layer neural network able to perform pattern recognition.\cite{rosenblatt1958perceptron} Research in the field stagnated with the publication of the book 'perceptron' by Minsky and Papert in 1969, as they stated that basic two-layer networks are incapable of solving the exclusive or circuit, i.e. non-linearly separable data.\cite{minsky2017perceptrons} Larger networks were needed to solve the problem but could not be realized because of a lack of computational processing power and efficient algorithms at that time. Fortunately, the research field was not completely abandoned and ANNS were revived in the early 1980s. The increased computational processing power in combination with the backpropagation algorithm, which was introduced in 1975 by Werbos, made it possible to train multi-layer networks.\cite{werbos1982applications} Nowadays, ANNs have won several state of the art ML contests and are used in many applications of our everyday life.\cite{schmidhuber2015deep}
 
@@ -231,7 +231,7 @@ An artificial neuron is constructed similarly: An \textit{input tensor} $\mathbf
 
 In this example, $\mathbf{x}$ and $mathbf{w}$ are vectors but higher rank tensors are common as well.\cite{rojas2013neural}
 
-\subsection{Deep Learning: Multiple Levels of Resolution}
+\subsection{Multiple Levels of Resolution}
 \label{ML_NN_DL}
 
 To explain the mechanism of information processing in a neural network, visual object recognition can serve as an example: The retina encodes visual stimuli into electrical signals that are transmitted to the visual cortex. Here, the incoming signal will cause a subset of neurons to respond yielding a response vector.\cite{dicarlo2012does} The response vector for a given object is not constant but varies under identity preserving transformations, such as shifts in position, rotations or changing illumination. Therefore, a given object has to be linked to a set of response vectors that span a manifold in the high dimensional space of all possible response vectors.\cite{dicarlo2012does} At early stages of processing, the object identity manifolds for different objects might be tangled. As such, it becomes impossible to introduce an accurate decision boundary for object recognition. However, the special structure of the visual cortex allows to untangle the object manifolds. In particular, neurons are grouped into subsequent layers and the further the signals are processed the more flattened and separated the manifolds become.\cite{dicarlo2012does}
@@ -476,7 +476,7 @@ and the scaling factor $\frac{1}{N}$ is irrelevant, as it does not affect the $\
 
 Both, cross-entropy and relative entropy, reach a minima when the two distributions match, i.e. $p_{\Theta}(\mathbf{x}) = p_{\mathcal{X}}(\mathbf{x})$. Therefore, an ideal model trained with the maximum likelihood approach yields a model that perfectly reproduces the true data distribution $\mathcal{X}$. 
 
-\subsection{Explicit Generative Models: An Overview}
+\subsection{Review of Explicit Generative Models}
 \label{ML:explicit_models}
 
 Generative models are further distinguished between those that access the model probability distribution $p_{\Theta}(\mathbf{x})$ \textit{explicitly} through some functional form and those that define it \textit{implicitly} through a sampler. The former approach has the benefit that maximizing the likelihood $\mathcal{L}$ is straightforward, as the probability distribution can be accessed directly. However, explicit models require to assume some functional form for the probability $p_{\Theta}(\mathbf{x})$, which often becomes a bottleneck for the expressive power of the model. Therefore, the design of an explicit model is often a trade-off between the complexity of the true data distribution and tractability. On the other hand, implicit models do not require direct access of the likelihood function but define a stochastic procedure to generate new samples. 
@@ -547,7 +547,7 @@ An example is the Boltzmann machine (BM):\cite{fahlman1983massively, ackley1985l
   
 The convergence of such Markov models might be very slow in practice and difficult to detect.\cite{goodfellow2020generative} BMs and its variants are barely used nowadays, because they do not scale well to high dimensional data.
   
-\subsection{Implicit Generative Model: The Generative Adversarial Network}
+\subsection{The Generative Adversarial Network: An Implicit Generative Model}
 \label{ML_GAN}
 
 \textit{Generative adversarial networks} (GANs) were introduced by Ian Goodfellow \emph{et al.} in 2014.\cite{goodfellow2014generative} They have become one of the most successful implicit generative models known in the ML community.\cite{creswell2018generative, gui2021review} A GAN is a LVM, but unlike VAEs or NF models, they do not infer the distribution of latent variables underlie the samples, but learn a transformation from a given prior distribution $\mathcal{Z}$ to the ambient distribution $\mathcal{X}$ instead.
