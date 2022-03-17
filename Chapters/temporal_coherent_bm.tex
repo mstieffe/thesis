@@ -5,8 +5,46 @@
 MD simulations allow to evolve a molecular system in time and track its path in phase space. The obtained trajectory is a set of states compatible with the starting condition, i.e. samples drawn from the accessible area in phase space. Typically, consecutive frames of the trajectory are separated by a fixed time step, which controls the correlation between recorded frames. Computing time averages over a trajectory yields structural or thermodynamic properties, such as the radial distribution function or energies. However, the temporal information stored in the trajectory allows to compute dynamic properties as well. In particular, time correlations can be used to link simulation results to experimental observables. Examples include (1) the diffusion constant, which can be computed as the integral of the velocity auto-correlation,\cite{frenkel2001understanding} (2) (infrared) absorption spectra, which is related to the auto-correlation function of the total dipole moment \cite{bergsma1984electronic, guillot1991molecular} and (3) scattering functions that can be related to Fourier transforms of the van Hove correlation function.\cite{PhysRevE.53.2382, moe1999calculation} Note that the computation of some important dynamic properties, such as the dynamic structure factor, require atomistic details.\cite{chen2008comparison, arbe2012neutron} However, while time correlation functions are central to the analysis of dynamic properties, typical reverse-mapping strategies are frame-based, i.e. each molecular snapshot of the trajectory is treated separately. Such backmapping schemes are not temporally aware and the correlations between consecutive frames are only maintained via large-scale characteristics. Consequently, reintroduced degrees of freedom between consecutive frames might decorrelate locally. As such, time correlation functions based on local, atomistic descriptors are typically not reliable for such backmapped trajectories. 
 
 
+\begin{figure}
+  \centering
+      \includegraphics[width=0.5\textwidth]{./Figures/temporal_coherent_bm/intro.pdf}
+  \caption{asfafasf}
+  \label{fig_bm_intro}
+\end{figure}
 
 
 \label{temp_coherent_bm} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-\section{Motivation and Problem Description}
+\section{ADP}
+
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/ADP_fes.pdf}
+  \caption{Free energy landscape }
+  \label{FIG:morph_sps_free_energy}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/ADP_kinetics.pdf}
+  \caption{Free energy landscape }
+  \label{FIG:morph_sps_free_energy}
+\end{figure}
+
+\section{CLN}
+
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/CLN_fes.pdf}
+  \caption{Free energy landscape }
+  \label{FIG:morph_sps_free_energy}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/CLN_kinetics.pdf}
+  \caption{Free energy landscape }
+  \label{FIG:morph_sps_free_energy}
+\end{figure}
