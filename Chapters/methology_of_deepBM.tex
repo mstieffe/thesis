@@ -128,12 +128,14 @@ As outlined above, accurate sampling of molecular structures calls for more feed
 Gibbs sampling is a Markov chain Monte Carlo algorithm. As such, it constructs a Markov Chain that eventually converges towards the target distribution. Gibbs sampling starts from an initial structure $\mathbf{r}_1^{n^{(0)}}$ and resamples each component iteratively along $S$. Importantly, each further iteration still updates a single component at a time, but each component is conditioned on \textit{all} other components: The component $\mathbf{r}_{s(i)}^{^{(k+1)}}$ is conditioned on the values $\mathbf{r}_{s(1)}^{s(i-1)^{(k+1)}}$ of already updated components at the current step $k+1$ up to $s(i)$ and thereafter, the values $\mathbf{r}_{s(i+1)}^{s(n)^{(k)}}$ from the previous step $k$ are used. More precisely, $\mathbf{r}_{s(i)}^{^{(k+1)}}$ is sampled according to $p_{\Theta}(\mathbf{r}_{s(i)}^{^{(k+1)}} | \mathbf{r}_{s(1)}^{s(i-1)^{(k+1)}}, \mathbf{r}_{s(i+1)}^{s(n)^{(k)}}, \mathbf{c}_{s(1)}^{s(n)},  \mathbf{A}_1^N)$. Experiments confirmed that such Gibbs sampling leads to a good approximation of the target distribution $p_{\mathcal{X}}$, even with a small number of iterations.
 
 \section{Representation of Molecular Structures}
+\label{DBM:representation}
 
 Learning of complex, high-dimensional and higher-order dependencies in generative models is a hallmark of computer vision. As outlined in Sec. \ref{theory_ML_CNN}, one of the most successful learning algorithms for processing image content are deep CNNs.\cite{fukushima1983neocognitron, lecun1989backpropagation, lecun1998gradient, rawat2017deep, voulodimos2018deep} Their success relies on their ability to exploit spatial and temporal correlations. Other key attributes of CNNs are automatic feature extraction, hierarchical learning and weight sharing.\cite{khan2020survey}
 
 In order to leverage modern CNNs for the backmapping task, an explicit spatial discretization of ambient space is required. Similar to pixels in a two dimensional image, the three dimensional molecular structure has to be mapped onto a voxel-based representation.\cite{wu20153d} To this end, atoms and beads are represented as smooth densities, $\gamma$ and $\Gamma$, respectively. More specifically, Gaussian distributions are used to model particle densities: An atom $\mathbf{a}_i$ at position $\mathbf{r}_i$ is represented as
 
 \begin{equation}
+\label{DBM:density_representation}
   \gamma_i = \text{exp} \Big( - \frac{(\mathbf{x} - \mathbf{r}_i)^2}{2\sigma^2} \Big), 
 \end{equation}
 
@@ -204,6 +206,7 @@ This yields the following featurized representation
 The featurized representation for the forward-sampling $\tilde{\epsilon}_{i}$ is constructed similarly.
 
 \section{Conditional GAN}
+\label{DBM:cGAN}
 
 The autoregressive approach turns the complex problem of generating molecular structures into a sequence of much simpler decisions. However, learning the local placement of the atoms is still a challenging task. Implementing a rule based decision algorithm, for example grounded on the geometry or energy of the structure, quickly becomes tedious and problem specific. Even more importantly, such  methods would not be able to reproduce the desired Boltzmann distribution. On the other hand, ML models have shown the ability to learn complex distributions, such as the higher order dependencies in generating human faces.\cite{karras2017progressive} Deploying ML models also avoids tedious rule based programming, as the model learns decisions from training data. 
 
