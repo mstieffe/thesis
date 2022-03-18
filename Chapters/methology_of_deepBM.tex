@@ -3,7 +3,7 @@
 \chapter{Methology of DeepBM: Adversarial Backmapping of Condensed-Phase Molecular Structures}
 \label{methology}
 
-In this chapter, \textit{DeepBM} is introduced: A new method to tackle the backmapping problem for molecular structures. The method deploys a ML model that learns the coarse-to-fine mapping, i.e. it learns to reintroduce missing degrees of freedom. Unlike other backmapping schemes, deepBM aims at directly predicting equilibrated molecular structures resembling the Boltzmann distribution. As such, the method does not rely on further energy minimization for relaxation and MD simulations for equilibration of the fine-grained structures. As illustrated in Fig. \ref{fig_bm_intro}, deepBM is designed for condensed-phase molecular systems.%, especially polymeric systems. 
+In this chapter, \textit{DeepBM} is introduced: A new method to tackle the backmapping problem for molecular structures. The method deploys a ML model that learns the coarse-to-fine mapping, i.e. it learns to reintroduce missing degrees of freedom from training examples. Unlike other backmapping schemes, deepBM aims at directly predicting equilibrated molecular structures resembling the Boltzmann distribution. As such, the method does not rely on further energy minimization for relaxation and MD simulations for equilibration of the fine-grained structures. As illustrated in Fig. \ref{fig_bm_intro}, deepBM is designed for condensed-phase molecular systems.%, especially polymeric systems. 
 
 \begin{figure}
   \centering
@@ -142,6 +142,7 @@ In order to leverage modern CNNs for the backmapping task, an explicit spatial d
 where $\mathbf{x}$ is a spatial location in Cartesian coordinates, expressed on a discretized grid due to voxelization, and $\sigma$ is the Gaussian width, which is treated as a hyper parameter. The same concept is used to represent coarse-grained beads.
 
 \subsection{Local Environment}
+\label{DBM:loc_env}
 
 The proposed voxel-based representation is well suited for deploying CNNs. However, it does not adapt well to large molecular structures, as the computational cost scales with the cubic grid size. To circumvent these limitations, the autoregressive approach is used to build-up larger structures incrementally, while restricting the receptive field of the CNN: Rather than representing the molecular structure as a whole, the model becomes conditional on \textit{local environments}, where the information is limited to a cutoff $r_{\text{cut}}$. Such a locality assumption makes the model scalable to larger system sizes, i.e. the computational cost scales linearly with the number of fine-grained particles.
 

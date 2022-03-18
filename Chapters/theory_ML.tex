@@ -169,6 +169,7 @@ Despite its wide range of applications, linear dimensionality reduction techniqu
 A successful approach introduced by Ceriotti \emph{et al.} is called \textit{Sketch-Map}.\cite{ceriotti2011simplifying, tribello2012using} Related to the curse of dimensionality, Ceriotti \emph{et al.} hypothesize that energetically accessible regions in phase space are concentrated in basins and consequently only a tiny fraction of phase space is occupied.\cite{ceriotti2011simplifying} Further, small pairwise distances in phase space appear to follow a Gaussian distribution, which is expected for thermal fluctuations. On the contrary, large distances are found to display a uniform distributed. Consequently, the focus has to be set on an intermediate scale capturing most of the valuable topological information of the phase space. Such a characteristic length scale is found by minimizing the cost-function
 
 \begin{equation}
+\label{ML:SM_costfunction}
   \mathcal{C}(\{\mathbf{z}_1, \dots, \mathbf{z}_N\}) = \sum_i^N \sum_j^N \Big( f(r_{ij}) - F(R_{ij}) \Big)^2, 
 \end{equation}
 
