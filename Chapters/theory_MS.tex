@@ -1,9 +1,9 @@
 
 \chapter{Multiscale Modeling} % Main chapter title
 
-Phenomena of condensed matter can be studied at various levels of resolution that range from a classical thermodynamic description of macroscopic quantities to a fundamental, quantum mechanical description of electronic degrees of freedom. Ideally, all emergent phenomena of matter should be treated by ab initio methods, i.e. methods based on first principles. However, even performed on modern supercomputers, ab initio molecular dynamics simulations quickly reach their limits and are currently restricted to systems involving a few thousands of atoms.\cite{lahnsteiner2016room, paquet2018computational} Therefore, it is often necessary to resign to a coarser description of matter in order to push the limits of accessible length and time scales. 
+Phenomena of condensed matter can be studied at various levels of resolution that range from a fundamental, quantum mechanical description of electronic degrees of freedom to a classical thermodynamic description of macroscopic quantities. Ideally, all emergent phenomena of matter should be treated by ab initio methods, i.e. methods based on first principles. However, even performed on modern supercomputers, ab initio molecular dynamics simulations quickly reach their limits and are currently restricted to systems involving a few thousands of atoms.\cite{lahnsteiner2016room, paquet2018computational} Therefore, it is often necessary to deploy a coarser description of matter in order to push the limits of accessible length and time scales. 
 
-In general, the actual choice of resolution depends on the length and time scale of the phenomena of interest, as illustrated in Fig. \ref{FIG:MS_intro}. The applied model has to be detailed enough to capture locally relevant length scales, while still providing the capability to study the phenomena in its whole extent. However, in many cases it is not possible to capture all the relevant scales in a single model. This is especially true for soft matter systems, where processes linked to atomistic length and time scales can lead to mesoscopic or even macroscopic changes. The reason for this is a rather low characteristic energy scale of soft matter systems that is in the order of magnitude of the thermal energy $k_b T$.\cite{praprotnik2008multiscale, peter2010multiscale, peter2009multiscale} Therefore, entropic contributions to the free energy due to large scale conformational and structural changes can be in the same order of magnitude as local interactions. Thus, soft matter systems are characterized by large thermal fluctuations. Consequently, a thorough exploration of soft matter systems demands for methods that allow to capture the interplay of processes that are inherently linked to various different scales.
+The choice of resolution depends on the length and time scales of the phenomena of interest. The applied model has to be detailed enough to capture locally relevant length scales, while still providing the capability to study the phenomena entirely. However, in some cases it is not possible to capture all the relevant scales in a single model. This is especially true for soft-matter systems, where processes linked to atomistic length and time scales can lead to mesoscopic or even macroscopic changes. Whether a spontaneous change of the system is favorable or forbidden is indicated by the sign of the change in free energy $F = U - TS$, where $U$ is the internal energy, $T$ the temperature and $S$ the entropy. The rather low characteristic energy scale of soft-matter systems is in the order of magnitude of the thermal energy, $k_b T$.\cite{praprotnik2008multiscale, peter2010multiscale, peter2009multiscale} Therefore, entropic contributions to the free energy due to large scale conformational and structural changes can be in the same order of magnitude as local interactions. Thus, soft-matter systems are characterized by large thermal fluctuations. Consequently, a thorough exploration of soft matter systems demands for methods that capture the interplay of processes that are potentially linked to various different scales.
 
 \begin{figure}
   \centering
@@ -12,10 +12,11 @@ In general, the actual choice of resolution depends on the length and time scale
   \label{FIG:MS_intro}
 \end{figure}
 
-\textit{Multiscale Modeling} (MM) offers a solution that allows to address phenomena at different length and time scales by combining models at different resolutions. Such models can be linked following different strategies: (1) In the sequential approach, models are treated separately and information is passed between them without directly influencing each other, whereas (2) hybrid methods provide a direct interaction between models allowing to use different resolutions simultaneously.\cite{ayton2007multiscale, voth2008coarse, peter2010multiscale} (3) Alternatively, the resolution of single molecules can be changed adaptively during the course of the simulation.\cite{praprotnik2005adaptive, praprotnik2007macromolecule} In this thesis, the focus is set to sequential MM.
+A solution is offered by \textit{Multiscale Modeling} (MM), which is illustrated in Fig. \ref{}. MM is a method that combines models at different resolutions in order to address phenomena at different length and time scales.\cite{ayton2007multiscale, voth2008coarse, peter2010multiscale} At the lower end, a coarse-grained resolution will eliminate degrees of freedom, while aiming at reproducing specific features of the high-resolution model, such as structure or thermodynamics. The reduced representation decreases molecular friction, smoothens the energy landscape, and thereby effectively accelerates sampling of the conformational space. In order to establish a tight and consistent link between models at different resolutions, different strategies can be used: (1) In the sequential approach, models are treated separately and information is passed between them without directly influencing each other \cite{tschop1998simulation, marrink2008martini}, whereas (2) hybrid methods provide a direct interaction between models allowing to use different resolutions simultaneously.\cite{villa2005structural, izvekov2005multiscale, shi2006mixed} (3) Alternatively, the resolution of single molecules can be changed adaptively during the course of the simulation.\cite{praprotnik2005adaptive, praprotnik2007macromolecule} In this thesis, the focus is set to sequential MM.
 
-This chapter is an introduction to MM and is organized as follows: At first, basics of thermodynamics and statistical mechanics are recalled followed by a review of Molecular Dynamics simulations. Afterwards, a section about coarse-graining outlines strategies to reduce the resolution in order to extend accessible length and time scales. Finally, the inverse problem, i.e. increasing the resolution, is introduced to motivate the main theme of this thesis.
+This chapter is an introduction to MM and is organized as follows: At first, basics of thermodynamics and statistical mechanics are recalled followed by a review of molecular dynamics simulations. Afterwards, a section about coarse-graining outlines strategies to reduce the resolution in order to extend accessible length and time scales. Finally, the inverse problem, i.e. increasing the resolution, is introduced to motivate the main theme of this thesis.
 
+%\textit{Multiscale Modeling} (MM) offers a solution that allows to address phenomena at different length and time scales by combining models at different resolutions.
 \label{theory_ms} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
 
@@ -24,18 +25,18 @@ This chapter is an introduction to MM and is organized as follows: At first, bas
 %   Statistical Mechanics
 % -----------------------------------
 
-\section{Thermodynamics and Statiscal Mechanics}
+\section{Thermodynamics and Statistical Mechanics}
 
 %\subsection{Microstates vs Macrostates}
-\textit{Classical thermodynamics} describes the behavior of bulk, macroscopic systems in terms of a few macroscopic quantities, such as the total internal energy $E$, the total volume $V$, and the number of particles $N$. Typically, the system is considered at the \textit{thermodynamic equilibrium}, where its properties do not change with time and the actual state is history-independent. 
+\textit{Classical thermodynamics} describes the behavior of bulk, macroscopic systems in terms of a few macroscopic quantities, such as the total internal energy $E$, the total volume $V$, and the number of particles $N$. Typically, the system is considered at \textit{thermodynamic equilibrium}, where average properties become time-invariant. The actual state of a system at thermodynamic equilibrium is history-independent, i.e. properties of the system only depend on the current conditions of state and not on its preparation.
 
-The basic concepts of classical thermodynamics were developed before the molecular nature of matter was generally accepted. Therefore, it is not surprising that classical thermodynamics is concerned with laws and relationships exclusively for macroscopic quantities without referencing to a more fundamental description on the molecular level. In fact, the laws of classical thermodynamics are based only on a few postulates.\cite{shell2015thermodynamics}
+The basic concepts of classical thermodynamics were developed before the molecular nature of matter was generally accepted. In fact, the laws of classical thermodynamics are based only on a few postulates without referencing to a more fundamental description on the molecular level.\cite{shell2015thermodynamics} As such, it is not surprising that classical thermodynamics is concerned with laws and relationships exclusively for macroscopic quantities.
 
-The molecular underpinning of thermodynamics was developed in the field of \textit{statistical mechanics}, where all the microscopic details of individual molecules are taken into account. For example, in the classical picture, a list of positions $\mathbf{r} \in \mathrm{R}^{3N}$ and momenta $\mathbf{p} \in \mathrm{R}^{3N}$ of the atoms are considered, whereas a quantum mechanical description uses quantum states. In the following, the classical picture is used for simplicity and a microscopic state $m = (\mathbf{r}, \mathbf{p})$ is characterized by its $6N$ degrees of freedom, i.e. a point in the $6N$ dimensional \textit{phase space}.
+The molecular underpinning of thermodynamics was developed in the field of \textit{statistical mechanics}, where all the microscopic details of individual molecules are taken into account. For example, in the classical picture, a list of positions $\mathbf{r} \in \mathrm{R}^{3N}$ and momenta $\mathbf{p} \in \mathrm{R}^{3N}$ of $N$ atoms are considered, whereas a quantum mechanical description uses quantum states. In the following, the classical picture is used for simplicity and a microscopic state $m = (\mathbf{r}, \mathbf{p})$ is characterized by its $6N$ degrees of freedom, i.e. a point in the $6N$ dimensional \textit{phase space}.
 
 \subsection{The Mircrocanonical Ensemble}
 
-In statistical mechanics, macroscopic quantities measured at equilibrium are described as the average behavior of many particles. For an isolated system, i.e. a system that can not exchange energy or particles with its surrounding at fixed volume, a macrostate is completely specified by $(E, V, N)$, which remains constant throughout molecular motion.\cite{shell2015thermodynamics} Note, that the temperature $T$ and pressure $P$ are not necessary to specify the macroscopic state, as their values can be derived once the vales for $(E, V, N)$ are set. For each macrostate $(E, V, N)$, a collection of possible microstates can be found, i.e. a surface in the phase space of $N$ atoms with constant total energy $E$ at a volume $V$. This collection of microstates together with their associated probabilities is called the \textit{microcanonical ensemble}.
+In statistical mechanics, macroscopic quantities measured at equilibrium are described as the average behavior of many particles. For an isolated system, i.e. a system that can not exchange energy or particles with its surrounding at fixed volume, a macrostate is completely specified by $(E, V, N)$, which remains constant throughout molecular motion.\cite{shell2015thermodynamics} For each macrostate $(E, V, N)$, a collection of possible microstates can be found, i.e. a surface in the phase space of $N$ atoms with constant total energy $E$ at a volume $V$. This collection of microstates together with their associated probabilities is called the \textit{microcanonical ensemble}.
 
 The positions and velocities of the atoms constantly vary under the influence of their mutual interactions. Therefore, the microstate changes constantly even if the macrostate stays fixed. The likelihood that a microstate will be visited by the system is denoted with $p_m$. Note that the microstate probabilities do not change with time at equilibrium. A cornerstone of statistical mechanics is the statement that the system has no preference for a certain microstate and hence, each microstate is equally likely.\cite{shell2015thermodynamics} This fundamental rule is called the \textit{principle of equal a priori probabilities}. It allows to write the likelihood in the canonical ensemble as
 
@@ -65,7 +66,7 @@ While the specific form of the entropy function is different for every system, a
   dS = \frac{1}{T}dE + \frac{P}{T}dV - \frac{\mu}{T}dN ,
 \end{equation}
 
-which relates the temperature $T$, the pressure $P$ and the chemical potential $\mu$ to derivatives of the same function. As such, it defines a relationship between these variables.\cite{shell2015thermodynamics}
+which relates the temperature $T$, the pressure $P$ and the chemical potential $\mu$ to derivatives of the same function. As such, $T$,$P$ and $\mu$ are not independent in the entropy function and can be derived from $(E, V, N)$.\cite{shell2015thermodynamics}
 
 The above definition for the entropy $S$ is exclusively based on macroscopic properties. Boltzmann was the first who gave a definition for the entropy based on microscopic considerations and therefore introduced a connection of thermodynamics to the molecular nature of matter.\cite{shell2015thermodynamics} His famous formula reads
 
@@ -80,7 +81,7 @@ Based on Boltzmann's equation, Gibbs introduced a more general form of the entro
 
 \begin{equation}
 \label{gibbs_entropy}
-  S = k_B \sum p_m ln( p_m )  ,
+  S = - k_B \sum_{m} p_m \text{ln}( p_m )  ,
 \end{equation}
 
 which is equivalent, up to the Boltzmann constant, to the definition of the information entropy by Shannon. Note that upon application of the principle of equal a priori probabilities, i.e. $p_m = \frac{1}{\Omega(E,V,N)}$, the entropy is maximized and Gibbs formulation of the entropy recovers Boltzmann's equation. 
@@ -93,13 +94,13 @@ Central to the previous considerations was the ensemble for an system in isolati
 
 \begin{equation}
 \label{boltzmann_dstr}
-  p_m = \frac{e^{- \frac{E_m}{k_B T}}}{Z} ,
+  p_m = \frac{\text{e}^{- \frac{E_m}{k_B T}}}{Z} ,
 \end{equation}
 
 where the normalization constant 
 
 \begin{equation}
-  Z = \sum_{\text{all }\, m \, \text{at}\, V,N} e^{- \frac{E_m}{k_B T}}
+  Z = \sum_{m} \text{e}^{- \frac{E_m}{k_B T}}
 \end{equation}
 
 is called the \textit{canonical partition function} and the probability distribution in Eq. \ref{boltzmann_dstr} is referred to as \textit{Boltzmann distribution}.\cite{shell2015thermodynamics} Similarly to the microcanonical distribution, the Boltzmann distribution is the distribution that maximizes the entropy for a given macroscopic state $(T,V,N)$. In general, the canonical ensemble is used more frequently as the microcanonical ensemble, since in most cases systems are considered that are in thermal equilibrium with their surroundings.
@@ -116,7 +117,7 @@ This can be seen clearly when the distribution of the energy in the canonical en
 
 This equation indicates that two competing terms have to be taken into account for the probability of a specific energy level: The first term is the entropy $S$, which is a concave, increasing function of $E$.\cite{shell2015thermodynamics} The second term $-\frac{E}{T}$ decreases linearly with the energy $E$. Therefore, the probability distribution for the energy levels has a maximum at an intermediate energy $E^*$. Both terms, $S$ and $E$, are extensive quantities, i.e. they scale as $N$. Since the competing terms are within the exponential, the probability distribution becomes sharply peaked at the maximum $p(E^*)$. Therefore, $p(E^*)$ becomes the most dominant term and the impact of microstates with different energies $E \neq E^*$ vanishes.\cite{shell2015thermodynamics}
 
-Moreover, fluctuations of the total energy $E$ become extremely small in the thermodynamic limit. The variance of the total energy $\sigma_E^2 = <E^2> - <E>^2$ can be linked to the heat capacity, which is an extensive quantity. Therefore, the relative magnitude of energy fluctuations scales as
+Moreover, fluctuations of the total energy $E$ become extremely small in the thermodynamic limit. The variance of the total energy $\sigma_E^2 = \langle E^2 \rangle - \langle E \rangle^2$ can be linked to the heat capacity, which is an extensive quantity. Therefore, the relative magnitude of energy fluctuations scales as
 
 \begin{eqnarray}
   \frac{\sqrt{\sigma_E^2}}{E} \propto N^{-1/2} .
@@ -126,11 +127,17 @@ As a consequence, a macroscopic system appears to have constant total energy.\ci
 
 \subsection{Information-theoretic View on Statistical Mechanics}
 
-In 1957 Jaynes published two papers emphasizing the correspondence between information theory and statistical mechanics.\cite{jaynes1957information,jaynes1957information2} According to Jaynes, Gibbs' entropy in statistical mechanics and Shannon's information entropy are identical except for the Boltzmann constant.\cite{jaynes1957information} Consequently, statistical mechanics can be viewed from the perspective of information theory and the seek for microscopic distributions can be treated as an inference problem.\cite{jaynes1957information} 
+Information theory is the mathematical study of the coding, transmission, storage and quantification of information \cite{ash2012information}. A central concept in information theory is the quantification of the amount of uncertainty for the outcome of a random process. In 1948, Shannon introduced the information entropy $S_{\text{Shannon}}$ for a random variable $X$
 
-Jaynes adapted a bayesian perspective (see Sec. \ref{bayes_vs_frequentist}) and treated the testable information, i.e. the macroscopic observables, as prior information.\cite{jaynes1957information} Obviously, information is missing required to determine the specific microstate of a system that remains uncommunicated due to a description of the system solely in terms of macroscopic quantities, i.e. a description that is too coarse. Consequently, finding the microscopic probability distribution amounts to assign probabilities to microstates that have to avoid bias while still agreeing with the observed macroscopic quantities.\cite{jaynes1957information} In other words, out of all possible distributions the one has to be chosen which is the least-informative in order to avoid arbitrary assumptions.
+\begin{equation}
+ S_{\text{Shannon}} = - \sum_{i=1}^n x_i \text{ln}( x_i )  ,
+\end{equation}
 
-Shannon has shown that the entropy written in Eq. \ref{gibbs_entropy} (without the Boltzmann constant) is a quantity that increases with increasing uncertainty.\cite{shannon1948mathematical} Consequently, the distribution that maximizes the entropy has to be found under the constraints of the given prior information. From this point of view, the principle of equal a priori probabilities is a consequence of our ignorance about the microscopic details of the system. In practice, the problem is solved introducing Lagrange multiplier to impose the constraints. For the microcanonical ensemble, the constraint renders to a zero probability for all microstates with different total energy than the observed one. In the canonical ensemble, the constraint is a fixed expectation value for the energy.\cite{jaynes1957information} In both cases, the well known results from statistical mechanics are reproduced, i.e. the uniform distribution for the microcanonical ensemble and the Boltzmann distribution for the canonical ensemble.
+where $x_1, \dots, x_n$ are possible outcomes of $X$ \cite{shannon1948mathematical}. In particular, Shannon has shown that $S_{\text{Shannon}}$ is a quantity that increases with increasing uncertainty \cite{shannon1948mathematical}. In 1957, Jaynes published two papers emphasizing the correspondence between information theory and statistical mechanics \cite{jaynes1957information,jaynes1957information2}. According to Jaynes, Gibbs' entropy (Eq. \ref{gibbs_entropy}) in statistical mechanics and Shannon's information entropy are identical except for the Boltzmann constant \cite{jaynes1957information}. Moreover, statistical mechanics can be viewed from the perspective of information theory, such that deriving microscopic distributions can be treated as an inference problem \cite{jaynes1957information}.
+
+Jaynes treated the testable information, i.e. the macroscopic observables, as prior information \cite{jaynes1957information}. However, information is missing required to determine the specific microstate of a system due to a description of the system solely in terms of macroscopic quantities, i.e. a description that is too coarse. Consequently, when probabilities are assigned to microstates two requirements have to be fulfilled: (1) The microscopic probability distribution has to be consistent with the observed macroscopic quantities, i.e. the correct average behavior has to be captured \cite{jaynes1957information}. (2) The ignorance of the specific microstate the system resides has to be taken into account without introducing arbitrary assumptions \cite{jaynes1957information}. If only macroscopic properties of the system are known, a microscopic distribution has to be assumed that is the least-informative in order to express the uncertainty of the actual microstate. From this point of view, the principle of equal a priori probabilities is a consequence of the ignorance about the microscopic details of the system. 
+
+Jaynes states that the microscopic distribution can be found by variational principles \cite{jaynes1957information}: A microscopic distribution has to be found that maximizes the information entropy under the constraints of the observed macroscopic properties. In practice, the problem is solved using Lagrange multiplier to impose the constraints. For the microcanonical ensemble, a constraint has to be applied that assigns zero probability to microstates with total energies that differ from the observed total energy \cite{jaynes1957information}. In the canonical ensemble, the constraint is a fixed expectation value for the energy \cite{jaynes1957information}. In both cases, the well known results from statistical mechanics are reproduced, i.e. the uniform distribution for the microcanonical ensemble and the Boltzmann distribution for the canonical ensemble.
 
 % -----------------------------------
 %   Molecular Dynamics Simulation
@@ -138,68 +145,37 @@ Shannon has shown that the entropy written in Eq. \ref{gibbs_entropy} (without t
 
 \section{Molecular Dynamics Simulation}
 
-The ultimate goal of physicists is to express the basic laws of nature in terms of relatively simple equations. However, solving such equations analytically, like the equations of motion for more than two interacting bodies, becomes impossible in many cases. This is unfortunate, as it is central to the statistical mechanics view on thermodynamics to consider systems with an extremely large number of interacting particles. However, computer simulations can circumvent these issues. The two main branches of computer simulation techniques for molecular systems are molecular dynamics (MD) and Monte Carlo (MC), but a whole range of hybrid techniques exist as well. In the following, the focus is set on MD simulations.
+Physicists aim at expressing the basic laws of nature in terms of relatively simple equations. However, solving such equations analytically, like the equations of motion for more than two interacting bodies, becomes intractable in many cases. This is unfortunate, as it is central to the statistical mechanics view on thermodynamics to consider systems with an extremely large number of interacting particles. Computer simulations can circumvent these issues by numerically predicting the behavior of a model system. Two main branches of computer simulation techniques for molecular systems are molecular dynamics (MD) and Monte Carlo (MC). While MD simulations mimic molecular movements by numerically integrating Newton's equation of motion for the molecules, MC simulations are based on random sampling and statistical probabilities of acceptance/rejection of moves. In the following, the focus is set on MD simulations.
 
-\textit{Molecular Dynamics} (MD) simulations numerically integrate Newtons equations of motion allowing to analyze the physical movement of atoms or molecules and predict bulk properties. The starting point for every MD simulation is to set up a model for the molecular interactions, i.e. the force field, and to select initial positions and velocities for the particles. Afterwards, the system is evolved in time using discrete time steps, where the particle positions and velocities are repeatedly updated. To this end, the forces have to be calculated at every step. However, the algorithm and parameters for the numerical integration have to be taken with great care in order to minimize the effects of cumulative errors.\cite{frenkel2001understanding} After the system is equilibrated, i.e. it has evolved for a sufficient amount of time such that macroscopic properties do not change anymore, snapshots or whole trajectories of the system can be extracted and the actual measurement of the observable quantity of interest can be performed. In this regard, MD simulation builds a bridge between theory and experiment, as it allows to test a model and compare it with experimental results.\cite{allen2004introduction}
+MD is a simulation technique to evolve the system for a fixed period of time in order to sample the conformational space representatively. In particular, the time evolution of the system is discretized by small time steps $\delta t$. After the system is initialized with prespecified positions $\mathbf{r}$ and momenta $\mathbf{p}$, it is propagated forward in time. To this end, the microstate is updated at every step based on the forces $\mathbf{f} = \frac{d \mathbf{p}}{d t}$ acting on the particles.
+
+MD is widely used to study equilibrium and dynamic properties of a system. To this end, the system is brought to equilibrium, i.e. it is evolved for a sufficient amount of time such that macroscopic properties do not change anymore. Afterwards, snapshots or whole trajectories of the system can be extracted and the actual measurement of the observable quantity of interest can be performed. In this regard, MD simulation builds a bridge between theory and experiment, as it enables to test a model and compare it with experimental results.\cite{allen2004introduction} %However, the algorithm and parameters for the numerical integration have to be taken with great care in order to minimize the effects of cumulative errors.\cite{frenkel2001understanding}  
 
 The following introduction to MD is based on the book by Frenkel and Smit and the lecture notes of M. Scott Shell, which are excellent sources providing the interested reader with more detailed explanations on this topic.\cite{shell2019lecturenotes, frenkel2001understanding}
-
-\subsection{Molecular Force Fields}
-\label{molecular_forcefield}
-
-Calculating forces acting on the particles is crucial to evolve the system in time. To this end, a definition for the potential energy function is required describing the interactions between the particles. These potentials can be defined on various different levels of resolution. In the following, the classical description is used, which ignores the motion of the electrons and focuses solely on the motion of the nuclei. However, MD simulations including electronic degrees of freedom are also possible.\cite{marx2000ab, lemkul2016empirical} In this regard, the classical description approximates the effect of electrons as a potential energy surface representing the quantum ground-state.\cite{shell2019lecturenotes} This description is reasonable in cases where the Born-Oppenheimer approximation is valid and the electronic structure is not of interest.\cite{shell2019lecturenotes} Furthermore, bond breaking or forming is prohibited.\cite{shell2019lecturenotes}
-
-Typically, the potential $U (\mathbf{r})$ is divided into a term representing the bonded interactions and a term for the non-bonded interactions \cite{shell2019lecturenotes}
-
-\begin{equation}
-  U = U_{\text{bonded}} + U_{\text{nonbonded}} .
-\end{equation}
-
-Most of the force fields used in classic MD are empirical and are obtained by fitting simple analytic functions against experimental data or detailed electronic calculations, such as density-functional theory (DFT). 
-
-\subsubsection{Bonded Interactions}
-
-Bonded interactions are associated with chemical bonds, bond angles and bond dihedrals. A typical choice is to deploy harmonic and cosine potentials to model the bonded interactions, such as
-
-\begin{equation}
-  U_{\text{bonded}} = \sum_{\text{bonds}} a(d - d_0)^2 + \sum_{\text{angles}} b(\Phi - \Phi_0)^2 + \sum_{\text{dihedrals}} \Big( \sum_{n} c_n cos(\omega)^n \Big) ,
-\end{equation}
-
-where $d$ and $d_0$ are the calculated and the equilibrium bond length, respectively, $\Phi$ and $\Phi_0$ the calculated and equilibrium bond angles and $\omega$ is the calculated dihedral angle.\cite{shell2019lecturenotes} The parameters $a$, $b$ and $c_n$ are the strength for the harmonic and the cosine series potential, respectively. 
-
-\subsubsection{Non-bonded Interactions}
-
-The non-bonded potential is associated with van der Waals attraction, Pauli repulsion and electrostatic interactions.\cite{shell2019lecturenotes} The van der Waals attraction arises due to the correlation between instantaneous dipoles between electron clouds of the atoms. The Pauli repulsion occurs upon the overlap of electron clouds and is a consequence of the Pauli principle, which forbids any two electrons from having the same quantum numbers. Both, the van der Waals attraction and the Pauli repulsion, are often combined into a single expression, such as the Lennard-Jones potential. The electrostatic forces arise due to partial or formal charges of the atoms and are taken into account through Coulomb's law. In combination, a typical non-bonded potential is modeled as
-
-\begin{equation}
-  U_{\text{nonbonded}} = \sum_{\text{pairs}} \Big( \underbrace{ 4 \epsilon \bigg[ \big( \frac{r_{ij}}{\sigma} \big)^{-12} - \big( \frac{r_{ij}}{\sigma} \big)^{-6} \bigg] }_{\text{Lennard-Jones}} + \underbrace{ \frac{q_i q_j}{4 \pi \epsilon_0 r_{ij}} }_{\text{Coulomb}} \Big) , 
-\end{equation}
-
-where $r_{ij}$ is the pairwise distance, $q_i$ and $q_j$ are the net (partial) charges, $\epsilon$ and $\sigma$ are the Lennard-Jones parameters, which depend on the particular atom types and $\epsilon_0$ is the electric permittivity in vacuum.\cite{shell2019lecturenotes} 
-
-Obviously, calculating non-bonded interactions is computationally more expensive compared to bonded interactions, since the number of terms in the pairwise atomic sum scales as $N^2$, while the other scale as $N$. To reduce the computational overhead, the Lennard-Jones potential is often truncated as its contribution becomes minimal for large distances. To this end, a cutoff distance of $r_c \approx 2.5 \sigma$ is typically used where the energy is only a few percent of the minimum energy ($U_{\text{LJ}}(r_c) \approx -0.016 \epsilon$).\cite{shell2019lecturenotes} In addition, it is common practice to shift to potential to avoid discontinuities, i.e. subtracting the value of the potential at the cutoff. However, the truncated contributions can become significant for the total energy and pressure of the system. To this end, a correction to the total potential can be introduced, which is derived analytically for isotropic systems.\cite{shell2019lecturenotes, frenkel2001understanding} On the other hand, the long-range Coulomb interaction requires a special treatment, as a tail correction can not be derived directly.\cite{shell2019lecturenotes} Therefore, Ewald summation is typically used to reduce the computational effort. In this case, the potential is split into a short-range and long-range contribution. The short-range contributions are computed in real space, while the long-range contributions are computed in Fourier space. 
 
 \subsection{Numerical Integration}
 \label{numerical_integration}
 
-The time evolution of the molecular system is described by Newton's equations of motion: Given the potential energy function $U(\mathbf{r})$ the forces $m \frac{d^2 \mathbf{r}}{d t^2}$ acting on the $N$ atoms are computed as
+Consider a molecular system that consists of $N$ particles with positions $\mathbf{r} \in \mathbb{R}^{3N}$, momenta $\mathbf{p} \in \mathbb{R}^{3N}$ and masses $\mathbf{m} \in \mathbb{R}^N$. The Hamiltonian $H$ of the system is the function that gives the total energy of a microstate,
+
+\begin{equation}
+ H(\mathbf{p}, \mathbf{r}) = K(\mathbf{p}) + U(\mathbf{r}) ,
+\end{equation}
+
+where $K(\mathbf{p}) = \sum_i \frac{|\mathbf{p}_i|^2}{2m_i}$ is the kinetic energy and $U(\mathbf{r})$ the potential energy. The time evolution of the system is described by Newton's equation of motion
 
 \begin{equation}
 \label{newtons_eq_motion}
-  m \frac{d^2 \mathbf{r}}{d t^2} = - \frac{d U (\mathbf{r})}{d \mathbf{r}} .
+   \frac{d \mathbf{p}_i}{d t} = - \frac{d U (\mathbf{r})}{d \mathbf{r}_i} .
 \end{equation}
 
-Starting from initial positions and velocities, the time-evolution of the system traces a path in phase space, called trajectory. This trajectory is a set of states compatible with the starting condition. For classical systems, the phase space trajectory lies on a surface of constant energy, as Newton's equations conserve energy.\cite{shell2019lecturenotes} For ergodic systems, the trajectory will eventually visit all points in phase space compatible with the given total energy, whereas systems that are non-ergodic have areas in phase space that are inaccessible. Obviously, it is not possible to sample all states of the trajectory. However, MD simulations aim at sampling the accessible phase space representatively.
-
-Note that Eq. \ref{newtons_eq_motion} is a set of $3N$ second-order, nonlinear, coupled partial differential equations, which can not be solved analytically.\cite{shell2019lecturenotes} Therefore, numerical integration is used to evolve the system in time. Here, the basic idea is to introduce a small time step $\delta t$ and update the positions of the atoms at consecutive time steps, i.e. 
+Eq. \ref{newtons_eq_motion} is a set of $3N$ second-order, nonlinear, coupled partial differential equations, which is intractable to be solved analytically.\cite{shell2019lecturenotes} Therefore, numerical integration is used to evolve the system in time. Here, the basic idea is to introduce a small time step $\delta t$ and update the positions of the atoms at consecutive time steps, i.e. 
 
 \begin{equation}
   \mathbf{r}(0), \mathbf{r}(\delta t), \mathbf{r}(2 \delta t), ..
 \end{equation}
 
 Many different algorithms exist to propagate the system forward in time. As an example, the \textit{Verlet} algorithm is explained in the following.
-
-\subsubsection{Verlet Algorithm}
 
 Using a Taylor expansion, the position at time $t + \delta t$ can be written as
 
@@ -222,10 +198,49 @@ Adding Eq. \ref{verlet_taylor1} and \ref{verlet_taylor2} and rearranging leads t
   \mathbf{r}(t + \delta t) = 2 \mathbf{r}(t) - \mathbf{r}(t - \delta t) + \frac{d^2 \mathbf{r}(t)}{d t^2} \frac{ \delta t^2}{2} + \mathcal{O}(\delta t^4) .
 \end{equation}
 
-Eq. \ref{verlet} allows to compute the positions at the next time step from the positions at the two previous time steps and the forces, which can be calculated using Eq. \ref{newtons_eq_motion}. %The error of this algorithm is of order $\mathcal{O}(\delta t^4)$ and therefore decreases with the time step.
+Eq. \ref{verlet} enables to compute the positions at the next time step from the positions at the two previous time steps and the forces, which can be calculated using Eq. \ref{newtons_eq_motion}. Starting from initial positions and velocities, the time-evolution of the system traces a path in phase space, called trajectory. For classical systems, the phase space trajectory lies on a surface of constant energy, as Newton's equations conserve energy.\cite{shell2019lecturenotes} For ergodic systems, the trajectory will eventually visit all points in phase space that are in agreement with the given total energy, whereas systems that are non-ergodic have areas in phase space that are inaccessible. While it is not possible to sample all states of the trajectory, MD simulations aim at sampling the accessible phase space representatively. In particular, the averages of MD simulations for ergodic systems can represent the thermodynamic properties at the macroscopic scale.
 
 Note that the Verlet algorithm has two important features: It is time-reversible and symplectic, i.e. volume in phase space is preserved.\cite{allen2004introduction} Those features are crucial to maintain correct statistical sampling and stability, as those are properties of the true Hamiltonian dynamics.\cite{shell2019lecturenotes} Algorithms that do not preserve the volume in phase space can dramatically expand the initial volume, such that it eventually covers areas of phase space that are not compatible with the starting condition and might violate energy conservation. Although reversibility and the conservation of phase space volume does not automatically guarantee that there is no drift of the total energy on a long time scale, it is at least a reasonable requirement.\cite{frenkel2001understanding} In practice, the Verlet algorithm does not exactly conserve the total energy, but it exhibits only small long energy drifts.\cite{frenkel2001understanding} Note, that there are many different algorithms that can be derived from the Verlet algorithm yielding identical trajectories, such as the leap frog or the velocity Verlet algorithm.\cite{frenkel2001understanding}
 
+
+\subsection{Molecular Force Fields}
+\label{molecular_forcefield}
+
+The physical accuracy of a MD simulation relies largely on the method by which the forces are specified, i.e. on the potential energy function $U(\mathbf{r})$ that defines the interaction between the particles. Typically, $U(\mathbf{r})$ is referred to as molecular force field. Depending on the representation of the system, $U(\mathbf{r})$ can be defined on various different levels of resolution. At the most fundamental level, a quantum description of the system is deployed that includes electronic degrees of freedom.\cite{marx2000ab, lemkul2016empirical} In the following, the classical description is used, which ignores the motion of the electrons and focuses solely on the motion of the nuclei. The classical description approximates the effect of electrons as a potential energy surface representing the quantum ground-state.\cite{shell2019lecturenotes} This description is based on two major approximations: (1) The nuclei are treated as point particles that follow classical Newtonian dynamics. This is reasonable because they are much heavier than electrons \cite{shell2019lecturenotes}. (2) The Born-Oppenheim approximation, which states that electrons and nuclei can be treated separately, because the dynamics of the electrons are so fast that they can be considered to react instantaneously to the motion of their nuclei \cite{shell2019lecturenotes}.
+
+Most of the force fields used in classic MD are empirical and aim at correctly modeling structural, thermodynamic and dynamic properties of the system \cite{mackerell2004empirical}. Typically, the potential $U (\mathbf{r}; \mathbf{P})$ consists of simple analytic functions with a set of parameters $\mathbf{P}$, which are specified by fitting $U (\mathbf{r}; \mathbf{P})$ to experimental data or detailed electronic calculations \cite{weiner1984new, brooks1983charmm, jorgensen1996development}. In particular, the potential is divided into a term representing the bonded interactions and a term for the non-bonded interactions \cite{shell2019lecturenotes},
+
+\begin{equation}
+  U = U_{\text{bonded}} + U_{\text{nonbonded}} .
+\end{equation}
+
+This distinction arises due to different interpretations of the solution of the Schrödinger equation, which is a fundamental differential equation that describes the wave function of a quantum-mechanical system. In particular, bonded interactions refer to solutions for the electron clouds of atoms that are close, while non-bonded interactions are used to describe the behavior of atoms further apart from each other.
+
+\subsubsection{Bonded Interactions}
+
+Bonded interactions include potentials that model (1) bond stretching to account for deviations from the equilibrium distance between two close atoms into account, (2) bond angle bending to account for deviations from the preferred hybridization geometry and (3) bond torsion/dihedral to account for rotations along bonds. The high energy scales associated with bond stretching and bending only allows for small deviations from the equilibrium bond length and bond angle. As such, Taylor expansions around the minimum can be applied yielding harmonic potentials. Note that such harmonic potentials to not account for bond breaking/forming \cite{shell2019lecturenotes}. Torsional interactions are typically associated with energy scales lower than bond stretching or bending and are approximated by a cosine expansion. In summary, a commonly used analytical form to model bonded interactions is
+
+\begin{equation}
+  U_{\text{bonded}} = \sum_{\text{bonds}} a(d - d_0)^2 + \sum_{\text{angles}} b(\Phi - \Phi_0)^2 + \sum_{\text{dihedrals}} \Big( \sum_{n} c_n cos(\omega)^n \Big) ,
+\end{equation}
+
+where $d$ and $d_0$ are the calculated and the equilibrium bond length, respectively, $\Phi$ and $\Phi_0$ the calculated and equilibrium bond angles and $\omega$ is the calculated dihedral angle.\cite{shell2019lecturenotes} The parameters $a$, $b$ and $c_n$ are the strength for the harmonic and the cosine series potential, respectively. 
+
+\subsubsection{Non-bonded Interactions}
+
+The non-bonded potential is associated with van der Waals attraction, Pauli repulsion and electrostatic interactions.\cite{shell2019lecturenotes} The van der Waals attraction arises due to the correlation between instantaneous dipoles between electron clouds of the atoms. The Pauli repulsion occurs upon the overlap of electron clouds and is a consequence of the Pauli principle, which forbids any two electrons from having the same quantum numbers. Both, the van der Waals attraction and the Pauli repulsion, are often combined into a single expression, such as the Lennard-Jones potential. The electrostatic forces arise due to partial or formal charges of the atoms and are taken into account through Coulomb's law. In combination, a typical non-bonded potential is modeled as
+
+\begin{equation}
+\label{MS:nonbonded_potential}
+  U_{\text{nonbonded}} = \sum_{\text{pairs}} \Big( \underbrace{ 4 \epsilon \bigg[ \big( \frac{r_{ij}}{\sigma} \big)^{-12} - \big( \frac{r_{ij}}{\sigma} \big)^{-6} \bigg] }_{\text{Lennard-Jones}} + \underbrace{ \frac{q_i q_j}{4 \pi \epsilon_0 r_{ij}} }_{\text{Coulomb}} \Big) , 
+\end{equation}
+
+where $r_{ij}$ is the pairwise distance, $q_i$ and $q_j$ are the net (partial) charges, $\epsilon_0$ is the electric permittivity in vacuum, $\sigma$ is the distance at which the Lennard-Jones potential reaches its minimum $-\epsilon$ \cite{shell2019lecturenotes}.  In particular, the Lennard-Jones parameters $\sigma$ and $\epsilon$ depend on the particular atom types \cite{shell2019lecturenotes}.
+
+Eq. \ref{MS:nonbonded_potential} is an effective pair potential that approximates multi-body interactions by renormalizing the pairwise interactions in order to limit the computational expense. However, calculating non-bonded interactions is computationally more expensive compared to bonded interactions, since the number of terms in the pairwise atomic sum scales as $N^2$, while the other scale as $N$. To reduce the computational overhead, i.e. to avoid quadratic scaling of the non-bonded interactions, the Lennard-Jones potential is often truncated as its contribution becomes minimal for large distances. To this end, a cutoff distance of $r_c \approx 2.5 \sigma$ is typically used where the energy is only a few percent of the minimum energy ($U_{\text{LJ}}(r_c) \approx -0.016 \epsilon$).\cite{shell2019lecturenotes} In addition, it is common practice to shift to potential to avoid discontinuities, i.e. subtracting the value of the potential at the cutoff. However, the truncated contributions can become significant for the total energy and pressure of the system. To this end, a correction to the total potential can be introduced, which is derived analytically for isotropic systems.\cite{shell2019lecturenotes, frenkel2001understanding} On the other hand, the long-range Coulomb interaction requires a special treatment, as a tail correction can not be derived directly.\cite{shell2019lecturenotes} To this end, particle mesh Ewald summation is typically used to reduce the computational effort to the order of $N \text{log}(N)$.\cite{darden1993particle} In this case, the potential is split into a short-range and long-range contribution. The short-range contributions are computed in real space, while the long-range contributions are computed in Fourier space. 
+
+
+%The error of this algorithm is of order $\mathcal{O}(\delta t^4)$ and therefore decreases with the time step.
 \subsection{Thermostats and Barostats: Controlling Temperature and Pressure}
 
 The numerical integration scheme described in Sec. \ref{numerical_integration} allows to sample from the microcanonical ensemble, i.e. maintain a constant total energy. However, it is often desirable to sample from different ensembles, such as the canonical ensemble (NVT) or the isothermal-isobaric ensemble (NPT). Modifications on the MD algorithm that allow to control the temperature or pressure are called thermostat or barostat algorithms, respectively. They are important for many reasons, for example to match experimental conditions, study temperature dependent processes or enhance the efficiency of conformational search.\cite{Huenenberger2005} Several methods exist to control temperature and pressure during the simulation. In the following, some of the popular techniques are introduced.
@@ -235,12 +250,12 @@ The numerical integration scheme described in Sec. \ref{numerical_integration} a
 The simplest approach to control the temperature is the velocity rescaling algorithm. The temperature is related to the kinetic energy and can be estimated as
 
 \begin{equation}
- T = \frac{2 <K>}{k_B n_{DOF}} ,
+ T = \frac{2 \langle K \rangle}{k_B n_{DOF}} ,
 \end{equation}
 
-where $K$ is the kinetic energy and $n_{DOF}$ are the degrees of freedom.\cite{shell2019lecturenotes} Therefore, the velocities can be rescaled at each time step to fix the temperature to a desired value. Despite its simplicity, this algorithm does not reproduce the correct thermodynamic properties of the canonical ensemble, since fluctuations in the kinetic energy are not captured.\cite{shell2019lecturenotes} 
+where $K$ is the kinetic energy and $n_{DOF}$ are the degrees of freedom.\cite{shell2019lecturenotes} Therefore, the velocities can be rescaled at each time step to fix the temperature to a desired value. Despite its simplicity, this algorithm does not reproduce the correct thermodynamic properties of the canonical ensemble, which allows the kinetic energy to fluctuate. However, deploying velocity rescaling at every step will fix the kinetic energy, i.e. fluctuations in the kinetic energy are not captured.\cite{shell2019lecturenotes} 
 
-\subsubsection{Anderson Thermostat}
+\subsubsection{Nosé-Hoover Thermostat}
 
 The Anderson thermostat introduces random collision of the molecules with an imaginary heat bath at the desired temperature. To this end, particles are chosen at random and their velocities are sampled randomly from the Maxwell-Boltzmann distribution
 
@@ -250,13 +265,11 @@ The Anderson thermostat introduces random collision of the molecules with an ima
 
 Although this approach generates the correct canonical ensemble probabilities, the molecular kinetics are not reproduced correctly, because the random collisions decorrelate the system.\cite{shell2019lecturenotes}
 
-\subsubsection{Nosé-Hoover Thermostat}
-
 Nosé augmented the Hamiltonian with two extra degrees of freedom representing an imaginary heat bath:
 
 \begin{equation}
 \label{nose_hamiltonian}
- H_{\text{Nosé}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{p_s^2}{2Q} + (3N + 1) \frac{ln(s)}{k_b T}
+ H_{\text{Nosé}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{p_s^2}{2Q} + (3N + 1) \frac{\text{ln}(s)}{k_b T}
 \end{equation}
 
 Here, $s$ is the position and $p_s$ is the momentum of the heat bath.\cite{frenkel2001understanding} The parameter $Q$ is an effective mass associated with $s$, i.e. $p_s = Q \frac{ds}{dt}$ and its magnitude determines the coupling between the heat bath and the original system. It has to be chosen carefully by the user, as it influences the temperature fluctuations.\cite{Huenenberger2005} Using the Lagrangian, it can be shown that the particles are coupled to the heat bath by scaling the momenta:
@@ -265,9 +278,9 @@ Here, $s$ is the position and $p_s$ is the momentum of the heat bath.\cite{frenk
  p_i = m_i v_i \times s
 \end{equation}
 
-The Hamiltonian in Eq. \ref{nose_hamiltonian} can then be used to derive the equations of motions for the extended system, i.e. for both, the heat bath and the original system. Note, that this approach is deterministic as no stochastic element is present. This thermostat generates the correct thermodynamics for the canonical ensemble.\cite{shell2019lecturenotes}
+The Hamiltonian in Eq. \ref{nose_hamiltonian} can then be used to derive the equations of motions for the extended system, i.e. for both, the heat bath and the original system. This approach is deterministic as no stochastic element is present. This thermostat generates the correct thermodynamics for the canonical ensemble.\cite{shell2019lecturenotes}
 
-However, scaling of the particle momenta using the position of the imaginary heat bath also implies scaling of the timescale in the extended system.\cite{shell2019lecturenotes} Since the position $s$ is variable, the implied timescale also changes making it difficult to implement the Nose thermostat. To solve this issue, Hoover proposed an alternative by replacing the heat bath momentum $p_s$ with a friction coefficient $\xi = \frac{d ln(s)}{dt}$:
+Scaling of the particle momenta using the position of the imaginary heat bath also implies scaling of the timescale in the extended system.\cite{shell2019lecturenotes} Since the position $s$ is variable, the implied timescale also changes making it difficult to implement the Nose thermostat. To solve this issue, Hoover proposed an alternative by replacing the heat bath momentum $p_s$ with a friction coefficient $\xi = \frac{d ln(s)}{dt}$:
 
 \begin{equation}
  H_{\text{Nosé-Hoover}} = \sum_i^N \Big( \frac{p_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{\xi^2 Q}{2} + 3N k_B T ln(s)
@@ -301,32 +314,31 @@ Typically, The Nosé-Hoover thermostat and the Parinello-Rahman barostat are use
 
 \section{Coarse-Graining}
 
-Coarse-graining is the process of building a simplified model of a complex system. To this end, a coarse-grained model represents the system at a lower level of resolution, i.e. it reduces the number of degrees of freedom. Obviously, the goal is to keep essential features, while ignoring or averaging over less important details. In other words, the simplified model still has to maintain the correct physical behavior. The benefits of coarse-grained models are twofold: (1) The reduced representation allows to access longer length an time scales. This is a direct consequence of the reduced molecular friction and smoothed energy landscape of the coarse-grained model, which effectively accelerates equilibration of the molecular system. In addition, the computational cost reduces with the number of degrees of freedom. (2) Coarse-graining helps to put the essential features driving the emergent phenomena of interest into the spot light, as disturbing and unnecessary details are removed.
+Coarse-graining is the process of building a simplified model of a complex system. In particular, high-resolution representations, e.g. atomistic structures, are projected to a lower level of resolution, i.e. the number of degrees of freedom are reduced. The goal is to keep essential features, while ignoring or averaging over less important details. In other words, the simplified model still has to maintain the correct physical behavior. The benefits of coarse-grained models are twofold: (1) The reduced representation enables access to longer length an time scales compared to all-atom (AA) models. The coarse-grained configuration represents an average over an ensemble of microstates. As a consequence of averaging, coarse-graining reduces molecular friction and smooths the energy landscape. Therefore, the reduced representation effectively accelerates equilibration of the molecular system and improves sampling of conformational space. In addition, the computational cost for the MD simulation reduces with the number of degrees of freedom. (2) Coarse-graining helps to put the essential features driving the emergent phenomena of interest into the spot light, as disturbing and unnecessary details are removed.
+
+In its core, coarse-graining consists of two steps: (1) Choose a low-resolution representation of the system and (2) build a coarse-grained force field in order to perform a computer simulation of the model. For the latter task, a wide range of different schemes have been developed and two schools of thoughts have been established, referred to as \textit{bottom-up} and \textit{top-down} approaches. 
 
 \subsection{Representation}
 
-The basis of a coarse-grained model is the representation of the particles captured in the system. The most fundamental model relies on a quantum mechanical description. In this regard, a classical atomistic description is already a coarse-grained model based on ab initio considerations. However, coarse-graining typically refers to an even lower resolution description, where the coarse-grained sites, often called beads, represent multiple atoms. Typically, the beads are associated with specific types reflecting the physiochemical properties of the corresponding group of atoms. Moreover, bonds between coarse-grained beads are introduced to capture the molecular topology. The choice of mapping from the atomistic to the lower resolution representation is crucial and has to be done with great care, as the essential features of the original system still have to be captured by the coarse-grained representation. However, in many cases the mapping is based on the chemical intuition of the user, but more systematic methods have been developed recently.\cite{chakraborty2018encoding, giulini2020information}
+The basis of a coarse-grained model is the representation of the particles captured in the system. The most fundamental model relies on a quantum mechanical description. In this regard, a classical atomistic description is already a coarse-grained model based on ab initio considerations. However, coarse-graining typically refers to an even lower resolution description, where the coarse-grained sites, often called beads, represent multiple atoms. Typically, the beads are associated with specific types reflecting the physiochemical properties of the corresponding group of atoms. Similar to AA representations, bonds between coarse-grained beads are introduced to capture the molecular topology. The choice of mapping from the atomistic to the lower resolution representation is crucial, as it has to preserve essential features that are required to (1) describe the phenomena of interest and (2) capture important slow and large amplitude motions of the system.\cite{noid2013perspective} However, in many cases the mapping is based on the chemical intuition of the user, but more systematic methods have been developed recently.\cite{chakraborty2018encoding, giulini2020information}
 
 It is often required to not only specify the representation but also define a concrete mapping for the coordinates, i.e. a function $\mathbf{M}$ of the atomistic coordinates $\mathbf{r}$ to the coordinates of the coarse-grained beads $\mathbf{R}$. Typically, a linear mapping is chosen,
 
 \begin{equation}
-  \mathbf{R}_I = \mathbf{M}_{I}(\mathbf{r}) = \sum_{i \in \psi(I)} b_{iI} \mathbf{r}_i 
+  \mathbf{R}_I = \mathbf{M}_{I}(\mathbf{r}) = \sum_{i \in \psi_I} b_{iI} \mathbf{r}_i 
 \end{equation}
 
-where $I$ and $i$ are the indices of the CG bead and atom respectively, $\psi(I)$ is the set of indices of atoms the CG bead $I$ corresponds to and $b_{iI}$ are coefficients of the mapping. In many cases, the coordinate mapping is chosen such that it reflects the center of mass geometry of the corresponding group of atoms. 
+where $I$ and $i$ are the indices of CG beads and atoms respectively, $\psi_I$ is the set of atom indices that are associated with CG bead $I$ and $b_{iI}$ are coefficients of the mapping. In many cases, the coordinate mapping is chosen such that it reflects the center of mass geometry of the corresponding group of atoms, i.e. $b_{iI} = m_i/M_I$, where $m_i$ is the mass of atom i and $M_I$ is the total mass of all atoms associated with bead $I$. 
 
-\subsection{Top-down vs Bottom-up}
+\subsection{Bottom-up Approach}
 
-Once the representation of the coarse-grained model is defined, the force field has to be built. For this task, a wide range of different schemes have been developed and two schools of thoughts have been established, referred to as \textit{bottom-up} and \textit{top-down} approaches. However, while a distinction between those two approaches is instructive, a clear classification is not always possible as many coarse-graining schemes incorporate aspects both ideas.
+Once the coarse-grained representation is chosen, the interactions between the beads have to be defined. The bottom-up approach builds a coarse-grained force field based on a more detailed model and aims at reproducing the thermodynamic and structural properties of the higher resolution system as closely as possible. In general, the choice of the underlying fine-grained model is not bound to a specific resolution. A common choice is to use a classical atomistic model as a basis. In this case, the accuracy of the coarse-grained model depends on the quality of the fine-grained model, as the atomistic model itself is an approximation of the quantum mechanical description. Once the high-resolution model is chosen, statistical mechanics provides a framework to rigorously derive the force field for the coarse-grained system. In theory, the many-body potential of mean force (PMF, see below) is central for this derivation.\cite{noid2013perspective} However, practical application of the PMF is provides significant challenges as it is extremely costly to evaluate for high dimensional systems.
 
-The bottom-up approach utilizes a more detailed model and aims at reproducing the thermodynamic and structural properties of the higher resolution system as closely as possible. In general, the choice of the underlying fine-grained model is not bound to a specific resolution. A common choice is to use a classical atomistic model as a basis. In this case, the accuracy of the coarse-grained model depends on the quality of the fine-grained model, as the atomistic model itself is an approximation of the quantum mechanical description. Once the high-resolution model is chosen, statistical mechanics provides a framework to rigorously derive the force field for the coarse-grained system. In theory, the many-body potential of mean force (PMF, see below) is central for this derivation.\cite{noid2013perspective} However, practical application of the PMF is provides significant challenges as it is extremely costly to evaluate for high dimensional systems.
-
-While the spirit of bottom-up approaches is related to inductive reasoning, i.e. generalizing from something that is more specific, the top-down approach can be associated with deduction, i.e. applying general rules to derive a conclusion. Top-down coarse-graining starts with universal physical principles or experimentally observed phenomena that the model aims to reproduce. In general, top-down models are used to study the consequences of the rules incorporated in the model.\cite{schmid2009toy} Top-down models are often not chemically-specific, as the set of rules yielding a specific phenomena might not be unique.\cite{noid2013perspective} In this sense, top-down models are usually under-constrained.
 
 %Furthermore, it is often not sufficient to link a single phenomena to a specific chemical compound, as a full range of properties required to characterize the compound with high confidence.
 %While a coarse-grained model implies the existence of more fundamental, higher resolution model, the question of how the coarse-grained model is built upon this fine-grained 
 
-\subsection{Consistency Criteria and the Many-Body Potential of Mean Force}
+\subsubsection{Consistency Criteria and the Many-Body Potential of Mean Force}
 
 Deriving the coarse-grained potential $U_{\text{CG}}(\mathbf{R})$ for the coarse-grained model is the most challenging task. In the case of bottom-up coarse-graining, the potential $U(\mathbf{R})$ can theoretically be derived exactly from the fine-grained potential $U_{\text{AA}}(\mathbf{r})$ and the mapping $\mathbf{M}(\mathbf{r})$. The underlying criteria for the derivation is called consistency criteria and states that the equilibrium joint probability density $p_{CG} (\mathbf{R}, \mathbf{P})$ in phase space of the coarse-grained coordinates $\mathbf{R}$ and momenta $\mathbf{P}$ have to match the implied atomistic probability density $p_{AA} (\mathbf{R}, \mathbf{P})$.\cite{noid2008multiscale} For simplicity, the following considerations are restricted to the configuration space, i.e. excluding momenta, such that the consistency criteria can be written as
 
@@ -367,13 +379,14 @@ where $U$ is the internal energy, makes it clear that the many-body PMF is not a
 Importantly, $U(\mathbf{R})$ typically introduces many-body interactions that can not be expressed with simple classical force fields as outlined in Sec. \ref{molecular_forcefield}.\cite{noid2013perspective} This is a direct consequence of integrating over degrees of freedom. Moreover, the many-body PMF is extremely high dimensional and therefore becomes infeasible to compute analytically for most systems.\cite{noid2013perspective} For those reasons, a wide range of techniques have been developed to obtain a tractable approximation of the many-body PMF (see below). 
 
 
-\subsection{Review of Bottom-Up Approaches and Top-Down Models}
+\subsubsection{Review of Bottom-Up Strategies}
 \label{Theory_MS:cg_methods}
 
 In this section, some popular bottom-up approaches to determine the coarse-grained potential are reviewed. Those approaches include structure based techniques, such as direct Boltzmann inversion (DBI) and iterative Boltzmann inversion (IBI), as well as variational approaches, like the multiscale coarse-graining approach (MS-CG) and the relative entropy (RE) framework. Moreover, two generic top-down force fields are presented, namely the Martini force field and the Kremer-Grest polymer model.
 
-\subsubsection{Direct Boltzmann Inversion}
-
+\hfill \break
+\noindent \textit{Direct Boltzmann Inversion}
+\newline
 The most simple approach to obtain an approximate coarse-grained potential is direct Boltzmann inversion (DBI).\cite{tschop1998simulation} This approach aims at reproducing certain structural distributions computed from atomistic reference data that is mapped onto the coarse-grained degrees of freedom. The distribution functions for given interactions $\xi$ are denoted with $p_{\xi}(x)$, where $x$ is a scalar variable, such as pairwise distances, angles or dihedrals. The goal is to find the corresponding potential $U_{\xi}$ that yields the desired distribution. Based on the assumption that the distribution functions for different mechanical variables $x$ factorize, the probability distributions can be written as Boltzmann factors \cite{tschop1998simulation}
 
 \begin{equation}
@@ -389,8 +402,9 @@ In addition, the corresponding volume elements for each distribution have to be 
 Note that factorizing the probability distributions is a very severe approximation. Therefore, this approach yields accurate results only for interactions that can be regarded as isolated in the coarse-grained model.\cite{noid2013perspective} However, in cases where the coupling between the interactions can not be ignored, DBI yields inaccurate potentials that do not correctly reproduce the structural distributions as important cross-correlations are not taken into account.
 
 
-\subsubsection{Iterative Boltzmann Inversion}
-
+\hfill \break
+\noindent \textit{Iterative Boltzmann Inversion}
+\newline
 To improve the potentials derived with DBI, an iterative scheme can be applied. This scheme is called iterative Boltzmann inversion (IBI) and consists of the following steps:\cite{muller2002coarse, reith2003deriving} (1) Initial potentials are derived using DBI. (2) Use the derived coarse-grained potentials in a MD simulations to obtain the corresponding structural distributions $p_{\xi}(x|U)$. (3) Update the coarse-grained potentials via
 
 \begin{equation}
@@ -399,8 +413,9 @@ To improve the potentials derived with DBI, an iterative scheme can be applied. 
 
 Steps (2) and (3) are repeated until the potentials converge. Despite its simplicity, IBI has become very popular and is used especially for complex liquids and polymers. While IBI still treads every interaction $\xi$ separately, it implicitly accounts for correlations between the interactions through the iterative scheme.\cite{noid2013perspective} However, convergence of the potentials is not guaranteed.\cite{noid2013perspective}
 
-\subsubsection{Multiscale Coarse-Graining}
-
+\hfill \break
+\noindent \textit{Multiscale Coarse-Graining}
+\newline
 Beside approaches that focus on reproducing certain structural properties, variational approaches can be applied to find an approximation of the many-body PMF. A very early work in this field is the Multiscale coarse-graining (MS-CG) method, which introduces a force-matching functional \cite{ercolessi1994interatomic, izvekov2005multiscale, izvekov2005multiscale2}
 
 \begin{equation}
@@ -409,8 +424,9 @@ Beside approaches that focus on reproducing certain structural properties, varia
 
 where $\mathbf{F}_I(\mathbf{M}(\mathbf{r}))$ is the force acting on the coarse-grained site $I$ mapped from the atomistic configuration implied by the trial potential of the coarse-grained model and $\mathbf{f}_I(\mathbf{r})$ is the net force acting the group of atoms associated with site $I$. The angular brackets with subscript \textit{AA} denotes the atomistic canonical ensemble average, which is typically approximated using trajectories obtained in a simulation. The MS-CG method states, that the coarse-grained potential yielding the best approximation of the average net atomistic forces should be used and therefore $\chi^2 [\mathbf{F}]$ has to be minimized. Indeed, the functional $\chi^2 [\mathbf{F}]$ has a unique global minimum given by the actual many-body PMF.\cite{noid2013perspective} In practice, the coarse-grained force $F$ is expressed as a linear combination of basis functions leading to a coupled system of linear equations that can be solved directly.\cite{noid2013perspective} 
 
-\subsubsection{Relative Entropy}
-
+\hfill \break
+\noindent \textit{Relative Entropy}
+\newline
 Another variational approach is based on the relative entropy, also known as Kullback-Leibler divergence, which is widely used as a asymmetric distance metric between probability distributions.\cite{kullback1951information, shell2008relative, chaimovich2010relative, chaimovich2011coarse} Applied to the coarse-graining problem, the relative entropy can be written 
 
 \begin{equation}
@@ -440,16 +456,20 @@ where $F = - k_b T \; \text{ln}(\mathcal{Z})$ is the free energy. In order to op
 
 i.e. the derivatives of $U_{\text{CG}}$ with respect to its parameters have to average to the same value for both, the atomistic and the coarse-grained ensemble.\cite{shell2008relative} Importantly, this approach reproduces the expectation values for every observable, such as distances or angles, that are included in the coarse-grained potential.\cite{shell2008relative} Therefore, the relative entropy framework can be used to generate potentials that capture the correct structural distributions. Numerical minimization of the relative entropy is typically achieved using advanced algorithms, such as the Newton-Raphson method.\cite{shell2008relative}
 
-\subsubsection{Martini Force Field}
+\subsection{Top-down Approach}
 
-The Martini force field is a generic coarse-grained potential for a wide range of soft matter systems. It was developed with an emphasize on biomolecules and its various applications include lipid membranes, proteins, sugars and nucleotides.\cite{marrink2007martini, monticelli2008martini, lopez2009martini, uusitalo2015martini} The parameterization of the Martini force field incorporates both coarse-graining philosophies, a top-down approach for the non-bonded interactions and a bottom-up approach for the bonded interactions. While the non-bonded parameters of the model are tuned to reproduce experimental partitioning free energies of water-alkane mixtures, the bonded interactions are optimized to capture the correct conformational distributions of atomistic reference data.\cite{marrink2013perspective} 
+While bottom-up models are build upon a higher resolution model, top-down coarse-graining refers to more deductive approaches. Top-down coarse-grained models are designed to study the consequences upon application of general rules \cite{schmid2009toy}. Such rules are typically inferred from universal physical principles or to reproduce specific phenomena that have been observed experimentally \cite{noid2013perspective}. Top-down models can be chemically-specific or generic. Chemically-specific models aim to reproduce properties of a particular system, while generic models are designed without relating to any specific chemistry.
 
-Central to the design of the Martini model is a robust transferability across soft matter systems. For this reason, the model is based on modular building blocks, i e. coarse-grained beads, and introduces rules for the mapping from groups of atoms to the beads. On average, four heavy atoms and their associated hydrogens are represented by a single coarse-grained site. The four main building blocks are denoted with charged (Q), polar (P), nonpolar(N), and apolar (C). Each of the main bead types have further subtypes distinguishing either their hydrogen bonding capability (Q and N types) or their degree of polarity (P and C types). The assignment of the specific bead types is based on the hydrophobicity, i.e. the water/organic partition free energy, of the corresponding group of atoms.
+\subsubsection{Review of Top-down Models}
 
-Despite its wide use, the Martini model displays limitations linked to its ambition of being broadly transferable. A major drawback of the Martini model is a less accurate reproduction of structural features. For example, the model does not include size-dependent Lennard-Jones parameters which may lead to artifacts, such as increased barriers in dimerization profiles.\cite{alessandri2019pitfalls}
+\hfill \break
+\textit{Hydrophobic-polar Protein Model}
+\newline
+The hydrophobic-polar (HP) protein model is a highly simplified model to study protein folds \cite{dill1985theory}. The HP model is a lattice model that represents proteins as two or three-dimensional self-avoiding walks. It assumes that the hydrophobic interaction between amino acid residues is the driving force for proteins folding into their native states. In particular, the model represents proteins as sequences of hydrophobic (H) and polar (P) residues. The hydrophobic effect is imitated by assigning a negative weight to interactions between adjacent, non-covalently bound H residues in order to stabilize the contact. The native structure of a protein is identified as the conformation that maximizes the number of contacts between hydrophobic residues. Despite its simplicity, the HP model has been a corner stone for lattice models and lead to the development of more advanced methods that are able to determine minimum energetic states for long protein sequences close to experimentally observed conformations \cite{shmygelska2003improved, yue1995test}.
 
-\subsubsection{Kremer-Grest Polymer Model}
-
+\hfill \break
+\noindent \textit{Kremer-Grest Polymer Model}
+\newline
 The Kremer-Grest (KG) model is a top-down model widely used to study generic polymer properties.\cite{kremer1990dynamics, grest1986molecular} The model represents polymers as chains of beads connected via non-linear springs. The spring potential is tuned such that crossing of two polymer chains is avoided in order to correctly simulate the dynamics of polymer melts, in especially entanglement effects of long chains.
 More specifically, the potential for bonded beads is given by the finite-extensible-nonlinear spring (FENE) potential
 
@@ -478,6 +498,17 @@ In order to vary the stiffness of the chains, an additional bending potential ca
 where $\Theta$ is the the bond angle and $\kappa$ defines the stiffness.\cite{faller1999local}
 
 While the KG model is a generic model to study universal phenomena of polymer melts, the stiffness of the chains can be used to relate the model to real polymers.\cite{everaers2020kremer, svaneborg2020characteristic} To this end, simulated polymer melts can be linked to commodity polymers via their Kuhn length, i.e. the scale indicating the crossover from a chemistry-specific to a universal random-walk like behavior (see Sec. \ref{Morphing:KG} for a more detailed explanation).
+
+\hfill \break
+\noindent \textit{Martini Force Field}
+\newline
+The Martini force field is a generic coarse-grained potential for a wide range of soft matter systems. It was developed with an emphasize on biomolecules and its various applications include lipid membranes, proteins, sugars and nucleotides.\cite{marrink2007martini, monticelli2008martini, lopez2009martini, uusitalo2015martini} The parameterization of the Martini force field incorporates both coarse-graining philosophies, a top-down approach for the non-bonded interactions and a bottom-up approach for the bonded interactions. While the non-bonded parameters of the model are tuned to reproduce experimental partitioning free energies of water-alkane mixtures, the bonded interactions are optimized to capture the correct conformational distributions of atomistic reference data.\cite{marrink2013perspective} 
+
+Central to the design of the Martini model is a robust transferability across soft matter systems. For this reason, the model is based on modular building blocks, i e. coarse-grained beads, and introduces rules for the mapping from groups of atoms to the beads. On average, four heavy atoms and their associated hydrogens are represented by a single coarse-grained site. The four main building blocks are denoted with charged (Q), polar (P), nonpolar(N), and apolar (C). Each of the main bead types have further subtypes distinguishing either their hydrogen bonding capability (Q and N types) or their degree of polarity (P and C types). The assignment of the specific bead types is based on the hydrophobicity, i.e. the water/organic partition free energy, of the corresponding group of atoms.
+
+Despite its wide use, the Martini model displays limitations linked to its ambition of being broadly transferable. A major drawback of the Martini model is a less accurate reproduction of structural features. For example, the model does not include size-dependent Lennard-Jones parameters which may lead to artifacts, such as increased barriers in dimerization profiles.\cite{alessandri2019pitfalls}
+
+
 
 % -----------------------------------
 %   Backmapping
