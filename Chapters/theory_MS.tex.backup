@@ -416,12 +416,12 @@ Steps (2) and (3) are repeated until the potentials converge. Despite its simpli
 \hfill \break
 \noindent \textit{Multiscale Coarse-Graining}
 \newline
-Beside approaches that focus on reproducing certain structural properties, variational approaches can be applied to find an approximation of the many-body PMF. A very early work in this field is the Multiscale coarse-graining (MS-CG) method, which introduces a force-matching functional \cite{ercolessi1994interatomic, izvekov2005multiscale, izvekov2005multiscale2}
+Beside approaches that focus on reproducing certain structural properties, variational approaches can be applied to find an approximation of the many-body PMF. Pioneering work in this field is the Multiscale coarse-graining (MS-CG) method, which introduces a force-matching functional \cite{ercolessi1994interatomic, izvekov2005multiscale, izvekov2005multiscale2}
 
 \begin{equation}
   \chi^2 [\mathbf{F}] = \frac{1}{3N} \Big \langle \sum_{I=1}^N | \mathbf{F}_I(\mathbf{M}(\mathbf{r})) - \mathbf{f}_I(\mathbf{r}) |^2 \Big \rangle_{\text{AA}}  ,
 \end{equation}
-
+\noindent
 where $\mathbf{F}_I(\mathbf{M}(\mathbf{r}))$ is the force acting on the coarse-grained site $I$ mapped from the atomistic configuration implied by the trial potential of the coarse-grained model and $\mathbf{f}_I(\mathbf{r})$ is the net force acting the group of atoms associated with site $I$. The angular brackets with subscript \textit{AA} denotes the atomistic canonical ensemble average, which is typically approximated using trajectories obtained in a simulation. The MS-CG method states, that the coarse-grained potential yielding the best approximation of the average net atomistic forces should be used and therefore $\chi^2 [\mathbf{F}]$ has to be minimized. Indeed, the functional $\chi^2 [\mathbf{F}]$ has a unique global minimum given by the actual many-body PMF.\cite{noid2013perspective} In practice, the coarse-grained force $F$ is expressed as a linear combination of basis functions leading to a coupled system of linear equations that can be solved directly.\cite{noid2013perspective} 
 
 \hfill \break
@@ -458,7 +458,7 @@ i.e. the derivatives of $U_{\text{CG}}$ with respect to its parameters have to a
 
 \subsection{Top-down Approach}
 
-While bottom-up models are build upon a higher resolution model, top-down coarse-graining refers to more deductive approaches. Top-down coarse-grained models are designed to study the consequences upon application of general rules \cite{schmid2009toy}. Such rules are typically inferred from universal physical principles or to reproduce specific phenomena that have been observed experimentally \cite{noid2013perspective}. Top-down models can be chemically-specific or generic. Chemically-specific models aim to reproduce properties of a particular system, while generic models are designed without relating to any specific chemistry.
+While bottom-up models are build upon higher resolution models, top-down coarse-graining refers to more deductive approaches. Top-down coarse-grained models are designed to study the consequences upon application of general rules \cite{schmid2009toy, clementi2008coarse, deserno2009mesoscopic}. Such rules are typically inferred from universal physical principles or constructed to reproduce specific phenomena that have been observed experimentally \cite{noid2013perspective}. In particular, top-down models can be chemically-specific or generic: Chemically-specific models aim to reproduce properties of a particular system. To this end, interaction potentials with typically simple functional form are tuned in order to reproduce certain thermodynamic properties of a target system, such as density, interfacial tension or partitioning of compounds between aqueous and hydrophobic environments \cite{shelley2001simulations, shinoda2007multi, marrink2004coarse}. On the other hand, generic models are designed without relating to any particular system \cite{honeycutt1990metastability, cooke2005tunable, drouffe1991computer}. Typically, generic top-down models address large-scale phenomena at a low resolution. As such, they lack chemical details and it is not straightforward to relate them to higher resolution models. In most cases, simple potentials are applied that are defined by relatively few parameters. The interactions are tuned in order to reproduce certain phenomena or systematically varied to study the consequences of a particular aspect of the model \cite{detcheverry2009theoretically, wu2011coarse}.
 
 \subsubsection{Review of Top-down Models}
 
