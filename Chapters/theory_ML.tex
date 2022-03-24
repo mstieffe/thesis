@@ -187,7 +187,7 @@ where $\sigma$, $A$, $B$, $a$ and $b$ are the parameters of the model. The sigmo
 
 \subsubsection{Time-structure Independent Components Analysis}
 
-Time-lagged independent component analysis (tICA) is a linear transformation algorithm that is widely used for dimensionality reduction of MD trajectories.\cite{molgedey1994separation, hyvarinen2001independent, perez2013identification, schwantes2013improvements} While PCA finds coordinates of maximal variance, TICA aims at a mapping that maximizes the autocorrelation at the given lag time, i.e. it identifies the slow degrees of freedom. As such, tICA explores a subspace of good reaction coordinates and is well suited to prepare high-dimensional input data for Markov model construction.
+Time-lagged independent component analysis (tICA) is a linear transformation algorithm that is widely used for dimensionality reduction of MD trajectories.\cite{molgedey1994separation, hyvarinen2001independent, perez2013identification, schwantes2013improvements} While PCA finds coordinates of maximal variance, tICA aims at a mapping that maximizes the autocorrelation at the given lag time, i.e. it identifies the slow degrees of freedom. As such, tICA explores a subspace of good reaction coordinates and is well suited to prepare high-dimensional input data for Markov model construction.
 
 Consider a mean-free trajectory of configurations $\mathbf{x}(t) \in \mathbb{R}^D$, where $t$ is an integer denoting the time step. The covariance matrix $\mathbf{C}(\tau)$ of the data is obtained as
 
