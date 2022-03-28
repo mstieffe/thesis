@@ -64,26 +64,6 @@ The 22 atoms of ADP are coarse-grained into 6 beads. More specifically, the coar
 
 %Electrostatics were treated deploying the particle-mesh Ewald (PME) method using a $1.0$ nm cutoff for the direct space interactions.
 
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/ADP_fes.pdf}
-  \caption{Free energy landscape }
-  \label{FIG:morph_sps_free_energy}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/ADP_kinetics.pdf}
-  \caption{Free energy landscape }
-  \label{FIG:morph_sps_free_energy}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=0.7\textwidth]{./Figures/temporal_coherent_bm/ADP_velocities.pdf}
-  \caption{velocity distribution }
-  \label{FIG:morph_sps_free_energy}
-\end{figure}
 
 \subsection{CLN}
 
@@ -105,14 +85,9 @@ Turning to the energy distributions for the more challenging mini protein CLN in
 
 \begin{figure}[H]
   \centering
-      \includegraphics[width=0.7\textwidth]{./Figures/temporal_coherent_bm/ADP_energies.pdf}
-  \caption{energy}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=0.7\textwidth]{./Figures/temporal_coherent_bm/CLN_energies.pdf}
-  \caption{energy}
+      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/energies.pdf}
+  \caption{velocity distribution }
+  \label{FIG:morph_sps_free_energy}
 \end{figure}
 
 \subsection{Thermodynamics}
@@ -121,23 +96,58 @@ In order to test thermodynamic agreement between the reference system and the ba
 
 The FES and selected snapshots for ADP can be found in Fig. \ref{}. The FES are computed in terms of the backbone dihedrals $\phi$ and $\psi$, as they are well known collective variables to describe the conformational states of ADP \cite{nuske2014variational,vitalini2015dynamic}. Panel (a) displays the FES obtained for the reference data. Three characteristic metastable states are observed that correspond to $\beta$-sheet (snapshots 1 and 2), $\alpha$-helix (snapshot 3), and left-handed $\alpha$-helix (snapshots 4 and 5) conformations of the amino acid. The atomistic reconstruction for the in-distribution test set can be found in panel (b). The model accurately reproduces all metastable states and is visually in excellent agreement with the reference FES. Similarly, the FES obtained for the backmapped generalization test set matches remarkable well with the reference FES, as shown in panel (c). However, some regions along transition paths between metastable states display higher relative populations compared to the reference system, for example ($\phi\approx-2$,$\psi\approx-2$). While the coarse-grained force field enables broader and more frequent exploration of these regions of configuration space, they are under represented in the atomistic trajectory. Therefore it is remarkable that the ML model generalizes to those sparsely sampled areas and reconstructs high-energy configurations accordingly. The structural fidelity of reconstructed configurations is further highlighted by the superimposed collections of snapshots displayed in panel (d). For both test sets the ML model reconstructs visually faithful configurations with remarkable similarity to the atomistic reference data.
 
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/ADP_fes.pdf}
+  \caption{Free energy landscape }
+  \label{FIG:morph_sps_free_energy}
+\end{figure}
+
 Fig. \ref{} displays the FES and selected snapshots obtained for CLN. Unlike ADP, constructing meaningful collective variables for CLN is more challenging. To this end, time-lagged independent component analysis (TICA) is used for dimensionality reduction, as outlined in Sec. \ref{}. The TICA algorithm is applied to the atomistic reference data to obtain a low dimensional projection of the 45 pairwise $\alpha$-carbon distances. In particular, the first two non-trivial Independent Components (ICs) are used as collective variables in the following. The FES obtained for the reference data is displayed in panel (a). Three metastable states can be identified that correspond to the folded state (snapshot 1), mis-folded state (snapshot 2) and folded state (snapshot 3). While all metastable states can be recovered upon backmapping of the in-distribution and generalization test sets (panel (b) and (c)), the FES for backmapped trajectories are contracted compared to the reference FES. In particular, the diversity of folded and mis-folded states is reduced upon backmapping compared to the reference system. This is also indicated by a lower variability of backmapped structures for the folded and mis-folded states displayed in panel (d). Similarly to ADP, backmapping of the generalization test set yields higher populations along the transition paths between metastable states compared to the in-distribution test set. 
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/CLN_fes.pdf}
+  \caption{Free energy landscape }
+  \label{FIG:morph_sps_free_energy}
+\end{figure}
 
 %While transition paths between metastable states are less populated in the backmapped in-distribution test set compared to the reference data, the discrepancy between the total number of data points between both data sets has to be emphasized.
 
 \subsection{Dynamics}
 
-A key feature of the proposed method is the incorporation of the previous trajectory frame as a conditional input for the ML model. Such temporal information is required to achieve temporal coherence between consecutive frames and sets the method apart from other backmapping schemes. Temporal coherence of backmapped trajectories is tested in this section in terms of implied process timescales and velocity distributions.
+A key feature of the proposed method is the incorporation of the previous trajectory frame as a conditional input for the ML model. Such temporal information is required to achieve temporal coherence between consecutive frames and sets the method apart from other backmapping schemes. In this section, kinetic properties of backmapped trajectories are analysed in terms of implied timescales of slow processes obtained with MSMs. In addition, temporal coherence between frames is tested in terms of intra-frame velocities.
 
-MSM are constructed as outlined in Sec. \ref{} deploying the collective variables used previously for the analysis of thermodynamic properties. In particular, the space of collective variables is decomposed using k-means clustering. For a direct comparison between timescales and processes between different MSMs, the same cluster centers obtained for the atomistic reference data are deployed for all data sets. Note that coarse-grained force fields typically yield faster simulation dynamics compared to atomistic force fields. To facilitate comparison between all trajectories, implied timescales obtained for coarse-grained simulation data are rescaled such that the timescales for the slowest process match.
+\subsubsection{Timescales of Slow Processes}
 
-Fig. \ref{} displays the implied timescales obtained for ADP trajectories. MSMs are build for a lagtime of 5 ps and 100 cluster centers are used for the state decomposition. A comparison for the implied timescales between atomistic reference and reconstructed in-distribution trajectories is displayed in panel (a). The first three timescales are in excellent agreement and match within error. Note that subsequent timescales are below the resolution limit of the MSMs, since corresponding processes are faster than the applied lagtime. 
+MSM are constructed as outlined in Sec. \ref{} deploying the collective variables used previously for the analysis of thermodynamic properties. In particular, the space of collective variables is decomposed using k-means clustering. For a direct comparison between timescales and processes between different MSMs, the same cluster centers obtained for the atomistic reference data are deployed for all data sets. To evaluate the similarity between processes, the cosine similarity $c$ between two eigenvectors $\mathbf{\Psi}_i$ and $\mathbf{\Psi}_j$ as 
+
+\begin{equation}
+ c = \frac{\mathbf{\Psi}_i \mathbf{\Psi}_j}{|\mathbf{\Psi}_i| |\mathbf{\Psi}_j|} .
+\end{equation}
+
+Moreover, collective variables for both systems can be computed at the coarse-grained resolution as well allowing for MSM construction of coarse-grained trajectories. Note that coarse-grained force fields typically yield faster simulation dynamics compared to atomistic force fields. To facilitate comparison between all trajectories, implied timescales obtained for coarse-grained simulation data are rescaled such that the timescales for the slowest process match.
+
+Fig. \ref{} displays the implied timescales obtained for ADP trajectories. MSMs are build for a lagtime of 5 ps and 100 cluster centers are used for the state decomposition. For all data sets a cosine similarity  $>90$ \% to the reference system is observed for the first three processes. A comparison for the implied timescales between atomistic reference and reconstructed in-distribution trajectories can be found in panel (a). The first three timescales are in excellent agreement and match within error. Note that subsequent timescales are below the resolution limit of the MSMs, since corresponding processes are faster than the applied lagtime. Implied timescales for the first three processes obtained for the backmapped generalization set displayed in panel (b) also match remarkable well with the reference system. Moreover, timescales obtained for the backmapped generalization set and coarse-grained trajectories prior to backmapping are in excellent agreement. This indicates that the ML model maintains the kinetics of slow motions present in the coarse-grained trajectories. 
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/ADP_kinetics.pdf}
+  \caption{Free energy landscape }
+  \label{FIG:morph_sps_free_energy}
+\end{figure}
 
 
- For all data sets the same cluster centers are deployed, which are obtained from the atomistic reference data. While all MSM models are built independently, process similarity is 
+A similar analysis for the timescales of slow processes obtained for CLN can be found in Fig. \ref{}. The implied timescales obtained for the atomistic reference system are reproduced within error upon backmapping of the in-distribution test set, as can be seen in panel (a). However, a cosine similarity $>90$ \% is only observed for the first two processes, while the 3rd process yields $\approx 80$ \% and the 4th process $\approx 60$ \% similarity. This indicates that the 3rd and 4th slowest processes have slightly changed upon backmapping. Turning to the timescales obtained for the CGSchNet coarse-grained simulation in panel (b) reveals that timescales of different processes are not rescaled uniformly when the coarse-grained force field is deployed. While timescale ratios of the 1st, 3rd and 4th process are consistent with the kinetics observed for the atomistic reference system, the 2nd process is accelerated more than the others. Cosine similarities of the first and second process is $\approx 60$ \%, and $<25$ \% for the third and fourth process. Backmapping the coarse-grained trajectory yields similar timescales compared to the coarse-grained kinetics for the 1st and 2nd process, while the 3rd and 4th process are slowed down. The cosine similarity of the second process is improved to $\approx 90$ \% upon backmapping, while the similarities of other processes are maintained.
 
-e perform state decomposition in this TICA space using k-means clustering with 150
-centroids
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/CLN_kinetics.pdf}
+  \caption{Free energy landscape }
+  \label{FIG:morph_sps_free_energy}
+\end{figure}
+
+\subsubsection{Intra-frame Velocities}
 
 Atomic velocities $\mathbf{v}_i$ for a frame at time $t$ are calculated as the deviations of atomic positions $\mathbf{s}_i$ between consecutive frames,
 
@@ -147,32 +157,24 @@ Atomic velocities $\mathbf{v}_i$ for a frame at time $t$ are calculated as the d
 
 where $\tau$ is the lagtime between frames. Fig. \ref{} displays the intra-frame velocities obtained for the reference trajectory and both reconstructed test sets. 
 
-As a result of conditioning our backmappings using previous atomistic configurations we find our model is capable of sucessfully generating backmapped trajectories that reproduce intra-frame velocity distributions (Fig.~\ref{fig:adp_velocities}). The distribution of velocities is an effective measure of the deviation of atomic coordinates between consequtive simulation frames. The fact that we effectively capture these velocitiy distributions is impressive as our model is never explicitly trained to match inter-frame velocities when generating configuraitons. For the in distribution test, our backmapped trajectories produce velocities that nearly perfectly match the atomistic data enabled by the known and directly comparable spacing between frames. The temporal spacing between consecutive frames of the in distribution test set is well defined by the frame spacing of the atomistic reference simulation, i.e. 1 ps. However, the specific temporal spacing is more obscure for the generalization test set, as a direct consequence of the CG dynamics. While most CG models target thermodynamic consistency with a yet higher resolution model (bottom-up) or experimentally observed properties (top-down), kinetic consistency is typically neglected. In general, coarse-grained forcefields effectively accelerate simulation dynamics as a consequence of smoothing the energy landscape and lowering energy barriers. However, the timescales for transitions between meta-stable states are typically not rescaled uniformly. To account for this acceleration we rescale the CG reconstructed velocities by dividing our computed velocities by the factor used to normalize the dominant process of the MSM implied timescales. For the backmapped CGSchNet simulation we nevertheless generate atomic reconstructions with slightly deformed and longer tailed velocitiy distributions (Fig.~\ref{fig:adp_velocities}).
 
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/velocities.pdf}
+  \caption{velocity distribution }
+  \label{FIG:morph_sps_free_energy}
+\end{figure}
+
+%Temporal coherence of backmapped trajectories is tested in this section in terms of implied process timescales and velocity distributions.
 \section{Discussion}
 
 However, the timescales for transitions between meta-stable states are typically not rescaled uniformly. 
 
 The model can reintroduce degrees of freedom along CG variables that (1) have a high statistical weight (energetics), (2) are temporal coherent (velocities), while (3) are tightly linked to the CG model (thermodynamics and kinetics)
 
+Strategies to improve the training routine aim at improving sampling of configurat (1) In order to improve sampling of configuration space, training samples of sparsely populated regions in configuration space can be emphasized more. This could be realized by accompanying training samples with thermodynamic or dynamical path weights. (2) An autoregressive training protocol could be applied to improve the temporal coherence. In particular, a recurrent neural network approach would add information of multiple consecutive frames to the gradients used during backpropagation. (3) To further encourage the ML model to utilize knowledge of previous states for its predictions, the training loss could be augmented with a reconstruction error of properties that are explicitly based on such information, for example intra-frame velocities. the ML model can encouraged to explore sparsely populated regions by   Introducing inductive bias in order to improve sampling of configuration space
 
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/CLN_fes.pdf}
-  \caption{Free energy landscape }
-  \label{FIG:morph_sps_free_energy}
-\end{figure}
+We present in this work a data-driven and temporally coherent scheme for backmapping CG trajectories into atomistic resolution. Our approach trains a conditional variational autoencoder (cVAE) to reconstruct atomistic detail given the target CG configuration and the previous atomistic structure. Our method is showcased here to backmap two popular biomolecular systems alanine dipeptide (ADP) and the miniprotein chignolin (CLN). We train our model using a reference atomistic trajectory which we coarse-grain \textit{post hoc} to produce exemplar pairs of atomistic and CG data (Fig.~\ref{fig:setup}a). We test that our backmapping method on both in distribution data generated from backmapping a CG trajectory produced by coarse-graining held-out atomistic data (Fig.~\ref{fig:setup}b), as well as out of distribution data generated from a real CG simulation performed using CGSchNet~\cite{husic2020coarse}. We evaluate the performance of the ML model in terms its capability to reproduce structural, thermodynamic and kinetic properties of the reference atomistic system. To this end, structural similarity is probed by comparing distributions of potential energies and local structural features, such as bond lengths and angles. Thermodynamic similarity is tested by analysing free energy surfaces that are constructed in terms of collective variables. Kinetic agreement is tested by comparing implied timescales of slow processes identified by MSMs, while temporal coherence between consecutive frames is analysed in terms of intra-frame velocity distributions. We found that the ML model yielded backmapped trajectories for the in-distribution test set that are in excellent agreement with the atomistic reference. Moreover, the model was able to generalize to the out of distribution data obtained in a coarse-grained simulation. In particular, the proposed method is able to generate backmapped trajectories that (1) have high-statistical weight, (2) are tightly linked to the coarse-grained trajectory and (3) are temporal coherent. As such, the ML model can serve as tool to analyse thermodynamic and kinetic properties of a coarse-grained system at atomistic resolution. 
 
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/CLN_kinetics.pdf}
-  \caption{Free energy landscape }
-  \label{FIG:morph_sps_free_energy}
-\end{figure}
+Future work will strive to improve upon the data efficency and training/inference routines of our method. The backbone of our model primarily uses convolutional neutral networks (CNNs) operating on voxelized representations that are converted to and from Cartesian coordinates. While CNNs offer excellent expressibility via naturally heirarchical processing, they are not rotationally covariant and therefore we train our network with random rigid rotations to implicitly learn sensativity to rigid rotations. Using explicitly covariant network architectures, such as those employed by Wang et al.~\cite{wang2022generative}, can lead to superior data efficencies without the need to train with random rotations. Training routines could also be augmented to incorporate more inductive biases that may benefit temporally coherent backmapping: (1) In order to improve sampling of configuration space, training samples of sparsely populated regions in configuration space could be emphasized more. This could be realized by accompanying training samples with thermodynamic or dynamical path weights. (2) An autoregressive training protocol could be applied to improve the temporal coherence. In particular, a recurrent neural network approach could add information of multiple consecutive frames to the gradients used during backpropagation. (3) To further encourage the ML model to utilize knowledge of previous states for its predictions, the training loss could be augmented with a reconstruction error of properties that are explicitly based on such information, for example intra-frame velocities. such as accompanying training samples with thermodynamic or dynamical path weights and/or predicting multiple future configurations each forward pass.
 
-\begin{figure}[H]
-  \centering
-      \includegraphics[width=0.7\textwidth]{./Figures/temporal_coherent_bm/CLN_velocities.pdf}
-  \caption{velocity distribution }
-  \label{FIG:morph_sps_free_energy}
-\end{figure}
