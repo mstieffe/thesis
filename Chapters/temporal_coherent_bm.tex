@@ -41,25 +41,51 @@ Central to the proposed method is the incorporation of the previous state in ord
 
 \subsubsection{Variational Autoencoder}
 
-A variational autoencoder (VAE) architecture (Sec. \ref{}) is used instead of the generative adversarial approach. To this end, an encoder network $e$ is introduced to generate latent samples $\mathbf{\hat{z}}_{t}$ based on the current target frame $\mathbf{r}_{t}$. More specifically, the input for the encoder consists of $(\mathbf{r}_{t}, \mathbf{R}_{t}, \mathbf{r}_{t-\tau})$. This allows the model to be trained end-to-end based on a reconstruction loss for the current state $\mathbf{r}_{t}$ and does not rely on an additional critic network.
+A variational autoencoder (VAE) architecture (Sec. \ref{ML:explicit_models}) is used instead of the generative adversarial approach \cite{kingma2013auto}. To this end, an encoder network $e\big(\mathcal{E}(\mathbf{r}_{t})\big)$ is introduced to generate latent samples $\mathbf{\hat{z}}_{t} \in \mathbb{R}^d$ based on the current target frame $\mathbf{r}_{t}$, where $d$ is the dimension of the latent space. The decoder $g\big(\mathcal{E}(\mathbf{R}_{t}), \mathcal{E}(\mathbf{r}_{t - \tau}), \mathbf{\hat{z}}_t \big)$ is then trained to reconstruct the current state $\mathbf{r}_t$ given the low dimensional embedding $\mathbf{\hat{z}}_{t}$. As such, the model can be trained end-to-end based on a reconstruction loss and does not rely on an additional critic network.
 
-While the encoder $e_{\Psi}$ is indispensable during training in order to implement the reconstruction loss, it is omitted at inference time and the latent sample $\mathbf{z}$ is drawn from a prior distribution. Specifically, $\mathbf{z}$ is drawn from a Gaussian Mixture Model fitted to the latent distribution implied by the encoder, instead of the assumed prior $p(\mathbf{z}) \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$. This process ensures that the decoder operates within densely sampled latent space regions. The actual reverse-mapping of the coarse-grained trajectory $(\mathbf{R}_0, \mathbf{R}_{\tau}, \mathbf{R}_{2\tau}, \dots )$ is performed solely by the decoder. 
+While the encoder $e$ is indispensable during training, it is omitted at inference time. Instead, the latent sample $\mathbf{z}$ is drawn from a prior distribution in order to provide a source of randomness. This non-deterministic approach is an important aspect for the backmapping task, since each coarse-grained structure is associated with an ensemble of microstates. In particular, $\mathbf{z}$ is drawn from a 10-component Gaussian Mixture Model (GMM) fitted to the latent distribution implied by the encoder instead of the assumed prior $p(\mathbf{z}) \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$. The GMM ensures that the decoder operates within densely sampled latent space regions \cite{ghosh2019variational}.
 
 \subsubsection{Cost-function}
 
- In particular, the deployed cost-function $\mathcal{C}$ is constructed as
+The cost-function $\mathcal{C}$ used to train the model end-to-end consists of multiple parts. In particular, a term $\mathcal{C}_{\text{recon vox}}$ is introduced to enforce reconstruction of the spatially voxelized particle densities, 
 
-\begin{align}
-    \mathcal{C} &= \mathcal{C}_{\text{recon vox}} + \mathcal{C}_{\text{recon pos}} + \mathcal{C}_{\text{CG}} + \mathcal{C}_{\text{EDM}} + \lambda  \mathcal{C}_{\text{energy}} + \beta \mathcal{C}_{\text{KL}} \label{eqn:loss} \\
-    \mathcal{C}_{\text{recon vox}}(\mathbf{r}_t, \hat{\mathcal{E}}) &= \frac{1}{s^3n}\ || \mathcal{E}(\mathbf{r}_{t}) - \hat{\mathcal{E}} ||_2^2  \notag \\
-    \mathcal{C}_{\text{recon pos}}(\mathbf{r}_t, \mathbf{\hat{r}}_t) &= \frac{1}{3n}\ || \mathbf{r}_{t} - \mathbf{\hat{r}}_{t} ||_2^2 \notag \\
-    \mathcal{C}_{\text{CG}}(\mathbf{R}_t, \mathbf{\hat{r}}_t) &= \frac{1}{3N}\ || \mathbf{R}_t - M(\mathbf{\hat{r}}_t) ||_2^2 \notag \\
-    \mathcal{C}_{\text{EDM}}(\mathbf{r}_t, \mathbf{\hat{r}}_t) &= \frac{1}{2n^2}\ || EDM(\mathbf{r}_{t}) - EDM(\mathbf{\hat{r}}_{t}) ||_2^2 \notag \\
-    \mathcal{C}_{\text{energy}}(\mathbf{r}_t, \mathbf{\hat{r}}_t) &= (U(\mathbf{{r}_{t}}) - U(\mathbf{\hat{r}}_{t}))^2 \notag \\
-    \mathcal{C}_{\text{KL}}(\mathbf{\hat{z}}) &= \mathcal{D}_{KL}(\mathbf{\hat{z}}||\mathcal{N}(0,\mathbf{I})). \notag ,
-\end{align}
+\begin{equation}
+ \mathcal{C}_{\text{recon vox}}(\mathbf{r}_t, \hat{\mathcal{E}}) = \frac{1}{s^3n}\ || \mathcal{E}(\mathbf{r}_{t}) - \hat{\mathcal{E}} ||_2^2 .
+\end{equation}
 
-The first four terms in Eq. \ref{eqn:loss} can be associated with reconstruction. In particular, $\mathcal{C}_{\text{recon vox}}$ denotes the reconstruction loss for the spatially voxelized particle densities representations and $\mathcal{C}_{\text{recon pos}}$ is the reconstruction loss in terms of the coordinates. Moreover, the coarse-grained mapping function $M$ is deployed in $\mathcal{C}_{\text{CG}}$ in order to enforce consistency between the input coarse-grained structure $\mathbf{R}$ and the coarse-grained backmapped configuration $M(\mathbf{\hat{r}})$. Furthermore, $\mathcal{C}_{\text{EDM}}(\mathbf{r}_t, \mathbf{\hat{r}}_t)$ computes the mean squared error between the Euclidean Distance Matrices (EDM) of the target configuration $\mathbf{r}$ and reconstructed configuration $\mathbf{\hat{r}}$. As such, $\mathcal{C}_{\text{EDM}}(\mathbf{r}_t, \mathbf{\hat{r}}_t)$ aims at recovering inter-particle distances correctly. In addition, the atomistic force field is deployed in $\mathcal{C}_{\text{energy}}(\mathbf{r}_t, \mathbf{\hat{r}}_t)$ to calculate the mean squared error of the potential energies for the target structure $\mathbf{r}$ and reconstruction $\mathbf{\hat{r}}$. $\mathcal{C}_{\text{energy}}(\mathbf{r}_t, \mathbf{\hat{r}}_t)$ serves as a regularizer to improve the quality of backmapped structures, which might suffer from resolution limits of the voxel representation. As such, it accelerates convergence and helps more precisely match the reconstructed energetics to the ground truth trajectory. Since the potential energy is sensitive to small pertubations of the coordinates, it can become dominatingly large during the early stages of training before the model learns to stably localize atomic coordinates. To alleviate this issue, the prefactor $\lambda$ is incorporated which is set to $\lambda = 0$ at the beginning of the training and slowly annealed up to $\lambda = 1$ using an exponential annealing schedule. Beside reconstruction terms, $\mathcal{C}_{\text{KL}}(\mathbf{\hat{z}})$ acts as a regularization term to bias the approximate posterior $\mathbf{\hat{z}} = e_{\Psi}\big( \varepsilon(\mathbf{\hat{r}}_{t}), \varepsilon(\mathbf{\hat{r}}_{t - \tau}), \mathcal{E}(\mathbf{R}_{t}) \big)$ towards the desired prior distribution, i.e. a normal distribution $\mathcal{N}(0,\mathbf{I})$. The associated prefactor $\beta$ scales the regularization loss and is set to $\beta = 1$ for the CLN model, while a cyclic annealing schedule for $\beta$ is deployed to mitigate KL vanishing.\cite{}
+Similarly, a term $\mathcal{C}_{\text{recon pos}}$ is introduced to encourage the exact reconstruction of positions
+
+\begin{equation}
+ \mathcal{C}_{\text{recon pos}}(\mathbf{r}_t, \mathbf{\hat{r}}_t) = \frac{1}{3n}\ || \mathbf{r}_{t} - \mathbf{\hat{r}}_{t} ||_2^2 .
+\end{equation}
+
+In addition, the reproduction of inter-particle distances is targeted by a term $\mathcal{C}_{\text{EDM}}$ that computes the mean squared error between the Euclidean Distance Matrices (EDM) of the target configuration $\mathbf{r}$ and reconstructed configuration $\mathbf{\hat{r}}$,
+
+\begin{equation}
+  \mathcal{C}_{\text{EDM}}(\mathbf{r}_t, \mathbf{\hat{r}}_t) = \frac{1}{2n^2}\ || EDM(\mathbf{r}_{t}) - EDM(\mathbf{\hat{r}}_{t}) ||_2^2 .
+\end{equation}
+
+In order to achieve consistency between the backmapped structure $\mathbf{\hat{r}}$ and the given coarse-grained configuration $\mathbf{R}$, the coarse-grained mapping $M$ is applied to introduce a reconstruction loss $\mathcal{C}_{\text{CG}}$ at the coarse-grained resolution, i.e.
+
+\begin{equation}
+     \mathcal{C}_{\text{CG}}(\mathbf{R}_t, \mathbf{\hat{r}}_t) = \frac{1}{3N}\ || \mathbf{R}_t - M(\mathbf{\hat{r}}_t) ||_2^2  . \\
+\end{equation}
+
+Moreover, the atomistic force field is deployed in $\mathcal{C}_{\text{energy}}$ to calculate the mean squared error between the potential energies for the target structure $\mathbf{r}$ and reconstruction $\mathbf{\hat{r}}$,
+
+\begin{equation}
+  \mathcal{C}_{\text{energy}}(\mathbf{r}_t, \mathbf{\hat{r}}_t) = \lambda (U(\mathbf{{r}_{t}}) - U(\mathbf{\hat{r}}_{t}))^2 .
+\end{equation}
+
+This term serves as a regularizer to improve the quality of backmapped structures. It accelerates convergence and helps more precisely match the reconstructed energetics to the ground truth trajectory. Since the potential energy is sensitive to small pertubations of the coordinates, it can become dominatingly large during early stages of training before the model learns to localize atomic coordinates. As a remedy, the prefactor $\lambda$ is incorporated, which is set to $\lambda = 0$ at the beginning of the training and slowly annealed up to $\lambda = 1$ using an exponential annealing schedule.
+
+Finally, a regularization term $\mathcal{C}_{\text{KL}}$ is applied to bias the approximate posterior $\mathbf{\hat{z}} = e\big(\mathcal{E}(\mathbf{r})\big)$ towards the desired prior distribution, i.e. a normal distribution $\mathcal{N}(0,\mathbf{I})$ \cite{kingma2013auto},
+
+\begin{equation}
+ \mathcal{C}_{\text{KL}}(\mathbf{\hat{z}}) = \beta \mathcal{D}_{KL}(\mathbf{\hat{z}}||\mathcal{N}(0,\mathbf{I})).
+\end{equation}
+
+The associated prefactor $\beta$ scales the regularization loss and is set to $\beta = 1$ for the CLN model, while a cyclic annealing schedule is applied for ADP to mitigate KL vanishing \cite{fu2019cyclical}.
 
 %(1) Molecules are considered in vacuum and not in the condensed-phase. As such, representations and the backmapping protocol can be simplified. 
 \subsection{Markov State Model}
@@ -76,6 +102,13 @@ The largest eigenvalue is always $\lambda_1 =1$ and corresponds to the stationar
 \section{Set-up and Reference Data}
 
 The proposed method is applied to the backmapping of two biomolecular systems: Alanine dipeptide (ADP) and the mini protein chignolin (CLN). Data sets for training and testing of the model consist of pairs of corresponding atomistic and coarse-grained trajectories, which are obtained by mapping atomistic trajectories onto the coarse-grained representation. Since the test set is obtained similarly to the training set, it will be referred to as in-distribution test set in the following. Moreover, a generalization test set is constructed that consists of coarse-grained trajectories obtained with a MD simulation performed at the coarse-grained resolution. To this end, a coarse-grained force field is deployed that has been generated by CGSchNet \cite{wang2019machine, husic2020coarse}, which is a ML-based method for force field parameterization (see Sec. \ref{} for further information on CGSchNet).
+
+\begin{figure}[H]
+  \centering
+      \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/representation.pdf}
+  \caption{velocity distribution }
+  \label{FIG:morph_sps_free_energy}
+\end{figure}
 
 \subsection{ADP}
 
