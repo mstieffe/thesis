@@ -1,8 +1,11 @@
 % Chapter Template
 
 \chapter{Backmapping as a Quality Measure for Coarse-Grained Models} % Main chapter title
-
 \label{bm_as_quality_measure} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+Central to the bottom-up coarse-graining approach is the potential of mean force (PMF). Typically, it is approximated using simple, parameterized potentials that are tuned to reproduce certain distributions observed in an reference atomistic model. For example, harmonic pair potentials can be used to model bond stretching in order to capture the correct distribution of bond lengths, or non-bonded pair potentials can be optimized to reproduce pair distribution functions. However, accurately capturing local or low order structural properties does not imply that global or higher-order properties are recovered as well, such as the tertiary structure of proteins \cite{majek2009coarse}. Therefore, such structure-based coarse-graining method could benefit from identifying important multi-body effects in order to asses and potentially improve the quality of a coarse-grained model. In particular, the quality of coarse-grained models is typically evaluated at the coarse-grained resolution. However, the reduced resolution might hinder to identify important discrepancies between the fine-grained and coarse-grained ensembles.
+
+In this chapter backmapping is applied to asses the quality of a structure-based coarse-grained model. In particular, it is demonstrated that a coarse-grained model
 
 \section{Motivation and Problem Description}
 
