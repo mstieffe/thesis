@@ -3,15 +3,47 @@
 \chapter{Backmapping as a Quality Measure for Coarse-Grained Models} % Main chapter title
 \label{bm_as_quality_measure} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-Central to the bottom-up coarse-graining approach is the potential of mean force (PMF). Typically, it is approximated using simple, parameterized potentials that are tuned to reproduce certain distributions observed in an reference atomistic model. For example, harmonic pair potentials can be used to model bond stretching in order to capture the correct distribution of bond lengths, or non-bonded pair potentials can be optimized to reproduce pair distribution functions. However, accurately capturing local or low order structural properties does not imply that global or higher-order properties are recovered as well, such as the tertiary structure of proteins \cite{majek2009coarse}. Therefore, such structure-based coarse-graining method could benefit from identifying important multi-body effects in order to asses and potentially improve the quality of a coarse-grained model. In particular, the quality of coarse-grained models is typically evaluated at the coarse-grained resolution. However, the reduced resolution might hinder to identify important discrepancies between the fine-grained and coarse-grained ensembles.
+Central to the bottom-up coarse-graining (CG) approach is the potential of mean force (PMF). Typically, it is approximated using simple, parameterized potentials that are tuned to reproduce certain distributions observed in a reference atomistic model. For example, harmonic pair potentials can be used to model bond stretching in order to capture the correct distribution of bond lengths, or non-bonded pair potentials can be optimized to reproduce pair distribution functions. However, accurately capturing local or low order structural properties does not imply that global or higher-order properties are recovered as well, such as the tertiary structure of proteins \cite{majek2009coarse}. Therefore, such structure-based coarse-graining methods could benefit from identifying important multi-body effects in order to asses and potentially improve the quality of a coarse-grained model. In particular, the quality of coarse-grained models is typically evaluated at the coarse-grained resolution. However, the reduced resolution might hinder to identify important discrepancies between the fine-grained and coarse-grained ensembles.
 
-In this chapter backmapping is applied to asses the quality of a structure-based coarse-grained model. In particular, it is demonstrated that a coarse-grained model
+In this chapter, backmapping is applied to asses the quality of a structure-based coarse-grained model at the atomistic resolution. In particular, iterative boltzmann inversion (IBI) is applied to parameterize coarse-grained models for Tris-Meta-Biphenyl-Triazine (TMBT). After demonstrating that the CG models reproduce targeted structural distributions with remarkable accuracy, deepbackmap (DBM) is applied to reintroduce atomistic details. More specifically, two data sets for the backmapping task are constructed: (1) A data set that consists of atomistic snapshots projected onto the coarse-grained resolution, called in-distribution test set in the following. (2) A data set consisting of CG structures obtained with the CG model, called generalization test set. It is observed that DBM recovers structural distributions at the atomisticc resolution with remarkable accuracy when the in-distirbution test set is applied. However, the performance significantly deteriorates upon apllication of the generalization test set, indicating a discrepancy between the ensemble of the CG model and the atomistic ensemble mapped to the CG resolution. This discrepancy is further highlighted by a force evaluation.
 
-\section{Motivation and Problem Description}
+This chapter briefly summarizes oberservations made during the course of a collaboration with Dr. Scherer, Dr. Andrienko and Dr. May. 
 
-\section{Coarse-Grained Model}
+\section{Method}
 
-\section{Results and Discussion}
+
+\subsection{Tris-Meta-Biphenyl-Triazine}
+
+The proposed method is demonstrated at the example of Tris-Meta-Biphenyl-Triazine (TMBT), which is known as a potential host material for organic light emitting diodes \cite{}.
+
+\subsubsection{Mapping}
+
+The CG mappings of TMBT is illustrated in Fig. \ref{}. In particular, two bead types are used: The central triazine ring is mapped to one bead of type A and all phenyl rings are mapped to a beads of type B. Each bead is placed at the center of mass for all atoms associated with it.
+
+\subsubsection{All-atom simulation}
+
+All-atom (AA) simulations are carried out in the $NVT$ ensemble using a velocity rescaling thermost at $450$ K. Simulations are performed using the GROMACS 2019.3 package. The underlying force field is explained in \cite{}. Equilibration runs are carried out for $60\,\text{ns}$ in the $NPT$ ensemble at $p=1.0\,\text{bar}$ using a Parrinello-Rahman barostat with a time step of $1$ fs. Production runs are performed for $20\,\text{ns}$ at the mean density of preceding $NPT$ equilibration runs. Electrostatic interactions are treated with a smooth particle mesh Ewald method with fourth-order cubic interpolation, $0.12\,\text{nm}$ Fourier spacing and an Ewald accuracy parameter of $10^{-5}$. A short-range cutoff of $r_{\text{cut}}=1.3\,\text{nm}$ is used and long-range dispersion corrections for energy and pressure are applied. The simulation box contains $3000$ molecules. 
+
+\subsubsection{Coarse-grained Force Field}
+
+Based on the all-atom NVT simulation data, the CG force field for TMBT is parameterized. In particular, bonded interactions are parameteized deploying direct Boltzmann inversion (DBI), while non-bonded interactions are obtained using iterative Boltzmann inversion (IBI). Both parameterization schemes are outlined in Sec. \ref{}.
+
+The bonded interation potentials derived with DBI include two bonds (A-B, B-B), two angles (A-B-B, B-A-B), one proper (B-A-B-B) and one improper (A-B-B-B) dihedral. The latter stabilizes the plane of the central triazine ring and the biphenyl side chains. Distribution functions for all bonded interactions are obtained from all-atom reference data mapped onto the coarse-grained resolution. The obtained interaction potentials are tabulated and a simple smoothing is performed. Moreover, proper dihedral interactions are expressed as analytical functions of the Ryckaert-Belleman type: $\sum_{i=0}^{5}\,c_i\,\cos\left(180^{\circ}-\phi\right)$ and the improper dihedral interactions by a quadratic function. The coefficients are determined by a least squares fit to the tabulated potentials. Note that DBI does not take the coupling between interactions into account.
+
+Non-bonded pair interactions between the beads of type A and B are parameterized using $200$ steps of IBI. All CG potentials are short-ranged with a cutoff of $r_{\text{cut}}=1.3\,\text{nm}$. In each iteration step, a $200\,\text{ps}$ CG NVT simulation at the density of the atomistic simulation is conducted. A time step of $1\,\text{fs}$ is used, and a velocity rescaling thermostat at $450$ K is deployed. A simple pressure correction scheme is applied every second iteration by adding a small linear perturbation to pair potential:
+%
+\begin{equation}
+  \Delta U_{\text{PC}}=-A\,\left(1-\frac{r}{r_{\text{cut}}}\right),\quad r_{\text{cut}}=1.3\,\text{nm},
+  \label{eq:PC}
+\end{equation}
+
+where $A=-\text{sgn}\left(\Delta p\right)0.1 k_{\text{B}}T \min\left(1,f \Delta p\right)$, and $\Delta p=p_{\text{i}}-p_{\text{target}}$. A scaling factor $f=0.001$ is chosen. 
+
+After the non-bonded pair potentials are obtained, bonded interactions are rescaled in order to match the corresponding distributions of the reference system. A final production run of the CG simulation is performed for $20\,\text{ns}$. The same simulation parameters are deployed as for the IBI iteration steps.
+
+\section{Results}
+
+\section{Discussion}
 
 \begin{figure}
   \centering
@@ -59,5 +91,4 @@ model 3 & 0.7161 & 4.8574
 \label{TAB:sPS_chem_trans}
 \end{tabular}
 \end{table}
-
 
