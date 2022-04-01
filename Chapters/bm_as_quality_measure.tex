@@ -19,13 +19,19 @@ The proposed method is demonstrated at the example of Tris-Meta-Biphenyl-Triazin
 
 \subsubsection{Mapping}
 
-The CG mappings of TMBT is illustrated in Fig. \ref{}. In particular, two bead types are used: The central triazine ring is mapped to one bead of type A and all phenyl rings are mapped to a beads of type B. Each bead is positioned at the center of mass for all atoms associated with it.
+The CG mapping $\mathbf{M}$ for TMBT is illustrated in Fig. \ref{BMQM:tmbt_representation}. In particular, two bead types are used for the CG representation: The central triazine ring is mapped to one bead of type A and all phenyl rings are mapped to beads of type B. The mapping $\mathbf{M}$ projects an atomistic configuration $\mathbf{r}$ to the coarse-grained resolution, such that each bead $I$ is positioned at the center of mass $\mathbf{R}_I$ of all atoms $i$ associated with it,
+
+\begin{equation}
+  \mathbf{R}_I = \mathbf{M}_I(\mathbf{r}) = \sum_{i \in \Psi_I} c_{iI} \mathbf{r}_i , \;\;\;\;  c_{iI} = \frac{m_i}{\sum_{i \in \Psi_I} m_i}
+\end{equation}
+
+where $\Psi_I$ is the set of atomic indices corresponding to bead $I$, $\mathbf{r}_i$ is the position and $m_i$ the mass of atom $i$, respectively.
 
 \begin{figure}
   \centering
       \includegraphics[width=0.8\textwidth]{./Figures/quality_of_cg_models/tmbt.png}
   \caption{TMBT CG}
-  \label{BMQM:CG_validation}
+  \label{BMQM:tmbt_representation}
 \end{figure}
 
 \subsubsection{All-atom simulation}
@@ -55,10 +61,11 @@ Backmapping of coarse-grained TMBT is performed by deepbackmap (DBM, Sec. \ref{}
 
 \subsubsection{DBM}
 
-DBM is trained for $40$ epochs using the same specifications as described in Sec. \ref{DBM_specifications}. The data set consists of four pairs of AA and corresponding CG snapshots, where each snapshot contains 3000 molecules. The energy minimizing regularization term $\mathcal{C}_1$ is used based on the force field of the AA MD simulation. 
+DBM is trained for $40$ epochs with a batchsize of $64$ using the same specifications as described in Sec. \ref{DBM_specifications}. The data set consists of four pairs of AA and corresponding CG snapshots, where each snapshot contains 3000 molecules. The energy minimizing regularization term $\mathcal{C}_1$ is used based on the force field of the AA MD simulation. 
 
-\subsubsection{Fragment-based EM}
+\subsubsection{EM-based}
 
+The EM-based backmapping scheme uses the software package \textit{Versatile Object-oriented Toolkit} (VOTCA). The backmapping protocol inserts atomistic fragments into the CG structure, such that the centers of mass of atoms are aligned with the corresponding CG bead positions. This initial AA structure is then relaxed by four cycles of EM. The first three cycles are restraint optimizations, i.e. a strong force is introduced to enforce a pinning of the atom positions to their respective coarse-grained sites. In the first EM step, only bond-stretching and bending is applied. The second step introduces bond rotations, and in the third/fourth step all interactions are switched on.
 
 \section{Results}
 
@@ -111,6 +118,23 @@ where $\Psi_I$ is the set of atomic indices corresponding to bead $I$ and $\math
 
 Fig. \ref{} displays the coarse-grained force distributions obtained for the reference, backmapped in-distribution and backmapped generalization sets. As shown in panel (a), DBM is able to recover the reference forces with high accuracy for the in-distribution test set, which is regarded as the baseline accuracy of the backmapping method. However, the generalization set yields force distributions that differ significantly from the reference. In particular, long tails towards large forces are observed indicating steric clashes. For a more quantive comparison, Table \ref{} lists the Jenson-Shanoon (JS) divergences between the reference and backmapped force distributions. All CG models yield JS divergences that are at least one order of magnitude larger compared to the in-distribution test set. Moreover, a clear ranking for the deployed CG models can be obtained: The best match witht he reference force distribution is observed for model A, while largest discrepancy can be found for model C. This is reasonable, since model C does not take dihedrals into account. On the other hand, force distributions obtained for the fragment-based backmapping scheme displayed in panel (b) are not insightful. All distribution are shifted towards signficantly smaller forces and a clear distinction between the models is not possible.
 
+\subsubsection{Towards Improving Ensemble Consistency}
+
+Evaluating forces based on the AA force field opens new routes towards improving the CG force field parameterization schemes. An evident starting point is the multiscale coarse-graining approach, which is described in Sec. \ref{}. The force-matching functional $\chi$ aims at matching two kind of coarse-grained forces: (1) A projection of AA forces $\mathbf{F}^{\text{AA}}(\mathbf{r})$ onto the CG resolution, which are derived using the reference AA force field for a AA configuration $\mathbf{r}$ and (2) CG forces $\mathbf{F}^{\text{CG}}(M(\mathbf{r}))$ derived using the parameterized CG forcefield for a projection $M(\mathbf{r})$ of the same AA configuration $\mathbf{r}$. Note that the functional $\chi$ is therefore evaluated in the AA ensemble,
+
+\begin{equation}
+  \begin{equation}
+  \chi^2 [\mathbf{F}^{\text{CG}}] = \frac{1}{3N} \Big \langle \sum_{I=1}^N | \mathbf{F}_I^{\text{CG}}(\mathbf{M}(\mathbf{r})) - \mathbf{F}_I^{\text{AA}}(\mathbf{r}) |^2 \Big .
+\end{equation}
+
+As such, the actual CG ensemble is not taken into account during parameterization of the CG force field. In order to improve the consistency between the AA and CG ensembles, backmapping can be used to evaluate the CG ensemble in terms of the AA force field. In particular, the functional $\chi$ can be augmented
+
+\begin{equation}
+  \chi^2_{\text{BM}} [\mathbf{F}] = \frac{1}{3N} \rangle_{\text{AA}} + \Big \langle \sum_{I=1}^N | \mathbf{F}_I^{\text{CG}}(\mathbf{R}) - \mathbf{F}_I^{\text{AA}}(\mathbf{BM}(\mathbf{R})) |^2 \Big \rangle_{\text{CG}} ,
+\end{equation}
+
+where $BM(\mathbf{R})$ denotes the backmapping of configuration $\mathbf{R}$ from the CG ensemble. As such, the CG force field would be tuned towards suppressing CG configurations that yield large atomistic forces upon backmapping. Note that computing $\chi^2_{\text{BM}}$ requires a backmapping scheme $\mathbf{BM}(\mathbf{R})$ that yields consistent reconstructions, i.e. it has to fulfill $\mathbf{M}\big( \mathbf{BM} ( \mathbf{R} ) \big) = \mathbf{R}$.
+
 \begin{figure}
   \centering
       \includegraphics[width=0.8\textwidth]{./Figures/quality_of_cg_models/tmbt_forces.pdf}
@@ -145,4 +169,26 @@ model 3 & 0.7161 & 4.8574
 \end{table}
 
 
-\section{Discussion}
+\section{Discussion and Outlook}
+
+In this chapter, backmapping is deployed to assess the quality of structure-based coarse-grained (CG) models at the atomistic resolution. To this end, coarse-grained force fields for (TMBT) are parameterized using direct Boltzmann inversion (DBI) for bonded interactions and iterative Boltzmann inversion (IBI) for non-bonded interactions. Three different models are parameterized differing in their bonded interactions. It is demonstrated that the CG model reproduces structural properties targeted in the parameterization with remarkable accuracy. Afterwards, two data sets are constructed for the backmapping task: (1) An in-distribution test set denotes snapshots obtained in a AA MD simulation that are projected onto the CG resolution. (2) An generalization test set is constructed consisting of snapshots obtained in MD simulations deploying the CG force fields. While the former is used to assess the baseline accuracy of the backmapping method, a comparison between both backmapped test sets yields insights into the quality of the deployed CG models.
+
+Backmapping of CG structures is performed following two different strategies: (1) The machine learning (ML) approach deepbackmap (DBM) is applied, which is introduced in Sec. \ref{} and evaluated in Sec. \ref{}. (2) In addition, a fragment-based backmapping scheme that relies on energy minimization (EM) is used as a baseline method. While DBM is able to reproduce atomistic pair correlation functions for the in-distribution test set that are in excellent agreement with the atomistic reference, application to the generalization test set yields atomistic structures with too close contacts. On the other hand, the baseline backmapping method is more robust and maintains its performance for both test sets. However, the baseline method yields pair correlation functions that are overly peaked compared to the atomistic reference due to the relaxation. 
+These findings can be rationalized with respect to two requirement a backmapping scheme has to fulfill: (1) Reconstructed atomistic details have to be consistent with the underlying CG structure and (2) the backmapped structure has to have high statistical weight. A visual inspection reveals that the generalization test set contains CG conformations that prohibit reconstructing atomistic details that fulfill both requirements simultaniously. In particular, DBM generates AA structures that are consistent with the CG structure but consequently display anavoidable steric clashes. The baseline method generates structures with high statistical weight, i.e. no steric clashes are detected, but violates the consistency criteria. More specifically, an analysis of the root mean-square deviation between backmapped structures projected to the CG resolution and the original CG configurations reveals a significant shift upon application of the baseline method, while DBM generates AA structures that are close to the given CG configuration.
+
+A more quantitative measure to identify steric clashes is given by the Jenson-Shannon divergence computed between force distributions. In paritucal, forces acting on the atoms are computed deploying the AA force field and then projected onto the CG resolution. DBM yields a force distribution for the backmapped in-distribution test set that matches the AA reference distribution remarkably well, while distributions for the generalization test sets display tails towards large forces. Moreover, the JS divergences allow for a clear ranking for the qulaity of the different CG models in the genralization test set. Force distributions obtained with the baseline backmapping method are not insightful due to the involved energy minimization.
+
+Future research might focus on parameterization strategies for CG force fields that incorporate quality measures at the atomistic resolution. Here, an approach is outlined based on the multiscale force-matching strategy that deploys backmapping to evaluate the CG ensemble in terms of the AA force field. In particular, the proposed parameterization scheme aims at supressing CG configurations that yield large atomistic forces upon backmapping.
+
+
+
+
+
+
+
+
+
+
+
+
+
