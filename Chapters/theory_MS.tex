@@ -437,7 +437,7 @@ where $\mathbf{F}_I(\mathbf{M}(\mathbf{r}))$ is the force acting on the coarse-g
 Another variational approach is based on the relative entropy, also known as Kullback-Leibler divergence, which is widely used as a asymmetric distance metric between probability distributions \cite{kullback1951information, shell2008relative, chaimovich2010relative, chaimovich2011coarse}. Applied to the coarse-graining problem, the relative entropy can be written 
 
 \begin{equation}
-\label{relative_entropy}
+\label{relative_entropy_MS}
   S_{\text{rel}} = \int p_{\text{AA}}(\mathbf{r}) \; \text{ln} \Big( \frac{p_{\text{AA}(\mathbf{r})}}{p_{\text{CG}}(\mathbf{M}(\mathbf{r}))} \Big) d\mathbf{r} + \langle S_{\text{map}} \rangle_{\text{AA}} ,
 \end{equation}
 
@@ -449,7 +449,7 @@ where
 
 is the mapping entropy, which accounts for the degeneracy of the mapping $\mathbf{M}$, i.e. a single coarse-grained configuration corresponds to multiple atomistic configurations. The relative entropy $S_{\text{rel}}$ can be interpreted as a measure for the loss of information when changing from an atomistic to a coarse-grained description \cite{shell2008relative}. Moreover, it is related to many different coarse-graining errors and vanishes only if $p_{\text{CG}}(\mathbf{r}) \propto p_{\text{AA}}(\mathbf{r})$ \cite{chaimovich2010relative}.
 
-Inserting the distributions known for the canonical ensemble, i.e. $p_{\text{CG}}(\mathbf{R}) = \mathcal{Z}_{\text{CG}}^{-1} \text{exp} \Big[- \frac{U_{\text{CG}}(\mathbf{R})}{k_B T} \Big]$ and $p_{\text{AA}}(\mathbf{r}) = \mathcal{Z}_{\text{AA}}^{-1} \text{exp} \Big[- \frac{U_{\text{AA}}(\mathbf{r})}{k_B T} \Big]$, into Eq. \ref{relative_entropy} yields
+Inserting the distributions known for the canonical ensemble, i.e. $p_{\text{CG}}(\mathbf{R}) = \mathcal{Z}_{\text{CG}}^{-1} \text{exp} \Big[- \frac{U_{\text{CG}}(\mathbf{R})}{k_B T} \Big]$ and $p_{\text{AA}}(\mathbf{r}) = \mathcal{Z}_{\text{AA}}^{-1} \text{exp} \Big[- \frac{U_{\text{AA}}(\mathbf{r})}{k_B T} \Big]$, into Eq. \ref{relative_entropy_MS} yields
 
 \begin{equation}
   S_{\text{rel}} = \frac{\langle U_{\text{CG}} - U_{\text{AA}} \rangle_{\text{AA}}}{k_B T} - \frac{F_{\text{CG}} - F_{\text{AA}}}{k_B T} + \langle S_{\text{map}} \rangle_{\text{AA}} ,

@@ -5,7 +5,7 @@
 
 \begin{figure*}
  \includegraphics[width=1.0\textwidth]{./Figures/appendix/bm_sps/architecture.pdf}
-\caption{CNN architecture with residual connections of the generator (left) and critic (right). The first part of the generator consists of an encoder which learns a lower dimensional embedding of the condition given by $\xi_{i,I}({\bm x})$ and $\Xi_{I}({\bm x})$ using several residual connections and one pooling layer. Noise $z$ and the atom type $c_i$ are concatenated to this low dimensional embedding and is fed into the decoding part of the generator, which again consists of several residual connections and an upsampling layer. The critic learns a one dimensional embedding of the condition $\xi_{i,I}({\bm x})$ and $\Xi_{I}({\bm x})$ together with the target/fake atom $\gamma_i$/$\hat{\gamma}_i$ using residual layers and a final dense layer. Throughout the whole architecture we apply layernorm for regularization and use LeakyRelus as nonlinearities.}
+\caption{CNN architecture with residual connections of the generator (left) and critic (right). The first part of the generator consists of an encoder which learns a lower dimensional embedding of the condition given by $\xi_{i,I}({\mathbf x})$ and $\Xi_{I}({\mathbf x})$ using several residual connections and one pooling layer. Noise $z$ and the atom type $c_i$ are concatenated to this low dimensional embedding and is fed into the decoding part of the generator, which again consists of several residual connections and an upsampling layer. The critic learns a one dimensional embedding of the condition $\xi_{i,I}({\mathbf x})$ and $\Xi_{I}({\mathbf x})$ together with the target/fake atom $\gamma_i$/$\hat{\gamma}_i$ using residual layers and a final dense layer. Throughout the whole architecture we apply layernorm for regularization and use LeakyRelus as nonlinearities.}
 \label{APPENDIX:DBM_architecture}
 \end{figure*} 
  
@@ -56,4 +56,11 @@
 			on sPS or octane and cumene liquids are shown. a) trained with prior $p_2$, b) trained without prior}
 		\label{APPENDIX:sm_p2_and_no_p}
 	\end{center}
+\end{figure}
+
+\begin{figure}
+  \centering
+      \includegraphics[width=0.8\textwidth]{./Figures/quality_of_cg_models/tmbt_bm.pdf}
+  \caption{Pair correlation functions $g(r)$ for the AA reference system, backmapped in-distribution test set and backmapped test set for CG model 1. Results obtained with DBM (left) and EM scheme (right) are displayed, including non-bonded (a)-(b) C-C, (c)-(d) C-N and (e)-(f) N-N correlations.}
+  \label{BMQM:atomistic_rdf_all}
 \end{figure}
