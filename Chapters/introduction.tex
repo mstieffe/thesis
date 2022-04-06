@@ -1,6 +1,43 @@
 \chapter{Introduction} 
 \label{introduction} 
 
+Scientists create models as purposeful simplifications of phenomena that are too complex to be observed experimentally or to be solved analytically. Ancient greeks like Plato already built geometric models to describe the motion of heavenly bodies. Nowadays, scientists use models to study a wide range of phenomena including quantum-mechanical effects to cosmic expansion. This thesis is settled at the lower end and focuses on molecular models to study the nature of matter.
+
+Molecular modeling is an important tool of computational chemistry to study the structure, thermodynamics and dynamics of molecular systems. Understanding molecular processes is fundamental to modern science, as it provides important insights on biological processes, such as protein folding or RNA. 
+
+ Within the last few years, we have seen the transformative impact of deep learning in many domains, particularly in speech recognition and computer vision, to the extent that the majority of expert practitioners in those field are now regularly eschewing prior established models in favor of deep learning models
+
+methods are now used routinely to investigate the structure, dynamics, surface properties, and thermodynamics of inorganic, biological, and polymeric systems. The types of biological activity that have been investigated using molecular modelling include protein folding, enzyme catalysis, protein stability, conformational changes associated with biomolecular function, and molecular recognition of proteins, DNA, and membrane complexes.
+
+The theoretical underpinning of molecular models is given by statistical mechanics, which successfully explains macroscopic physical properties of matter in terms of microscopic degrees of freedom. However, while the fundamental principles to describe the motions of microscopic particles are well known, i.e. quantum-mechanics or Newton's equations of motion, the wast number of microscopic degrees of freedom that are required to predict properties of a particular macroscopic systems makes an analytical solution intractable. Moreover, resolving the microscopic state of a molecular system experimentally also displays resolution limits given by the applied microscopy technique. While a spatial resolution of a few angstrom can be achieved with modern microscopy techniques, such as cryo-EM or x-ray crystallography, a thourough understanding of molecular processes, such as protein folding, also required a high temporal resolution. However, microscopy techniques with high temporal resolution typically yield a lower spatial resolution, such as PALM or LLSM. While longer exposure times or short wavelengths could be used in the diffraction experiments to inscreaase the spatiotemporal resolution, the induced radiation damage prevents application of such techniques to biological systems. 
+
+A possible remedy is offered by computer models that represent molecular systems based on experimental observations and analytical approximations. Simulations of the model can then be used to study the behavior of the system and to predict its properties. The resolution limit of such computer models is theoretically only bound by computational effort. The most fundamental description of matter is given by qunatum-mechanics that takes eletronic degrees of freedom into account. However, models at this level of detail are computationally very demanding. As an example, a popular method is density functional theory deploying B3LYP functionals, which scales as $\mathcal{O}(N^3)$, where $N$ is the number of atoms in the model system. The computational cost can be reduced significatnly when molecular models at an atomistic resolution are deployed that approximate the effect of electrons as a potential energy surface representing the quantum ground-state. Such models are typically implemented by molecular dynamics simulations that numerically integrate Newton's equations of motion. The underlying interactions are often empirical and aim at correctly modeling structural, thermodynamic and/or dynamic properties of a target system. The computational effort of such classical models is dominated by long-range interactions, such as van-der-waals and electrostatic interactions, which are typically inetgrated using particle mesh Ewald summation that reduce the computational cost to $N \text{log}(N)$.
+
+Rapid fluctuations of the atoms typically require an integration time step in the range of femtoseconds. However, timescales of relevant biological processes, such as protein folding or binding, can be in the order of microseconds up to seconds and therefore require an extremely large number of integration steps. As such, even dedicated hardware and specialized software reach their limits, as current state-of-the-art integration systems achieve hundrets of nanoseconds up to tens of microseconds of simulation data per day for molecular systems containing a few thousands of atoms. Therefore, a coarser description of matter is often required in order to push the limits of accessible length and time scales in the computer simulation.
+
+
+%A scientific model is a simplified reflection of reality that is created to describe, understand or predict certain aspects of the world. Modeling has always been an indispensable part of natural science. In general, scientists create models as purposeful simplifications of phenomena that are to complex to be observed experimentally or to be solved analytically. Ancient greeks like Plato already built geometric models to describe to motion of heavenly bodies. Nowadays, scientists use models to study a wide range of phenomena including quantum-mechanical effects to cosmic expansion. 
+
+
+
+: a popular but still relatively low precision method is DFT with B3LYP functionals [23, 24]
+which in most implementations scales O(N 3 ) where N is the number of atoms in the system [25],
+becoming quickly infeasible for larger systems.
+On a microscopic scale, a popular method is
+
+
+Microscopy techniques yielding high temporal resolution for biological particles (e.g., PALM [7,
+8] or LLSM [9]) on the other hand possess a significantly lower spatial resolution.
+
+
+that fluctuate about average values. However, the wast number of microscopic degrees of freedom  and are characterized by probability distributions. 
+
+
+systems in terms of a few macroscopic quantities, such as the total internal energy E, the total volume
+V, and the number of particles N.
+
+Examples range 
+from a fundamental description of matter that takes quantum-mechanical degrees of freedom into acount up to large scale models to 
 
 Scientific modeling has always been an indispensable part of natural science. Modeling is the construction of a simplified representation for a phenomena in order to describe a certain aspect of the world.
 
