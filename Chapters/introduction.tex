@@ -1,13 +1,13 @@
 \chapter{Introduction} 
 \label{introduction} 
 
-Scientists create models as purposeful simplifications of phenomena that are too complex to be observed experimentally or to be solved analytically. Ancient greeks like Plato already built geometric models to describe the motion of heavenly bodies. Nowadays, scientists use models to study a wide range of phenomena including quantum-mechanical effects to cosmic expansion. This thesis is settled at the lower end and focuses on molecular models to study the nature of matter.
+%Scientists create models as purposeful simplifications of phenomena that are too complex to be observed experimentally or to be solved analytically. Ancient greeks like Plato already built geometric models to describe the motion of heavenly bodies. Nowadays, scientists use models to study phenomena on a wide range of different scales ranging from quantum-mechanical effects to cosmic expansion. 
 
-Molecular modeling is an important tool of computational chemistry to study the structure, thermodynamics and dynamics of molecular systems. Understanding molecular processes is fundamental to modern science, as it provides important insights on biological processes, such as protein folding or RNA. 
+Understanding molecular processes is fundamental to a wide range of modern research areas, such as polymer science, drug design and folding dynamics of proteins. Novel algorithms and high-performance computing have made computational chemistry an important tool to gain insights on the molecular nature of matter. In particular, the importance of molecular models has to be emphasized, which are purposeful simplifications of phenomena that are too complex to be observed experimentally or to be solved analytically. As such, molecular modeling is routinely used to study the structure, thermodynamics and dynamics of molecular systems. 
 
- Within the last few years, we have seen the transformative impact of deep learning in many domains, particularly in speech recognition and computer vision, to the extent that the majority of expert practitioners in those field are now regularly eschewing prior established models in favor of deep learning models
+On the other hand, processing of complex and high-dimensional data has become a hallmark of machine learning. In the past decade, ML has emergeded as a prominent research field that has an transformative impact on many domains, such as computer vision, speech recognition or medical image analysis.\cite{voulodimos2018deep, nassif2019speech, fatima2017survey} In its core, ML algorithms construct statistical models from data without relying on explicit program instructions. As such, the recent success of ML models is further fuelled by the availability of large data sets. Recently, ML is gaining significant attention in many fields of modern science as well, especially computational chemistry and particle physics \cite{noe2020machine, vamathevan2019applications, radovic2018machine}. 
 
-methods are now used routinely to investigate the structure, dynamics, surface properties, and thermodynamics of inorganic, biological, and polymeric systems. The types of biological activity that have been investigated using molecular modelling include protein folding, enzyme catalysis, protein stability, conformational changes associated with biomolecular function, and molecular recognition of proteins, DNA, and membrane complexes.
+The main theme of this thesis is to explore the advantages of integrating ML methods to molecular simulations. ML is already used frequently in the computational chemistry community to construct molecular models from experimental data or for the analysis of simulation data. Here, the emphasis is on generative tasks, i.e. deploying ML models to learn the complex depencies in molecular systems to generate realistic molecular structures. In particular, generative ML algorithms originally designed for image processing are applied to increase the resolution of coarse-grained molecular models. However, before the concept, methology and goal of this thesis are outlined in more detail, the broad context of this work has to be established first.
 
 The theoretical underpinning of molecular models is given by statistical mechanics, which successfully explains macroscopic physical properties of matter in terms of microscopic degrees of freedom. However, while the fundamental principles to describe the motions of microscopic particles are well known, i.e. quantum-mechanics or Newton's equations of motion, the wast number of microscopic degrees of freedom that are required to predict properties of a particular macroscopic systems makes an analytical solution intractable. Moreover, resolving the microscopic state of a molecular system experimentally also displays resolution limits given by the applied microscopy technique. While a spatial resolution of a few angstrom can be achieved with modern microscopy techniques, such as cryo-EM or x-ray crystallography, a thourough understanding of molecular processes, such as protein folding, also required a high temporal resolution. However, microscopy techniques with high temporal resolution typically yield a lower spatial resolution, such as PALM or LLSM. While longer exposure times or short wavelengths could be used in the diffraction experiments to inscreaase the spatiotemporal resolution, the induced radiation damage prevents application of such techniques to biological systems. 
 
@@ -15,95 +15,17 @@ A possible remedy is offered by computer models that represent molecular systems
 
 Rapid fluctuations of the atoms typically require an integration time step in the range of femtoseconds. However, timescales of relevant biological processes, such as protein folding or binding, can be in the order of microseconds up to seconds and therefore require an extremely large number of integration steps. As such, even dedicated hardware and specialized software reach their limits, as current state-of-the-art integration systems achieve hundrets of nanoseconds up to tens of microseconds of simulation data per day for molecular systems containing a few thousands of atoms. Therefore, a coarser description of matter is often required in order to push the limits of accessible length and time scales in the computer simulation.
 
+The resolution of a molecular model depends on the length and time scales of the phenomena of interest. However, some phenomena display a wide range of relevant scales and therefore can not be captured by a single model. This is especially true for soft-matter systems, like polymers or complex liquids, where processes on multiple scales are linked and interwoven \cite{praprotnik2008multiscale, peter2010multiscale, peter2009multiscale}. In particular, local interactions can impact large scale conformational changes. Consequently, molecular modeling of soft matter systems requires a methology that captures the interplay of processes that are potentially linked to various different scales.
 
-%A scientific model is a simplified reflection of reality that is created to describe, understand or predict certain aspects of the world. Modeling has always been an indispensable part of natural science. In general, scientists create models as purposeful simplifications of phenomena that are to complex to be observed experimentally or to be solved analytically. Ancient greeks like Plato already built geometric models to describe to motion of heavenly bodies. Nowadays, scientists use models to study a wide range of phenomena including quantum-mechanical effects to cosmic expansion. 
+A solution is offered by multiscale modelling, where models of different resolutions are combined to address phenomena at multiple scales. At the lower end, coarse-grained molecular models are deployed to study the large scale behavior of the system. To this end, coarse-grained variables are used that represent an average over atomistic degrees of freedom. The lower resolution of coarse-grained systems reduces the computational effort of the simulation. In addition, dynamics of the coarse-grained system are typically accelerated due to "softer" interactions between coarse-grained sites. As such, a faster exploration of configuration space is possible. 
 
-
-
-: a popular but still relatively low precision method is DFT with B3LYP functionals [23, 24]
-which in most implementations scales O(N 3 ) where N is the number of atoms in the system [25],
-becoming quickly infeasible for larger systems.
-On a microscopic scale, a popular method is
+A tight and consistent link between models of different resolutions requires to accomplished both mapping directions. While the benefits of coarse-graining is evident, a reverse-mapping to reintroduce details is required for the following reasons: (1) To rigorously analyze the simulation results on a local scale \cite{brocos2012multiscale, pandey2014multiscale, deshmukh2016water, pezeshkian2020backmapping}, (2) to enable a direct comparison to experimental data, for example obtained with spectroscopic methods \cite{hess2006long}, (3) to serve as starting point for further high-resolution simulations \cite{shimizu2018reconstruction, pandey2014multiscale}, or (4) to asses the stability and accuracy of the obtained coarse-grained structures \cite{shimizu2018reconstruction}.
 
 
-Microscopy techniques yielding high temporal resolution for biological particles (e.g., PALM [7,
-8] or LLSM [9]) on the other hand possess a significantly lower spatial resolution.
+The fine-to-coarse mapping of molecular configurations is typically a straight-forward computation, such as the center-of-mass calculation for a set of atoms. However, a reverse-mapping scheme is more challenging. 
 
+that reintroduces details is more challenging for the following reasons: required as well, for example to allow for a stringend comparison to experimental observations.
 
-that fluctuate about average values. However, the wast number of microscopic degrees of freedom  and are characterized by probability distributions. 
-
-
-systems in terms of a few macroscopic quantities, such as the total internal energy E, the total volume
-V, and the number of particles N.
-
-Examples range 
-from a fundamental description of matter that takes quantum-mechanical degrees of freedom into acount up to large scale models to 
-
-Scientific modeling has always been an indispensable part of natural science. Modeling is the construction of a simplified representation for a phenomena in order to describe a certain aspect of the world.
-
-
-Modeling/physics/ancient greeks/heaven geometry, 
-
-physical theories span scales from thermodynamics to statistical mechanics, universe to quantum, different scales of models, 
-thermodynamic, statistical mechanics
-
-molecular processes, scales of molecular processes
-
-computer, numerical model, MD simulations
-
-multiscale modeling, soft matter, coarse-graining
-BACKMAPPING
-
-Machine learning, generative modeling, deep learning, high dimensional data
-
-Thesis, intersection MS and ML, backmapping, DBM, applications
-
-
-
-A model denotes a simplified representation of certain aspect of the world.
-
-physics, modeling, different scales
-
-
-Molecular processes are fundamental to life, and for their general understanding it is of
-importance to understand their structural and dynamical properties. The involved—sometimes
-intracellular—components can be resolved via microscopy techniques such as STORM with
-a resolution of 20 nm to 50 nm [1], cryo-EM with a resolution of 3 Å to 15 Å [2, 3], or X-ray
-crystallography with a resolution of < 1 nm (which was first used to resolve a protein structure
-in the 1950s [4]).
-
-Soft condensed matter, like polymers or complex liquids, is characterized by interaction energies of
-the order of kBT at room temperature T , where kB is the Boltzmann constant.1–4 Thus, thermal fluctu-
-ations can induce structural and conformational changes in soft materials, which makes these systems
-highly flexible. As a consequence, it can take several seconds for soft materials to reach an equilibrium
-state at macroscopic length scales (millimeter to meter). This makes it difficult to study soft matter with
-the aid of computer simulations. But, computer simulations enable to study soft matter at resolutions
-difficult to access with common experimental techniques.5–9 The problem with computer simulations
-arises from the fact that the common methods, classical molecular dynamics (MD)10 and Monte-Carlo
-(MC)11 simulations, are limited to shorter length and time scales12 than those required to account for
-the equilibration of soft matter at macroscopic length scales. Therefore, there is a necessity to reach
-larger length and time scales with computer simulations on the one hand. On the other hand, one has
-to simultaneously account for length and time scales at which microscopic changes occur (picometer,
-femtoseconds), for example the formation of hydrogen bonds. Hence, modeling of soft materials is a
-multiscale problem,13 which is illustrated in figure 1
-
-.............This thesis lies at the intersection of com-
-putational healthcare and machine learn-
-ing. The field of machine learning has
-seen enormous development over the last
-several decades. Advances in deep learn-
-ing (LeCun et al. , 2015), powered by
-Graphical Processing Units (GPUs), en-
-able practitioners to build supervised ma-
-chine learning algorithms which make pre-
-dictions from high-dimensional data using
-millions of datapoints. We have begun
-to see visible successes of machine learn-
-ing in domains such as computer vision
-(Krizhevsky et al. , 2012), natural lan-
-guage processing (NLP) (Mikolov et al.
-, 2013b) and neural machine translation
-(Bahdanau et al. , 2014)...........
-
+going the other direction is required as well, since a stringend comparison to experimental results often requires atomistic details. Therefore, multisclae modelling 
 
 
