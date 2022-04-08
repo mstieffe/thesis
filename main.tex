@@ -56,7 +56,8 @@ headsepline, % Uncomment to get a line under the header
 \DeclareFontShape{OT1}{pzc}{m}{it}{<-> s * [1.10] pzcmi7t}{}
 \DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
 
-\usepackage[backend=bibtex,style=numeric,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
+\usepackage[backend=bibtex,style=numeric,natbib=true, sorting=none]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
+
 
 \addbibresource{literature.bib} % The filename of the bibliography
 
@@ -207,7 +208,19 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
-The acknowledgments and the people to thank go here, don't forget to include your project advisor\ldots
+
+I would like to take this opportunity to express my gratitude to several people who accompanied me at this journey. First of all, I want to thank Prof. Bernhard Mehlig from the Chalmers university in Gothenburg. Attending his course on artificial neural networks during a semester abroad was the starting point for my interest in the research field of artificial intelligence. At the same time, I want to highlight the impact that Prof. Friederike Schmid and PD. Peter Virnau had on my scientific carrier due to their great masters course 'statistical mechanics and computer simulations' at the JGU Mainz. This course awakened my interest in statistical physics and molecular simulations. Ultimately, this course lead me to my masters thesis in the Komet 1 research group, where I got the opportunity to merge my interests for machine learning and statistical mechanics under the careful supervision of Prof. Friederike Schmid and Prof. Michael Wand. In fact, Prof. Michael Wand became my mentor for everything machine learning related from this point on until now, as he continued his great supervision during the course of my dissertation. Thank you for joyful discussions, deep insights and illuminating explanations during all this time!
+
+I am also extremely thankful to Prof. Kurt Kremer and Dr. Tristan Bereau for welcoming me into the Theory group at the MPIP for my PhD. Prof. Kurt Kremer has established a productive and yet warm and friendly atmosphere in his research group that allowed me to further push my limits and develop as a scientist. I have to express my sincere gratitude to Dr. Tristan Bereau, who became my supervisor at the MPIP. His limitless energy, expertise and motivation was constantly inspiring me and enabled me to accomplish my scientific goals. Even after he quit university for a new adventure he still found time to guide me through the final phase of my PhD. Thank you for your great supervision!
+
+I also want to thank former and current members of the theory research group at the MPIP. At first, I want to mention Dr. Clemens Rauer and Dr. Kiran Kanekal, who became my office mates and helped me with the first steps of my PhD. Furthermore, I want to thank Dr. Christoph Scherer, Dr. Alessia Centi, Dr. Chan Liu, D Dr. Roberto Menichetti, Dr. Yasemin Bozkurt Varolgunes, Bernadette Mohr, Dr. Arghya Dutta, Dr. Joseph Rudzinski and Dr. Martin Girard for both, great scientific discussions during various seminars as well as casual discussions during lunch. All of you made the time at the MPIP a pleasure.
+
+A special thanks goes to my collaborators Moritz Hoffmann, Kirill Shmilovich, Nick Charron, Dr. Christoph Scherer, Daniel Franzen, Dr. Falk May and Dr. Denis Andrienko. I also want to thank Dr. Joseph Rudzinski, Dr. Martin Girard, Dr. Lukas Kades, Dr. Joydip Chaudhuri and Dr. Christoph Scherer for proof-reading chapters of this thesis.
+
+Finally, i want to acknowledge the Max Planck Graduate Center in Mainz as my funding source. In addition, this work was supported by the TRR 146 Collaborative Research Center of the Deutsche Forschungsgemeinschaft. I also want to thank the Institute for Pure and Applied Mathematics (IPAM) at the UCLA for inviting me to the long program 'Machine Learning for Physics and the Physics of Learning', where I got the opportunity to spend time in a great environment and to have inspiring discussion with scientists from all over the world.
+
+Last but not least, I want to include some personal acknowledgments here. I would have never gotten to this point without the continues support of my family and partner. Thank you for never letting me down and for encouraging me to follow my passion. 
+
 \end{acknowledgements}
 
 %----------------------------------------------------------------------------------------
