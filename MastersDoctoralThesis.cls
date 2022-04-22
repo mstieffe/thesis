@@ -279,7 +279,7 @@
 \providepairofpagestyles{thesisSimple}{%
 	\clearpairofpagestyles%
 	\automark[chapter]{chapter}
-	\ihead{\headmark}% Inner header
+	\ihead{\headmark \\}% Inner header
 	\ohead[\pagemark]{\pagemark}% Outer header
 }
 \ifoot{}% Inner footer
