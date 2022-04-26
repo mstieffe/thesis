@@ -1,8 +1,38 @@
 % Chapter Template
 
-\chapter{Conclusion and Future Outlook} % Main chapter title
+\chapter{Conclusion and Future Outlook} 
+\label{conclusion} 
 
-\label{conclusion} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+This thesis lies at the intersection of multiscale modelling (MM) and machine learning (ML). In the following, the main results of this work are summarized. To this end, 
+
+
+Understanding molecular processes is central to a wide range of modern research areas. The fundamental principles to describe the motions of microscopic particles are given by quantum-mechanics or Newton's equation of motion. However, the enormous number of microscopic degrees of freedom makes analytical solutions for most molecular systems intractable. To this end, computer simulations of molecular systems are used to study the behavior of the system and to predict its properties. 
+
+The resolution of such computer models is genrally only bound by computational effort. However, while qunatum mechanics provides the most fundamental accurate discription of matter, ab initio molecular dynamics simulations quickly reach their limits. As a remedy, a coarser description of matter is routinely used to push the limits of accessible length and time-scales. In a first step, the resolution of molecular systems can be reduced to the level of single atoms. In this approximation, the effect of electrons is modeled as a potential energy surface representing the quantum ground-state. Such models are routinely implemented by molecular dynamics (MD) simulations that numerically integrate Newton's equation of motion. The deployed atomic interactions are often empirical and aim at correctly modeling structural, thermodynamic and/or dynamic properties of a target system \cite{mackerell2004empirical}. However, the exploration of many relevant molecular processes, such as protein folding or binding, require to access length and time-scales that are still out of reach for such all-atom models \cite{plattner2015protein, paul2017protein}. To this end, coarse-grained (CG) variables are routinely used that represent an average over atomistic degrees of freedom. Such CG models represent chemical compounds as particles in a similar fashion
+to AA MD simulations. The lower resolution of CG systems reduces the computational effort of the simulation and allows for larger integration time steps \cite{marrink2010comment, nielsen2003coarse}. In addition, dynamics of the CG system are typically accelerated due to "softer" interactions between coarse-grained sites \cite{depa2005speed, fritz2011multiscale}. As such, CG models enable a faster exploration of configuration space. 
+
+The exploration of some phenoma require to consider wide range of length- and time-scales, because molecular processes on multiple scales can be linked and interwoven. This is especially true for soft-matter systems, where local interactions can impact large scale conformational changes. Therefore, a single model is sometimes not sufficient to capture the interplay of processes that are potentially linked to various different scales.
+
+Multiscale modeling is an approach that combines models of different resolution to address phenomena at multiple scales \cite{ayton2007multiscale, voth2008coarse, peter2010multiscale}. At the lower end, CG molecular models are deployed to study the large scale behavior of the system. However, a tight and consistent link between models of different resolutions requires to accomplish both mapping directions. In particular, a reverse-mapping to reintroduce details is required for the following reasons: (1) To rigorously analyze the simulation results on a local scale \cite{brocos2012multiscale, pandey2014multiscale, deshmukh2016water, pezeshkian2020backmapping}, (2) to enable a direct comparison to experimental data, for example obtained with spectroscopic methods \cite{hess2006long}, (3) to serve as starting point for further high-resolution simulations \cite{shimizu2018reconstruction, pandey2014multiscale}, or (4) to asses the stability and accuracy of the obtained coarse-grained structures \cite{shimizu2018reconstruction}.
+
+The fine-to-coarse mapping of molecular configurations is typically a straight-forward computation, such as the center-of-mass calculation for a set of atoms. However, reverse-mapping is more challenging, as new degrees of freedom have to generated taking all their dependencies into account. In particular, a reverse-mapping scheme has to fulfill the following requirements: (1) The reintroduced details have to be consistent with the CG conformation, i.e. coarse-graining of the reverse-mapped structure has to yield the original CG structure. (2) The generated microstates must have high statistical weight and should ideally follow the Boltzmann distribution. (3) In addition, the mapping should not be unique, as the reduced resolution implies that a single CG structure corresponds to an ensemble of atomistic microstates.
+
+Reverse-mapping is widely used in the molecular modeling community and several approaches to reintroduce details exist. Most reverse-mapping schemes follow the same strategy: At first, an initial atomistic structure is generated that fulfills the consistency condition. Two major approaches exist for this step: (1) Generic approaches place atoms close to their corresponding CG site, either randomly or based on some geometric rules \cite{rzepiela2010reconstruction, wassenaar2014going}. (2) fragment-based schemes rely on a presampled library of atomistic fragments that are projected onto the CG conformation \cite{peter2009multiscale, zhang2019hierarchical, hess2006long, brasiello2012multiscale}. Rigid rotations and translations are typically used to optimize the orientation of the fragments with respect to some geometric or energetic properties. In a second step, both strategies require further energy minimization to resolve steric clashes and intra-molecular tension. Subsequently, the relaxed structure is equilibrated in a MD simulation to recover the correct statistical weights of the reinserted degrees of freedom. 
+
+The computational effort for the subsequent energy minimization and equilibration procedures of such reverse-mapping schemes can become significant. As such, applications to large systems or high-throughput simulations are still limited. In addition, poorly initialized structures can get trapped into local minima with high energy barriers. Therefore, human intervention is frequently required for the reverse-mapping of more complex molecular structures and hence, hinder the automation of such processes. 
+
+
+
+
+
+
+In general, phenomena of condensed matter can be studied at various levels of resolution. Besi
+
+Phenomena of condensed matter can be studied at various levels of resolution that range from a quantum mechanical description of electronic degrees of freedom to a classical thermodynamic description of macroscopic quantities.
+
+
+
+Therefore, it is often necessary to deploy a coarser description of matter in order to push the limits of accessible length and time scales. 
 
 \section{Summary}
 
