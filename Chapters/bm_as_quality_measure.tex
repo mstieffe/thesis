@@ -161,13 +161,13 @@ model C & 0.7161 & 4.8574
 Evaluating forces based on the AA force field opens new routes towards improving the CG force field parameterization schemes. An evident starting point is the multiscale coarse-graining approach, which is described in Sec. \ref{Theory_MS:cg_methods} \cite{ercolessi1994interatomic, izvekov2005multiscale, izvekov2005multiscale2}. The force-matching functional $\chi$ aims at matching two kind of coarse-grained forces: (1) A projection of AA forces $\mathbf{F}^{\text{AA}}(\mathbf{r})$ onto the CG resolution, which are derived using the reference AA force field for a AA configuration $\mathbf{r}$ and (2) CG forces $\mathbf{F}^{\text{CG}}(M(\mathbf{r}))$ derived using the parameterized CG force field for a projection $M(\mathbf{r})$ of the same AA configuration $\mathbf{r}$. Note that the functional $\chi$ is therefore evaluated in the AA ensemble,
 
 \begin{equation}
-  \chi^2 [\mathbf{F}^{\text{CG}}] = \frac{1}{3N} \Big \langle \sum_{I=1}^N | \mathbf{F}_I^{\text{CG}}(\mathbf{M}(\mathbf{r})) - \mathbf{F}_I^{\text{AA}}(\mathbf{r}) |^2 \Big .
+  \chi^2 [\mathbf{F}^{\text{CG}}] = \frac{1}{3N} \Big \langle \sum_{I=1}^N | \mathbf{F}_I^{\text{CG}}(\mathbf{M}(\mathbf{r})) - \mathbf{F}_I^{\text{AA}}(\mathbf{r}) |^2 \Big \rangle_{\text{AA}}  .
 \end{equation}
 
 As such, the actual CG ensemble is not taken into account during parameterization of the CG force field. In order to improve the consistency between the AA and CG ensembles, backmapping could be used to evaluate the CG ensemble in terms of the AA force field. In particular, the functional $\chi$ could be augmented
 
 \begin{equation}
-  \chi^2_{\text{BM}} [\mathbf{F}] = \chi^2 + \frac{1}{3N} \Big \langle \sum_{I=1}^N | \mathbf{F}_I^{\text{CG}}(\mathbf{R}) - \mathbf{F}_I^{\text{AA}}(\mathbf{BM}(\mathbf{R})) |^2 \Big \rangle_{\text{CG}} ,
+  \chi^2_{\text{BM}} [\mathbf{F}] = \chi^2 + \frac{1}{3N} \Big \langle \sum_{I=1}^N | \mathbf{F}_I^{\text{CG}}(\mathbf{R}) - \mathbf{F}_I^{\text{AA}}(\mathbf{BM}(\mathbf{R})) |^2 \Big \rangle_{\text{CG}} \;\;,
 \end{equation}
 
 where $BM(\mathbf{R})$ denotes the backmapping of configuration $\mathbf{R}$ from the CG ensemble. As such, the CG force field would be tuned towards suppressing CG configurations that yield large atomistic forces upon backmapping. Note that computing $\chi^2_{\text{BM}}$ requires a backmapping scheme $\mathbf{BM}(\mathbf{R})$ that yields consistent reconstructions, i.e. it has to fulfill $\mathbf{M}\big( \mathbf{BM} ( \mathbf{R} ) \big) = \mathbf{R}$.
