@@ -1,40 +1,40 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Methology of DeepBM: Adversarial Backmapping of Condensed-Phase Molecular Structures}{57}{chapter.188}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Methology of DeepBM: Adversarial Backmapping of Condensed-Phase Molecular Structures}{57}{chapter.182}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{methology}{{4}{57}{Methology of DeepBM: Adversarial Backmapping of Condensed-Phase Molecular Structures}{chapter.188}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces DeepBM generates Boltzmann-equilibrated atomistic structures conditional on the coarse-grained configuration using an adversarial network. It is applied to the backmapping of a condensed-phase molecular systems, such as polystyrene.\cite {stieffenhofer2020adversarial}\relax }}{57}{figure.caption.189}\protected@file@percent }
-\newlabel{fig_bm_intro}{{4.1}{57}{DeepBM generates Boltzmann-equilibrated atomistic structures conditional on the coarse-grained configuration using an adversarial network. It is applied to the backmapping of a condensed-phase molecular systems, such as polystyrene.\cite {stieffenhofer2020adversarial}\relax }{figure.caption.189}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Notation and Problem Formulation}{58}{section.190}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Autoregressive Reconstruction}{59}{section.192}\protected@file@percent }
-\newlabel{probability_factorization}{{4.2}{59}{Autoregressive Reconstruction}{equation.194}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Adversarial autoregressive approach: The generator, $g_{\Theta }$, sequentially samples atom positions conditional on the coarse-grained structure and the existing atoms. A critic network, $c_{\Psi }$, estimates the discrepancy between reference and generated atoms.\cite {stieffenhofer2020adversarial}\relax }}{60}{figure.caption.193}\protected@file@percent }
-\newlabel{fig_autoreg_gan}{{4.2}{60}{Adversarial autoregressive approach: The generator, $g_{\Theta }$, sequentially samples atom positions conditional on the coarse-grained structure and the existing atoms. A critic network, $c_{\Psi }$, estimates the discrepancy between reference and generated atoms.\cite {stieffenhofer2020adversarial}\relax }{figure.caption.193}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Ordering of Molecular Graphs}{60}{subsection.195}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Three different options to traverse a graph: a) depth-first search, b) breadth-first search, c) random search\relax }}{61}{figure.caption.196}\protected@file@percent }
-\newlabel{graph_traversal}{{4.3}{61}{Three different options to traverse a graph: a) depth-first search, b) breadth-first search, c) random search\relax }{figure.caption.196}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Initial Structure with Forward Sampling}{61}{subsection.197}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Refinement with Gibbs Sampling}{62}{subsection.198}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Representation of Molecular Structures}{62}{section.199}\protected@file@percent }
-\newlabel{DBM:representation}{{4.3}{62}{Representation of Molecular Structures}{section.199}{}}
-\newlabel{DBM:density_representation}{{4.3}{63}{Representation of Molecular Structures}{equation.200}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Local Environment}{63}{subsection.201}\protected@file@percent }
-\newlabel{DBM:loc_env}{{4.3.1}{63}{Local Environment}{subsection.201}{}}
-\newlabel{simple_representation}{{4.4}{64}{Local Environment}{equation.202}{}}
-\newlabel{simple_representation2}{{4.6}{64}{Local Environment}{equation.204}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Feature Embedding}{64}{subsection.206}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Representation and conditional input. Existing atoms and coarse-grained beads are split into separate channels according to their atom/bead type. In addition, the atomic information is split in terms of intra- and intermolecular interactions. All channels are voxelized and used in addition to a noise sample as input for the generator network, $g_{\Theta }$.\cite {stieffenhofer2020adversarial}\relax }}{65}{figure.caption.207}\protected@file@percent }
-\newlabel{fig_representation}{{4.4}{65}{Representation and conditional input. Existing atoms and coarse-grained beads are split into separate channels according to their atom/bead type. In addition, the atomic information is split in terms of intra- and intermolecular interactions. All channels are voxelized and used in addition to a noise sample as input for the generator network, $g_{\Theta }$.\cite {stieffenhofer2020adversarial}\relax }{figure.caption.207}{}}
-\newlabel{featurized_representation_gibbs}{{4.9}{66}{Feature Embedding}{equation.209}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}Conditional GAN}{66}{section.211}\protected@file@percent }
-\newlabel{DBM:cGAN}{{4.4}{66}{Conditional GAN}{section.211}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Densities and Coordinates}{66}{subsection.212}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Autoregressive training. Starting from an atomistic configuration taken from training data (black) the predicted atoms (red) will be added to the local environment description for predicting the next atom in the sequence.\cite {stieffenhofer2020adversarial}\relax }}{67}{figure.caption.216}\protected@file@percent }
-\newlabel{fig_autoregressive}{{4.5}{67}{Autoregressive training. Starting from an atomistic configuration taken from training data (black) the predicted atoms (red) will be added to the local environment description for predicting the next atom in the sequence.\cite {stieffenhofer2020adversarial}\relax }{figure.caption.216}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Adversarial Cost-Function for Training on Sequences}{67}{subsection.215}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.5}Potential Energy as Regularizer}{68}{section.219}\protected@file@percent }
-\newlabel{SEC:DBM_regularization}{{4.5}{68}{Potential Energy as Regularizer}{section.219}{}}
+\newlabel{methology}{{4}{57}{Methology of DeepBM: Adversarial Backmapping of Condensed-Phase Molecular Structures}{chapter.182}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces DeepBM generates Boltzmann-equilibrated atomistic structures conditional on the coarse-grained configuration using an adversarial network. It is applied to the backmapping of a condensed-phase molecular systems, such as polystyrene.\cite {stieffenhofer2020adversarial}\relax }}{57}{figure.caption.183}\protected@file@percent }
+\newlabel{fig_bm_intro}{{4.1}{57}{DeepBM generates Boltzmann-equilibrated atomistic structures conditional on the coarse-grained configuration using an adversarial network. It is applied to the backmapping of a condensed-phase molecular systems, such as polystyrene.\cite {stieffenhofer2020adversarial}\relax }{figure.caption.183}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Notation and Problem Formulation}{58}{section.184}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Autoregressive Reconstruction}{59}{section.186}\protected@file@percent }
+\newlabel{probability_factorization}{{4.2}{59}{Autoregressive Reconstruction}{equation.188}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Adversarial autoregressive approach: The generator, $g_{\Theta }$, sequentially samples atom positions conditional on the coarse-grained structure and the existing atoms. A critic network, $c_{\Psi }$, estimates the discrepancy between reference and generated atoms.\cite {stieffenhofer2020adversarial}\relax }}{60}{figure.caption.187}\protected@file@percent }
+\newlabel{fig_autoreg_gan}{{4.2}{60}{Adversarial autoregressive approach: The generator, $g_{\Theta }$, sequentially samples atom positions conditional on the coarse-grained structure and the existing atoms. A critic network, $c_{\Psi }$, estimates the discrepancy between reference and generated atoms.\cite {stieffenhofer2020adversarial}\relax }{figure.caption.187}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Ordering of Molecular Graphs}{60}{subsection.189}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Three different options to traverse a graph: a) depth-first search, b) breadth-first search, c) random search\relax }}{61}{figure.caption.190}\protected@file@percent }
+\newlabel{graph_traversal}{{4.3}{61}{Three different options to traverse a graph: a) depth-first search, b) breadth-first search, c) random search\relax }{figure.caption.190}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Initial Structure with Forward Sampling}{61}{subsection.191}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Refinement with Gibbs Sampling}{62}{subsection.192}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Representation of Molecular Structures}{62}{section.193}\protected@file@percent }
+\newlabel{DBM:representation}{{4.3}{62}{Representation of Molecular Structures}{section.193}{}}
+\newlabel{DBM:density_representation}{{4.3}{63}{Representation of Molecular Structures}{equation.194}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Local Environment}{63}{subsection.195}\protected@file@percent }
+\newlabel{DBM:loc_env}{{4.3.1}{63}{Local Environment}{subsection.195}{}}
+\newlabel{simple_representation}{{4.4}{64}{Local Environment}{equation.196}{}}
+\newlabel{simple_representation2}{{4.6}{64}{Local Environment}{equation.198}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Feature Embedding}{64}{subsection.200}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Representation and conditional input. Existing atoms and coarse-grained beads are split into separate channels according to their atom/bead type. In addition, the atomic information is split in terms of intra- and intermolecular interactions. All channels are voxelized and used in addition to a noise sample as input for the generator network, $g_{\Theta }$.\cite {stieffenhofer2020adversarial}\relax }}{65}{figure.caption.201}\protected@file@percent }
+\newlabel{fig_representation}{{4.4}{65}{Representation and conditional input. Existing atoms and coarse-grained beads are split into separate channels according to their atom/bead type. In addition, the atomic information is split in terms of intra- and intermolecular interactions. All channels are voxelized and used in addition to a noise sample as input for the generator network, $g_{\Theta }$.\cite {stieffenhofer2020adversarial}\relax }{figure.caption.201}{}}
+\newlabel{featurized_representation_gibbs}{{4.9}{66}{Feature Embedding}{equation.203}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Conditional GAN}{66}{section.205}\protected@file@percent }
+\newlabel{DBM:cGAN}{{4.4}{66}{Conditional GAN}{section.205}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Densities and Coordinates}{66}{subsection.206}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Autoregressive training. Starting from an atomistic configuration taken from training data (black) the predicted atoms (red) will be added to the local environment description for predicting the next atom in the sequence.\cite {stieffenhofer2020adversarial}\relax }}{67}{figure.caption.210}\protected@file@percent }
+\newlabel{fig_autoregressive}{{4.5}{67}{Autoregressive training. Starting from an atomistic configuration taken from training data (black) the predicted atoms (red) will be added to the local environment description for predicting the next atom in the sequence.\cite {stieffenhofer2020adversarial}\relax }{figure.caption.210}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Adversarial Cost-Function for Training on Sequences}{67}{subsection.209}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Potential Energy as Regularizer}{68}{section.213}\protected@file@percent }
+\newlabel{SEC:DBM_regularization}{{4.5}{68}{Potential Energy as Regularizer}{section.213}{}}
 \@setckpt{Chapters/methology_of_deepBM}{
 \setcounter{page}{70}
 \setcounter{equation}{17}
@@ -53,8 +53,8 @@
 \setcounter{subparagraph}{0}
 \setcounter{figure}{5}
 \setcounter{table}{0}
-\setcounter{LT@tables}{3}
-\setcounter{LT@chunks}{1}
+\setcounter{LT@tables}{0}
+\setcounter{LT@chunks}{0}
 \setcounter{caption@flags}{0}
 \setcounter{ContinuedFloat}{0}
 \setcounter{float@type}{4}
@@ -178,7 +178,7 @@
 \setcounter{parentequation}{0}
 \setcounter{Item}{0}
 \setcounter{Hfootnote}{0}
-\setcounter{bookmark@seq@number}{52}
-\setcounter{FBLTpage}{2}
+\setcounter{bookmark@seq@number}{53}
+\setcounter{FBLTpage}{0}
 \setcounter{section@level}{1}
 }

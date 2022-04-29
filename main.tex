@@ -89,7 +89,7 @@ headsepline, % Uncomment to get a line under the header
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Deep Learning and Multiscale Simulations: Data-Driven Reverse-Mapping of Condensed-Phase Molecular Structures} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\thesistitle{Multiscale Modeling and Deep Learning: Reverse-Mapping of Condensed-Phase Molecular Structures} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
 \supervisor{Prof. Dr. Kurt \textsc{Kremer} \\ Dr. Tristan Bereau \\ Prof. Dr. Michael Wand} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \examiner{} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
 \degree{Doktor rerum naturalium (Dr. rer. nat.)} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
@@ -142,7 +142,7 @@ headsepline, % Uncomment to get a line under the header
 \emph{Supervisor:} \\
 \href{http://www.jamessmith.com}{\supname} % Supervisor name - remove the \href bracket to remove the link  
 \end{flushright}
-\end{minipage}\\[3cm]
+\end{minipage}\\[2cm]
  
 \vfill
 
@@ -201,10 +201,14 @@ headsepline, % Uncomment to get a line under the header
 
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-%Molecular processes can be studied at various levels of resolution that range from a fundamental, quantum mechanical description of electronic degrees of freedom to a classical thermodynamic description of macroscopic quantities. Sometimes, a single model is not able to capture all the relevant length- and time-scales to thoroughly study a phenomena of interest. A solution is offered by 
-Multiscale modeling (MM) combines models at different resolutions to address phenomena at multiple scales. At the lower end, coarse-grained (CG) molecular models are deployed to study the large scale behavior of the system. Such CG models are constructed by averaging over atomistic degrees of freedom. The lower resolution of CG systems reduces the computational effort of the simulation and enables a faster exploration of configuration space. However, a tight and consistent link between models of different resolutions requires to accomplish the other mapping direction as well. In particular, a reverse-mapping scheme that reintroduces degrees of freedom based on a CG structure is routinely required, for example to compare simulation results with experimental data, to rigorously analyze the simulation results on a local scale, or to assess the stability and accuracy of the obtained CG structures. The center of this work forms the development of deepbackmap (DBM), an approach for the reverse-mapping of condensed-phase molecular structures based on machine learning (ML). Traditional schemes start from a rough coarse-to-fine mapping and perform further energy minimization and molecular dynamics simulations to equilibrate the system. DBM directly predicts equilibrated molecular configurations that agree with the Boltzmann distribution. Moreover, DBM requires little human intervention, as the reintroduction of details is learned from training examples. During the course of this thesis, DBM is applied to various tasks involving reverse-mapping: The general performance and transferability of DBM is evaluated at the example of a polymeric system consisting of polystyrene molecules. Beside a excellent accuracy of structural properties for reverse-mapped configurations, DBM displays a remarkable transferability across different state points and chemical space. Moreover, DBM is applied to adjust local properties of molecular structures obtained with top-down molecular models in order to resemble a target distribution more closely. In addition, reverse-mapping to assess the quality of CG models at the atomistic resolution is performed. Finally, a ML-based scheme inspired by DBM is applied for temporal coherent reverse-mapping of molecular trajectories. Overall, this thesis explores the advantages of integrating generative ML methods into the framework of MM.
+Molecular processes can be studied at various levels of resolution that range from a fundamental, quantum mechanical description of electronic degrees of freedom to a classical thermodynamic description of macroscopic quantities. Sometimes, a single model is not able to capture all the relevant length- and time-scales to thoroughly study a phenomena of interest. A solution is offered by Multiscale modeling (MM), which combines molecular models at different resolutions to address phenomena at multiple scales. At the lower end, coarse-grained (CG) models are deployed to study the large scale behavior of the system. Such CG models are constructed by averaging over atomistic degrees of freedom. The lower resolution of CG systems reduces the computational effort of the simulation and enables a faster exploration of configuration space. Beside coarse-graining, a tight and consistent link between models of different resolutions calls for a reverse-mapping that is capable of reintroducing degrees of freedom as well. In particular, reverse-mapping is routinely applied in the MM community, for example to compare simulation results with experimental data, to rigorously analyze the simulation results on a local scale, or to assess the stability and accuracy of the obtained CG structures. The center of this work forms the development of deepbackmap (DBM), an approach for the reverse-mapping of condensed-phase molecular structures. The new method is based on machine learning (ML), a study of computer algorithms that use data to construct statistical models. Traditional schemes start from a rough coarse-to-fine mapping and perform further energy minimization and molecular dynamics simulations to equilibrate the system. DBM directly predicts equilibrated molecular configurations that agree with the Boltzmann distribution. Moreover, DBM requires little human intervention, as the reintroduction of details is learned from training examples. During the course of this thesis, DBM is applied to various tasks involving reverse-mapping: The general performance and transferability of DBM is evaluated at the example of a polymeric system consisting of polystyrene molecules. Beside an excellent accuracy of structural properties for reverse-mapped configurations, DBM displays a remarkable transferability across different state points and chemical space. Moreover, DBM is applied to adjust local properties of molecular structures obtained with top-down molecular models in order to resemble a target distribution more closely. In addition, reverse-mapping to assess the quality of CG models at the atomistic resolution is performed. Finally, a ML-based scheme inspired by DBM is applied for temporal coherent reverse-mapping of molecular trajectories. Overall, this thesis explores the advantages of integrating generative ML methods into the framework of MM.
 
 %An important tool to explore the structure, thermodynamics and dynamics of molecular systems are computer simulations of molecular models.
+\end{abstract}
+
+\begin{zusammenfassung}
+\addchaptertocentry{\abstractname} % Add the abstract to the table of contents
+Molekulare Prozesse können auf unterschiedlichen Auflösungsstufen untersucht werden, die von einer quantenmechanischen Beschreibung elektronischer Zuständen bis hin zu einer klassischen Beschreibung makroskopischer Eigenschaften reichen. Manchmal ist ein einzelnes Modell jedoch nicht ausreichend, um alle relevanten Längen- und Zeitskalen eines Phänomens zu erfassen. Multiskalen Modellierung (MM) bietet hierfür eine Lösung, indem mehrere molekulare Modelle mit unterschiedlicher Auflösung kombiniert werden. Modelle mit einer geringen Auflösung, so genannte coarse-grained (CG) Modelle, werden genutzt, um das Verhalten des Systems auf großen Skalen zu erfassen. Solche CG Modelle werden konstruiert indem über atomistische Freiheitsgrade gemittelt wird. Die geringere Auflösung des CG Systems reduziert den notwendigen Rechenaufwand der Simulation und ermöglicht eine schnellere Untersuchung des Konfigurationsraumes. Neben coarse-graining sind umgekehrte Abbildung, die es erlauben Freiheitsgrade zurück zu gewinnen, ebenfalls wichtig, um eine konsistente Verbindung von Modellen mit verschiedener Auflösung zu gewährleisten. Eine solche Erhöhung der Auflösung ist häufig notwendig, z.B. für einen direkten Vergleich von Simulationsdaten mit experimentellen Ergebnissen oder als Startpunkt für weitere hochaufgelöste Simulationen. Im Zentrum dieser Doktorarbeit steht die Entwicklung von deepbackmap (DBM), eine Methode für die Erhöhung der Auflösung von molekularen Systemen in der kondensierten Phase. Die Methode stützt sich auf machinelles Lernen (ML), eine Wissenschaft von Computeralgorithmen, die statistische Modelle von Daten ableiten. Traditionelle Ansätze für die Erhöhung der Auflösung starten von ungenauen Anfangskonfigurationen, die anschliessend Energie Minimierung und Equilibrierung erfordern. DBM hingegeben ermöglicht es, direkt equilibrierte molekulare Strukturen zu erzeugen, welche im Einklang mit der Boltzmannverteilung sind. Desweiteren benötigt DBM nur wenig menschliches Eingreifen, da die Zurückgewinnung von Freiheitsgraden anhand von Beispielen gelernt wird. Im Verlauf dieser Arbeit wird DBM für verschiedene Aufgaben eingesetzt: Zunächst wird die Leistung von DBM anhand eines polymerischen Systems aus Polystyrene untersucht. Generierte molekulare Strukturen weisen eine hohe Qualität auf. Desweiteren kann eine erstaunliche Generalisierbarkeit von DBM festgestellt werden, die es erlaubt trainierte Modelle zwischen unterschiedlichen Phasen und unterschiedlichen chemischen Systemen zu transferieren. Außerdem wird DBM angewendet, um lokale Eigenschaften von molekularen Strukturen zu adjustieren, um eine gegebene Verteilung eines top-down Modelles näher an eine Zielverteilung anzugleichen. Zusätzlich wird DBM für eine Qualitätsbewertung von CG Modellen auf atomistischer Auflösung benutzt. Zum Schluss wird eine von DBM inspirierte Methode eingeführt, die eine zeitlich koherente Erhöhung der Auflösung von molekularen Trajektorien ermöglicht. %Zummanenfassend kann gesagt werden, dass diese Doktorarbeit Methoden aus dem Bereich des machinellen Lernens in dem Bereich von MM anwendet. für eine gründliche Analyse der Datan auf lokalen Skalen,
 \end{abstract}
 
 %----------------------------------------------------------------------------------------
@@ -216,15 +220,15 @@ Multiscale modeling (MM) combines models at different resolutions to address phe
 
 I would like to take this opportunity to express my gratitude to several people who accompanied me at this journey. First of all, I want to thank Prof. Bernhard Mehlig from the Chalmers university in Gothenburg. Attending his course on artificial neural networks during a semester abroad was the starting point for my interest in the research field of artificial intelligence. At the same time, I want to highlight the impact that Prof. Friederike Schmid and PD. Peter Virnau had on my scientific carrier due to their great masters course 'statistical mechanics and computer simulations' at the JGU Mainz. This course awakened my interest in statistical physics and molecular simulations. Ultimately, this course lead me to my masters thesis in the Komet 1 research group, where I got the opportunity to merge my interests for machine learning and statistical mechanics under the careful supervision of Prof. Friederike Schmid and Prof. Michael Wand. In fact, Prof. Michael Wand became my mentor for everything machine learning related from this point on until now, as he continued his great supervision during the course of my dissertation. Thank you for joyful discussions, deep insights and illuminating explanations during all this time!
 
-I am also extremely thankful to Prof. Kurt Kremer and Dr. Tristan Bereau for welcoming me into the Theory group at the MPIP for my PhD. Prof. Kurt Kremer has established a productive and yet warm and friendly atmosphere in his research group that allowed me to further push my limits and develop as a scientist. I have to express my sincere gratitude to Dr. Tristan Bereau, who became my supervisor at the MPIP. His limitless energy, expertise and motivation was constantly inspiring me and enabled me to accomplish my scientific goals. Even after he quit university for a new adventure he still found time to guide me through the final phase of my PhD. Thank you for your great supervision!
+I am also extremely thankful to Prof. Kurt Kremer and Dr. Tristan Bereau for welcoming me into the Theory group at the MPIP for my PhD. Prof. Kurt Kremer has established a productive and yet warm and friendly atmosphere in his research group that allowed me to further push my limits and develop as a scientist. I have to express my sincere gratitude to Dr. Tristan Bereau, who became my supervisor at the MPIP. His limitless energy, expertise and motivation was constantly inspiring me and enabled me to accomplish my scientific goals. Even after he quit university for a new adventure, he still found time to guide me through the final phase of my PhD. Thank you for your great supervision!
 
 I also want to thank former and current members of the theory research group at the MPIP. At first, I want to mention Dr. Clemens Rauer and Dr. Kiran Kanekal, who became my office mates and helped me with the first steps of my PhD. Furthermore, I want to thank Dr. Christoph Scherer, Dr. Alessia Centi, Dr. Chan Liu, D Dr. Roberto Menichetti, Dr. Yasemin Bozkurt Varolgunes, Bernadette Mohr, Dr. Arghya Dutta, Dr. Joseph Rudzinski and Dr. Martin Girard for both, great scientific discussions during various seminars as well as casual discussions during lunch. All of you made the time at the MPIP a pleasure.
 
-A special thanks goes to my collaborators Moritz Hoffmann, Kirill Shmilovich, Nick Charron, Dr. Christoph Scherer, Daniel Franzen, Dr. Falk May and Dr. Denis Andrienko. I also want to thank Dr. Joseph Rudzinski, Dr. Martin Girard, Dr. Lukas Kades, Dr. Joydip Chaudhuri and Dr. Christoph Scherer for proof-reading chapters of this thesis.
+A special thanks goes to my collaborators Moritz Hoffmann, Kirill Shmilovich, Nick Charron, Dr. Christoph Scherer, Daniel Franzen, Dr. Falk May and Dr. Denis Andrienko. I also want to thank Dr. Joseph Rudzinski, Dr. Martin Girard, Dr. Denis Andrienko, Dr. Lukas Kades, Dr. Joydip Chaudhuri and Dr. Christoph Scherer for proof-reading chapters of this thesis.
 
-Finally, i want to acknowledge the Max Planck Graduate Center in Mainz as my funding source. In addition, this work was supported by the TRR 146 Collaborative Research Center of the Deutsche Forschungsgemeinschaft. I also want to thank the Institute for Pure and Applied Mathematics (IPAM) at the UCLA for inviting me to the long program 'Machine Learning for Physics and the Physics of Learning', where I got the opportunity to spend time in a great environment and to have inspiring discussion with scientists from all over the world.
+Finally, I want to acknowledge the Max Planck Graduate Center in Mainz as my funding source. In addition, this work was supported by the TRR 146 Collaborative Research Center of the Deutsche Forschungsgemeinschaft. I also want to thank the Institute for Pure and Applied Mathematics (IPAM) at the UCLA for inviting me to the long program 'Machine Learning for Physics and the Physics of Learning', where I got the opportunity to spend time in a great environment and to have inspiring discussion with scientists from all over the world.
 
-Last but not least, I want to include some personal acknowledgments here. I would have never gotten to this point without the continues support of my family and partner. Thank you for never letting me down and for encouraging me to follow my passion. 
+Last but not least, I want to include some personal acknowledgments here. I would have never gotten to this point without the continues support of my family and loving partner. Thank you for never letting me down and for encouraging me to follow my passion. 
 
 \end{acknowledgements}
 
@@ -242,47 +246,47 @@ Last but not least, I want to include some personal acknowledgments here. I woul
 %	ABBREVIATIONS
 %----------------------------------------------------------------------------------------
 
-\begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
+%\begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
 
-\textbf{LAH} & \textbf{L}ist \textbf{A}bbreviations \textbf{H}ere\\
-\textbf{WSF} & \textbf{W}hat (it) \textbf{S}tands \textbf{F}or\\
+%\textbf{LAH} & \textbf{L}ist \textbf{A}bbreviations \textbf{H}ere\\
+%\textbf{WSF} & \textbf{W}hat (it) \textbf{S}tands \textbf{F}or\\
 
-\end{abbreviations}
+%\end{abbreviations}
 
 %----------------------------------------------------------------------------------------
 %	PHYSICAL CONSTANTS/OTHER DEFINITIONS
 %----------------------------------------------------------------------------------------
 
-\begin{constants}{lr@{${}={}$}l} % The list of physical constants is a three column table
+%\begin{constants}{lr@{${}={}$}l} % The list of physical constants is a three column table
 
 % The \SI{}{} command is provided by the siunitx package, see its documentation for instructions on how to use it
 
-Speed of Light & $c_{0}$ & \SI{2.99792458e8}{\meter\per\second} (exact)\\
+%Speed of Light & $c_{0}$ & \SI{2.99792458e8}{\meter\per\second} (exact)\\
 %Constant Name & $Symbol$ & $Constant Value$ with units\\
 
-\end{constants}
+%\end{constants}
 
 %----------------------------------------------------------------------------------------
 %	SYMBOLS
 %----------------------------------------------------------------------------------------
 
-\begin{symbols}{lll} % Include a list of Symbols (a three column table)
+%\begin{symbols}{lll} % Include a list of Symbols (a three column table)
 
-$a$ & distance & \si{\meter} \\
-$P$ & power & \si{\watt} (\si{\joule\per\second}) \\
+%$a$ & distance & \si{\meter} \\
+%$P$ & power & \si{\watt} (\si{\joule\per\second}) \\
 %Symbol & Name & Unit \\
 
-\addlinespace % Gap to separate the Roman symbols from the Greek
+%\addlinespace % Gap to separate the Roman symbols from the Greek
 
-$\omega$ & angular frequency & \si{\radian} \\
+%$\omega$ & angular frequency & \si{\radian} \\
 
-\end{symbols}
+%\end{symbols}
 
 %----------------------------------------------------------------------------------------
 %	DEDICATION
 %----------------------------------------------------------------------------------------
 
-\dedicatory{For/Dedicated to/To my\ldots} 
+%\dedicatory{For/Dedicated to/To my\ldots} 
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS
