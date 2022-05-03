@@ -207,9 +207,9 @@ Molecular processes can be studied at various levels of resolution that range fr
 \end{abstract}
 
 \begin{zusammenfassung}
-\addchaptertocentry{\abstractname} % Add the abstract to the table of contents
+%\addchaptertocentry{\abstractname} % Add the abstract to the table of contents
 Molekulare Prozesse können auf unterschiedlichen Auflösungsstufen untersucht werden, die von einer quantenmechanischen Beschreibung elektronischer Zuständen bis hin zu einer klassischen Beschreibung makroskopischer Eigenschaften reichen. Manchmal ist ein einzelnes Modell jedoch nicht ausreichend, um alle relevanten Längen- und Zeitskalen eines Phänomens zu erfassen. Multiskalen Modellierung (MM) bietet hierfür eine Lösung, indem mehrere molekulare Modelle mit unterschiedlicher Auflösung kombiniert werden. Modelle mit einer geringen Auflösung, so genannte coarse-grained (CG) Modelle, werden genutzt, um das Verhalten des Systems auf großen Skalen zu erfassen. Solche CG Modelle werden konstruiert indem über atomistische Freiheitsgrade gemittelt wird. Die geringere Auflösung des CG Systems reduziert den notwendigen Rechenaufwand der Simulation und ermöglicht eine schnellere Untersuchung des Konfigurationsraumes. Neben coarse-graining sind umgekehrte Abbildung, die es erlauben Freiheitsgrade zurück zu gewinnen, ebenfalls wichtig, um eine konsistente Verbindung von Modellen mit verschiedener Auflösung zu gewährleisten. Eine solche Erhöhung der Auflösung ist häufig notwendig, z.B. für einen direkten Vergleich von Simulationsdaten mit experimentellen Ergebnissen oder als Startpunkt für weitere hochaufgelöste Simulationen. Im Zentrum dieser Doktorarbeit steht die Entwicklung von deepbackmap (DBM), eine Methode für die Erhöhung der Auflösung von molekularen Systemen in der kondensierten Phase. Die Methode stützt sich auf machinelles Lernen (ML), eine Wissenschaft von Computeralgorithmen, die statistische Modelle von Daten ableiten. Traditionelle Ansätze für die Erhöhung der Auflösung starten von ungenauen Anfangskonfigurationen, die anschliessend Energie Minimierung und Equilibrierung erfordern. DBM hingegeben ermöglicht es, direkt equilibrierte molekulare Strukturen zu erzeugen, welche im Einklang mit der Boltzmannverteilung sind. Desweiteren benötigt DBM nur wenig menschliches Eingreifen, da die Zurückgewinnung von Freiheitsgraden anhand von Beispielen gelernt wird. Im Verlauf dieser Arbeit wird DBM für verschiedene Aufgaben eingesetzt: Zunächst wird die Leistung von DBM anhand eines polymerischen Systems aus Polystyrene untersucht. Generierte molekulare Strukturen weisen eine hohe Qualität auf. Desweiteren kann eine erstaunliche Generalisierbarkeit von DBM festgestellt werden, die es erlaubt trainierte Modelle zwischen unterschiedlichen Phasen und unterschiedlichen chemischen Systemen zu transferieren. Außerdem wird DBM angewendet, um lokale Eigenschaften von molekularen Strukturen zu adjustieren, um eine gegebene Verteilung eines top-down Modelles näher an eine Zielverteilung anzugleichen. Zusätzlich wird DBM für eine Qualitätsbewertung von CG Modellen auf atomistischer Auflösung benutzt. Zum Schluss wird eine von DBM inspirierte Methode eingeführt, die eine zeitlich koherente Erhöhung der Auflösung von molekularen Trajektorien ermöglicht. %Zummanenfassend kann gesagt werden, dass diese Doktorarbeit Methoden aus dem Bereich des machinellen Lernens in dem Bereich von MM anwendet. für eine gründliche Analyse der Datan auf lokalen Skalen,
-\end{abstract}
+\end{zusammenfassung}
 
 %----------------------------------------------------------------------------------------
 %	ACKNOWLEDGEMENTS
@@ -310,7 +310,7 @@ Last but not least, I want to include some personal acknowledgments here. I woul
 \include{Chapters/bm_as_quality_measure} 
 \include{Chapters/temporal_coherent_bm} 
 \include{Chapters/conclusion} 
-\include{Chapters/appendix} 
+%\include{Chapters/appendix} 
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES
@@ -321,7 +321,8 @@ Last but not least, I want to include some personal acknowledgments here. I woul
 % Include the appendices of the thesis as separate files from the Appendices folder
 % Uncomment the lines as you write the Appendices
 
-\include{Appendices/AppendixA}
+\include{Chapters/appendix} 
+%\include{Appendices/AppendixA}
 %\include{Appendices/AppendixB}
 %\include{Appendices/AppendixC}
 
