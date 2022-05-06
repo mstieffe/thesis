@@ -10,38 +10,38 @@
 \end{figure*} 
  
  
-%\begin{figure*}
-%    \centering
-%   \begin{subfigure}[b]{0.475\textwidth}
-%        \centering
-%        \includegraphics[width=\textwidth]{./Figures/appendix/bm_sps/adv_c.pdf}
-%        \caption{Adversarial loss for the critic}    
-%        \label{adv_loss_c}
-%    \end{subfigure}
-%    \hfill
-%    \begin{subfigure}[b]{0.475\textwidth}  
-%        \centering 
-%        \includegraphics[width=\textwidth]{./Figures/appendix/bm_sps/adv_g.pdf}
-%        \caption{Adversarial loss for the generator}       
-%        \label{adv_loss_g}
-%    \end{subfigure}
-%    \vskip\baselineskip
-%    \begin{subfigure}[b]{0.475\textwidth}   
-%        \centering 
-%        \includegraphics[width=\textwidth]{./Figures/appendix/bm_sps/energy_loss.pdf}
-%        \caption{Forcefield based loss}    
-%        \label{energy_loss}
-%    \end{subfigure}
-%    \hfill
-%    \begin{subfigure}[b]{0.475\textwidth}   
-%        \centering 
-%        \includegraphics[width=\textwidth]{./Figures/appendix/bm_sps/com_loss.pdf}
-%        \caption{Center of mass loss}       
-%        \label{com_loss}
-%    \end{subfigure}
-%    \caption{ Different loss terms during training for the training set (red) and the validation set (blue)}
-%    \label{APPENDIX:DBM_sps_losses}
-%\end{figure*}
+\begin{figure*}
+    \centering
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{./Figures/appendix/bm_sps/adv_c.pdf}
+        \caption{Adversarial loss for the critic}    
+        \label{adv_loss_c}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.475\textwidth}  
+        \centering 
+        \includegraphics[width=\textwidth]{./Figures/appendix/bm_sps/adv_g.pdf}
+        \caption{Adversarial loss for the generator}       
+        \label{adv_loss_g}
+    \end{subfigure}
+    \vskip\baselineskip
+    \begin{subfigure}[b]{0.475\textwidth}   
+        \centering 
+        \includegraphics[width=\textwidth]{./Figures/appendix/bm_sps/energy_loss.pdf}
+        \caption{Forcefield based loss}    
+        \label{energy_loss}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.475\textwidth}   
+        \centering 
+        \includegraphics[width=\textwidth]{./Figures/appendix/bm_sps/com_loss.pdf}
+        \caption{Center of mass loss}       
+        \label{com_loss}
+    \end{subfigure}
+    \caption{ Different loss terms during training for the training set (red) and the validation set (blue)}
+    \label{APPENDIX:DBM_sps_losses}
+\end{figure*}
 
 
 \begin{figure}[htbp]
@@ -61,6 +61,6 @@
 \begin{figure}
   \centering
       \includegraphics[width=0.8\textwidth]{./Figures/quality_of_cg_models/tmbt_bm.pdf}
-  \caption{Pair correlation functions $g(r)$ for the AA reference system, backmapped in-distribution test set and backmapped test set for all CG models. Results obtained with DBM (left) and EM scheme (right) are displayed, including non-bonded (a)-(b) C-C, (c)-(d) C-N and (e)-(f) N-N correlations.}
+  \caption{Pair correlation functions $g(r)$ for the AA reference system, backmapped in-distribution test set and backmapped test set for CG model 1. Results obtained with DBM (left) and EM scheme (right) are displayed, including non-bonded (a)-(b) C-C, (c)-(d) C-N and (e)-(f) N-N correlations.}
   \label{BMQM:atomistic_rdf_all}
 \end{figure}

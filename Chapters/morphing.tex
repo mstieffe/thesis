@@ -30,12 +30,11 @@ In the following, the method is applied to two systems: (1) A polymer melt of sy
 The method applied in this chapter aims at morphing local features of molecular structures by passing them through a resolution bottleneck. The idea is inspired by the concept of cross-modal learning (CML) known in the ML community \cite{feng2014cross, cao2016correlation, mukherjee2017deep, yoo2019image}. As illustrated in Fig.~\ref{FIG:morph_intro} a), CML is used to link sources of information from different domains, for example to perform text-to-image translation. As an instructive example, consider a distribution of strings $\mathcal{A}$ and a distribution of images $\mathcal{B}$. In order to map a string to the domain of images, two autoencoders $A$ and $B$ are trained to encode and decode elements $\mathbf{a}$ and $\mathbf{b}$ sampled from $\mathcal{A}$ and $\mathcal{B}$, respectively. In its core, a link between both distributions can be established by matching the encoded distributions in the latent space. In particular, mapping between $\mathcal{A}$ and $\mathcal{B}$ is performed by cross-connecting the encoder $e$ and decoder $d$ of both models, i.e. $d_B\big(e_A(\mathbf{a})\big)$ for text-to-image translation. However, connecting the latent distributions of both models, i.e. the information-bottlenecks, is challenging and subject to current research \cite{wang2016comprehensive}.
 
 As illustrated in Fig.~\ref{FIG:morph_intro} b), a similar approach to CML is applied to link two distributions of molecular structures $\mathcal{X}$ and $\mathcal{Y}$. It is assumed that molecular configurations of both distributions display similar large-scale features, but differ in their local properties. In the following, $\mathcal{X}$ denotes the distribution of a top-down CG model, while $\mathcal{Y}$ denotes a target distribution representing more faithful molecular structures, for example obtained by a structure-based CG method. In order to map from $\mathcal{X}$ to $\mathcal{Y}$, a ML-based function $g$ is introduced to learn the transformation $g(\mathcal{X}) \approx \mathcal{Y}$. To this end, both distributions are linked at a lower-resolution, i.e. at an information-bottleneck. In particular, a simple encoder $e_s$ is chosen that reduces the number of particles $n$ by a factor $s$
-
-%However, both distributions differ, for example because of a mismatch of their underlying force fields.
+%
 \begin{equation}
  e_{s}: \mathbb{R}^{3n} \rightarrow \mathbb{R}^{3n/s} ,
 \end{equation}
-
+%
 , i.e. $e_s$ denotes a fine-to-coarse mapping of the coordinates. Specifically, $e_s$ computes the center of mass for groups of $s$ particles. Afterwards, encoded structures are backmapped to the original resolution deploying the ML model $g_s$, such that $g_s(e_s \big( \mathcal{Y} \big) ) = \mathcal{Y}$. To this end, $g_s$ is trained with the deepbackmap (DBM) approach, which is introduced in Chpt. \ref{methology}. Importantly, training of $g_s$ is fixed to the target distribution $\mathcal{Y}$. Afterwards, the trained model is transferred to $\mathcal{X}$ to perform the morphing $g_s(e_s \big( \mathcal{X} \big) ) \approx \mathcal{Y}$, i.e. to reinsert local correlations into the CG structures $e_s(\mathcal{X})$ learned from $\mathcal{Y}$.
 
 %. As such, local correlations learned from $\mathcal{Y}$ are reinserted into the CG structures $e(\mathcal{X})$
@@ -67,7 +66,7 @@ The proposed method is data driven, as the morphing is learned from training dat
   \caption{ Illustration of a simple energy landscape for bonded interactions to improve the quality of morphed molecular structures. $\phi$ represents bond lengths or angles, $\phi_{\text{min}}$ and $\phi_{\text{max}}$ are the minimum and maximum values obtained from the distribution $p(\phi)$, and $U(\phi)$ is a harmonic potential to penalize regions below $\phi_{\text{min}}$ or above $\phi_{\text{max}}$.}
   \label{FIG:morph_energy}
 \end{figure}
-
+%
 \begin{equation}
  U(\phi) =
   \begin{cases}
@@ -76,9 +75,9 @@ The proposed method is data driven, as the morphing is learned from training dat
       0,              & \text{otherwise},
   \end{cases}
 \end{equation}
-
+%
 is applied as bonded interaction, where $\phi$ represents bond lengths or angles, respectively, $a$ is a scaling factor, and $\phi_{\text{min}}$/$\phi_{\text{max}}$ are threshold values of the potential. Similarly, a harmonic potential for non-bonded distances $d$
-
+%
 \begin{equation}
  U(d) =
   \begin{cases}
@@ -86,7 +85,7 @@ is applied as bonded interaction, where $\phi$ represents bond lengths or angles
       0,              & \text{otherwise},
   \end{cases}
 \end{equation}
-
+%
 is introduced, where $d_{\text{min}}$ is the minimum distance for non-bonded particles. The values for the minimum and maximum distances/angles are obtained from the target distribution.
 
 \section{Set-up and Reference Data}
@@ -101,42 +100,42 @@ The KG model is a standard model for computer simulations of polymeric systems \
 \subsubsection{Matching at the Kuhn Scale}
 
 An important characteristic of many polymeric systems is their universal large-scale behavior that manifests in scaling relations. Specifically, the \textit{mean square end-to-end distance} $\langle R^2_e \rangle$ of a polymer chain scales with the number of beads $N$, i.e. $\langle R^2_e \rangle \propto N^{2\nu}$. In a melt state, polymers adopt the characteristics of a random-walk and $\nu = \frac{1}{2}$. However, local interactions of real polymers introduce correlations between monomers that ultimately increase $\langle R^2_e \rangle$. In order to account for such correlations, the results known for ideal chains, i.e. the random-walk behavior $\langle R^2_e \rangle = l^2 N$, requires a correction
-
+%
 \begin{equation}
   \langle R^2_e \rangle = C_{\infty} l^2 N ,
 \end{equation}
-
+%
 where $l$ is the bond length between consecutive monomers and $C_{\infty}$ is \textit{Flory's characteristic ratio}. Note that $C_{\infty}$ depends on the local stiffness of the polymer chain, i.e. emergent large-scale properties are influenced by microscopic details.
 
 The crossover from local, chemistry specific to universal, random-walk behavior is characterized by the \textit{Kuhn length} $b$. It is defined by mapping the real chain onto an equivalent ideal chain with $n$ segments of length $b$ that reproduces $\langle R^2_e \rangle$ and the contour length $L = N l$, i.e.,
-
+%
 \begin{equation}
     \langle R^2_e \rangle =  b^2 n ,
 \end{equation}
-
+%
 \begin{equation}
     L = nb .
 \end{equation}
-
+%
 A key parameter to characterize a specific polymer chemistry is the \textit{Kuhn number} $n_k$. It is a dimensionless parameter, which defines the number of Kuhn segments within a cube of length $b$,
-
+%
 \begin{equation}
 \label{kuhn_number}
   n_k = \rho_k b^3 ,
 \end{equation}
-
+%
 where $\rho_k$ is the number density of Kuhn segments. It is observed that $n_k$ systematically correlates with emergent properties, such as the entanglement length \cite{everaers2020kremer, svaneborg2020characteristic}. As such, $n_k$ can be used to link experimentally observed polymers with model polymers.
 
 While the Kuhn number $n_k$ is material specific and depends on atomic details, it is not straightforward to infer its dependence on the deployed interaction potentials. However, Everaers \emph{et al.} have found a direct relation between the chain stiffness $\kappa$ of the KG model and the implied Kuhn number $n_k$,
-
+%
 \begin{equation}
   b(\kappa) = b^{(0)} + \Delta b ,
 \end{equation}
-
+%
 \begin{equation}
   \Delta b = 0.77 \sigma (\text{tanh}(-.03\kappa^2 - 0.41 \kappa + 0.16) + 1),
 \end{equation}
-
+%
 where $b^{(0)}$ is the bare Kuhn length in the absence of excluded volume interactions and $\sigma$ is the bead diameter \cite{svaneborg2020characteristic}. Given the Kuhn length $b$, the corresponding Kuhn number $n_k$ can be inferred from Eq. \ref{kuhn_number}. 
 
 In summary, the KG model with additional bending potential offers a one parameter model that covers a wide range of experimentally relevant polymers. However, while this remarkably simple model is able to retain the behavior above the Kuhn scale, no particular effort is put into reproducing the correct local properties. Therefore, local properties are likely to differ from the target system \cite{everaers2020kremer}.
@@ -205,7 +204,7 @@ scheme B, $s=6$ & $6.01 \pm 0.03$ & $2.45 \pm 0.02$ & $21.81 \pm 0.2$
 
 The discrepancy between the Fritz and KG model becomes more apparent for local structural features, as illustrated in Fig. \ref{FIG:morph_sps_ff_dists}. Panel (a) and (b) display distribution functions for the bond length. While the KG model yields polymers with a sharp bond length distribution that has a peak at $0.72$ nm, polymers obtained with the Fritz model display a broader distribution peaked at $0.79$ nm. The impact of the morphing on the bond length distribution varies and depends on the morphing scale $s$ as well as the applied morphing scheme. The best results deploying morphing scheme A are obtained for $s=2$, where the bond length distribution of the morphed structures match remarkably well with the reference Fritz model. Larger values of $s$ deteriorate the morphing capability in terms of the bond lengths. Regarding scheme B, the best results are obtained for the intermediate morphing scale $s=4$, while $s=2$ has an negligible impact on the distribution and $s=6$ yields a distribution that is too broad.
 
-The angle distributions shown in panels (c) and (d) reveal that the KG as well as the Fritz model yield polymeric structures that cover a wide range of angles between consecutive bonds. However, the angle distribution for the Fritz model displays a single peak at $\approx 135^{\circ}$, while the distribution for the KG model has two peaks: A major peak at $\approx 130^{\circ}$ and a sidepeak at $\approx 70^{\circ}$. As such, the KG model puts higher statistical weight on small angles $< 100^{\circ}$ compared to the Fritz model. Both morphing schemes are able to suppress small angles for $s=6$. Smaller values of $s$ reduce the impact of the morphing on the angle distribution. Especially, morphing scheme B at $s=2$ has no noticeable impact.
+The angle distributions shown in panels (c) and (d) reveal that the KG as well as the Fritz model yield polymeric structures that cover a wide range of angles between consecutive bonds. However, the angle distribution for the Fritz model displays a single peak at $\approx 135^{\circ}$, while the distribution for the KG model has two peaks: A major peak at $\approx 130^{\circ}$ and a side peak at $\approx 70^{\circ}$. As such, the KG model puts higher statistical weight on small angles $< 100^{\circ}$ compared to the Fritz model. Both morphing schemes are able to suppress small angles for $s=6$. Smaller values of $s$ reduce the impact of the morphing on the angle distribution. Especially, morphing scheme B at $s=2$ has no noticeable impact.
 
 Panels (e) and (f) display the pair correlation $g(r)$ between non-bonded beads. Polymer melts generated with the KG model yield a sharply peaked pair correlation function, while the $g(r)$ for melts obtained with the Fritz model are less peaked and reveal a shorter minimum distance between non-bonded beads. Both morphing schemes smooth the pair correlation of KG structures. The best match with the reference Fritz model is obtained for scheme A and $s=2$.
 
@@ -303,7 +302,7 @@ The motivation to morph local statistics stems from the idea to reduce artifacts
 
 For the backmapping of sPS melts from the KG resolution to the original resolution of the Fritz model, DBM is trained on 10 snapshots obtained with the Fritz model to reintroduce missing degrees of freedom. Specifically, each CG bead at the KG resolution maps to three Fritz beads of type A and three Fritz beads of type B. DBM is trained using regularization $\mathcal{C}^{(1)}_{\text{pot}}$ based on the force field of Fritz \emph{et al.}. After training, backmapping is performed for CG Fritz configurations, KG configurations, and morphed KG configurations. Morphed structures are obtained with the best performing morphing model, i.e. scheme A and $s=2$. 
 
-Fig. \ref{FIG:morph_sps_bm} displays selected structural distributions for the reference Fritz model and backmapped configurations. The baseline accuracy of DBM is probed by its ability to backmap CG Fritz configurations. DBM is capable of reproducing bond length distribution with remarkable accuracy, as illustrated exemplary for the A-B bond depicted in panel (a). Distributions for the angles of backmapped structures, shown in panels (b) and (c) are slightly too broad and fail to reproduce the correct height of the main peak. Similar issues are observed for the dihedrals of backmapped structures displayed in panel (d). However, the overall accuracy of intra-molecular structural distributions is satisfactory. The pair correlation function $g(r)$ depicted in panels (e)-(f) reveals a discrepancy between reference and backmapped structures in terms of distances between non-bonded beads. 
+Fig. \ref{FIG:morph_sps_bm} displays selected structural distributions for the reference Fritz model and backmapped configurations. The baseline accuracy of DBM is probed by its ability to backmap CG Fritz configurations. DBM is capable of reproducing bond length distribution with remarkable accuracy, as illustrated exemplary for the A-B bond depicted in panel (a). Distributions for the angles of backmapped structures, shown in panels (b) and (c) are slightly too broad and fail to reproduce the correct height of the main peak. Similar issues are observed for the dihedrals of backmapped structures displayed in panel (d). However, the overall accuracy of intramolecular structural distributions is satisfactory. The pair correlation function $g(r)$ depicted in panels (e)-(f) reveals a discrepancy between reference and backmapped structures in terms of distances between non-bonded beads. 
 
 The quality of backmapped structures from the KG model does not significantly differ from the baseline quality. In other words, no further artifacts upon backmapping of the KG model can be observed compared to backmapping of the CG Fritz structures. Consequently, the influence of the morphing on the quality of backmapped structures is negligible.
 

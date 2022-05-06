@@ -8,11 +8,11 @@ The choice of resolution depends on the length and time scales of the phenomena 
 \begin{figure}
   \centering
       \includegraphics[width=0.7\textwidth]{./Figures/ms/ms_intro2.pdf}
-  \caption{Multiscale Modeling of soft-matter at the example of polystyrene. Various levels of resolution are shown: From a quantum mechanical description of the electronic structure to a macroscopic scale. Illustration at the mesoscale is taken from \cite{lee2014facile}.}
+  \caption{Multiscale Modeling of soft-matter at the example of polystyrene. Various levels of resolution are shown: From a quantum mechanical description of the electronic structure up to a macroscopic scale. Illustration at the mesoscale is taken from \cite{lee2014facile}.}
   \label{FIG:MS_intro}
 \end{figure}
 
-A solution is offered by \textit{Multiscale Modeling} (MM), which is illustrated in Fig. \ref{FIG:MS_intro}. MM is a method that combines models at different resolutions in order to address phenomena at different length and time scales \cite{ayton2007multiscale, voth2008coarse, peter2010multiscale}. At the lower end, a coarse-grained model is deployed that eliminates degrees of freedom, while aiming at reproducing specific features of a target system, such as structural or thermodynamic properties. The reduced representation decreases molecular friction, smoothens the energy landscape, and thereby effectively accelerates sampling of the conformational space. However, the MM approach also includes the other direction and deploys strategies to switch back to a higher resolution model when required. In order to establish a tight and consistent link between models at different resolutions, various strategies can be used: (1) In the sequential approach models are treated separately and information is passed between them without directly influencing each other \cite{tschop1998simulation, marrink2008martini}, whereas (2) hybrid methods provide a direct interaction between models allowing to use different resolutions simultaneously \cite{villa2005structural, izvekov2005multiscale, shi2006mixed}. (3) Alternatively, the resolution of single molecules can be changed adaptively during the course of the simulation \cite{praprotnik2005adaptive, praprotnik2007macromolecule}. In this thesis, the focus is set to sequential MM.
+A solution is offered by \textit{Multiscale Modeling} (MM), which is illustrated in Fig. \ref{FIG:MS_intro}. MM is a method that combines models at different resolutions in order to address phenomena at different length and time scales \cite{ayton2007multiscale, voth2008coarse, peter2010multiscale}. At the lower end, a coarse-grained (CG) model is deployed that eliminates degrees of freedom, while aiming at reproducing specific features of a target system, such as structural or thermodynamic properties. The reduced representation decreases molecular friction, smooths the energy landscape, and thereby effectively accelerates sampling of the conformational space. However, the MM approach also includes the other direction and deploys strategies to switch back to a higher resolution model when required. In order to establish a tight and consistent link between models at different resolutions, various strategies can be used: (1) In the sequential approach models are treated separately and information is passed between them without directly influencing each other \cite{tschop1998simulation, marrink2008martini}, whereas (2) hybrid methods provide a direct interaction between models allowing to use different resolutions simultaneously \cite{villa2005structural, izvekov2005multiscale, shi2006mixed}. (3) Alternatively, the resolution of single molecules can be changed adaptively during the course of the simulation \cite{praprotnik2005adaptive, praprotnik2007macromolecule}. In this thesis, the focus is set to sequential MM.
 
 This chapter is an introduction to MM and is organized as follows: At first, basics of thermodynamics and statistical mechanics are recalled followed by a review of molecular dynamics simulations. Afterwards, a section about coarse-graining outlines strategies to reduce the resolution in order to extend accessible length and time scales. Finally, the inverse problem, i.e. increasing the resolution, is introduced to motivate the main theme of this thesis.
 
@@ -41,51 +41,51 @@ The following introduction to thermodynamics and statistical mechanics is largel
 In statistical mechanics, macroscopic quantities measured at equilibrium are described as the average behavior of many particles. For an isolated system, i.e. a system that can not exchange energy or particles with its surrounding at fixed volume, a macrostate is completely specified by $(E, V, N)$, which remains constant throughout molecular motion \cite{shell2015thermodynamics}. For each macrostate $(E, V, N)$, a collection of possible microstates can be found, i.e. a surface in the phase space of $N$ atoms with constant total energy $E$ at a volume $V$. This collection of microstates together with their associated probabilities is called the \textit{microcanonical ensemble}.
 
 The positions and velocities of the atoms constantly vary under the influence of their mutual interactions. Therefore, the microstate changes constantly even if the macrostate stays fixed. The likelihood that a microstate will be visited by the system is denoted with $p_m$. Note that the microstate probabilities do not change with time at equilibrium. A cornerstone of statistical mechanics is the statement that the system has no preference for a certain microstate and hence, each microstate is equally likely \cite{shell2015thermodynamics}. This fundamental rule is called the \textit{principle of equal a priori probabilities}. It allows to write the likelihood in the canonical ensemble as
-
+%
 \begin{equation}
   p_m = \begin{cases}
     \frac{1}{\Omega(E,V,N)} \;\;\;\; & \text{if} \; E_m \neq E \\
     0 \;\;\;\; & \text{if} \; E_m \neq E
   \end{cases} ,
 \end{equation}
-
+%
 where $\Omega(E,V,N)$, called the \textit{density of states}, is a function describing the number of accessible microstates for particular $(E,N,V)$ \cite{shell2015thermodynamics}.
 
 \subsection{Entropy and the Second Law of Thermodynamics}
 
 A central theme common for thermodynamics, statistical mechanics as well as information theory is the concept of \textit{entropy}.
 In classical thermodynamics, the entropy $S$ is regarded as a non-conserved state-function that emerges naturally for systems in equilibrium \cite{shell2015thermodynamics}. It is a function
-
+%
 \begin{equation}
   S = S(E,V,N)
 \end{equation}
-
+%
 dependent on the macroscopic quantities $E$, $V$ and $N$. Allowing for heat, volume or mass transfer, the system can change its equilibrium macrostate to another macrostate. This is called a \textit{thermodynamic process}. Historically, entropy was introduced to explain why some thermodynamic processes are irreversible, i.e. the process occurs spontaneously in one direction, whereas the reverse does not, although both directions obey the conversation of energy \cite{simon1997physical}. The reason for this is the tendency of thermodynamic systems to progress towards states with increasing entropy. This is stated in the second law of thermodynamics: The entropy of an isolated system can not decrease as it always evolves to an equilibrium state where the entropy is highest \cite{shell2015thermodynamics}.
 
 While the specific form of the entropy function is different for every system, all entropy functions have some shared properties. One of the most important is the total differential
-
+%
 \begin{equation}
   dS = \frac{1}{T}dE + \frac{P}{T}dV - \frac{\mu}{T}dN ,
 \end{equation}
-
+%
 which relates the temperature $T$, the pressure $P$ and the chemical potential $\mu$ to derivatives of the same function. As such, $T$,$P$ and $\mu$ are not independent in the entropy function and can be derived from $(E, V, N)$ \cite{shell2015thermodynamics}.
 
 The above definition for the entropy $S$ is exclusively based on macroscopic properties. Boltzmann was the first who gave a definition for the entropy based on microscopic considerations and therefore introduced a connection of thermodynamics to the molecular nature of matter \cite{shell2015thermodynamics}. His famous formula reads
-
+%
 \begin{equation}
 \label{boltzmann_entropy}
   S = k_B \text{ln}( \Omega(E,V,N) ) ,
 \end{equation}
-
+%
 where $k_B$ is a proportionality constant, called \textit{Boltzmann's constant}. Eq. \ref{boltzmann_entropy} links the entropy $S$ to the number of accessible microstates for a given macrostate. Therefore, the second law of thermodynamics can be interpreted as the tendency of a system to evolve to a state that maximizes the number of accessible microstates.
 
 Based on Boltzmann's equation, Gibbs introduced a more general form of the entropy 
-
+%
 \begin{equation}
 \label{gibbs_entropy}
   S = - k_B \sum_{m} p_m \text{ln}( p_m )  ,
 \end{equation}
-
+%
 which is equivalent, up to the Boltzmann constant, to the definition of the information entropy by Shannon. Note that upon application of the principle of equal a priori probabilities, i.e. $p_m = \frac{1}{\Omega(E,V,N)}$, the entropy is maximized and Gibbs formulation of the entropy recovers Boltzmann's equation. 
 
 %In this regard, the entropy can interpreted as a measure of uncertainty. Moreover, according to Jayne, the thermodynamic entropy can be regarded as an application of Shannon's information theory: The entropy $S$ expresses the missing information needed to determine the specific microstate of a system that remains uncommunicated due to a description of the system solely in terms of macroscopic quantities. From this point of view, the principle of equal a priori probabilities expresses our ignorance about the microscopic details of the system as it chooses the distribution that maximizes the entropy. 
@@ -93,18 +93,18 @@ which is equivalent, up to the Boltzmann constant, to the definition of the info
 \subsection{The Canonical Ensemble}
 
 Central to the previous considerations was the ensemble for an system in isolation, i.e. the microcanonical ensemble for fixed $(E,V,N)$. In the following, the \textit{canonical ensemble} is introduced, which describes a system that is not isolated but at constant temperature. To this end, the system is considered to be in thermal contact with an infinitely large heat bath with a fixed temperature $T$. Therefore, the fixed macroscopic quantities of the system are $(T,V,N)$, while the total energy $E$ is allowed to fluctuate. The composite of the system and the heat bath is again considered to be an isolated system. However, summing over all the microstates of the heat bath allows to derive the probabilities for the microstates $m$ of the system of interest. Importantly, the microstate probabilities are no longer equal but depend on their total energy $E_m$. More specifically, the microstate probabilities can be written as
-
+%
 \begin{equation}
 \label{boltzmann_dstr}
   p_m = \frac{\text{e}^{- \frac{E_m}{k_B T}}}{Z} ,
 \end{equation}
-
+%
 where the normalization constant 
-
+%
 \begin{equation}
   Z = \sum_{m} \text{e}^{- \frac{E_m}{k_B T}}
 \end{equation}
-
+%
 is called the \textit{canonical partition function} and the probability distribution in Eq. \ref{boltzmann_dstr} is referred to as \textit{Boltzmann distribution} \cite{shell2015thermodynamics}. Similarly to the microcanonical distribution, the Boltzmann distribution is the distribution that maximizes the entropy for a given macroscopic state $(T,V,N)$. In general, the canonical ensemble is used more frequently as the microcanonical ensemble, since in most cases systems are considered that are in thermal equilibrium with their surroundings.
 
 \subsection{Thermodynamic Limit and Statistical Equivalence of Ensembles}
@@ -112,11 +112,11 @@ is called the \textit{canonical partition function} and the probability distribu
 The canonical approach provides an alternative, in addition to the microcanonical approach, to determine the behavior of a system at a microscopic level. While there are rigorously no fluctuations in the energy in the microcanonical ensemble, energy fluctuates in the canonical ensemble but the temperature is rigorously constant. However, in the \textit{thermodynamic limit}, i.e. when the number of particles and the volume of the system go to infinity $N \rightarrow \infty$, $V \rightarrow \infty$ while the particle density is held fixed $\frac{N}{V} = \text{constant}$, the differences in macroscopic properties for both ensembles vanish \cite{shell2015thermodynamics}.
 
 This can be seen clearly when the distribution of the energy in the canonical ensemble is considered. Using Eq. \ref{boltzmann_dstr} and \ref{boltzmann_entropy} the probability for a specific energy $E$ can be written as
-
+%
 \begin{equation}
   p(E) \propto \Omega(E,V,N) e^{- \frac{E_m}{k_B T}} = e^{\frac{1}{k_B} ( S(E,V,N) - \frac{E_m}{T} ) } .
 \end{equation}
-
+%
 This equation indicates that two competing terms have to be taken into account for the probability of a specific energy level: The first term is the entropy $S$, which is a concave, increasing function of $E$ \cite{shell2015thermodynamics}. The second term $-\frac{E}{T}$ decreases linearly with the energy $E$. Therefore, the probability distribution for the energy levels has a maximum at an intermediate energy $E^*$. Both terms, $S$ and $E$, are extensive quantities, i.e. they scale as $N$. Since the competing terms are within the exponential, the probability distribution becomes sharply peaked at the maximum $p(E^*)$. Therefore, $p(E^*)$ becomes the most dominant term and the impact of microstates with different energies $E \neq E^*$ vanishes \cite{shell2015thermodynamics}.
 
 Moreover, fluctuations of the total energy $E$ become extremely small in the thermodynamic limit. The variance of the total energy $\sigma_E^2 = \langle E^2 \rangle - \langle E \rangle^2$ can be linked to the heat capacity, which is an extensive quantity. Therefore, the relative magnitude of energy fluctuations scales as
@@ -130,11 +130,11 @@ As a consequence, a macroscopic system appears to have constant total energy \ci
 \subsection{Information-theoretic View on Statistical Mechanics}
 
 Information theory is the mathematical study of the coding, transmission, storage and quantification of information \cite{ash2012information}. A central concept in information theory is the quantification of the amount of uncertainty for the outcome of a random process. In 1948, Shannon introduced the information entropy $S_{\text{Shannon}}$ for a random variable $X$
-
+%
 \begin{equation}
  S_{\text{Shannon}} = - \sum_{i=1}^n x_i \text{ln}( x_i )  ,
 \end{equation}
-
+%
 where $x_1, \dots, x_n$ are possible outcomes of $X$ \cite{shannon1948mathematical}. In particular, Shannon has shown that $S_{\text{Shannon}}$ is a quantity that increases with increasing uncertainty \cite{shannon1948mathematical}. In 1957, Jaynes published two papers emphasizing the correspondence between information theory and statistical mechanics \cite{jaynes1957information,jaynes1957information2}. According to Jaynes, Gibbs' entropy (Eq. \ref{gibbs_entropy}) in statistical mechanics and Shannon's information entropy are identical except for the Boltzmann constant \cite{jaynes1957information}. Moreover, statistical mechanics can be viewed from the perspective of information theory, such that deriving microscopic distributions can be treated as an inference problem \cite{jaynes1957information}.
 
 Jaynes treated the testable information, i.e. the macroscopic observables, as prior information \cite{jaynes1957information}. However, information is missing required to determine the specific microstate of a system due to a description of the system solely in terms of macroscopic quantities, i.e. a description that is too coarse. Consequently, when probabilities are assigned to microstates two requirements have to be fulfilled: (1) The microscopic probability distribution has to be consistent with the observed macroscopic quantities, i.e. the correct average behavior has to be captured \cite{jaynes1957information}. (2) The ignorance of the specific microstate the system resides has to be taken into account without introducing arbitrary assumptions \cite{jaynes1957information}. If only macroscopic properties of the system are known, a microscopic distribution has to be assumed that is the least-informative in order to express the uncertainty of the actual microstate. From this point of view, the principle of equal a priori probabilities is a consequence of the ignorance about the microscopic details of the system. 
@@ -159,47 +159,47 @@ The following introduction to MD is based on the book \cite{frenkel2001understan
 \label{numerical_integration}
 
 Consider a molecular system that consists of $N$ particles with positions $\mathbf{r} \in \mathbb{R}^{3N}$, momenta $\mathbf{p} \in \mathbb{R}^{3N}$ and masses $\mathbf{m} \in \mathbb{R}^N$. The Hamiltonian $H$ of the system is the function that gives the total energy of a microstate,
-
+%
 \begin{equation}
  H(\mathbf{p}, \mathbf{r}) = K(\mathbf{p}) + U(\mathbf{r}) ,
 \end{equation}
-
+%
 where $K(\mathbf{p}) = \sum_i \frac{|\mathbf{p}_i|^2}{2m_i}$ is the kinetic energy and $U(\mathbf{r})$ the potential energy. The time evolution of the system is described by Newton's equation of motion
-
+%
 \begin{equation}
 \label{newtons_eq_motion}
    \frac{d \mathbf{p}_i}{d t} = - \frac{d U (\mathbf{r})}{d \mathbf{r}_i} .
 \end{equation}
-
+%
 Eq. \ref{newtons_eq_motion} is a set of $3N$ second-order, nonlinear, coupled partial differential equations, which is intractable to be solved analytically \cite{shell2019lecturenotes}. Therefore, numerical integration is used to evolve the system in time. Here, the basic idea is to introduce a small time step $\delta t$ and update the positions of the atoms at consecutive time steps, i.e. 
-
+%
 \begin{equation}
   \mathbf{r}(0), \mathbf{r}(\delta t), \mathbf{r}(2 \delta t), ..
 \end{equation}
-
+%
 Many different algorithms exist to propagate the system forward in time. As an example, the \textit{Verlet} algorithm is explained in the following.
 
 Using a Taylor expansion, the position at time $t + \delta t$ can be written as
-
+%
 \begin{equation}
 \label{verlet_taylor1}
   \mathbf{r}(t + \delta t) = \mathbf{r}(t) + \frac{d \mathbf{r}(t)}{d t} \delta t + \frac{d^2 \mathbf{r}(t)}{d t^2} \frac{ \delta t^2}{2} + \frac{d^3 \mathbf{r}(t)}{d t^3} \frac{ \delta t^3}{6} + \mathcal{O}(\delta t^4) .
 \end{equation}
-
+%
 Similarly, the position at the previous time step can be written as
-
+%
 \begin{equation}
 \label{verlet_taylor2}
   \mathbf{r}(t - \delta t) = \mathbf{r}(t) - \frac{d \mathbf{r}(t)}{d t} \delta t + \frac{d^2 \mathbf{r}(t)}{d t^2} \frac{ \delta t^2}{2} - \frac{d^3 \mathbf{r}(t)}{d t^3} \frac{ \delta t^3}{6} + \mathcal{O}(\delta t^4) .
 \end{equation}
-
+%
 Adding Eq. \ref{verlet_taylor1} and \ref{verlet_taylor2} and rearranging leads to
-
+%
 \begin{equation}
 \label{verlet}
   \mathbf{r}(t + \delta t) = 2 \mathbf{r}(t) - \mathbf{r}(t - \delta t) + \frac{d^2 \mathbf{r}(t)}{d t^2} \frac{ \delta t^2}{2} + \mathcal{O}(\delta t^4) .
 \end{equation}
-
+%
 Eq. \ref{verlet} enables to compute the positions at the next time step from the positions at the two previous time steps and the forces, which can be calculated using Eq. \ref{newtons_eq_motion}. Starting from initial positions and velocities, the time-evolution of the system traces a path in phase space, called trajectory. For classical systems, the phase space trajectory lies on a surface of constant energy, as Newton's equations conserve energy \cite{shell2019lecturenotes}. For ergodic systems, the trajectory will eventually visit all points in phase space that are in agreement with the given total energy, whereas systems that are non-ergodic have areas in phase space that are inaccessible. While it is not possible to sample all states of the trajectory, MD simulations aim at sampling the accessible phase space representatively. In particular, the averages of MD simulations for ergodic systems can represent the thermodynamic properties at the macroscopic scale.
 
 Note that the Verlet algorithm has two important features: It is time-reversible and symplectic, i.e. volume in phase space is preserved \cite{allen2004introduction}. Those features are crucial to maintain correct statistical sampling and stability, as those are properties of the true Hamiltonian dynamics \cite{shell2019lecturenotes}. Algorithms that do not preserve the volume in phase space can dramatically expand the initial volume, such that it eventually covers areas of phase space that are not compatible with the starting condition and might violate energy conservation. Although reversibility and the conservation of phase space volume does not automatically guarantee that there is no drift of the total energy on a long time scale, it is at least a reasonable requirement \cite{frenkel2001understanding}. In practice, the Verlet algorithm does not exactly conserve the total energy, but it exhibits only small long energy drifts \cite{frenkel2001understanding}. Note, that there are many different algorithms that can be derived from the Verlet algorithm yielding identical trajectories, such as the leap frog or the velocity Verlet algorithm \cite{frenkel2001understanding}.
@@ -211,32 +211,32 @@ Note that the Verlet algorithm has two important features: It is time-reversible
 The physical accuracy of a MD simulation relies largely on the method by which the forces are specified, i.e. on the potential energy function $U(\mathbf{r})$ that defines the interaction between the particles. Typically, $U(\mathbf{r})$ is referred to as molecular force field. Depending on the representation of the system, $U(\mathbf{r})$ can be defined on various different levels of resolution. At the most fundamental level, a quantum description of the system is deployed that includes electronic degrees of freedom \cite{marx2000ab, lemkul2016empirical}. In the following, the classical description is used, which ignores the motion of the electrons and focuses solely on the motion of the nuclei. More specifically, the classical description approximates the effect of electrons as a potential energy surface representing the quantum ground-state \cite{shell2019lecturenotes}. This description is based on two major approximations: (1) The nuclei are treated as point particles that follow classical Newtonian dynamics. This is reasonable because they are much heavier than electrons \cite{shell2019lecturenotes}. (2) The Born-Oppenheim approximation, which states that electrons and nuclei can be treated separately, because the dynamics of the electrons are so fast that they can be considered to react instantaneously to the motion of their nuclei \cite{shell2019lecturenotes}.
 
 Most of the force fields used in classic MD are empirical and aim at correctly modeling structural, thermodynamic and/or dynamic properties of the system \cite{mackerell2004empirical}. The potential $U (\mathbf{r}; \mathbf{P})$ usually consists of simple analytic functions with a set of parameters $\mathbf{P}$, which are specified by fitting $U (\mathbf{r}; \mathbf{P})$ to experimental data or detailed electronic calculations \cite{weiner1984new, brooks1983charmm, jorgensen1996development}. Typically, the potential is divided into two terms
-
+%
 \begin{equation}
   U = U_{\text{bonded}} + U_{\text{nonbonded}} ,
 \end{equation}
-
+%
 one term representing bonded interactions, i.e. interactions associated with covalent bonds, and one term representing non-bonded interactions \cite{shell2019lecturenotes}. This distinction arises due to different interpretations of the solution of the Schrödinger equation, which is the fundamental differential equation that describes the wave function of a quantum-mechanical system. 
 
 \subsubsection{Bonded Interactions}
 
 When atoms approach at close range they can share pairs of electrons and form a stable electron configuration. As a result, a covalent bond is formed, i.e. a balance of attractive and repulsive forces occurs between both atoms that binds them to each other. In order to mimic covalent interactions in a simulation, the following potentials are typically applied: (1) Bond stretching accounts for deviations from the equilibrium distance between two bonded atoms, (2) bond angle bending accounts for deviations from the preferred hybridization geometry and (3) bond torsion/dihedral accounts for rotations along bonds. The high energy scales associated with bond stretching and bending only allows for small deviations from the equilibrium bond length and bond angle. As such, Taylor expansions around the minimum can be applied yielding harmonic potentials. Note that such harmonic potentials do not account for bond breaking/forming \cite{shell2019lecturenotes}. Torsional interactions are typically associated with energy scales lower than bond stretching or bending and are approximated by a cosine expansion. In summary, a frequently used analytical form to model bonded interactions is
-
+%
 \begin{equation}
   U_{\text{bonded}} = \sum_{\text{bonds}} a(d - d_0)^2 + \sum_{\text{angles}} b(\Phi - \Phi_0)^2 + \sum_{\text{dihedrals}} \Big( \sum_{n} c_n \text{cos}(\omega)^n \Big) ,
 \end{equation}
-
+%
 where $d$ and $d_0$ are the calculated and the equilibrium bond length, respectively, $\Phi$ and $\Phi_0$ the calculated and equilibrium bond angles and $\omega$ is the calculated dihedral angle \cite{shell2019lecturenotes}. The parameters $a$, $b$ and $c_n$ are the strength for the harmonic and the cosine series potential, respectively. 
 
 \subsubsection{Non-bonded Interactions}
 
 The non-bonded potential is associated with van der Waals attraction, Pauli repulsion and electrostatic interactions \cite{shell2019lecturenotes}. The van der Waals attraction arises due to the correlation between instantaneous dipoles between electron clouds of the atoms. The Pauli repulsion occurs upon the overlap of electron clouds and is a consequence of the Pauli principle, which forbids any two electrons from having the same quantum numbers. Both, the van der Waals attraction and the Pauli repulsion, are often combined into a single expression, such as the Lennard-Jones potential. The electrostatic forces arise due to partial or formal charges of the atoms and are taken into account through Coulomb's law. In combination, a typical non-bonded potential is modeled as
-
+%
 \begin{equation}
 \label{MS:nonbonded_potential}
   U_{\text{nonbonded}} = \sum_{\text{pairs}} \Big( \underbrace{ 4 \epsilon \bigg[ \big( \frac{r_{ij}}{\sigma} \big)^{-12} - \big( \frac{r_{ij}}{\sigma} \big)^{-6} \bigg] }_{\text{Lennard-Jones}} + \underbrace{ \frac{q_i q_j}{4 \pi \epsilon_0 r_{ij}} }_{\text{Coulomb}} \Big) , 
 \end{equation}
-
+%
 where $r_{ij}$ is the pairwise distance, $q_i$ and $q_j$ are the net (partial) charges, $\epsilon_0$ is the electric permittivity in vacuum, $\sigma$ is the distance at which the Lennard-Jones potential reaches its minimum value $-\epsilon$ \cite{shell2019lecturenotes}. Note that the Lennard-Jones parameters $\sigma$ and $\epsilon$ depend on the particular atom types \cite{shell2019lecturenotes}.
 
 Eq. \ref{MS:nonbonded_potential} is an effective pair potential that approximates multi-body interactions by renormalizing the pairwise interactions in order to limit the computational expense. However, calculating non-bonded interactions is computationally more expensive compared to bonded interactions, since the number of terms in the pairwise atomic sum scales as $N^2$, while the other scale as $N$. To reduce the computational overhead, i.e. to avoid quadratic scaling of the non-bonded interactions, the Lennard-Jones potential is often truncated as its contribution becomes minimal for large distances. To this end, a cutoff distance of $r_c \approx 2.5 \sigma$ is typically used where the energy is only a few percent of the minimum energy ($U_{\text{LJ}}(r_c) \approx -0.016 \epsilon$) \cite{shell2019lecturenotes}. In addition, it is common practice to shift to potential to avoid discontinuities, i.e. subtracting the value of the potential at the cutoff. However, the truncated contributions can become significant for the total energy and pressure of the system. To this end, a correction to the total potential can be introduced, which is derived analytically for isotropic systems \cite{shell2019lecturenotes, frenkel2001understanding}. On the other hand, the long-range Coulomb interaction requires a special treatment, as a tail correction can not be derived directly \cite{shell2019lecturenotes}. To this end, particle mesh Ewald summation is typically used to reduce the computational effort to the order of $N \text{log}(N)$\cite{darden1993particle}. In this case, the potential is split into a short-range and long-range contribution. The short-range contributions are computed in real space, while the long-range contributions are computed in Fourier space. 
@@ -245,47 +245,47 @@ Eq. \ref{MS:nonbonded_potential} is an effective pair potential that approximate
 %The error of this algorithm is of order $\mathcal{O}(\delta t^4)$ and therefore decreases with the time step.
 \subsection{Controlling Temperature and Pressure}
 
-The numerical integration scheme described in Sec. \ref{numerical_integration} allows to sample from the microcanonical ensemble, i.e. maintain a constant total energy. However, it is often desirable to sample from different ensembles, such as the canonical ensemble (NVT) or the isothermal-isobaric ensemble (NPT). Modifications on the MD algorithm that allow to control the temperature or pressure are called thermostat or barostat algorithms, respectively. They are used to match experimental conditions, study temperature dependent processes or enhance the efficiency of conformational search \cite{Huenenberger2005}. Several methods exist to control temperature and pressure during the simulation. In the following, some of the popular techniques are introduced.
+The numerical integration scheme described in Sec. \ref{numerical_integration} allows to sample from the microcanonical ensemble, i.e. maintain a constant total energy. However, it is often desirable to sample from different ensembles, such as the canonical ensemble ($NVT$) or the isothermal-isobaric ensemble ($NPT$). Modifications on the MD algorithm that allow to control the temperature or pressure are called thermostat or barostat algorithms, respectively. They are used to match experimental conditions, study temperature dependent processes or enhance the efficiency of conformational search \cite{Huenenberger2005}. Several methods exist to control temperature and pressure during the simulation. In the following, some of the popular techniques are introduced.
 
 \subsubsection{Thermostats}
 
 The simplest approach to control the temperature is the velocity rescaling algorithm. The temperature is related to the kinetic energy and can be estimated as
-
+%
 \begin{equation}
  T = \frac{2 \langle K \rangle}{k_{\text{B}} n_{\text{DOF}}} ,
 \end{equation}
-
+%
 where $K$ is the kinetic energy and $n_{DOF}$ are the degrees of freedom \cite{shell2019lecturenotes}. Therefore, the velocities can be rescaled at each time step to fix the temperature to a desired value. Despite its simplicity, this algorithm does not reproduce the correct thermodynamic properties of the canonical ensemble, which allows the kinetic energy to fluctuate. However, deploying velocity rescaling at every step will fix the kinetic energy, i.e. fluctuations in the kinetic energy are not captured \cite{shell2019lecturenotes}.
 
 Anderson introduced random collisions of the molecules with an imaginary heat bath at the desired temperature. To this end, particles are chosen at random and their velocities $\mathbf{v}$ are sampled randomly from the Maxwell-Boltzmann distribution
-
+%
 \begin{equation}
  p(\mathbf{v}) = \Big( \frac{m}{2 \pi k_B T} \Big)^{3/2} \text{exp} \Big[- \frac{m |\mathbf{v}|^2}{2 k_B T} \Big] .
 \end{equation}
-
+%
 Although this approach generates the correct canonical ensemble probabilities, the molecular kinetics are not reproduced correctly, because the random collisions decorrelate the system \cite{shell2019lecturenotes}.
 
 Nosé augmented the Hamiltonian with two extra degrees of freedom representing an imaginary heat bath:
-
+%
 \begin{equation}
 \label{nose_hamiltonian}
  H_{\text{Nosé}} = \sum_i^N \Big( \frac{\mathbf{p}_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{p_s^2}{2Q} + (3N + 1) \frac{\text{ln}(s)}{k_b T}
 \end{equation}
-
+%
 Here, $s$ is the position and $p_s$ is the momentum of the heat bath \cite{frenkel2001understanding}. The parameter $Q$ is an effective mass associated with $s$, i.e. $p_s = Q \frac{\text{d}s}{\text{d}t}$ and its magnitude determines the coupling between the heat bath and the original system. It has to be chosen carefully by the user, as it influences the temperature fluctuations \cite{Huenenberger2005}. Using the Lagrangian, it can be shown that the particles are coupled to the heat bath by scaling the momenta:
-
+%
 \begin{equation}
  \mathbf{p}_i = m_i \mathbf{v}_i \cdot s
 \end{equation}
-
+%
 The Hamiltonian in Eq. \ref{nose_hamiltonian} can then be used to derive the equations of motions for the extended system, i.e. for both, the heat bath and the original system. This approach is deterministic as no stochastic element is present. This thermostat generates the correct thermodynamics for the canonical ensemble \cite{shell2019lecturenotes}.
 
 Scaling of the particle momenta using the position of the imaginary heat bath also implies scaling of the timescale in the extended system \cite{shell2019lecturenotes}. Since the position $s$ is variable, the implied timescale also changes making it difficult to implement the Nose thermostat. To solve this issue, Hoover proposed an alternative by replacing the heat bath momentum $p_s$ with a friction coefficient $\xi = \frac{\text{d} ln(s)}{\text{d}t}$:
-
+%
 \begin{equation}
  H_{\text{Nosé-Hoover}} = \sum_i^N \Big( \frac{\mathbf{p}_i^2}{2 m_i s^2} \Big) + U(\mathbf{r}) + \frac{\xi^2 Q}{2} + 3N k_B T \text{ln}(s)
 \end{equation}
-
+%
 This approach is known as the Nosé-Hoover thermostat and the modified Hamiltonian yields equations of motion that no longer require a scaling of the time step but still enables to correctly generate a canonical ensemble through MD simulation \cite{shell2019lecturenotes}.
 
 \subsubsection{Barostats}
@@ -293,17 +293,17 @@ This approach is known as the Nosé-Hoover thermostat and the modified Hamiltoni
 Similarly to thermostats, barostats are used to maintain constant pressure during the simulation. Again, several different techniques exists and in the following the popular Parinello-Rahman barostat is introduced as an example. 
 
 In its core, the Parinello-Rahman barostat is similar to the Nose-Hoover thermostat, but this time an imaginary pressure bath couples to the original system instead of a heat bath. The resulting Hamiltonian is 
-
+%
 \begin{equation}
  H_{\text{Parinello-Rahman}} = \sum_i^N \Big( \frac{\mathbf{p}_i^2}{2 m_i} \Big) + U(\mathbf{r}) + \sum_j \mathbf{P}_jj V + \sum_{j,k} \frac{1}{2} \mathbf{W}_{jk} \Big( \frac{d b_{jk}}{dt} \Big) .
 \end{equation}
-
+%
 Here, $\mathbf{b}$ is a matrix containing the box vectors and $V$ is the volume of the simulation box, $\mathbf{P}$ is the instantaneous pressure tensor and $\mathbf{W}$ is the mass parameter matrix \cite{abraham2014gromacs}. The vector of the simulation box $b$ is coupled to the pressure bath via the relationships
-
+%
 \begin{equation}
  \frac{db^2}{dt^2} = V \mathbf{W}^{-1 }\mathbf{b}^{'-1}(\mathbf{P}-\mathbf{P}_{ref}) ,
 \end{equation}
-
+%
 where $\mathbf{P}_{ref}$ is the reference pressure \cite{abraham2014gromacs}.
 
 %Typically, the Nosé-Hoover thermostat and the Parinello-Rahman barostat are used simultaneously yielding a Hamiltonian that includes both, a coupling to a heat bath and a pressure bath. %Therefore, the resulting equations of motions allow to sample from the isothermal-isobaric ensemble (NPT).
@@ -314,158 +314,158 @@ where $\mathbf{P}_{ref}$ is the reference pressure \cite{abraham2014gromacs}.
 
 \section{Coarse-Graining}
 
-Coarse-graining is the process of building a simplified model of a complex system. In particular, a target system is modeled at a low level of resolution, i.e. not all degrees of freedom of the system are treated explicitly. The goal is to keep essential features, while ignoring or averaging over less important details. In other words, the simplified model still has to maintain the correct physical behavior. The benefits of coarse-grained models are twofold: (1) Coarse-graining helps to put the essential features driving the emergent phenomena of interest into the spot light, as disturbing and unnecessary details are removed \cite{deserno2009mesoscopic, levitt1975computer}. (2) The reduced representation effectively accelerates the computer simulation of the system: Reducing the number of particles in a simulation yields a reduction of required force calculations per simulation time step, i.e. a reduction of computational cost. Moreover, the coarse-grained configuration represents an average over an ensemble of microstates. As such, coarse-graining smoothens the energy landscape yielding "softer" interactions between the particles. Therefore, the time step applied in the numerical integration scheme can be increased \cite{marrink2010comment, nielsen2003coarse}. In addition, the smoothend energy landscape might also display lower energy barriers along transition paths of metastable states and therefore accelerate dynamical processes \cite{depa2005speed, fritz2011multiscale}. In conclusion, these gains effectively allow for a faster exploration of configuration space and enable access to length and time scales that are not reachable with AA simulations.
+Coarse-graining is the process of building a simplified model of a complex system. In particular, a target system is modeled at a low level of resolution, i.e. not all degrees of freedom of the system are treated explicitly. The goal is to keep essential features, while ignoring or averaging over less important details. In other words, the simplified model still has to maintain the correct physical behavior. The benefits of CG models are twofold: (1) Coarse-graining helps to put the essential features driving the emergent phenomena of interest into the spot light, as disturbing and unnecessary details are removed \cite{deserno2009mesoscopic, levitt1975computer}. (2) The reduced representation effectively accelerates the computer simulation of the system: Reducing the number of particles in a simulation yields a reduction of required force calculations per simulation time step, i.e. a reduction of computational cost. Moreover, the CG configuration represents an average over an ensemble of microstates. As such, coarse-graining smoothens the energy landscape yielding "softer" interactions between the particles. Therefore, the time step applied in the numerical integration scheme can be increased \cite{marrink2010comment, nielsen2003coarse}. In addition, the smoothed energy landscape might also display lower energy barriers along transition paths of metastable states and therefore accelerate dynamical processes \cite{depa2005speed, fritz2011multiscale}. In conclusion, these gains effectively allow for a faster exploration of configuration space and enable access to length and time scales that are not reachable with AA simulations.
 
-In its core, coarse-graining consists of two steps: (1) Choose a low-resolution representation of the system and (2) build a coarse-grained force field in order to perform a computer simulation of the model. For the latter task, a wide range of different schemes have been developed and two schools of thoughts have been established, referred to as \textit{bottom-up} and \textit{top-down} approaches. 
+In its core, coarse-graining consists of two steps: (1) Choose a low-resolution representation of the system and (2) build a CG force field in order to perform a computer simulation of the model. For the latter task, a wide range of different schemes have been developed and two schools of thoughts have been established, referred to as \textit{bottom-up} and \textit{top-down} approaches. 
 
 \subsection{Representation}
 
-The basis of a coarse-grained model is the representation of the particles captured in the system. The most fundamental model relies on a quantum mechanical description. In this regard, a classical atomistic description is already a coarse-grained model based on ab initio considerations. However, coarse-graining typically refers to an even lower resolution description, where the coarse-grained sites, often called beads, represent multiple atoms. An illustrated of such a coarse-grained representation can be found in Fig. \ref{FIG:MS_coarse_graining}. Typically, the beads are associated with specific types reflecting the physiochemical properties of the corresponding group of atoms. Similar to AA representations, bonds between coarse-grained beads are introduced to capture the molecular topology. The choice of mapping from the atomistic to the lower resolution representation is crucial, as it has to preserve essential features that are required to (1) describe the phenomena of interest and (2) capture important slow and large amplitude motions of the system \cite{noid2013perspective}. However, in many cases the mapping is based on the chemical intuition of the user, but more systematic methods have been developed recently \cite{chakraborty2018encoding, giulini2020information}.
+The basis of a CG model is the representation of the particles captured in the system. The most fundamental model relies on a quantum mechanical description. In this regard, a classical atomistic description is already a CG model based on ab initio considerations. However, coarse-graining typically refers to an even lower resolution description, where the CG sites, often called beads, represent multiple atoms. An illustrated of such a CG representation can be found in Fig. \ref{FIG:MS_coarse_graining}. Typically, the beads are associated with specific types reflecting the physiochemical properties of the corresponding group of atoms. Similar to AA representations, bonds between CG beads are introduced to capture the molecular topology. The choice of mapping from the atomistic to the lower resolution representation is crucial, as it has to preserve essential features that are required to (1) describe the phenomena of interest and (2) capture important slow and large amplitude motions of the system \cite{noid2013perspective}. However, in many cases the mapping is based on the chemical intuition of the user, but more systematic methods have been developed recently \cite{chakraborty2018encoding, giulini2020information}.
 
 \begin{figure}
   \centering
       \includegraphics[width=0.6\textwidth]{./Figures/ms/coarse_graining.png}
-  \caption{Illustration of a coarse-grained representation at the example of the molecule TMBT. Atomistic representation (left) and coarse-grained representation(right). Coarse-grained beads represent groups of atoms and are positioned at their center-of-mass. }
+  \caption{Illustration of a CG representation at the example of the molecule TMBT. Atomistic representation (left) and CG representation(right). CG beads represent groups of atoms and are positioned at their center-of-mass. }
   \label{FIG:MS_coarse_graining}
 \end{figure}
 
 
-It is often required to not only specify the representation but also define a concrete mapping for the coordinates, i.e. a function $\mathbf{M}$ of the atomistic coordinates $\mathbf{r}$ to the coordinates of the coarse-grained beads $\mathbf{R}$. Typically, a linear mapping is chosen,
-
+It is often required to not only specify the representation but also define a concrete mapping for the coordinates, i.e. a function $\mathbf{M}$ of the atomistic coordinates $\mathbf{r}$ to the coordinates of the CG beads $\mathbf{R}$. Typically, a linear mapping is chosen,
+%
 \begin{equation}
   \mathbf{R}_I = \mathbf{M}_{I}(\mathbf{r}) = \sum_{i \in \psi_I} b_{iI} \mathbf{r}_i 
 \end{equation}
-
+%
 where $I$ and $i$ are the indices of CG beads and atoms respectively, $\psi_I$ is the set of atom indices that are associated with CG bead $I$ and $b_{iI}$ are coefficients of the mapping. In many cases, the coordinate mapping is chosen such that it reflects the center of mass geometry of the corresponding group of atoms, i.e. $b_{iI} = m_i/M_I$, where $m_i$ is the mass of atom i and $M_I$ is the total mass of all atoms associated with bead $I$. 
 
 \subsection{Bottom-up Approach}
 
-Once the coarse-grained representation is chosen, the interactions between the beads have to be defined. The bottom-up strategy is an inductive approach that constructs a coarse-grained force field based on a more detailed model. In particular, bottom-up coarse-graining aims at reproducing the energetic, thermodynamic or structural properties of the higher resolution system as closely as possible \cite{liwo2001cumulant, akkermans2001structure, clark2012thermodynamic}. In general, the choice of the underlying fine-grained model is not bound to a specific resolution. A common choice is to use a classical atomistic model as a basis. In this case, the accuracy of the coarse-grained model depends on the quality of the fine-grained model, as the atomistic model itself is an approximation of the quantum mechanical description. Given a high-resolution model, statistical mechanics provides a framework to rigorously derive the force field for the coarse-grained system. 
+Once the CG representation is chosen, the interactions between the beads have to be defined. The bottom-up strategy is an inductive approach that constructs a CG force field based on a more detailed model. In particular, bottom-up coarse-graining aims at reproducing the energetic, thermodynamic or structural properties of the higher resolution system as closely as possible \cite{liwo2001cumulant, akkermans2001structure, clark2012thermodynamic}. In general, the choice of the underlying fine-grained model is not bound to a specific resolution. A common choice is to use a classical atomistic model as a basis. In this case, the accuracy of the CG model depends on the quality of the fine-grained model, as the atomistic model itself is an approximation of the quantum mechanical description. Given a high-resolution model, statistical mechanics provides a framework to rigorously derive the force field for the CG system. 
 
 %Furthermore, it is often not sufficient to link a single phenomena to a specific chemical compound, as a full range of properties required to characterize the compound with high confidence.
-%While a coarse-grained model implies the existence of more fundamental, higher resolution model, the question of how the coarse-grained model is built upon this fine-grained 
+%While a CG model implies the existence of more fundamental, higher resolution model, the question of how the CG model is built upon this fine-grained 
 
 \subsubsection{Consistency Criteria and the Many-Body Potential of Mean Force}
 \label{MS:PMF}
 
-Central to the bottom-up approach is the many-body potential of mean force (PMF). The PMF is an effective coarse-grained potential that includes energetic and entropic contributions \cite{noid2013perspective}. The PMF can theoretically be derived exactly from the fine-grained potential $U_{\text{AA}}(\mathbf{r})$ and the mapping $\mathbf{M}(\mathbf{r})$. The underlying criteria for the derivation is called consistency criteria and states that the equilibrium joint probability density $p_{CG} (\mathbf{R}, \mathbf{P})$ in phase space of the coarse-grained coordinates $\mathbf{R}$ and momenta $\mathbf{P}$ have to match the implied atomistic probability density $p_{AA} (\mathbf{R}, \mathbf{P})$ \cite{noid2008multiscale}. For simplicity, the following considerations are restricted to the configuration space, i.e. excluding momenta, such that the consistency criteria can be written as
-
+Central to the bottom-up approach is the many-body potential of mean force (PMF). The PMF is an effective CG potential that includes energetic and entropic contributions \cite{noid2013perspective}. The PMF can theoretically be derived exactly from the fine-grained potential $U_{\text{AA}}(\mathbf{r})$ and the mapping $\mathbf{M}(\mathbf{r})$. The underlying criteria for the derivation is called consistency criteria and states that the equilibrium joint probability density $p_{CG} (\mathbf{R}, \mathbf{P})$ in phase space of the CG coordinates $\mathbf{R}$ and momenta $\mathbf{P}$ have to match the implied atomistic probability density $p_{AA} (\mathbf{R}, \mathbf{P})$ \cite{noid2008multiscale}. For simplicity, the following considerations are restricted to the configuration space, i.e. excluding momenta, such that the consistency criteria can be written as
+%
 \begin{equation}
 \label{consistency1}
   p_{CG} (\mathbf{R}) = p_{AA} (\mathbf{R}) ,
 \end{equation}
-
-where $p_{CG} (\mathbf{R})$ is is the equilibrium probability density for a configuration $\mathbf{R}$ in the canonical ensemble of the coarse-grained model
-
+%
+where $p_{CG} (\mathbf{R})$ is is the equilibrium probability density for a configuration $\mathbf{R}$ in the canonical ensemble of the CG model
+%
 \begin{equation}
 \label{consistency2}
   p_{CG} (\mathbf{R}) \propto \text{exp} \Big[ - \frac{U_{\text{CG}}(\mathbf{R})}{k_B T} \Big]
 \end{equation}
-
-and $p_{AA} (\mathbf{R})$ is the equilibrium probability density for a coarse-grained configuration $\mathbf{R}$ implied by the mapping $\mathbf{M}(\mathbf{r})$ expressed in terms of the fine-grained model
-
+%
+and $p_{AA} (\mathbf{R})$ is the equilibrium probability density for a CG configuration $\mathbf{R}$ implied by the mapping $\mathbf{M}(\mathbf{r})$ expressed in terms of the fine-grained model
+%
 \begin{equation}
 \label{consistency3}
   p_{AA} (\mathbf{R}) \propto \mathcal{Z}(\mathbf{R}) := \int  \text{exp} \Big[ - \frac{U_{\text{AA}}(\mathbf{r})}{k_B T} \Big] \delta(\mathbf{M}(\mathbf{r}) - \mathbf{R}) d\mathbf{r} ,
 \end{equation}
-
+%
 where $\delta$ is the Dirac delta distribution. Plugging Eq. \ref{consistency2} and \ref{consistency3} into \ref{consistency1} and reordering yields
-
+%
 \begin{equation}
 \label{mbpmf}
  U(\mathbf{R}) = - k_B T \; \text{ln} (\mathcal{Z}(\mathbf{R})) + \text{const} .
 \end{equation}
-
-Eq. \ref{mbpmf} defines the many-body PMF as a projection of the free energy function onto the coarse-grained degrees of freedom. It assigns a weight to each coarse-grained configuration associated with the sum of all the Boltzmann weights for the corresponding atomistic configurations. Recalling the free energy  $F$
-
+%
+Eq. \ref{mbpmf} defines the many-body PMF as a projection of the free energy function onto the CG degrees of freedom. It assigns a weight to each CG configuration associated with the sum of all the Boltzmann weights for the corresponding atomistic configurations. Recalling the free energy  $F$
+%
 \begin{equation}
   F = U - TS = - k_B T \; \text{ln}(\mathcal{Z}) ,
 \end{equation}
+%
+where $U$ is the internal energy, makes it clear that the many-body PMF is not a regular potential, as it contains both, energetic as well as entropic contributions \cite{noid2008multiscale}. Moreover, as the name suggests, this potential generates the average atomistic forces associated with the atomistic configurations that map to the specific CG configuration \cite{noid2013perspective}.
 
-where $U$ is the internal energy, makes it clear that the many-body PMF is not a regular potential, as it contains both, energetic as well as entropic contributions \cite{noid2008multiscale}. Moreover, as the name suggests, this potential generates the average atomistic forces associated with the atomistic configurations that map to the specific coarse-grained configuration \cite{noid2013perspective}.
-
-Calculating the PMF provides significant challenges for most systems, since it requires to compute the free energy of the system as a function of the coarse-grained configurations, as stated in Eq. \ref{consistency3} \cite{christ2010basic}. Furthermore, the simple functional form for the interaction potentials outlined in Sec. \ref{molecular_forcefield} often becomes insufficient for coarse-grained systems \cite{pathria2016statistical}. While many-body interactions at the AA level can be captured approximately by renormalized pairwise terms, coarse-grained interactions that arise due to integrating out degrees of freedom can typically not be expressed with simple classical force fields \cite{noid2013perspective}. As such, computing the PMF analytically is often unfeasible. However, a wide range of techniques have been developed to obtain tractable approximations of the many-body PMF that are still accurate enough to describe particular phenomena of interest and enable to perform simulations of the coarse-grained system. 
+Calculating the PMF provides significant challenges for most systems, since it requires to compute the free energy of the system as a function of the CG configurations, as stated in Eq. \ref{consistency3} \cite{christ2010basic}. Furthermore, the simple functional form for the interaction potentials outlined in Sec. \ref{molecular_forcefield} often becomes insufficient for CG systems \cite{pathria2016statistical}. While many-body interactions at the AA level can be captured approximately by renormalized pairwise terms, CG interactions that arise due to integrating out degrees of freedom can typically not be expressed with simple classical force fields \cite{noid2013perspective}. As such, computing the PMF analytically is often unfeasible. However, a wide range of techniques have been developed to obtain tractable approximations of the many-body PMF that are still accurate enough to describe particular phenomena of interest and enable to perform simulations of the CG system. 
 
 \subsubsection{Review of Bottom-Up Strategies}
 \label{Theory_MS:cg_methods}
 
-In this section, some popular bottom-up approaches to determine the coarse-grained potential are reviewed. Those approaches include structure based techniques, such as direct Boltzmann inversion (DBI) and iterative Boltzmann inversion (IBI), as well as variational approaches, like the multiscale coarse-graining approach (MS-CG) and the relative entropy (RE) framework. 
+In this section, some popular bottom-up approaches to determine the CG potential are reviewed. Those approaches include structure based techniques, such as direct Boltzmann inversion (DBI) and iterative Boltzmann inversion (IBI), as well as variational approaches, like the multiscale coarse-graining approach (MS-CG) and the relative entropy (RE) framework. 
 
 \hfill \break
 \noindent \textit{Direct Boltzmann Inversion}
 \newline
-The most simple approach to obtain an approximate coarse-grained potential is direct Boltzmann inversion (DBI) \cite{tschop1998simulation}. This approach aims at reproducing certain structural distributions computed from atomistic reference data that is mapped onto the coarse-grained degrees of freedom. The distribution functions for given interactions $\xi$ are denoted with $p_{\xi}(x)$, where $x$ is a scalar variable, such as pairwise distances, angles or dihedrals. The goal is to find the corresponding potential $U_{\xi}$ that yields the desired distribution. Based on the assumption that the distribution functions for different mechanical variables $x$ factorize, the probability distributions can be written as Boltzmann factors \cite{tschop1998simulation}
-
+The most simple approach to obtain an approximate CG potential is direct Boltzmann inversion (DBI) \cite{tschop1998simulation}. This approach aims at reproducing certain structural distributions computed from atomistic reference data that is mapped onto the CG degrees of freedom. The distribution functions for given interactions $\xi$ are denoted with $p_{\xi}(x)$, where $x$ is a scalar variable, such as pairwise distances, angles or dihedrals. The goal is to find the corresponding potential $U_{\xi}$ that yields the desired distribution. Based on the assumption that the distribution functions for different mechanical variables $x$ factorize, the probability distributions can be written as Boltzmann factors \cite{tschop1998simulation}
+%
 \begin{equation}
   p_{\xi}(x) \propto \text{exp} \Big[ \frac{- U_{\xi}(x)}{k_B T} \Big] .
 \end{equation}
-
+%
 In addition, the corresponding volume elements for each distribution have to be taken into account, i.e. the Jacobian element $J_{\xi}(x)$ \cite{tschop1998simulation}. The potential can then directly computed as 
-
+%
 \begin{equation}
   U_{\xi} (x) = -k_b T \text{ln} \Big( \frac{p_{\xi}(x)}{J_{\xi}(x)} \Big) .
 \end{equation}
-
-Note that factorizing the probability distributions is a very severe approximation. Therefore, this approach yields accurate results only for interactions that can be regarded as isolated in the coarse-grained model \cite{noid2013perspective}. However, in cases where the coupling between the interactions can not be ignored, DBI yields inaccurate potentials that do not correctly reproduce the structural distributions as important cross-correlations are not taken into account.
+%
+Note that factorizing the probability distributions is a very severe approximation. Therefore, this approach yields accurate results only for interactions that can be regarded as isolated in the CG model \cite{noid2013perspective}. However, in cases where the coupling between the interactions can not be ignored, DBI yields inaccurate potentials that do not correctly reproduce the structural distributions as important cross-correlations are not taken into account.
 
 
 \hfill \break
 \noindent \textit{Iterative Boltzmann Inversion}
 \newline
-To improve the potentials derived with DBI, an iterative scheme can be applied. This scheme is called iterative Boltzmann inversion (IBI) and consists of the following steps \cite{muller2002coarse, reith2003deriving}: (1) Initial potentials are derived using DBI. (2) Use the derived coarse-grained potentials in a MD simulations to obtain the corresponding structural distributions $p_{\xi}(x|U)$. (3) Update the coarse-grained potentials via
-
+To improve the potentials derived with DBI, an iterative scheme can be applied. This scheme is called iterative Boltzmann inversion (IBI) and consists of the following steps \cite{muller2002coarse, reith2003deriving}: (1) Initial potentials are derived using DBI. (2) Use the derived CG potentials in a MD simulations to obtain the corresponding structural distributions $p_{\xi}(x|U)$. (3) Update the CG potentials via
+%
 \begin{equation}
   U_{\xi, \text{new}} (x) = U_{\xi, \text{old}} (x) - k_B T \text{ln} \Big( \frac{p_{\xi}(x)}{p_{\xi}(x|U)} \Big) .
 \end{equation}
-
+%
 Steps (2) and (3) are repeated until the potentials converge. Despite its simplicity, IBI has become very popular and is used especially for complex liquids and polymers. While IBI still treads every interaction $\xi$ separately, it implicitly accounts for correlations between the interactions through the iterative scheme \cite{noid2013perspective}. However, convergence of the potentials is not guaranteed \cite{noid2013perspective}.
 
 \hfill \break
 \noindent \textit{Multiscale Coarse-Graining}
 \newline
 Beside approaches that focus on reproducing certain structural properties, variational approaches can be applied to find an approximation of the many-body PMF. Pioneering work in this field is the Multiscale coarse-graining (MS-CG) method, which introduces a force-matching functional \cite{ercolessi1994interatomic, izvekov2005multiscale, izvekov2005multiscale2}
-
+%
 \begin{equation}
   \chi^2 [\mathbf{F}] = \frac{1}{3N} \Big \langle \sum_{I=1}^N | \mathbf{F}_I(\mathbf{M}(\mathbf{r})) - \mathbf{f}_I(\mathbf{r}) |^2 \Big \rangle_{\text{AA}}  ,
 \end{equation}
-\noindent
-where $\mathbf{F}_I(\mathbf{M}(\mathbf{r}))$ is the force acting on the coarse-grained site $I$ mapped from the atomistic configuration implied by the trial potential of the coarse-grained model and $\mathbf{f}_I(\mathbf{r})$ is the net force acting the group of atoms associated with site $I$. The angular brackets with subscript \textit{AA} denotes the atomistic canonical ensemble average, which is typically approximated using trajectories obtained in a simulation. The MS-CG method states, that the coarse-grained potential yielding the best approximation of the average net atomistic forces should be used and therefore $\chi^2 [\mathbf{F}]$ has to be minimized. Indeed, the functional $\chi^2 [\mathbf{F}]$ has a unique global minimum given by the actual many-body PMF \cite{noid2013perspective}. In practice, the coarse-grained force $F$ is expressed as a linear combination of basis functions leading to a coupled system of linear equations that can be solved directly \cite{noid2013perspective}.
+%
+where $\mathbf{F}_I(\mathbf{M}(\mathbf{r}))$ is the force acting on the CG site $I$ mapped from the atomistic configuration implied by the trial potential of the CG model and $\mathbf{f}_I(\mathbf{r})$ is the net force acting the group of atoms associated with site $I$. The angular brackets with subscript \textit{AA} denotes the atomistic canonical ensemble average, which is typically approximated using trajectories obtained in a simulation. The MS-CG method states, that the CG potential yielding the best approximation of the average net atomistic forces should be used and therefore $\chi^2 [\mathbf{F}]$ has to be minimized. Indeed, the functional $\chi^2 [\mathbf{F}]$ has a unique global minimum given by the actual many-body PMF \cite{noid2013perspective}. In practice, the CG force $F$ is expressed as a linear combination of basis functions leading to a coupled system of linear equations that can be solved directly \cite{noid2013perspective}.
 
 \hfill \break
 \noindent \textit{Relative Entropy}
 \newline
 Another variational approach is based on the relative entropy, also known as Kullback-Leibler divergence, which is widely used as a asymmetric distance metric between probability distributions \cite{kullback1951information, shell2008relative, chaimovich2010relative, chaimovich2011coarse}. Applied to the coarse-graining problem, the relative entropy can be written 
-
+%
 \begin{equation}
 \label{relative_entropy_MS}
   S_{\text{rel}} = \int p_{\text{AA}}(\mathbf{r}) \; \text{ln} \Big( \frac{p_{\text{AA}(\mathbf{r})}}{p_{\text{CG}}(\mathbf{M}(\mathbf{r}))} \Big) d\mathbf{r} + \langle S_{\text{map}} \rangle_{\text{AA}} ,
 \end{equation}
-
+%
 where
-
+%
 \begin{equation}
   S_{\text{map}}(\mathbf{R}) = \text{ln} \int \delta [\mathbf{M}(\mathbf{r}) - \mathbf{R}] d\mathbf{r} 
 \end{equation}
-
-is the mapping entropy, which accounts for the degeneracy of the mapping $\mathbf{M}$, i.e. a single coarse-grained configuration corresponds to multiple atomistic configurations. The relative entropy $S_{\text{rel}}$ can be interpreted as a measure for the loss of information when changing from an atomistic to a coarse-grained description \cite{shell2008relative}. Moreover, it is related to many different coarse-graining errors and vanishes only if $p_{\text{CG}}(\mathbf{r}) \propto p_{\text{AA}}(\mathbf{r})$ \cite{chaimovich2010relative}.
+%
+is the mapping entropy, which accounts for the degeneracy of the mapping $\mathbf{M}$, i.e. a single CG configuration corresponds to multiple atomistic configurations. The relative entropy $S_{\text{rel}}$ can be interpreted as a measure for the loss of information when changing from an atomistic to a CG description \cite{shell2008relative}. Moreover, it is related to many different coarse-graining errors and vanishes only if $p_{\text{CG}}(\mathbf{r}) \propto p_{\text{AA}}(\mathbf{r})$ \cite{chaimovich2010relative}.
 
 Inserting the distributions known for the canonical ensemble, i.e. $p_{\text{CG}}(\mathbf{R}) = \mathcal{Z}_{\text{CG}}^{-1} \text{exp} \Big[- \frac{U_{\text{CG}}(\mathbf{R})}{k_B T} \Big]$ and $p_{\text{AA}}(\mathbf{r}) = \mathcal{Z}_{\text{AA}}^{-1} \text{exp} \Big[- \frac{U_{\text{AA}}(\mathbf{r})}{k_B T} \Big]$, into Eq. \ref{relative_entropy_MS} yields
-
+%
 \begin{equation}
   S_{\text{rel}} = \frac{\langle U_{\text{CG}} - U_{\text{AA}} \rangle_{\text{AA}}}{k_B T} - \frac{F_{\text{CG}} - F_{\text{AA}}}{k_B T} + \langle S_{\text{map}} \rangle_{\text{AA}} ,
 \end{equation}
-
-where $F = - k_b T \; \text{ln}(\mathcal{Z})$ is the free energy. In order to optimize the parameters $\lambda$ of the coarse-grained potential $U_{\text{CG}}$ the derivative of the relative entropy can be used
-
+%
+where $F = - k_b T \; \text{ln}(\mathcal{Z})$ is the free energy. In order to optimize the parameters $\lambda$ of the CG potential $U_{\text{CG}}$ the derivative of the relative entropy can be used
+%
 \begin{equation}
   \frac{\partial S_{\text{rel}}}{\partial \lambda} = \frac{1}{k_B T} \Big[ \Big \langle \frac{\partial U_{\text{CG}}}{\partial \lambda} \Big \rangle_{\text{AA}} -\Big \langle \frac{\partial U_{\text{CG}}}{\partial \lambda} \Big \rangle_{\text{CG}} \Big] ,
 \end{equation}
-
-i.e. the derivatives of $U_{\text{CG}}$ with respect to its parameters have to average to the same value for both, the atomistic and the coarse-grained ensemble \cite{shell2008relative}. Importantly, this approach reproduces the expectation values for every observable, such as distances or angles, that are included in the coarse-grained potential \cite{shell2008relative}. Therefore, the relative entropy framework can be used to generate potentials that capture the correct structural distributions. Numerical minimization of the relative entropy is typically achieved using advanced algorithms, such as the Newton-Raphson method \cite{shell2008relative}.
+%
+i.e. the derivatives of $U_{\text{CG}}$ with respect to its parameters have to average to the same value for both, the atomistic and the CG ensemble \cite{shell2008relative}. Importantly, this approach reproduces the expectation values for every observable, such as distances or angles, that are included in the CG potential \cite{shell2008relative}. Therefore, the relative entropy framework can be used to generate potentials that capture the correct structural distributions. Numerical minimization of the relative entropy is typically achieved using advanced algorithms, such as the Newton-Raphson method \cite{shell2008relative}.
 
 \subsection{Top-down Approach}
 
-While bottom-up models are build upon higher resolution models, top-down coarse-graining refers to more deductive approaches. Top-down coarse-grained models are designed to study the consequences upon application of general rules \cite{schmid2009toy, clementi2008coarse, deserno2009mesoscopic}. Such rules are typically inferred from universal physical principles or constructed to reproduce specific phenomena that have been observed experimentally \cite{noid2013perspective}. In particular, top-down models can be chemically-specific or generic: Chemically-specific models aim to reproduce properties of a particular system. To this end, interaction potentials with typically simple functional form are tuned in order to reproduce certain thermodynamic properties of a target system, such as density, interfacial tension or partitioning of compounds between aqueous and hydrophobic environments \cite{shelley2001simulations, shinoda2007multi, marrink2004coarse}. On the other hand, generic models are designed without relating to any particular system \cite{honeycutt1990metastability, cooke2005tunable, drouffe1991computer}. Typically, generic top-down models address large-scale phenomena at a low resolution. As such, they lack chemical details and it is not straightforward to relate them to higher resolution models. In most cases, simple potentials are applied that are defined by relatively few parameters. The interactions are tuned in order to reproduce certain phenomena or systematically varied to study the consequences of a particular aspect of the model \cite{detcheverry2009theoretically, wu2011coarse}.
+While bottom-up models are build upon higher resolution models, top-down coarse-graining refers to more deductive approaches. Top-down CG models are designed to study the consequences upon application of general rules \cite{schmid2009toy, clementi2008coarse, deserno2009mesoscopic}. Such rules are typically inferred from universal physical principles or constructed to reproduce specific phenomena that have been observed experimentally \cite{noid2013perspective}. In particular, top-down models can be chemically-specific or generic: Chemically-specific models aim to reproduce properties of a particular system. To this end, interaction potentials with typically simple functional form are tuned in order to reproduce certain thermodynamic properties of a target system, such as density, interfacial tension or partitioning of compounds between aqueous and hydrophobic environments \cite{shelley2001simulations, shinoda2007multi, marrink2004coarse}. On the other hand, generic models are designed without relating to any particular system \cite{honeycutt1990metastability, cooke2005tunable, drouffe1991computer}. Typically, generic top-down models address large-scale phenomena at a low resolution. As such, they lack chemical details and it is not straightforward to relate them to higher resolution models. In most cases, simple potentials are applied that are defined by relatively few parameters. The interactions are tuned in order to reproduce certain phenomena or systematically varied to study the consequences of a particular aspect of the model \cite{detcheverry2009theoretically, wu2011coarse}.
 
 \subsubsection{Review of Top-down Models}
 
@@ -481,14 +481,14 @@ The hydrophobic-polar (HP) protein model is a highly simplified model to study p
 \newline
 The Kremer-Grest (KG) model is a top-down model widely used to study generic polymer properties \cite{kremer1990dynamics, grest1986molecular}. The model represents polymers as chains of beads connected via non-linear springs. The spring potential is tuned such that crossing of two polymer chains is avoided in order to correctly simulate the dynamics of polymer melts, in especially entanglement effects of long chains.
 More specifically, the potential for bonded beads is given by the finite-extensible-nonlinear spring (FENE) potential
-
+%
 \begin{equation}
 \label{KG_fene}
   U_{\text{FENE}}(r) = -15 k_B T \Big( \frac{R}{\sigma} \Big)^2 \text{ln} \Big[ 1 - \Big(\frac{r}{R}\Big)^2 \Big] ,
 \end{equation}
-
+%
 where $r$ is the distance between the two bonded beads, $\sigma$ is the bead diameter and $R$ defines the distance where the potential divergences. A typical choice is to set $R = 1.5 \sigma$. Additionally, the beads interact through a truncated and shifted Lennard-Jones potential, which is purely repulsive
-
+%
 \begin{equation}
 \label{KG_wca}
   U_{\text{WCA}}(r) = \begin{cases}
@@ -496,14 +496,14 @@ where $r$ is the distance between the two bonded beads, $\sigma$ is the bead dia
     0 \;\; , \;\; \text{otherwise}
   \end{cases} .
 \end{equation}
-
+%
 In order to vary the stiffness of the chains, an additional bending potential can be introduced
-
+%
 \begin{equation}
 \label{KG_bending}
   U_{\text{bend}}(\Theta) = \kappa k_B T (1 - \text{cos}(\Theta)) , 
 \end{equation}
-
+%
 where $\Theta$ is the the bond angle and $\kappa$ defines the stiffness \cite{faller1999local}.
 
 While the KG model is a generic model to study universal phenomena of polymer melts, the stiffness of the chains can be used to relate the model to real polymers \cite{everaers2020kremer, svaneborg2020characteristic}. To this end, simulated polymer melts can be linked to commodity polymers via their Kuhn length, i.e. the scale indicating the crossover from a chemistry-specific to a universal random-walk like behavior (see Sec. \ref{Morphing:KG} for a more detailed explanation).
@@ -511,9 +511,9 @@ While the KG model is a generic model to study universal phenomena of polymer me
 \hfill \break
 \noindent \textit{Martini Force Field}
 \newline
-The Martini force field is a generic coarse-grained potential for a wide range of soft matter systems. It was developed with an emphasize on biomolecules and its various applications include lipid membranes, proteins, sugars and nucleotides \cite{marrink2007martini, monticelli2008martini, lopez2009martini, uusitalo2015martini}. The parameterization of the Martini force field incorporates both coarse-graining philosophies, a top-down approach for the non-bonded interactions and a bottom-up approach for the bonded interactions. While the non-bonded parameters of the model are tuned to reproduce experimental partitioning free energies of water-alkane mixtures, the bonded interactions are optimized to capture the correct conformational distributions of atomistic reference data \cite{marrink2013perspective}. 
+The Martini force field is a generic CG potential for a wide range of soft matter systems. It was developed with an emphasize on biomolecules and its various applications include lipid membranes, proteins, sugars and nucleotides \cite{marrink2007martini, monticelli2008martini, lopez2009martini, uusitalo2015martini}. The parameterization of the Martini force field incorporates both coarse-graining philosophies, a top-down approach for the non-bonded interactions and a bottom-up approach for the bonded interactions. While the non-bonded parameters of the model are tuned to reproduce experimental partitioning free energies of water-alkane mixtures, the bonded interactions are optimized to capture the correct conformational distributions of atomistic reference data \cite{marrink2013perspective}. 
 
-Central to the design of the Martini model is a robust transferability across soft matter systems. For this reason, the model is based on modular building blocks, i e. coarse-grained beads, and introduces rules for the mapping from groups of atoms to the beads. On average, four heavy atoms and their associated hydrogens are represented by a single coarse-grained site. The four main building blocks are denoted with charged (Q), polar (P), nonpolar(N), and apolar (C). Each of the main bead types have further subtypes distinguishing either their hydrogen bonding capability (Q and N types) or their degree of polarity (P and C types). The assignment of the specific bead types is based on the hydrophobicity, i.e. the water/organic partition free energy, of the corresponding group of atoms.
+Central to the design of the Martini model is a robust transferability across soft matter systems. For this reason, the model is based on modular building blocks, i e. CG beads, and introduces rules for the mapping from groups of atoms to the beads. On average, four heavy atoms and their associated hydrogens are represented by a single CG site. The four main building blocks are denoted with charged (Q), polar (P), nonpolar(N), and apolar (C). Each of the main bead types have further subtypes distinguishing either their hydrogen bonding capability (Q and N types) or their degree of polarity (P and C types). The assignment of the specific bead types is based on the hydrophobicity, i.e. the water/organic partition free energy, of the corresponding group of atoms.
 
 Despite its wide use and robust transferability, the Martini model also has its limitations. A major drawback of the Martini model is a less accurate reproduction of structural features for particular systems, which is reasonable for a force field parameterized with an emphasis on transferability. For example, the model does not include size-dependent Lennard-Jones parameters which may lead to artifacts, such as increased barriers in dimerization profiles \cite{alessandri2019pitfalls}.
 
@@ -528,10 +528,10 @@ Despite its wide use and robust transferability, the Martini model also has its 
 
 Reducing the resolution is just one side of the multiscale philosophy. In order to close the loop, a reverse-mapping that allows to go the other direction is required as well. Such a reverse-mapping, also referred to as \textit{backmapping}, can be regarded as a magnifying glass to zoom in to the molecular system.
 
-Coarse-grained models can produce trajectories of long time and large length scale processes that would have been too costly and time consuming for higher resolution models. However, while coarse-grained models lack the accuracy and details of atomistic simulations, atomistic details are often required for one or more of the following reasons: (1) To rigorously analyze the simulation results on a local scale \cite{brocos2012multiscale, pandey2014multiscale, deshmukh2016water, pezeshkian2020backmapping}, (2) to enable a direct comparison to experimental data, for example obtained with spectroscopic methods \cite{hess2006long}, (3) to serve as starting point for further high-resolution simulations \cite{shimizu2018reconstruction, pandey2014multiscale}, or (4) to asses the stability and accuracy of the obtained coarse-grained structures \cite{shimizu2018reconstruction}. Therefore, reverse-mapping is an integral part of MM. In particular, details are reintroduced along the coarse-grained degrees of freedom, i.e. large-scale characteristics of the system are retained upon backmapping. As such, reverse-mapping becomes feasible, since the reintroduced degrees of freedom have to be equilibrated only locally. In summary, combining coarse-graining and reverse-mapping yields well equilibrated molecular trajectories at a high resolution for long time and large length scales. 
+CG models can produce trajectories of long time and large length scale processes that would have been too costly and time consuming for higher resolution models. However, while CG models lack the accuracy and details of atomistic simulations, atomistic details are often required for one or more of the following reasons: (1) To rigorously analyze the simulation results on a local scale \cite{brocos2012multiscale, pandey2014multiscale, deshmukh2016water, pezeshkian2020backmapping}, (2) to enable a direct comparison to experimental data, for example obtained with spectroscopic methods \cite{hess2006long}, (3) to serve as starting point for further high-resolution simulations \cite{shimizu2018reconstruction, pandey2014multiscale}, or (4) to asses the stability and accuracy of the obtained CG structures \cite{shimizu2018reconstruction}. Therefore, reverse-mapping is an integral part of MM. In particular, details are reintroduced along the CG degrees of freedom, i.e. large-scale characteristics of the system are retained upon backmapping. As such, reverse-mapping becomes feasible, since the reintroduced degrees of freedom have to be equilibrated only locally. In summary, combining coarse-graining and reverse-mapping yields well equilibrated molecular trajectories at a high resolution for long time and large length scales. 
 
 %\cite{hess2006long, shimizu2018reconstruction, brocos2012multiscale, stansfeld2011coarse, pandey2014multiscale, pezeshkian2020backmapping, deshmukh2016water} 
-%protein-DNA complexes. asses stabilities and accuracy of structures sampled in coarse-grained model. Use backmapped structures for further AA MD simulation. Need atomistic details to compare with experiment. \cite{shimizu2018reconstruction}
+%protein-DNA complexes. asses stabilities and accuracy of structures sampled in CG model. Use backmapped structures for further AA MD simulation. Need atomistic details to compare with experiment. \cite{shimizu2018reconstruction}
 %generation and subsequent examination of self-assembled structures, including the fine characterization of structural and dynamic properties of the resulting aggregate \cite{brocos2012multiscale}
 %assembly and the interactions of membrane protein/lipid complexes
 %complex, mixed lipid systems around a membrane protein. backmapping needed to provide models of more specific lipid/protein interactions, including local distortions of bilayer thickness and/or selective interactions with lipid headgroups.\cite{stansfeld2011coarse}
@@ -542,34 +542,34 @@ Coarse-grained models can produce trajectories of long time and large length sca
 
 \subsection{The Challenges of Reintroducing Degrees of Freedom}
 
-While mapping from a higher to a lower resolution is typically straightforward, the opposite direction is more challenging. Formally, let $\{\mathbf{A}_{I} = (\mathbf{R}_I, \mathbf{C}_I) | I = 1, \dots, N \}$ denote the set of $N$ coarse-grained beads. Each bead has position $\mathbf{R}_I$ and an associated type $\mathbf{C}_I$. The type $\mathbf{C}_I$ reflects various attributes, such as the bead mass, the connectivity or associated force field parameters. Similarly, let $\{\mathbf{a}_{I} = (\mathbf{r}_i, \mathbf{c}_i) | i = 1, \dots, n \}$ denote the set of $n$ atoms, with position $\mathbf{r}_i$ and types $\mathbf{c}_i$.
+While mapping from a higher to a lower resolution is typically straightforward, the opposite direction is more challenging. Formally, let $\{\mathbf{A}_{I} = (\mathbf{R}_I, \mathbf{C}_I) | I = 1, \dots, N \}$ denote the set of $N$ CG beads. Each bead has position $\mathbf{R}_I$ and an associated type $\mathbf{C}_I$. The type $\mathbf{C}_I$ reflects various attributes, such as the bead mass, the connectivity or associated force field parameters. Similarly, let $\{\mathbf{a}_{I} = (\mathbf{r}_i, \mathbf{c}_i) | i = 1, \dots, n \}$ denote the set of $n$ atoms, with position $\mathbf{r}_i$ and types $\mathbf{c}_i$.
  
-A backmapping function $\phi$ takes the coarse-grained information $\mathbf{A} = (\mathbf{A}_1, \dots, \mathbf{A}_N)$ as well as the target atom types $ \mathbf{c} = (\mathbf{c}_1, \dots, \mathbf{c}_n)$ as input and generates a set of coordinates $\mathbf{r} = (\mathbf{r}_1, \dots, \mathbf{r}_n)$,
-
+A backmapping function $\phi$ takes the CG information $\mathbf{A} = (\mathbf{A}_1, \dots, \mathbf{A}_N)$ as well as the target atom types $ \mathbf{c} = (\mathbf{c}_1, \dots, \mathbf{c}_n)$ as input and generates a set of coordinates $\mathbf{r} = (\mathbf{r}_1, \dots, \mathbf{r}_n)$,
+%
 \begin{equation}
   %\phi \Big( (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) = (\mathbf{r}_1, \dots, \mathbf{r}_n) .
   \phi ( \mathbf{A}, \mathbf{c} ) = \mathbf{r}.
 \end{equation}
-
-Deriving the function $\phi$ is not a trivial task, as it is constrained by two important aspects: (1) The mapping has to be consistent, i.e. the missing degrees of freedom $\mathbf{r}$ have to be reinserted along the coarse-grained degrees of freedom $\mathbf{R}$. In other words, applying the coarse-grained mapping $\mathbf{M}$ to the backmapped structure $\phi  (\mathbf{A}, \mathbf{c})$ has to yield the original coarse-grained structure,
-
+%
+Deriving the function $\phi$ is not a trivial task, as it is constrained by two important aspects: (1) The mapping has to be consistent, i.e. the missing degrees of freedom $\mathbf{r}$ have to be reinserted along the CG degrees of freedom $\mathbf{R}$. In other words, applying the CG mapping $\mathbf{M}$ to the backmapped structure $\phi  (\mathbf{A}, \mathbf{c})$ has to yield the original CG structure,
+%
 \begin{equation}
   %\mathbf{M} \Big( \phi \Big( (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) \Big) = \mathbf{R} .
   \mathbf{M} ( \phi  (\mathbf{A}, \mathbf{c}) ) = \mathbf{R}.
 \end{equation}
+%
+(2) The mapping is not unique, since the reduced resolution implies that many atomistic structures can map to the same CG configuration. As a consequence, a single CG structure $\mathbf{R}$ will correspond to an ensemble of atomistic microstates $\{\mathbf{r} | \mathbf{M}(\mathbf{r}) = \mathbf{R}\}$. Therefore, strictly speaking, the CG mapping is not invertible. 
 
-(2) The mapping is not unique, since the reduced resolution implies that many atomistic structures can map to the same coarse-grained configuration. As a consequence, a single coarse-grained structure $\mathbf{R}$ will correspond to an ensemble of atomistic microstates $\{\mathbf{r} | \mathbf{M}(\mathbf{r}) = \mathbf{R}\}$. Therefore, strictly speaking, the coarse-grained mapping is not invertible. 
-
-In order to take the aforementioned aspects into account, the backmapping problem is expressed as a joint conditional probability distribution $p_{\phi} ( \mathbf{r} | \mathbf{A}, \mathbf{c})$ that assigns a statistical weight to each atomistic configuration $\mathbf{r}$ given the coarse-grained information $\mathbf{A}$ as well as the atomistic attributes $\mathbf{c}$ of the target system. Ideally, the coarse-grained model yields the Boltzmann distribution expressed in the coarse-grained degrees of freedom, i.e. the many-body PMF is reproduced perfectly. Consequently, an ideal backmapping scheme also reinserts atomistic details with the correct statistical weight, i.e.
-
+In order to take the aforementioned aspects into account, the backmapping problem is expressed as a joint conditional probability distribution $p_{\phi} ( \mathbf{r} | \mathbf{A}, \mathbf{c})$ that assigns a statistical weight to each atomistic configuration $\mathbf{r}$ given the CG information $\mathbf{A}$ as well as the atomistic attributes $\mathbf{c}$ of the target system. Ideally, the CG model yields the Boltzmann distribution expressed in the CG degrees of freedom, i.e. the many-body PMF is reproduced perfectly. Consequently, an ideal backmapping scheme also reinserts atomistic details with the correct statistical weight, i.e.
+%
 \begin{equation}
   p_{\phi} ( \mathbf{r} | \mathbf{A}, \mathbf{c}) = \begin{cases}
     \propto \text{exp} \Big( - \frac{U(\mathbf{r})}{k_B T} \Big) \;\;\;\; & \text{if} \; \tilde{\mathbf{M}}(\mathbf{r}, \mathbf{c}) = \mathbf{A} \\
     0 \;\;\;\; & \text{if} \; \tilde{\mathbf{M}}(\mathbf{r}, \mathbf{c}) \neq \mathbf{A}
   \end{cases}.
 \end{equation}
-
-Here, $\tilde{\mathbf{M}}$ is used as an extended coarse-graining mapping function that includes both, the coordinates as well as the types of the atoms and beads, respectively, 
+%
+Here, $\tilde{\mathbf{M}}$ is used as an extended coarse-graining mapping function that includes both, the coordinates as well as the types of the atoms and beads, respectively. 
 
 %\begin{equation}
 %  p_{\phi}\Big( (\mathbf{r}_1, \dots, \mathbf{r}_n) \Big | (\mathbf{A}_1, \dots, \mathbf{A}_N), (\mathbf{c}_1, \dots, \mathbf{c}_n) \Big) = \begin{cases}
@@ -591,25 +591,25 @@ Backmapping is widely used in the MM community and several approaches exist. Tra
 
 \subsubsection{Fragment-based Approaches}
 
-Fragment-based backmapping superimposes several trial atomistic fragments onto associated coarse-grained sites \cite{peter2009multiscale, zhang2019hierarchical, hess2006long, brasiello2012multiscale}. Typically, rigid rotation and translation is used to optimize the orientation of the given fragment with respect to some geometric or energetic properties. The trial fragments are usually drawn from a presampled library. The result is an initial atomistic structure that is most likely not representative for the Boltzmann distribution. In particular, a simple projection of fragments onto the coarse-grained sites usually leads to overlaps between reconstructed atoms and distorted bonded structures. It is therefore necessary to relax the initial structure by means of energy minimization deploying the atomistic forcefield. Subsequently, the relaxed structure has to be equilibrated using MD simulation in order to recover the correct statistical weights of the new degrees of freedom. When the overall equilibration and diffusion is rather slow compared to the equilibration of local features, the equilibration process is straightforward. In other cases, restraints have to be introduced to prevent the reconstructed atoms to drift too far away from the center of their associated coarse-grained site \cite{peter2008classical, villa2009self, villa2009self2}. Typically, an additional potential can be applied that couples the atomistic degrees of freedom to the coarse-grained degrees of freedom
-
+Fragment-based backmapping superimposes several trial atomistic fragments onto associated CG sites \cite{peter2009multiscale, zhang2019hierarchical, hess2006long, brasiello2012multiscale}. Typically, rigid rotation and translation is used to optimize the orientation of the given fragment with respect to some geometric or energetic properties. The trial fragments are usually drawn from a presampled library. The result is an initial atomistic structure that is most likely not representative for the Boltzmann distribution. In particular, a simple projection of fragments onto the CG sites usually leads to overlaps between reconstructed atoms and distorted bonded structures. It is therefore necessary to relax the initial structure by means of energy minimization deploying the atomistic force field. Subsequently, the relaxed structure has to be equilibrated using MD simulation in order to recover the correct statistical weights of the new degrees of freedom. When the overall equilibration and diffusion is rather slow compared to the equilibration of local features, the equilibration process is straightforward. In other cases, restraints have to be introduced to prevent the reconstructed atoms to drift too far away from the center of their associated CG site \cite{peter2008classical, villa2009self, villa2009self2}. Typically, an additional potential can be applied that couples the atomistic degrees of freedom to the CG degrees of freedom
+%
 \begin{equation}
   U_{\text{restr}}(\mathbf{r}, \mathbf{R}) = b (\mathbf{M}(\mathbf{r}) - \mathbf{R})^2 ,
 \end{equation}
-
+%
 where the prefactor $b$ is used to scale the restraining potential.
 
 \subsubsection{Generic Approaches}
 \label{SEC:bm_generic}
 
-Generic backmapping approaches are similar to fragment-based approaches, but differ in the way the initial atomistic structure is derived. Generic schemes do not rely on presampled fragments but project the atomistic degrees of freedom onto the coarse-grained structure using general rules. In the most basic version, the atoms are randomly placed close to their associated coarse-grained bead, whereas more sophisticated approaches rely on geometric rules to place the atoms \cite{rzepiela2010reconstruction, wassenaar2014going}. The resulting initial atomistic structure is typically even more distorted as in the fragment-based approach. Therefore, the subsequent energy minimization and equilibration procedures have to be performed more carefully and typically involve multiple stages, where the interaction potentials are gradually switched on.
+Generic backmapping approaches are similar to fragment-based approaches, but differ in the way the initial atomistic structure is derived. Generic schemes do not rely on presampled fragments but project the atomistic degrees of freedom onto the CG structure using general rules. In the most basic version, the atoms are randomly placed close to their associated CG bead, whereas more sophisticated approaches rely on geometric rules to place the atoms \cite{rzepiela2010reconstruction, wassenaar2014going}. The resulting initial atomistic structure is typically even more distorted as in the fragment-based approach. Therefore, the subsequent energy minimization and equilibration procedures have to be performed more carefully and typically involve multiple stages, where the interaction potentials are gradually switched on.
 
 \subsubsection{Machine Learning Approaches}
 
 During the course of this PhD several ML approaches have been published to tackle the backmapping problem. The increased interest of integrating ML techniques to the field of MM is encouraging and emphasizes the importance of the present work.
 
-Wang \emph{et al.} utilized a variational autoencoder (Sec. \ref{ML:explicit_models}) and treated the coarse-grained degrees of freedom as latent variables (Sec. \ref{SEC:ML_latent_variables}) \cite{wang2019coarse}. Their framework unifies the task of learning the coarse-grained variables, parameterizing the coarse-grained force field and decoding back to atomistic resolution. In contrast to standard variational autoencoder, where the latent distribution is regularized to resemble a Gaussian distribution, the proposed coarse-graining autoencoder utilizes a force-matching functional for regularization. The approach is tested for gas-phase molecules and bulk simulations of alkanes. In all cases, the method was able to reproduce a reasonably accurate structural correlation function for decoded configurations. However, the deterministic decoder trained with mean-square error as reconstruction loss leads unavoidably to a loss of mapping entropy. Therefore, the decoder has learned to generate a mean reconstruction of an ensemble of microstates, which limits structural fidelity, as can be seen for the distribution of bond lengths. As a remedy, a probabilistic decoder is suggested to improve the model and yield higher fidelity reconstructions. 
+Wang \emph{et al.} utilized a variational autoencoder (Sec. \ref{ML:explicit_models}) and treated the CG degrees of freedom as latent variables (Sec. \ref{SEC:ML_latent_variables}) \cite{wang2019coarse}. Their framework unifies the task of learning the CG variables, parameterizing the CG force field and decoding back to atomistic resolution. In contrast to standard variational autoencoder, where the latent distribution is regularized to resemble a Gaussian distribution, the proposed coarse-graining autoencoder utilizes a force-matching functional for regularization. The approach is tested for gas-phase molecules and bulk simulations of alkanes. In all cases, the method was able to reproduce a reasonably accurate structural correlation function for decoded configurations. However, the deterministic decoder trained with mean-square error as reconstruction loss leads unavoidably to a loss of mapping entropy. Therefore, the decoder has learned to generate a mean reconstruction of an ensemble of microstates, which limits structural fidelity, as can be seen for the distribution of bond lengths. As a remedy, a probabilistic decoder is suggested to improve the model and yield higher fidelity reconstructions. 
 
-An approach by Li \emph{et al.} deployed a convolutional conditional generative adversarial network (Sec. \ref{ML_GAN}) for the reconstruction of cis-1,4-polyisoprene melts from a coarse-grained representation \cite{li2020backmapping}. This approach is similar in spirit to the method proposed in this thesis (Sec. \ref{methology}), but is based on an image representation where XYZ components of vectors are converted into red–green–blue (RGB) values. While being computational efficient, the method does not fully take the local environment of the polymer chains into account. As a consequence, steric overlapps are observed and demand for further relaxation via energy minimization.
+An approach by Li \emph{et al.} deployed a convolutional conditional generative adversarial network (Sec. \ref{ML_GAN}) for the reconstruction of cis-1,4-polyisoprene melts from a CG representation \cite{li2020backmapping}. This approach is similar in spirit to the method proposed in this thesis (Sec. \ref{methology}), but is based on an image representation where XYZ components of vectors are converted into red–green–blue (RGB) values. While being computational efficient, the method does not fully take the local environment of the polymer chains into account. As a consequence, steric overlaps are observed and demand for further relaxation via energy minimization.
 
-An \emph{et al.} used several ML approaches including artificial neural networks, k-nearest neighbor, Gaussian process regression and random forest to built regression models for the backmapping task \cite{an2020machine}. The regression was performed for small molecules in vacuum and the coordinates of the coarse-grained and atomistic structures were directly used as input and output representations for the models. The best performance was achieved by an artificial neural network. However, backmapping the alkane hexane provided significant challenges for all deployed models.
+An \emph{et al.} used several ML approaches including artificial neural networks, k-nearest neighbor, Gaussian process regression and random forest to built regression models for the backmapping task \cite{an2020machine}. The regression was performed for small molecules in vacuum and the coordinates of the CG and atomistic structures were directly used as input and output representations for the models. The best performance was achieved by an artificial neural network. However, backmapping the alkane hexane provided significant challenges for all deployed models.
