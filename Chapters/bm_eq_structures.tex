@@ -87,8 +87,6 @@ The autoregressive approach of DBM is prone to accumulate errors, i.e. misplaced
 
 In this section, the general performance of DBM is probed. To this end, DBM is trained on the high-temperature data set at $568$~K, where the sPS system is in a melt state. After training, the model is applied to test data, i.e. hold-out data at the same temperature.   
 
-\subsection{Results}
-
 \begin{figure}
   \centering
   \captionsetup{width=1.0\linewidth}
@@ -96,6 +94,8 @@ In this section, the general performance of DBM is probed. To this end, DBM is t
   \caption{ Canonical distributions for various force field interaction terms at (left) $T = 568$~K, (middle) $T = 453$~K and (right) $T = 313$~K for reference structures (black), structures generated with a baseline method based on energy-minimization (red), and the new method DBM (blue). The model is trained solely on the high temperature data (left), but deployed at lower temperatures (middle and right). (a)–(c) C-C-C backbone angle, (d)–(f) C-C-C-C backbone dihedral, (g)–(i) C-C-C-C improper dihedral, (j)–(l) Lennard-Jones energies, and (m)–(o) radial distribution functions, g(r), of the non-bonded carbon atoms. Reprinted from \cite{stieffenhofer2020adversarial}.}
   \label{FIG:sPS_temp_trans_ff_dists}
 \end{figure}
+
+\subsection{Results}
 
 Fig.~\ref{FIG:sPS_temp_trans_ff_dists} displays distribution functions for several structural and energetic properties of sPS. The distributions of intramolecular carbon backbone angle and dihedral, shown in panels (a) and (d), are in excellent agreement with the reference distributions. On the other hand, structures generated with the baseline method display distributions that are more compressed compared to the reference system, which is expectable from an approach based on energy minimization. As shown in panel (g), the distribution for the carbon improper dihedral of the phenyl group is slightly biased to smaller angles for configurations generated with DBM. However, the small range of angles, imposed by the planarity of the ring, has to be emphasized. The distribution of the baseline method is even more peaked, i.e. fluctuations around the planar structure are significantly suppressed.
 
@@ -112,14 +112,14 @@ Further, the pair correlation function $g(r)$ for non-bonded carbon pairs is ana
 \section{Temperature Transferability: From Melt to Crystal}
 \label{DBM:temp_trans}
 
+After successfully recovering the state point DBM was trained on, the ability of the model to transfer across temperatures is probed. As illustrated in Fig.~\ref{FIG:sPS_polymorphs}, the training of DBM is fixed to the high-temperature ensemble, while testing is performed at lower temperatures \textit{without} reparameterization. Specifically, the model is trained at $568$~K and tested at $453$~K and $313$~K. Note that the sPS system undergoes a phase transition at $\approx 450$~K, going from a melt to a crystalline state with different polymorphs. In particular, the test data set contains snapshots of the $\alpha$ and $\beta$ polymorphs that differ in the packing of the sPS chains. 
+
 \begin{figure}
   \centering
-      \includegraphics[width=0.6\textwidth]{./Figures/adversarial_backmapping/sPS_temp_trans/ps_polymorphs.pdf}
-  \caption{Polymorphism of Polystyrene. At high temperature ($T = 568$~K) the polymeric system is an a melt state. At lower temperatures the CG model mostly stabilizes the $\alpha$ polymorph at $T = 453$~K and the $\beta$ polymorph at $T = 313$~K. DBM is trained solely on the high-temperature ensemble and its transferability to the lower temperatures is probed. Reprinted from \cite{stieffenhofer2020adversarial}.}
+      \includegraphics[width=0.55\textwidth]{./Figures/adversarial_backmapping/sPS_temp_trans/ps_polymorphs.pdf}
+  \caption{Polymorphism of Polystyrene. At a high temperature ($T = 568$~K) the polymeric system is in a melt state. At lower temperatures the CG model mostly stabilizes the $\alpha$ polymorph at $T = 453$~K and the $\beta$ polymorph at $T = 313$~K. DBM is trained solely on the high-temperature ensemble and its transferability to the lower temperatures is probed. Reprinted from \cite{stieffenhofer2020adversarial}.}
   \label{FIG:sPS_polymorphs}
 \end{figure}
-
-After successfully recovering the state point DBM was trained on, the ability of the model to transfer across temperatures is probed. As illustrated in Fig.~\ref{FIG:sPS_polymorphs}, the training of DBM is fixed to the high-temperature ensemble, while testing is performed at lower temperatures \textit{without} reparameterization. Specifically, the model is trained at $568$~K and tested at $453$~K and $313$~K. Note that the sPS system undergoes a phase transition at $\approx 450$~K, going from a melt to a crystalline state with different polymorphs. In particular, the test data set contains snapshots of the $\alpha$ and $\beta$ polymorphs that differ in the packing of the sPS chains. 
 
 \subsection{Results}
 \label{DBM:sPS_temp_trans}

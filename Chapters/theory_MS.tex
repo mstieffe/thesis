@@ -292,7 +292,7 @@ This approach is known as the Nosé-Hoover thermostat and the modified Hamiltoni
 
 Similarly to thermostats, barostats are used to maintain constant pressure during the simulation. Again, several different techniques exists and in the following the popular Parinello-Rahman barostat is introduced as an example. 
 
-In its core, the Parinello-Rahman barostat is similar to the Nose-Hoover thermostat, but this time an imaginary pressure bath couples to the original system instead of a heat bath. The resulting Hamiltonian is 
+At its core, the Parinello-Rahman barostat is similar to the Nose-Hoover thermostat, but this time an imaginary pressure bath couples to the original system instead of a heat bath. The resulting Hamiltonian is 
 %
 \begin{equation}
  H_{\text{Parinello-Rahman}} = \sum_i^N \Big( \frac{\mathbf{p}_i^2}{2 m_i} \Big) + U(\mathbf{r}) + \sum_j \mathbf{P}_jj V + \sum_{j,k} \frac{1}{2} \mathbf{W}_{jk} \Big( \frac{d b_{jk}}{dt} \Big) .
@@ -316,7 +316,7 @@ where $\mathbf{P}_{ref}$ is the reference pressure \cite{abraham2014gromacs}.
 
 Coarse-graining is the process of building a simplified model of a complex system. In particular, a target system is modeled at a low level of resolution, i.e. not all degrees of freedom of the system are treated explicitly. The goal is to keep essential features, while ignoring or averaging over less important details. In other words, the simplified model still has to maintain the correct physical behavior. The benefits of CG models are twofold: (1) Coarse-graining helps to put the essential features driving the emergent phenomena of interest into the spot light, as disturbing and unnecessary details are removed \cite{deserno2009mesoscopic, levitt1975computer}. (2) The reduced representation effectively accelerates the computer simulation of the system: Reducing the number of particles in a simulation yields a reduction of required force calculations per simulation time step, i.e. a reduction of computational cost. Moreover, the CG configuration represents an average over an ensemble of microstates. As such, coarse-graining smoothens the energy landscape yielding "softer" interactions between the particles. Therefore, the time step applied in the numerical integration scheme can be increased \cite{marrink2010comment, nielsen2003coarse}. In addition, the smoothed energy landscape might also display lower energy barriers along transition paths of metastable states and therefore accelerate dynamical processes \cite{depa2005speed, fritz2011multiscale}. In conclusion, these gains effectively allow for a faster exploration of configuration space and enable access to length and time scales that are not reachable with AA simulations.
 
-In its core, coarse-graining consists of two steps: (1) Choose a low-resolution representation of the system and (2) build a CG force field in order to perform a computer simulation of the model. For the latter task, a wide range of different schemes have been developed and two schools of thoughts have been established, referred to as \textit{bottom-up} and \textit{top-down} approaches. 
+At its core, coarse-graining consists of two steps: (1) Choose a low-resolution representation of the system and (2) build a CG force field in order to perform a computer simulation of the model. For the latter task, a wide range of different schemes have been developed and two schools of thoughts have been established, referred to as \textit{bottom-up} and \textit{top-down} approaches. 
 
 \subsection{Representation}
 
