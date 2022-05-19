@@ -10,11 +10,11 @@
 
 \textit{Machine Learning} is a prominent subfield of \textit{Artificial Intelligence (AI)} and is already used in a wide range of applications, such as computer vision, speech recognition or medical image analysis \cite{voulodimos2018deep, nassif2019speech, fatima2017survey}. It is a study of computer algorithms that use data to construct statistical models trained to perform specific tasks. The models improve their performance automatically by learning from examples, instead of relying on static program instructions. Importantly, learning in this context aims at extracting patterns or rules from the training data that generalize rather than simply memorizing specific examples. 
 
-Recently, ML is gaining significant attention in many fields of modern science, especially computational chemistry and particle physics \cite{noe2020machine, vamathevan2019applications, radovic2018machine}. Beside the massive increase in computational power, the growing interest for ML algorithms in those research areas is fueled by the availability of large data sets \cite{hachmann2011harvard, jain2013commentary, calderon2015aflow}. The massive amount of raw data collected in experiments or computer simulations demands for efficient algorithms to process and analyze it. Self-learning algorithms that improve their performance with increased data set size are therefore very appealing. This is especially true when the data is high-dimensional, as ML algorithms can spot complex patterns or reduce the dimensionality for further processing. 
+Recently, ML is gaining significant attention in many fields of modern science, especially computational chemistry and particle physics \cite{noe2020machine, vamathevan2019applications, radovic2018machine}. Beside the massive increase in computational power, the growing interest for ML algorithms in those research areas is fueled by the availability of large data sets \cite{hachmann2011harvard, jain2013commentary, calderon2015aflow}. The massive amount of raw data collected in experiments or computer simulations demands for efficient algorithms to process and analyze it. Self-learning algorithms that improve their performance with increased data set size are therefore very appealing. This is especially true when the data is high-dimensional, as ML algorithms can be used to spot complex patterns or to reduce the dimensionality for further processing. 
 
 Data analysis is also a hallmark of classical statistics. Indeed, ML and classical statistics are related and many techniques and concepts used in ML have their origin in physics, such as variational methods, simulated annealing or Monte-Carlo methods \cite{mehta2019high}. A famous example is the Boltzmann Machine, which has a direct analogy to a spin glass model known from statistical mechanics \cite{ackley1985learning}. However, despite their similarities, ML and classical statistics differ in their general philosophy: Central to most ML approaches is the transferability of the model, i.e. ML algorithms are typically designed to make predictions for new observations that are not part of the current data set \cite{mehta2019high}. On the other hand, methods of classical statistics are more concerned with estimation problems, i.e. to discover dependencies between variables of the current data set.
 
-In this thesis, a ML model is used to make predictions for a fine-grained state of a molecular system based on a coarse-grained state. This chapter introduces important ML concepts required to build such a ML-based reverse-mapping model. While ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods, decision trees or deep neural networks (DNNs), it is out of scope of this chapter to cover all branches in this field. The interested reader is therefore referred to one of the many excellent books available \cite{sarker2021machine, bonaccorso2017machine, ayodele2010types}. Instead, this chapter focuses on generative modeling using DNNs, which is the main method used in this thesis. The rest of this chapter is organized as follows: Firstly, some basics of ML are introduced. Secondly, DNNs are explained in detail and finally, concepts of generative modeling are outlined. 
+In this thesis, a ML model is used to predict fine-grained states of a molecular system based on a coarse-grained state. This chapter introduces important ML concepts required to build such a ML-based reverse-mapping model. While ML is an umbrella term for a wide spectrum of algorithms, such as Kernel methods, decision trees or deep neural networks (DNNs), it is out of scope of this chapter to cover all branches in this field. The interested reader is therefore referred to one of the many excellent books available \cite{sarker2021machine, bonaccorso2017machine, ayodele2010types}. Instead, this chapter focuses on generative modeling using DNNs, which is the main method used in this thesis. The rest of this chapter is organized as follows: Firstly, some basics of ML are introduced. Secondly, DNNs are explained in detail and finally, concepts of generative modeling are outlined. 
 
 %difference of in-distribution and out-of-distribution error represents the difference between fitting and prediction.
 %Self-learning algorithms are therefore very appealing and help to automate processes that traditionally require a significant amount of human effort.
@@ -672,30 +672,30 @@ The EMD is defined as
 %
 \begin{equation}
 \label{EMD}
-  W\big(p_{\mathcal{X}}, p_{\Theta} \big) = \underset{\gamma \in \Gamma (p_{\mathcal{X}}, p_{\Theta})}{\text{inf}} \;  \mathbb{E}_{(\mathbf{x}, \mathbf{y}) \sim \gamma} \big[ \lVert \mathbf{x} - \mathbf{y} \rVert \big] ,
+  W\big(p_{\mathcal{X}}, p_{\Theta} \big) = \underset{\gamma \in \Gamma (p_{\mathcal{X}}, p_{\Theta})}{\text{inf}} \;  \mathbb{E}_{(\mathbf{x}, \mathbf{x'}) \sim \gamma} \big[ \lVert \mathbf{x} - \mathbf{x'} \rVert \big] ,
 \end{equation}
 %
-where $\Gamma (p_{\mathcal{X}}, p_{\Theta})$ denotes the set of all joint distributions $\gamma(\mathbf{x}, \mathbf{y})$ whose marginals are $p_{\mathcal{X}}$ and $p_{\Theta}$, respectively. The $\gamma(\mathbf{x}, \mathbf{y})$ can be interpreted as a transport plan indicating how much probability mass has to be moved from $\mathbf{x}$ to $\mathbf{y}$ in order to make the two distributions match. Therefore, the EMD seeks the minimal transport cost. 
+where $\Gamma (p_{\mathcal{X}}, p_{\Theta})$ denotes the set of all joint distributions $\gamma(\mathbf{x}, \mathbf{x'})$ whose marginals are $p_{\mathcal{X}}$ and $p_{\Theta}$, respectively. $\gamma(\mathbf{x}, \mathbf{x'})$ can be interpreted as a transport plan indicating how much probability mass has to be moved from $\mathbf{x}$ to $\mathbf{x'}$ in order to make the two distributions match. As such, the EMD seeks the minimal transport cost. 
 
 The formulation of the EMD in Eq.~\ref{EMD} is highly intractable and most practical implementations apply an equivalent formulation of the EMD known as \textit{Kantorovich-Rubinstein duality}:
 %
 \begin{equation}
 \label{wasserstein_duality}
-  W\big(p_{\mathcal{X}}, p_{\Theta}\big) = \underset{f \in \text{Lip}(f)\leq 1}{\text{max}} \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} \Big[f(g_{\Theta}(\mathbf{z}))\Big] - \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [f(\mathbf{x})]
+  W\big(p_{\mathcal{X}}, p_{\Theta}\big) = \underset{f \in \text{Lip}(f)\leq 1}{\text{max}} \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} \Big[f\big(g_{\Theta}(\mathbf{z}) \big)\Big] - \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} \Big[f(\mathbf{x}) \Big]
 \end{equation}
 %
-In Eq.~\ref{wasserstein_duality}, the maximum is taken over all functions $f: \mathbb{R}^D \rightarrow \mathbb{R}$ that are 1-Lipschitz. In practice, the function $f$ is approximated with a NN $c_{\Psi}$ and additional constraints are applied to ensure the 1-Lipschitz continuity. The mini-max game for WGAN can be written as
+In Eq.~\ref{wasserstein_duality}, the maximum is taken over all functions $f: \mathbb{R}^D \rightarrow \mathbb{R}$ that are 1-Lipschitz. In practice, the function $f$ is approximated with a NN $c_{\Psi}$ and additional constraints are applied to ensure the 1-Lipschitz continuity. The mini-max game for the WGAN approach can then be written as
 %
 \begin{equation}
 \label{wasserstein_loss}
-  \underset{\Theta}{\text{min}} \; \underset{\Psi}{\text{max}} \; \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} [c_{\Psi}(g_{\Theta}(\mathbf{z}))] - \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} [c_{\Psi}(\mathbf{x})] .
+  \underset{\Theta}{\text{min}} \; \underset{\Psi}{\text{max}} \; \mathbb{E}_{\mathbf{z} \sim \mathcal{Z}} \big[c_{\Psi}\big(g_{\Theta}(\mathbf{z})\big) \big] - \mathbb{E}_{\mathbf{x} \sim \mathcal{X}} \big[c_{\Psi}(\mathbf{x})\big] .
 \end{equation}
 %
-Various different methods exist to ensure the 1-Lipschitz continuity. A popular approach is \textit{gradient penalty} (GP) that introduces an additional term to the cost function of the critic \cite{gulrajani2017improved}. A differentiable function is one-Lipschitz if and only if it has gradients everywhere with norm at most one. A soft version of this constraint is enforced with a penalty on the gradient norm
+Various different methods exist to ensure the 1-Lipschitz continuity. A popular approach is \textit{gradient penalty} (GP) that introduces an additional term to the cost function of the critic \cite{gulrajani2017improved}. A differentiable function is one-Lipschitz if and only if it has gradients everywhere with norm at most one. A soft version of this constraint can be enforced by a penalty on the gradient norm
 %
 \begin{equation}
 \label{gradient_penalty}
-  \mathcal{C}_{\text{gp}}(c_{\Psi}) = \mathbb{E}_{\bar{\mathbf{x}} \sim \bar{\mathcal{X}}} [ (|| \nabla_{\bar{\mathbf{x}}} c_{\Psi}(\bar{\mathbf{x}})||_2 - 1)^2  ] ,
+  \mathcal{C}_{\text{gp}}(c_{\Psi}) = \mathbb{E}_{\bar{\mathbf{x}} \sim \bar{\mathcal{X}}} \big[ \big(|| \nabla_{\bar{\mathbf{x}}} c_{\Psi}(\bar{\mathbf{x}})||_2 - 1\big)^2  \big] ,
 \end{equation}
 %
 where $\bar{\mathbf{x}}$ is interpolated linearly between pairs of points $\mathbf{x}$ and $g_{\Theta}(\mathbf{z})$. 
