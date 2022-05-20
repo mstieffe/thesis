@@ -13,11 +13,18 @@ MD simulations evolve a molecular system in time and produce a trajectory, i.e. 
 \end{figure}
 
 
-In this chapter, a new method to perform temporally coherent backmapping of molecular simulation trajectories is introduced. In particular, temporal coherent backmapping refers to reproducing shifts of atomic positions between consecutive frames that agree with the all-atom (AA) reference system. The proposed method aims at both, generating well-equilibrated molecular structures for each individual frame, while maintaining temporal coherence within a series of frames. To this end, a ML model is deployed that reconstructs a molecular structure leveraging configuration information from previous simulation frames. In particular, the model is conditioned on the current coarse- and previous fine-grained state (see Fig. \ref{FIG:TEMP_COH_intro}). In contrast to the previously deployed GAN-based method deepbackmap (DBM), a conditional variational autoencoder (CVAE) is used for this task. 
+In this chapter, a new method to perform temporally coherent backmapping of molecular simulation trajectories is introduced. In particular, temporal coherent backmapping refers to reproducing shifts of atomic positions between consecutive frames that agree with the all-atom (AA) reference system. The proposed method aims at both, generating well-equilibrated molecular structures for each individual frame, while maintaining temporal coherence within a series of frames. To this end, a ML model is deployed that reconstructs a molecular structure leveraging information from previous simulation frames. In particular, the model is conditioned on the current coarse- and previous fine-grained state, as illustrated in Fig. \ref{FIG:TEMP_COH_intro}. In contrast to the previously deployed GAN-based method deepbackmap (DBM), a conditional variational autoencoder (CVAE) is used for this task. 
 
 The method is applied to two biomolecular systems: Alanine dipeptide (ADP) and the mini protein chignolin (CLN). For each system two test sets are constructed: (1) An \textit{in-distribution} test set denotes projections of reference AA trajectories onto the CG resolution. One part of this data set is used to train the backmapping model, while the other part is used to evaluate its baseline accuracy. In particular, the accuracy of the backmapping model is analyzed regarding its ability to reproduce structural and dynamic properties of the reference system. (2) A \textit{generalization} test set is constructed by performing CG simulations deploying approximate force fields generated with CGSchNet, which is a ML-based approach for molecular coarse-graining \cite{husic2020coarse}. The trained backmapping model is transferred to this data set to analyze the CG model on the AA resolution.
 
-The work presented in this chapter stems from a collaboration with Kirill Shmilovich, Moritz Hoffmann and Nick Charron. The project originates from the long program \textit{Machine Learning for Physics and the Physics of Learning} at the Institute for Pure \& Applied Mathematics that was held from 09.04.19 to 12.08.19 at the University of California, Los Angeles. 
+The work presented in this chapter stems from a collaboration with Kirill Shmilovich, Moritz Hoffmann and Nick Charron. The project originates from the long program \textit{Machine Learning for Physics and the Physics of Learning} at the Institute for Pure \& Applied Mathematics that was held from 09.04.19 to 12.08.19 at the University of California, Los Angeles. This work will soon be submitted for publication in a peer-reviewed journal. A preprint can be found at the free distribution service \textit{arXiv} \cite{temp_coherent_arxiv}:
+
+\hfill \break
+\noindent \textit{Kirill Shnilovich, Marc Stieffenhofer, Nick Charron, Moritz Hoffmann}\\
+\textbf{Temporally coherent backmapping of molecular trajectories from coarse-grain to atomistic resolution}\\
+arXiv preprint:2205.05213\\
+DOI: 10.48550/ARXIV.2205.05213\\
+$\copyright$ Creative Commons Attribution 4.0 International
 
 %The obtained trajectory is a set of states compatible with the starting condition, i.e. samples drawn from the accessible area in phase space.
 \section{Method}
@@ -26,7 +33,7 @@ In the following, the proposed method is outlined. In addition, Markov state mod
 
 \subsection{Backmapping Approach}
 
-The proposed method is similar in spirit to the previously used method DBM (Sec. \ref{methology}), but differs in some aspects including the molecular representation, the incorporation of previous states and the architecture of the ML model. While this section emphasizes the distinctions to DBM, a detailed description of the applied ML model can be found in \cite{}(arXiv paper coming soon).
+The proposed method is similar in spirit to the previously used method DBM (Sec. \ref{methology}), but differs in some aspects including the molecular representation, the incorporation of previous states and the architecture of the ML model. While this section emphasizes the distinctions to DBM, a detailed description of the applied ML model can be found in \cite{temp_coherent_arxiv}.
 
 \subsubsection{Molecular Representation}
 
@@ -37,7 +44,7 @@ The ML model $g$ generates all atoms of a molecular snapshot in one step, i.e. n
 
 \subsubsection{Incorporating the Previous State}
 
-Central to the proposed method is the incorporation of the previous state in order to achieve temporal coherence between trajectory frames. To this end, the input for the ML model $g$ at time $t$ is augmented with the previous AA state at time $t - \tau$, where $\tau$ is the lagtime between frames. In particular, the input for the generator $g$ consists of the current CG frame $\mathcal{E}(\mathbf{R}_{t})$ and the previous AA frame $\mathcal{E}(\mathbf{r}_{t - \tau})$, where $\mathbf{R} \in \mathbb{R}^{3N}$ and $\mathbf{r} \in \mathbb{R}^{3n}$ denote the coordinates of the $N$ beads and $n$ atoms, respectively. While both, $\mathbf{R}_t$ and $\mathbf{r}_{t-\tau}$, are taken from the reference trajectory during training, AA coordinates $\mathbf{\hat{r}}_{t-\tau} = m\Big(g\big(\mathcal{E}(\mathbf{R}_{t - \tau}), \mathcal{E}(\mathbf{\hat{r}}_{t - 2\tau}) \big) \Big)$ generated by $g$ in the previous step are used during prediction. As such, trajectories are backmapped autoregressively. The seed for this autoregressive procedure, i.e. the initial AA frame at $t=0$, is selected from a presampled library of AA configurations based on the root-mean-square deviation at the CG resolution. 
+Central to the proposed method is the incorporation of the previous state in order to achieve temporal coherence between trajectory frames. To this end, the input for the ML model $g$ at time $t$ is augmented with the previous AA state at time $t - \tau$, where $\tau$ is the lag time between frames. In particular, the input for the generator $g$ consists of the current CG frame $\mathcal{E}(\mathbf{R}_{t})$ and the previous AA frame $\mathcal{E}(\mathbf{r}_{t - \tau})$, where $\mathbf{R} \in \mathbb{R}^{3N}$ and $\mathbf{r} \in \mathbb{R}^{3n}$ denote the coordinates of the $N$ beads and $n$ atoms, respectively. While both, $\mathbf{R}_t$ and $\mathbf{r}_{t-\tau}$, are taken from the reference trajectory during training, AA coordinates $\mathbf{\hat{r}}_{t-\tau} = m\Big(g\big(\mathcal{E}(\mathbf{R}_{t - \tau}), \mathcal{E}(\mathbf{\hat{r}}_{t - 2\tau}) \big) \Big)$ generated by $g$ in the previous step are used during prediction. As such, trajectories are backmapped autoregressively. The seed for this autoregressive procedure, i.e. the initial AA frame at $t=0$, is selected from a presampled library of AA configurations based on the root-mean-square deviation at the CG resolution. 
 
 \subsubsection{Variational Autoencoder}
 
@@ -48,55 +55,55 @@ While the encoder $e$ is indispensable during training, it is omitted during inf
 \subsubsection{Cost-function}
 
 The cost-function $\mathcal{C}$ used to train the model end-to-end consists of multiple parts. In particular, a term $\mathcal{C}_{\text{recon vox}}$ is introduced to enforce reconstruction of the spatially voxelized particle densities, 
-
+%
 \begin{equation}
  \mathcal{C}_{\text{recon vox}}(\mathbf{r}_t, \hat{\mathcal{E}}) = \frac{1}{s^3n}\ || \mathcal{E}(\mathbf{r}_{t}) - \hat{\mathcal{E}} ||_2^2 .
 \end{equation}
-
+%
 Similarly, a term $\mathcal{C}_{\text{recon pos}}$ is introduced to encourage the exact reconstruction of positions
-
+%
 \begin{equation}
  \mathcal{C}_{\text{recon pos}}(\mathbf{r}_t, \mathbf{\hat{r}}_t) = \frac{1}{3n}\ || \mathbf{r}_{t} - \mathbf{\hat{r}}_{t} ||_2^2 .
 \end{equation}
-
+%
 In addition, the reproduction of inter-particle distances is targeted by a term $\mathcal{C}_{\text{EDM}}$ that computes the mean squared error between the Euclidean Distance Matrices (EDM) of the target configuration $\mathbf{r}$ and reconstructed configuration $\mathbf{\hat{r}}$,
-
+%
 \begin{equation}
   \mathcal{C}_{\text{EDM}}(\mathbf{r}_t, \mathbf{\hat{r}}_t) = \frac{1}{2n^2}\ || EDM(\mathbf{r}_{t}) - EDM(\mathbf{\hat{r}}_{t}) ||_2^2 .
 \end{equation}
-
+%
 In order to achieve consistency between the backmapped structure $\mathbf{\hat{r}}$ and the given CG configuration $\mathbf{R}$, the CG mapping $M$ is applied to introduce a reconstruction loss $\mathcal{C}_{\text{CG}}$ at the CG resolution, i.e.
-
+%
 \begin{equation}
      \mathcal{C}_{\text{CG}}(\mathbf{R}_t, \mathbf{\hat{r}}_t) = \frac{1}{3N}\ || \mathbf{R}_t - M(\mathbf{\hat{r}}_t) ||_2^2  . \\
 \end{equation}
-
+%
 Moreover, the AA force field is deployed in $\mathcal{C}_{\text{energy}}$ to calculate the mean squared error between the potential energies for the target structure $\mathbf{r}$ and reconstruction $\mathbf{\hat{r}}$,
-
+%
 \begin{equation}
   \mathcal{C}_{\text{energy}}(\mathbf{r}_t, \mathbf{\hat{r}}_t) = \lambda (U(\mathbf{{r}_{t}}) - U(\mathbf{\hat{r}}_{t}))^2 .
 \end{equation}
-
+%
 This term serves as a regularizer to improve the quality of backmapped structures. It accelerates convergence and helps to match the reconstructed energetics to the reference trajectory. Since the potential energy is sensitive to small perturbations of the coordinates, it can become dominatingly large during early stages of training before the model learns to localize atomic coordinates. As a remedy, the prefactor $\lambda$ is incorporated, which is set to $\lambda = 0$ at the beginning of the training and slowly annealed up to $\lambda = 1$ using an exponential annealing schedule.
 
 Finally, a regularization term $\mathcal{C}_{\text{KL}}$ is applied to bias the approximate posterior $\mathbf{\hat{z}} = e\big(\mathcal{E}(\mathbf{r})\big)$ towards the desired prior distribution, i.e. a normal distribution $\mathcal{N}(0,\mathbf{I})$ \cite{kingma2013auto},
-
+%
 \begin{equation}
  \mathcal{C}_{\text{KL}}(\mathbf{\hat{z}}) = \beta \mathcal{D}_{KL}(\mathbf{\hat{z}}||\mathcal{N}(0,\mathbf{I})) ,
 \end{equation}
-
+%
 where $\mathcal{D}_{KL}$ denotes the Kullback–Leibler (KL) divergence. The associated prefactor $\beta$ scales the regularization loss and is set to $\beta = 1$ for the CLN model, while a cyclic annealing schedule is applied for ADP to mitigate vanishing of the KL term \cite{fu2019cyclical}.
 
 %(1) Molecules are considered in vacuum and not in the condensed-phase. As such, representations and the backmapping protocol can be simplified. 
 \subsection{Markov State Model}
 \label{TEMP_BM:MSM}
 
-Central to the evaluation of the proposed method is the analysis of dynamic properties. To this end, Markov state models (MSMs) are deployed to identify transitions between metastable states and their associated time scales \cite{husic2018markov, noe2019markov}. In particular, MSMs are a framework to analysis time-series data, which is often used for MD trajectories. At its core, an MSM decomposes configuration space into discrete and disjoint states, and describes the dynamics of the system by a transition matrix $\mathbf{P}$. Each element of the transition matrix $P_{ij}(\tau)$ denotes the transition probability from state $i$ to state $j$ during the lagtime $\tau$. In this work, first order MSMs are considered, which are memoryless models, i.e. transitions only depend on the current state. To construct MSMs from simulation data, the transition matrix $\mathbf{P}(\tau)$ is typically constructed in terms of collective variables $\mathbf{q}$, i.e. low-dimensional variables that characterize the configurational state of the system. Afterwards, the transition matrix $\mathbf{P}(\tau)$ can be decomposed into eigenvalues $\lambda_i$ and eigenvectors $\Psi_i$,
-
+Central to the evaluation of the proposed method is the analysis of dynamic properties. To this end, Markov state models (MSMs) are deployed to identify transitions between metastable states and their associated time scales \cite{husic2018markov, noe2019markov}. In particular, MSMs are a framework to analysis time-series data, which is often used for MD trajectories. At its core, an MSM decomposes configuration space into discrete and disjoint states, and describes the dynamics of the system by a transition matrix $\mathbf{P}$. Each element of the transition matrix $P_{ij}(\tau)$ denotes the transition probability from state $i$ to state $j$ during the lag time $\tau$. In this work, first order MSMs are considered, which are memoryless models, i.e. transitions only depend on the current state. To construct MSMs from simulation data, the transition matrix $\mathbf{P}(\tau)$ is typically constructed in terms of collective variables $\mathbf{q}$, i.e. low-dimensional variables that characterize the configurational state of the system. Afterwards, the transition matrix $\mathbf{P}(\tau)$ can be decomposed into eigenvalues $\lambda_i$ and eigenvectors $\Psi_i$,
+%
 \begin{equation}
   \mathbf{P}(\tau) \Psi_i = \lambda_i \Psi_i .
 \end{equation}
-
+%
 In particular, the eigenvectors $\Psi_i$ approximate the eigenfunctions of the transfer operator, i.e. the continuous integral operator that the transition probability matrix approximates \cite{schutte1999direct}. Assuming that the system is in thermodynamic equilibrium, ergodic (any state can be reached starting from any other state given enough time) and aperiodic (different initializations of the system will lead to same equilibrium distribution), the following statements about eigenvalues $\lambda_i$ and eigenvectors $\Psi_i$ can be made \cite{husic2018markov}: (1) The elements of the eigenvectors correspond to each of the considered states. As such, the eigenvectors describe which states are contributing to the process identified by the associated eigenvalue. (2) The largest eigenvalue is always $\lambda_1 =1$ and corresponds to the stationary distribution. (3) Subsequent eigenvalues $1 > \lambda_{i>1} > 0$ are associated with characteristic timescales, also called implied timescales, of dynamic processes described by the eigenvectors $\Psi_{i>1}$ that decay to equilibrium.
 
 In this work, MSMs are used to compare dynamic properties of AA and CG simulations. Note that CG force fields typically yield faster simulation dynamics compared to AA force fields. Moreover, dynamics of the CG system are generally not accelerated by a constant factor, i.e. implied timescales of different processes can be rescaled non-uniformly. Therefore, ratios of implied timescales are used for a comparison of AA and CG dynamics. 
@@ -116,9 +123,9 @@ The proposed method is applied to the backmapping of two biomolecular systems: A
 
 ADP mimics the dynamics of the amino acid alanine in a peptide chain and has been used as a model system in numerous previous studies \cite{smith1999alanine, vitalini2015dynamic, nuske2014variational, nuske2017markov}.
 
-AA trajectories for ADP are obtained by MD simulations performed in explicit water. Simulations are carried out in the microcanonical (NVE) ensemble using the molecular dynamics package OpenMM \cite{eastman2017openmm}. The simulation procedure is based on the protocol outlined Ref.~\cite{nuske2017markov}. In particular, the AMBER ff-99SB-ILDN force field is deployed and a cubic box containing 651 TIP3P water molecules randomly placed within a volume of (2.7273~nm)$^3$ is used \cite{lindorff2010improved}. The length of all bonds involving hydrogen atoms are constrained. A time step of $2.0$ fs is used and initial velocities are sampled from a Maxwell-Boltzmann distribution at $300$ K. During production, snapshots are recorded every $1.0$ ps. The training set comprises $500 000$ and the test set $250 000$ frames, respectively.
+AA trajectories for ADP are obtained by MD simulations performed in explicit water. Simulations are carried out in the microcanonical ($NVE$) ensemble using the molecular dynamics package OpenMM \cite{eastman2017openmm}. The simulation procedure is based on the protocol outlined Ref.~\cite{nuske2017markov}. In particular, the AMBER ff-99SB-ILDN force field is deployed and a cubic box containing 651 TIP3P water molecules randomly placed within a volume of (2.7273~nm)$^3$ is used \cite{lindorff2010improved}. The length of all bonds involving hydrogen atoms are constrained. A time step of $2.0$~fs is used and initial velocities are sampled from a Maxwell-Boltzmann distribution at $300$~K. During production, snapshots are recorded every $1.0$~ps. The training set comprises $500 000$ and the test set $250 000$ frames, respectively.
 
-The 22 atoms of ADP are coarse-grained into 6 beads. More specifically, the CG representation for ADP consists of 5 backbone carbon and nitrogen atoms and the beta carbon of the alanine side chain. Water molecules are treated implicitly, i.e. water is removed from the representation. CG forces obtained from the AA simulations are used for the training of CGSchNet and the training routine follows the procedure in \cite{husic2020coarse}. The force field produced by CGSchNet is deployed to generate generalization data. The MD settings for the CG simulation are equivalent to the settings used for the AA simulation, except for a increased integration timestep of $4.0$ fs. Snapshots are recorded every $1.0$ ps and a total of $400 000$ samples are collected.
+The 22 atoms of ADP are coarse-grained into 6 beads. More specifically, the CG representation for ADP consists of 5 backbone carbon and nitrogen atoms and the beta carbon of the alanine side chain. Water molecules are treated implicitly, i.e. water is removed from the representation. CG forces obtained from the AA simulations are used for the training of CGSchNet and the training routine follows the procedure in \cite{husic2020coarse}. The force field produced by CGSchNet is deployed to generate generalization data. The MD settings for the CG simulation are equivalent to the settings used for the AA simulation, except for a increased integration time step of $4.0$~fs. Snapshots are recorded every $1.0$~ps and a total of $400 000$ samples are collected.
 
 %Electrostatics were treated deploying the particle-mesh Ewald (PME) method using a $1.0$ nm cutoff for the direct space interactions.
 
@@ -127,19 +134,19 @@ The 22 atoms of ADP are coarse-grained into 6 beads. More specifically, the CG r
 
 The proposed method is also tested on a much more challenging data set of the mini protein CLN, which is composed of 10 amino acids plus termini. CLN displays a clear folding/unfolding transition when solvated in water \cite{satoh2006folding}.
 
-Reference AA trajectories for CLN are provided by Wang \emph{et al.} and are already reported in \cite{wang2019machine}. In particular, MD simulations are performed using the MD software ACEMD \cite{harvey2009acemd} deploying the CHARMM22$^{*}$ \cite{piana2011robust} force field and the TIP3P \cite{jorgensen1983comparison} water model. Simulations are carried out in the $NVT$ ensemble at $350$ K. Adaptive sampling is used to sufficiently sample folding/unfolding transitions of CLN facilitated by a MSM \cite{prinz2011markov}. $3 744$ independent trajectories of $50$ ns are recorded aggregating a total simulation time of $\sim 187$ $\mu$s. Within each trajectory samples are spaced by $100$ ps. The training set comprises $3 650$ trajectories and the test set $94$ trajectories. For additional details regarding the CLN simulations the reader is referred to the work of Wang \emph{et al.} \cite{wang2019machine}.
+Reference AA trajectories for CLN are provided by Wang \emph{et al.} and are already reported in \cite{wang2019machine}. In particular, MD simulations are performed using the MD software ACEMD \cite{harvey2009acemd} deploying the CHARMM22$^{*}$ \cite{piana2011robust} force field and the TIP3P \cite{jorgensen1983comparison} water model. Simulations are carried out in the $NVT$ ensemble at $350$~K. Adaptive sampling is used to sufficiently sample folding/unfolding transitions of CLN facilitated by a MSM \cite{prinz2011markov}. $3 744$ independent trajectories of $50$~ns are recorded aggregating a total simulation time of $\sim 187$~$\mu$s. Within each trajectory samples are spaced by $100$~ps. The training set comprises $3 650$ trajectories and the test set $94$ trajectories. For additional details regarding the CLN simulations the reader is referred to the work of Wang \emph{et al.} \cite{wang2019machine}.
 
-While CLN consists of 175 atoms, it is coarse-grained into 10 beads. In particular, the CG representation for CLN consists of the 10 sequential $\alpha$-carbons along the molecular backbone. Generalization data is generated by CG simulations performed with OpenMM in the $NVT$ ensemble at $350$ K. $1000$ independent trajectories are generated starting from random configurations mapped from the AA trajectories. Each CG trajectory consists of $4000$ frames spaced by $100$ ps.
+While CLN consists of 175 atoms, it is coarse-grained into 10 beads. In particular, the CG representation for CLN consists of the 10 sequential $\alpha$-carbons along the molecular backbone. Generalization data is generated by CG simulations performed with OpenMM in the $NVT$ ensemble at $350$~K. $1000$ independent trajectories are generated starting from random configurations mapped from the AA trajectories. Each CG trajectory consists of $4000$ frames spaced by $100$~ps.
 
 \section{Results}
 
-The performance of the trained model is evaluated in terms of its capability to reproduce energetic, structural and dynamic properties of the AA reference system. The model is used to backmapp in-distribution as well as generalization data. The in-distribution test set denotes projections of reference AA trajectories onto the CG resolution. While one part of this data set is used for training, the other part is used to evaluate its baseline accuracy in the following. On the other hand, the generalization test set corresponds to CG simulation data. Note that the generalization data represents a more difficult backmapping exercise, as the model has to generalize to unseen simulated data generated by a different, approximate force field than the model was trained on.
+The performance of the trained model is evaluated in terms of its capability to reproduce energetic, structural and dynamic properties of the AA reference system. The model is used to backmap in-distribution as well as generalization data. The in-distribution test set denotes projections of reference AA trajectories onto the CG resolution. While one part of this data set is used for training, the other part is used to evaluate the baseline accuracy of the backmapping model in the following. On the other hand, the generalization test set corresponds to CG simulation data. Note that the generalization data represents a more difficult backmapping exercise, as the model has to generalize to unseen simulated data generated by a different, approximate force field than the model was trained on. As such, the final error when performing inference of the generalization test set is a combination of the baseline reconstruction error of the backmapping model and the error in the approximate potential of mean force from the CGSchNet model.
 
 \subsection{Energetics}
 
 The potential energy distributions displayed in Fig. \ref{FIG:TCBM_energies} serve as an indicator for the overall structural similarity between AA reference and backmapped structures. The energy distributions obtained for ADP shown in panel (a) reveal that the ML model is able to reproduce energetic properties with remarkable accuracy. While small high-energy tails can be observed for reconstructed molecules, the overall agreement of both test sets with the reference system is excellent. 
 
-Turning to the energy distributions for the more challenging mini protein CLN in panel (b) indicates a similar performance. However, the model supresses structures with low energies compared to the reference system. Moreover, a discrepancy between the distributions obtained for the in-distribution and generalization test sets can be observed. In particular, the energy distribution for the generalization set displays a tail towards high energies that is not observed in the in-distribution test set.
+Turning to the energy distributions for the more challenging mini protein CLN in panel (b) indicates a similar performance. However, the model suppresses structures with low energies compared to the reference system. Moreover, a discrepancy between the distributions obtained for the in-distribution and generalization test sets can be observed. In particular, the energy distribution for the generalization set displays a tail towards high energies that is not observed in the in-distribution test set.
 
 \begin{figure}[H]
   \centering
@@ -157,7 +164,7 @@ FESs and selected snapshots for ADP can be found in Fig. \ref{FIG:TCBM_free_ener
 \begin{figure}[H]
   \centering
       \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/ADP_fes.pdf}
-  \caption{Comparison of atomistic and backmapped MSM-reweighted free energy surfaces (FES) for ADP computed in terms of the backbone dihedrals $\Phi$ and $\Psi$. Ramanchandran plots are shown for (a) the atomistic reference in-distribution test set, (b) backmapped in-distribution test set and (c) backmapped generalization test set. Labels in (a) denote locations for the five metastable states of ADP. Panel (d) displays superimposed configurations for each metastable state}
+  \caption{Comparison of atomistic and backmapped FES for ADP computed in terms of the backbone dihedrals $\Phi$ and $\Psi$. Ramanchandran plots are shown for (a) the atomistic reference in-distribution test set, (b) backmapped in-distribution test set and (c) backmapped generalization test set. Labels in (a) denote locations for the five metastable states of ADP. Panel (d) displays superimposed configurations for each metastable state}
   \label{FIG:TCBM_free_energy_adp}
 \end{figure}
 
@@ -166,7 +173,7 @@ Fig. \ref{FIG:TCBM_free_energy_cln} displays the FESs and selected snapshots obt
 \begin{figure}[H]
   \centering
       \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/CLN_fes.pdf}
-  \caption{Comparison of atomistic and backmapped MSM-reweighted free energy surfaces (FES) for CLN computed in terms of the first two non-trivial independent components obtained by time-lagged independent component analysis for the 45 pairwise $\alpha$-carbon distances. Ramanchandran plots are shown for (a) the atomistic reference in-distribution test set, (b) backmapped in-distribution test set and (c) backmapped generalization test set. Labels in (a) denote locations for the three metastable states of CLN. Panel (d) displays superimposed configurations for each metastable state}
+  \caption{Comparison of atomistic and backmapped FES for CLN computed in terms of the first two non-trivial independent components obtained by time-lagged independent component analysis for the 45 pairwise $\alpha$-carbon distances. Ramanchandran plots are shown for (a) the atomistic reference in-distribution test set, (b) backmapped in-distribution test set and (c) backmapped generalization test set. Labels in (a) denote locations for the three metastable states of CLN. Panel (d) displays superimposed configurations for each metastable state}
   \label{FIG:TCBM_free_energy_cln}
 \end{figure}
 
@@ -174,7 +181,7 @@ Fig. \ref{FIG:TCBM_free_energy_cln} displays the FESs and selected snapshots obt
 
 \subsection{Dynamics}
 
-A key feature of the proposed method is the incorporation of the previous trajectory frame as a conditional input for the ML model. Such temporal information is required to achieve temporal coherence between consecutive frames and sets the method apart from other backmapping schemes. In this section, kinetic properties of backmapped trajectories are analysed in terms of implied timescales of slow processes obtained with MSMs. In addition, temporal coherence between frames is tested in terms of intra-frame velocities.
+A key feature of the proposed method is the incorporation of the previous trajectory frame as a conditional input for the ML model. Such temporal information is required to achieve temporal coherence between consecutive frames and sets the method apart from other backmapping schemes. In this section, kinetic properties of backmapped trajectories are analyzed in terms of implied timescales of slow processes obtained with MSMs. In addition, temporal coherence between frames is tested in terms of intra-frame velocities.
 
 \subsubsection{Timescales of Slow Processes}
 
@@ -186,7 +193,7 @@ MSM are constructed as outlined in Sec. \ref{TEMP_BM:MSM} deploying the collecti
 
 Moreover, collective variables for both systems can be computed at the CG resolution as well allowing for MSM construction of CG trajectories. Note that CG force fields typically yield faster simulation dynamics compared to AA force fields. To facilitate comparison between all trajectories, implied timescales obtained for CG simulation data are rescaled such that the timescales for the slowest process match.
 
-Fig. \ref{FIG:TCBM_kinetics_adp} displays the implied timescales obtained for ADP trajectories. MSMs are built with a lagtime of 5 ps and 100 cluster centers are used for the state decomposition. For all data sets a cosine similarity  $>90$ \% to the reference system is observed for the first three processes. A comparison for the implied timescales between AA reference and reconstructed in-distribution trajectories can be found in panel (a). While the first timescale matches by construction, the second and third timescales are also in excellent agreement and match within error. Note that subsequent timescales are below the resolution limit of the MSMs, since corresponding processes are faster than the applied lagtime. Implied timescales for the first three processes obtained for the backmapped generalization set displayed in panel (b) also match remarkably well with the reference system. Moreover, timescales obtained for the backmapped generalization set and CG trajectories prior to backmapping are in excellent agreement. This indicates that the ML model maintains the kinetics of slow motions present in the CG trajectories. 
+Fig. \ref{FIG:TCBM_kinetics_adp} displays the implied timescales obtained for ADP trajectories. MSMs are built with a lag time of 5~ps and 100 cluster centers are used for the state decomposition. For all data sets a cosine similarity  $>90$ \% to the reference system is observed for the first three processes. A comparison for the implied timescales between AA reference and reconstructed in-distribution trajectories can be found in panel (a). While the first timescale matches by construction, the second and third timescales are also in excellent agreement and match within error. Note that subsequent timescales are below the resolution limit of the MSMs, since corresponding processes are faster than the applied lag time. Implied timescales for the first three processes obtained for the backmapped generalization set displayed in panel (b) also match remarkably well with the reference system. Moreover, timescales obtained for the backmapped generalization set and CG trajectories prior to backmapping are in excellent agreement. This indicates that the ML model maintains the kinetics of slow motions present in the CG trajectories. 
 
 \begin{figure}[H]
   \centering
@@ -201,7 +208,7 @@ A similar analysis for the timescales of slow processes obtained for CLN can be 
 \begin{figure}[H]
   \centering
       \includegraphics[width=1.0\textwidth]{./Figures/temporal_coherent_bm/CLN_kinetics.pdf}
-  \caption{Comparison of implied timescales for CLN obtained by a MSM constructed in terms of the first two independent compoenents of the time-lagged independent component analysis for the 45 pairwise $\alpha$-carbon distances. Timescales are shown for (a) the atomistic reference in-distribution test set and backmapped in-distribution test set, as well as (b) the atomistic reference in-distribution test set, backmapped generalization test set and CG generalization test set.}
+  \caption{Comparison of implied timescales for CLN obtained by a MSM constructed in terms of the first two independent components of the time-lagged independent component analysis for the 45 pairwise $\alpha$-carbon distances. Timescales are shown for (a) the atomistic reference in-distribution test set and backmapped in-distribution test set, as well as (b) the atomistic reference in-distribution test set, backmapped generalization test set and CG generalization test set.}
   \label{FIG:TCBM_kinetics_cln}
 \end{figure}
 
@@ -210,16 +217,16 @@ A similar analysis for the timescales of slow processes obtained for CLN can be 
 \subsubsection{Intra-frame Velocities}
 
 As a measure for temporal coherence, shifts of atomic positions between consecutive frames are analyzed, i.e. intra-frame velocities. In particular, atomic velocities $\mathbf{v}_i$ for a frame at time $t$ are calculated as the deviations of atomic positions $\mathbf{s}_i$ between consecutive frames,
-
+%
 \begin{equation}
   \mathbf{v}_i(t) = \frac{\mathbf{s}_i(t) - \mathbf{s}_i(t - \tau)}{\tau} ,
 \end{equation}
+%
+where $\tau$ is the lag time between frames. Fig. \ref{FIG:TCBM_velocities} displays the intra-frame velocity distributions obtained for the reference trajectory and both reconstructed test sets. In addition, intra-frame velocity distributions obtained for a second backmapping method are shown, which is fragment-based and treats each frame separately. More specifically, a library consisting of 40000 pairs of equilibrated AA and associated CG frames is generated for both systems. Backmapping of a CG frame is performed by selecting the closest matching CG structure from the library in terms of root-mean-square deviation and projecting the corresponding AA structure onto the CG representation. 
 
-where $\tau$ is the lagtime between frames. Fig. \ref{FIG:TCBM_velocities} displays the intra-frame velocity distributions obtained for the reference trajectory and both reconstructed test sets. In addition, intra-frame velocity distributions obtained for a second backmapping method are shown, which is fragment-based and treats each frame separately. More specifically, a library consisting of 40000 pairs of equilibrated AA and associated CG frames is generated for both systems. Backmapping of a CG frame is performed by selecting the closest matching CG structure from the library in terms of root-mean-square deviation and projecting the corresponding AA structure onto the CG representation. 
+The velocity distributions for ADP can be found in panel (a). The backmapped distribution obtained for the in-distribution test set deploying the proposed temporal coherent backmapping scheme is in excellent agreement with the reference distribution. On the other hand, the frame-based method yields a velocity distribution for the in-distribution test set that differs from the reference system and is shifted towards slightly larger velocities. Backmapping of the generalization set deploying the ML model yields significantly larger intra-frame velocities, which is reasonable as this reflects the acceleration of the CG dynamics.
 
-The velocity distributions for ADP can be found in panel (a). The backmapped distribution obtained for the in-distribution test set deploying the proposed temporal coherent backmapping scheme is in excellent agreement with the reference distribution. On the other hand, the frame-based method yields a velocity distribution for the in-distribution test set that differs from the reference system and is shifted towards higher velocities. Backmapping of the generalization set deploying the ML model yields significantly higher intra-frame velocities, which is reasonable as this reflects the acceleration of the CG dynamics.
-
-The results obtained for CLN are displayed in panel (b). Temporal coherent backmapping yields a velocity distribution for the in-distribution test set that matches remarkably well with the reference distribution. Similarly to ADP, the frame-based method is not able to reproduce the reference velocities. Moreover, velocities obtained for the generalization set deploying the ML model are significantly higher compared to the reference system.
+The results obtained for CLN are displayed in panel (b). Temporal coherent backmapping yields a velocity distribution for the in-distribution test set that matches remarkably well with the reference distribution. Similarly to ADP, the frame-based method is not able to reproduce the reference velocities. Moreover, velocities obtained for the generalization set deploying the ML model are significantly larger compared to the reference system.
 
 \begin{figure}[H]
   \centering
@@ -233,13 +240,12 @@ The results obtained for CLN are displayed in panel (b). Temporal coherent backm
 
 In this chapter, a new ML-based method for temporal coherent backmapping of molecular trajectories is introduced. In particular, a conditional variational autoencoder (cVAE) is trained to non-deterministically reinsert atomistic details conditioned on the current CG and the previous AA frame. 
 
-The approach is applied to two popular biomolecular systems: Alanine dipeptide (ADP) and the miniprotein chignolin (CLN). The performance of the ML model is analyzed regarding its ability to reproduce structural, thermodynamic and dynamic properties of the reference system. To this end, the method is applied to an in-distribution test set that consists of AA structures projected onto the CG resolution. Excellent structural similarity between the reference system and the backmapped in-distribution test set is observed evaluated in terms of potential energy distributions. Moreover, thermodynamic properties match remarkably well, which is tested by analyzing free energy surfaces that are constructed in terms of collective variables. In order to analyze dynamic properties, MSMs are constructed in the space of collective variables to identify slow processes and their associated timescales. The obtained timescales of the backmapped trajectory agree remarkably well with the dynamics observed for the AA reference system. Temporal coherence between consecutive frames is evaluated in terms of intra-frame velocity distributions, which are reproduced with excellent accuracy deploying the ML model. The benefit of incorporating the previous state of the system as an additional input is highlighted by a comparison against a frame-based method, which yields velocity distributions that differ significantly from the reference.  
+The approach is applied to two popular biomolecular systems: Alanine dipeptide (ADP) and the miniprotein chignolin (CLN). The performance of the ML model is analyzed regarding its ability to reproduce energetic, structural and dynamic properties of the reference system. To evaluate the baseline accuracy of the model, the method is applied to an in-distribution test set that consists of AA structures projected onto the CG resolution. Excellent agreement between the reference system and the backmapped in-distribution test set is observed in terms of potential energy distributions. Moreover, structural properties match remarkably well, which is tested by analyzing FESs that are constructed in terms of collective variables. In order to analyze dynamic properties, MSMs are constructed in the space of collective variables to identify slow processes and their associated timescales. The obtained timescales of the backmapped trajectory agree remarkably well with the dynamics observed for the AA reference system. Temporal coherence between consecutive frames is evaluated in terms of intra-frame velocity distributions, which are reproduced with excellent accuracy deploying the ML model. The benefit of incorporating the previous state of the system as an additional input is highlighted by a comparison against a frame-based method, which yields velocity distributions that differ significantly from the reference.  
 
-In addition, backmapping of a generalization test set is performed, which consists of trajectories obtained in a CG simulation based on approximate force fields generated by CGSchNet. While structural and thermodynamic properties of the reference system are reproduced with remarkable accuracy upon backmapping of this generalization data, dynamic properties differ. Timescale ratios of slow transitions between metastable states are recovered for ADP, but deviate from the AA reference for CLN. Moreover, intra-frame velocities of the backmapped generalization trajectories are significantly higher compared to the reference. However, a difference of dynamic properties is expected for this test set: Coarse-grained simulations typically display faster dynamics compared to AA simulations as a direct consequence of deploying a reduced representation. Averaging over degrees of freedom effectively smoothens the energy landscape allowing for a faster exploration of phase space. However, timescales for transitions between metastable states are typically not rescaled uniformly yielding timescale ratios that differ from the AA reference system \cite{fritz2011multiscale}. As such, backmapped trajectories reflect the kinetics of the underlying CG trajectories.
+In addition, backmapping of a generalization test set is performed, which consists of trajectories obtained in a CG simulation based on approximate force fields generated by CGSchNet. As such, this data represents a stress test for the generalizability of the backmapping model. Note that the final error is therefore a combination of the baseline reconstruction error of the backmapping model and the error in the approximate potential of mean force from the CGSchNet model. While energetic and structural properties of the reference system are reproduced with remarkable accuracy upon backmapping of this generalization data, dynamic properties differ. Timescale ratios of slow transitions between metastable states are recovered for ADP, but deviate from the AA reference for CLN. Moreover, intra-frame velocities of the backmapped generalization trajectories are significantly larger compared to the reference. However, a difference of dynamic properties is expected for this test set: CG simulations typically display faster dynamics compared to AA simulations as a direct consequence of deploying a reduced representation. Averaging over degrees of freedom effectively smoothens the energy landscape allowing for a faster exploration of phase space. However, timescales for transitions between metastable states are typically not rescaled uniformly yielding timescale ratios that differ from the AA reference system \cite{fritz2011multiscale}. In summary, backmapped trajectories reflect the kinetics of the underlying CG trajectories rather than the AA reference system.
 
 Moreover, the cVAE approach non-deterministically reinserts atomistic details along the CG variables. This feature is highlighted by a visual inspection of backmapped structures sampled from a fixed CG structure but differing latent samples. This procedure yields an ensemble of AA microstates that are all consistent with the given CG structure but still display variations.
 
 In summary, the proposed method is able to backmap CG trajectories such that (1) each reconstructed frame has a high statistical weight, (2) each frame is a valid reconstruction of the given CG structure, i.e. atomistic degrees of freedom are reinserted along the CG variables and (3) consecutive frames are temporally coherent, i.e. shifts in atomic positions between consecutive frames follow the same distribution as the AA reference system. As such, the proposed method offers the ability to analyze the dynamics of a CG simulation at atomistic resolution.
 
 Future work might focus on different strategies to improve the training protocol of the approach: (1) In order to improve sampling of configuration space, training samples of sparsely populated regions in configuration space can be emphasized more. This could be realized by accompanying training samples with thermodynamic or dynamical path weights. (2) An autoregressive training protocol could be applied to improve the temporal coherence. In particular, a recurrent neural network approach could add information of multiple consecutive frames to the gradients used during backpropagation. (3) To further encourage the ML model to utilize knowledge of previous states for its predictions, the training loss could be augmented with a reconstruction error of properties that are explicitly based on such information, for example intra-frame velocities. 
-
