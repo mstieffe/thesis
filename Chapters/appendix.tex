@@ -3,11 +3,11 @@
 \chapter{Appendix} % Main chapter title
 \label{appendix} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-\begin{figure*}
+\begin{figure}[ht]
  \includegraphics[width=1.0\textwidth]{./Figures/appendix/bm_sps/architecture.pdf}
-\caption{CNN architecture with residual connections of the generator (left) and critic (right). The first part of the generator consists of an encoder which learns a lower dimensional embedding of the condition given by $\xi_{i,I}({\mathbf x})$ and $\Xi_{I}({\mathbf x})$ using several residual connections and one pooling layer. Noise $z$ and the atom type $c_i$ are concatenated to this low dimensional embedding and is fed into the decoding part of the generator, which again consists of several residual connections and an upsampling layer. The critic learns a one dimensional embedding of the condition $\xi_{i,I}({\mathbf x})$ and $\Xi_{I}({\mathbf x})$ together with the target/fake atom $\gamma_i$/$\hat{\gamma}_i$ using residual layers and a final dense layer. Throughout the whole architecture we apply layernorm for regularization and use LeakyRelus as nonlinearities.}
+\caption{CNN architecture with residual connections of the generator (left) and critic (right). The first part of the generator consists of an encoder which learns a lower dimensional embedding of the condition given by $\epsilon_i ( \mathbf{x})$ using several residual connections and one pooling layer. Noise $z$ and the atom type $\mathbf{c}_i$ are concatenated to this low dimensional embedding and is fed into the decoding part of the generator, which again consists of several residual connections and an upsampling layer. The critic learns a one dimensional embedding of the condition $\epsilon_i ( \mathbf{x})$ and the target/fake atom $\gamma_i$/$\hat{\gamma}_i$ using residual layers and a final dense layer. Throughout the whole architecture layernorm is applied for regularization and LeakyRelus are used as nonlinearities.}
 \label{APPENDIX:DBM_architecture}
-\end{figure*} 
+\end{figure} 
  
  
 %\begin{figure*}
@@ -47,13 +47,7 @@
 \begin{figure}[htbp]
 	\begin{center}
 		\includegraphics[width=0.6\linewidth]{./Figures/appendix/bm_sps/sm_p2_and_no_p.pdf}
-		\caption{Low-dimensional structural space of condensed-phase
-			configurations at $T=568$~K. For each panel, snapshots are
-			backmapped from identical coarse-grained configurations,
-			highlighting the overlap between reference and DBM structures.
-			Landmarks of reference structures
-			and projections of structures generated with DBM trained either
-			on sPS or octane and cumene liquids are shown. a) trained with prior $p_2$, b) trained without prior}
+		\caption{Low-dimensional representation of the local environments of sPS monomers at $T = 568$~K. For each panel, snapshots are backmapped from identical CG configurations. Landmarks of reference structures (grey) and projections of structures generated with chemically-specific (red) and chemically-transferred (blue) models trained with (a) $\mathcal{C}^{(2)}_{\text{pot}}$ (b) without regularization. Reprinted from \cite{stieffenhofer2021adversarial}. }
 		\label{APPENDIX:sm_p2_and_no_p}
 	\end{center}
 \end{figure}
