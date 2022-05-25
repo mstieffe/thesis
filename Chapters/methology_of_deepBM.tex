@@ -290,7 +290,7 @@ Overall, the following cost function is minimized by the generator
 %
 Note that $\mathcal{C}_{\text{pot}}$ might be in a conflict with the adversarial cost function: While the purely data driven adversarial cost ultimately aims at reproducing the target distribution, the prior cost function encourages the generator to produce structures with a certain potential energy. In an extreme case, where optimization is solely based on the prior cost function, the generator is likely to collapse. Therefore, $\mathcal{C}_{\text{pot}}$ aims at supporting the adversarial optimization, which might suffer from resolution limits of the voxel representation, for fine tuning of the generated structures. As such, the prior cost function is scaled with an appropriately low weight $\lambda_{\text{pot}}$, such that it provides a significant contribution to the total cost only for high-energy structures. In particular, training starts with $\lambda_{\text{prior}} = 0.0$ and is increased slowly during the course of optimization.
 
-\section{Conclusion}
+\section{Discussion}
 
 DBM is a new method based on ML for the reverse-mapping of molecular systems in the condensed-phase. The method is developed to avoid further energy minimization for relaxation and MD simulations for equilibration of the generated FG structures. Moreover, DBM requires little human intervention, since the reinsertion of local details is learned from training examples.
 
