@@ -231,7 +231,7 @@ where $w = \sum_{m,k,l = 1}^{d} \hat{\gamma}_i (x_{mkl})$ is a normalization con
 
 Experiments have shown that both versions perform equally well. If not stated otherwise, the first option is used in the following. In either case, both $\hat{\gamma}_i$ as well as $\hat{\mathbf{r}}_i$ are differentiable and thus can be easily incorporated in a cost function.
 
-\subsection{Adversarial Cost-Function for Training on Sequences}
+\subsection{Adversarial Cost Function for Training on Sequences}
 
 Training of the networks is based on the Wasserstein GAN protocol described in Sec.~\ref{theory_wgan}, which is extended to incorporate conditional information. However, optimal positioning of an atom is only possible if the previous atoms are placed correctly. In other words, the autoregressive reconstruction of the molecular structure is prone to accumulate errors. Therefore, the training protocol of the network has to take the autoregressive nature of the approach into account. More specifically, the generator has to be penalized for its actions in the past if they hinder the correct placement of the current atom. To this end, backpropagation of the error signal is applied to an entire sequence of generated atom positions.
 
