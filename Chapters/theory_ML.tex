@@ -224,12 +224,12 @@ Similar to PCA, the eigenvector matrix $\mathbf{U}$ can be truncated to establis
 
 Nervous systems are built up from a large number of interconnected cells, called \textit{neurons}. The human brain, as an example, consists of $\sim 10^{11}$ neurons \cite{baer2009neurowissenschaften}. While a single neuron is already a complex processing unit, the power of nervous systems arises from the interplay of a vast number of neurons composing the network.
 
-The main task of a neuron is to receive, process and transmit signals. In a simplified picture, a biological neuron is equipped with \textit{dendrites} (receiver), a \textit{cell body} (processor) and an \textit{axon} (transmitter) \cite{baer2009neurowissenschaften}. Dendrites are thin fibers connected via \textit{synapses} with the axons of thousands of other neurons. Synapses are crucial for the flow of information inside the network, as they weight incoming signals captured by the dendrites: Depending on the synapse the incoming signal can either increase or decrease the electrical potential of the cell \cite{baer2009neurowissenschaften}. If a specific \textit{threshold potential} is reached, the axon will fire a signal to all the dendrites it is connected to. 
+The main task of a neuron is to receive, process and transmit signals. In a simplified picture, a biological neuron is equipped with \textit{dendrites} (receiver), a \textit{cell body} (processor) and an \textit{axon} (transmitter) \cite{baer2009neurowissenschaften}. Dendrites are thin fibers connected via \textit{synapses} with the axons of thousands of other neurons. Synapses are crucial for the flow of information inside the network, as they weight incoming signals captured by the dendrites: Depending on the synapse, the incoming signal can either increase or decrease the electrical potential of the cell \cite{baer2009neurowissenschaften}. If a specific \textit{threshold potential} is reached, the axon will fire a signal to all the dendrites it is connected to. 
 
 An artificial neuron is a simplified version of its biological counterpart: An \textit{input tensor} $\mathbf{x}$ is weighted by a \textit{weight tensor} $\mathbf{w}$ and the result is accumulated. Afterwards, a \textit{threshold value} $\psi$ is subtracted and a nonlinear function, called \textit{activation function}, $a()$ is applied to derive the output $y$,
 %
 \begin{equation}
-  y = a( \sum_i x_i w_i - \psi ) .
+  y = a \big( \sum_i x_i w_i - \psi \big) .
 \end{equation}
 %
 In this example, $\mathbf{x}$ and $\mathbf{w}$ are vectors but it is straightforward to extend the concept to tensors of higher rank \cite{rojas2013neural}.
@@ -301,20 +301,20 @@ where $\mathbf{A}$ is a matrix containing the weights and thresholds. The full-c
 \subsubsection{Convolutional Layer}
 \label{theory_ML_CNN}
 
-Convolutional neural networks (CNNs) have dramatically improved the state-of-the-art in computer vision and made it possible to synthesize photorealistic images of complex objects, such as human faces or animals \cite{voulodimos2018deep, zhang2017stackgan, karras2017progressive, brock2018large}. Therefore, CNNs are the main tool in this thesis to synthesize molecular structures. 
+\textit{Convolutional neural networks} (CNNs) have dramatically improved the state-of-the-art in computer vision and made it possible to synthesize photorealistic images of complex objects, such as human faces or animals \cite{voulodimos2018deep, zhang2017stackgan, karras2017progressive, brock2018large}. Therefore, CNNs are the main tool in this thesis to synthesize molecular structures. 
 
-\textit{Convolutional layer} incorporate the idea of local connectivity and translational-equivariance. The idea of local connectivity is inspired by the visual cortex: Neurons are only locally connected to neurons in a restricted area of the previous layer, known as the \textit{receptive field} \cite{baer2009neurowissenschaften}. The receptive field of a neuron becomes bigger the higher it is placed in the hierarchy of the network. Therefore, this architecture is perfectly suited to learn hierarchical pattern in the data. %Moreover, the limited receptive field can be used to enforce translation-equivariance of the learned patterns. 
+Convolutional layer incorporate the idea of local connectivity and translational-equivariance. The idea of local connectivity is inspired by the visual cortex: Neurons are only locally connected to neurons in a restricted area of the previous layer, known as the \textit{receptive field} \cite{baer2009neurowissenschaften}. The receptive field of a neuron becomes bigger the higher it is placed in the hierarchy of the network. Therefore, this architecture is perfectly suited to learn hierarchical pattern in the data. %Moreover, the limited receptive field can be used to enforce translation-equivariance of the learned patterns. 
 
 A convolutional layer consists of a bank of parameterized \textit{filters} that are sliced over the input. In the following, the two dimensional case is considered, i.e. images $\mathbf{X}_j \in \mathbb{R}^{N_x \times N_y}$, where $N_x$ is the width and $N_y$ is the height of the image. The subscript $j \in \{0, .., N_c\}$ is the index for the $N_c$ \textit{feature channels}. The different feature channels provide different views on the data, such as the different color channels of a red-green-blue (RGB) image. At each position, the discrete convolution of the filter with the segment of the image it overlaps is computed and stored into a so called \textit{feature map}. Note that the parameters of each filter are shared between all neurons of the layer, which enforces equivariance with respect to translations of the learned patterns. The bank of filters connecting the $j$th feature channel of the input with the $i$th feature channel of the output is denoted with $\mathbf{K}_{i,j} \in \mathbb{R}^{m_x \times m_y}$, where $m_x$ is the width, $m_y$ is the height of the filters. The $i$th feature map $\mathbf{Y}_i \in \mathbb{R}^{n_x \times n_y}$ of the output can be computed as
 %
 \begin{equation}
-  \mathbf{Y}_i = a(\mathbf{\Phi} + \sum_j^{N_c} \mathbf{K}_{i,j} * \mathbf{X}_j)
+  \mathbf{Y}_i = a(\mathbf{\Phi} + \sum_j^{N_c} \mathbf{K}_{i,j} * \mathbf{X}_j) ,
 \end{equation}
 %
-where $\mathbf{\Phi}$ is a bias matrix. The size of the output $(n_x, n_y)$ can be derived as:
+where $\mathbf{\Phi}$ is a bias matrix. The size of the output $(n_x, n_y)$ can be derived as
 %
 \begin{equation}
-  (n_x, n_y) = (N_x - m_x + 1, N_y - m_y + 1)
+  (n_x, n_y) = (N_x - m_x + 1, N_y - m_y + 1) .
 \end{equation}
 %
 Additionally, the size of the output can be controlled by \textit{zero-padding} and \textit{slicing}:
@@ -327,10 +327,10 @@ Additionally, the size of the output can be controlled by \textit{zero-padding} 
 In summary, the output size can be computed as
 %
 \begin{equation}
-  (n_x, n_y) = \Big( \frac{N_x - m_x + 2P}{S}+1, \frac{N_y - m_y + 2P}{S}+1 \Big)
+  (n_x, n_y) = \Big( \frac{N_x - m_x + 2P}{S}+1, \frac{N_y - m_y + 2P}{S}+1 \Big) .
 \end{equation}
 %
-Depending on the choice of zero-padding and strides, the size of the output can either decrease (downsampling) or increase (upsampling) compared to the size of the input. The latter is often referred to as \textit{transposed} (or \textit{fractionally-strided}) convolution. It is typically used in a decoder architecture to learn the upsampling transformation. Note that it is possible to express convolutional layer as a fully-connected layer as well. However, this is not done in practice, as this involves many unnecessary multiplications with zero. In general, a convolutional layer requires less parameters compared to a dense layer, because of the weight-sharing of the filters and the independence of the size of the filters from the size of the input.
+Depending on the choice of zero-padding and strides, the size of the output can either decrease (downsampling) or increase (upsampling) compared to the size of the input. The latter is often referred to as \textit{transposed} (or \textit{fractionally-strided}) convolution. It is typically used in a decoder architecture to learn the upsampling transformation. Note that it is possible to express a convolutional layer as a fully-connected layer as well. However, this is not done in practice, as this involves many unnecessary multiplications with zero. In general, a convolutional layer requires less parameters compared to a dense layer, because of the weight-sharing of the filters and the independence of the size of the filters from the size of the input.
 
 %Convolutional layer can be applied to tensors of arbitrary rank.
 \subsection{Training}
