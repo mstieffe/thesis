@@ -449,7 +449,13 @@ where
 %
 is the mapping entropy, which accounts for the degeneracy of the mapping $\mathbf{M}$, i.e. a single CG configuration corresponds to multiple atomistic configurations. The relative entropy $S_{\text{rel}}$ can be interpreted as a measure for the loss of information when changing from an atomistic to a CG description \cite{shell2008relative}. Moreover, it is related to many different coarse-graining errors and vanishes only if $p_{\text{CG}}(\mathbf{r}) \propto p_{\text{AA}}(\mathbf{r})$ \cite{chaimovich2010relative}.
 
-Inserting the distributions known for the canonical ensemble, i.e. $p_{\text{CG}}(\mathbf{R}) = \mathcal{Z}_{\text{CG}}^{-1} \text{exp} \Big[- \frac{U_{\text{CG}}(\mathbf{R})}{k_B T} \Big]$ and $p_{\text{AA}}(\mathbf{r}) = \mathcal{Z}_{\text{AA}}^{-1} \text{exp} \Big[- \frac{U_{\text{AA}}(\mathbf{r})}{k_B T} \Big]$, into Eq. \ref{relative_entropy_MS} yields
+Inserting the distributions known for the canonical ensemble, i.e. 
+%
+\begin{equation}
+p_{\text{CG}}(\mathbf{R}) = \mathcal{Z}_{\text{CG}}^{-1} \text{exp} \Big[- \frac{U_{\text{CG}}(\mathbf{R})}{k_B T} \Big] \;\; \text{and}\;\; p_{\text{AA}}(\mathbf{r}) = \mathcal{Z}_{\text{AA}}^{-1} \text{exp} \Big[- \frac{U_{\text{AA}}(\mathbf{r})}{k_B T} \Big], 
+\end{equation}
+%
+into Eq. \ref{relative_entropy_MS} yields
 %
 \begin{equation}
   S_{\text{rel}} = \frac{\langle U_{\text{CG}} - U_{\text{AA}} \rangle_{\text{AA}}}{k_B T} - \frac{F_{\text{CG}} - F_{\text{AA}}}{k_B T} + \langle S_{\text{map}} \rangle_{\text{AA}} ,
@@ -479,8 +485,7 @@ The hydrophobic-polar (HP) protein model is a highly simplified model to study p
 \hfill \break
 \noindent \textit{Kremer-Grest Polymer Model}
 \newline
-The Kremer-Grest (KG) model is a top-down model widely used to study generic polymer properties \cite{kremer1990dynamics, grest1986molecular}. The model represents polymers as chains of beads connected via non-linear springs. The spring potential is tuned such that crossing of two polymer chains is avoided in order to correctly simulate the dynamics of polymer melts, in especially entanglement effects of long chains.
-More specifically, the potential for bonded beads is given by the finite-extensible-nonlinear spring (FENE) potential
+The Kremer-Grest (KG) model is a top-down model widely used to study generic polymer properties \cite{kremer1990dynamics, grest1986molecular}. The model represents polymers as chains of beads connected via non-linear springs. The spring potential is tuned such that crossing of two polymer chains is avoided in order to correctly simulate the dynamics of polymer melts, especially entanglement effects of long chains. More specifically, the potential for bonded beads is given by the finite-extensible-nonlinear spring (FENE) potential
 %
 \begin{equation}
 \label{KG_fene}

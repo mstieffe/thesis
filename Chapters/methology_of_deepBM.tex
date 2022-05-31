@@ -188,12 +188,12 @@ Formally, let $f \in \{1,2,\dots,N_f\}$ denote the index of the $N_f$ different 
 \begin{equation}
  h_f(\mathbf{a}_j; \mathbf{a}_i) =
   \begin{cases}
-      1,& \text{if atom } \mathbf{a}_j \text{ has feature }f \text{ (relative to } \mathbf{a}_i \text{)}\\
+      1,& \text{if atom } \mathbf{a}_j \text{ has feature }f \text{ (with respect to } \mathbf{a}_i \text{)}\\
       0,              & \text{otherwise}.
   \end{cases}
 \end{equation}
 %
-Note, that some attributes, such as the associated atom types, have no dependence on the current atom of interest $\mathbf{a}_i$. Other attributes, like the interaction channels, have to be defined relative to $\mathbf{a}_i$. In addition, an activation function $H_f(\mathbf{A}_J)$ is defined to encode attributes of the CG beads, i.e. the bead types. In summary, the following featurized representation is obtained
+Note, that some attributes, such as the associated atom types, have no dependence on the current atom of interest $\mathbf{a}_i$. Other attributes, like the interaction channels, have to be defined with respect to $\mathbf{a}_i$. In addition, an activation function $H_f(\mathbf{A}_J)$ is defined to encode attributes of the CG beads, i.e. the bead types. In summary, the following featurized representation is obtained
 %
 \begin{align}
 \label{featurized_representation_gibbs}
