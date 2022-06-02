@@ -1,41 +1,41 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Methodology of Deepbackmap: Adversarial Reverse-mapping of Condensed-phase Molecular Structures}{57}{chapter.182}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Methodology of Deepbackmap: Adversarial Reverse-mapping of Condensed-phase Molecular Structures}{57}{chapter.182}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \newlabel{methology}{{4}{57}{Methodology of Deepbackmap: Adversarial Reverse-mapping of Condensed-phase Molecular Structures}{chapter.182}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces DBM generates Boltzmann-equilibrated atomistic structures conditional on the CG configuration using an adversarial network. It is designed for the backmapping of a condensed-phase molecular systems, such as polystyrene melts. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }}{57}{figure.caption.183}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces DBM generates Boltzmann-equilibrated atomistic structures conditional on the CG configuration using an adversarial network. It is designed for the backmapping of a condensed-phase molecular systems, such as polystyrene melts. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }}{57}{figure.caption.183}}
 \newlabel{fig_bm_intro}{{4.1}{57}{DBM generates Boltzmann-equilibrated atomistic structures conditional on the CG configuration using an adversarial network. It is designed for the backmapping of a condensed-phase molecular systems, such as polystyrene melts. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }{figure.caption.183}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Notation and Problem Formulation}{58}{section.184}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Autoregressive Reconstruction}{59}{section.186}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Adversarial autoregressive approach: The generator, $g_{\Theta }$, sequentially samples atom positions conditional on the CG structure and the existing atoms. A critic network, $c_{\Psi }$, estimates the discrepancy between reference and generated atoms. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }}{60}{figure.caption.187}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Notation and Problem Formulation}{58}{section.184}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Autoregressive Reconstruction}{59}{section.186}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Adversarial autoregressive approach: The generator, $g_{\Theta }$, sequentially samples atom positions conditional on the CG structure and the existing atoms. A critic network, $c_{\Psi }$, estimates the discrepancy between reference and generated atoms. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }}{60}{figure.caption.187}}
 \newlabel{fig_autoreg_gan}{{4.2}{60}{Adversarial autoregressive approach: The generator, $g_{\Theta }$, sequentially samples atom positions conditional on the CG structure and the existing atoms. A critic network, $c_{\Psi }$, estimates the discrepancy between reference and generated atoms. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }{figure.caption.187}{}}
 \newlabel{probability_factorization}{{4.2}{60}{Autoregressive Reconstruction}{equation.188}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Ordering of Molecular Graphs}{60}{subsection.189}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Three different options to traverse a graph: a) depth-first search, b) breadth-first search, c) random search.\relax }}{61}{figure.caption.190}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Ordering of Molecular Graphs}{60}{subsection.189}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Three different options to traverse a graph: a) depth-first search, b) breadth-first search, c) random search.\relax }}{61}{figure.caption.190}}
 \newlabel{graph_traversal}{{4.3}{61}{Three different options to traverse a graph: a) depth-first search, b) breadth-first search, c) random search.\relax }{figure.caption.190}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Initial Structure with Forward Sampling}{62}{subsection.191}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Refinement with Gibbs Sampling}{62}{subsection.192}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Representation of Molecular Structures}{63}{section.193}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Initial Structure with Forward Sampling}{62}{subsection.191}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Refinement with Gibbs Sampling}{62}{subsection.192}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Representation of Molecular Structures}{63}{section.193}}
 \newlabel{DBM:representation}{{4.3}{63}{Representation of Molecular Structures}{section.193}{}}
 \newlabel{DBM:density_representation}{{4.3}{63}{Representation of Molecular Structures}{equation.194}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Local Environment}{63}{subsection.195}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Local Environment}{63}{subsection.195}}
 \newlabel{DBM:loc_env}{{4.3.1}{63}{Local Environment}{subsection.195}{}}
 \newlabel{simple_representation}{{4.4}{64}{Local Environment}{equation.196}{}}
 \newlabel{simple_representation2}{{4.6}{64}{Local Environment}{equation.198}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Feature Embedding}{64}{subsection.200}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Feature embedding of a local environment. Atoms and CG beads of the local environment are split into separate channels according to their atom/bead types. In addition, the atomic environment of a current atom of interest is split in terms of molecular interactions that distinguish between bond, bending angle, torsion or Lennard-Jones. Afterwards, all channels are voxelized. The final input for the generator network $g_{\Theta }$ consists of the voxelized feature channels and an additional noise sample. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }}{65}{figure.caption.201}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Feature Embedding}{64}{subsection.200}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Feature embedding of a local environment. Atoms and CG beads of the local environment are split into separate channels according to their atom/bead types. In addition, the atomic environment of a current atom of interest is split in terms of molecular interactions that distinguish between bond, bending angle, torsion or Lennard-Jones. Afterwards, all channels are voxelized. The final input for the generator network $g_{\Theta }$ consists of the voxelized feature channels and an additional noise sample. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }}{65}{figure.caption.201}}
 \newlabel{fig_representation}{{4.4}{65}{Feature embedding of a local environment. Atoms and CG beads of the local environment are split into separate channels according to their atom/bead types. In addition, the atomic environment of a current atom of interest is split in terms of molecular interactions that distinguish between bond, bending angle, torsion or Lennard-Jones. Afterwards, all channels are voxelized. The final input for the generator network $g_{\Theta }$ consists of the voxelized feature channels and an additional noise sample. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }{figure.caption.201}{}}
 \newlabel{featurized_representation_gibbs}{{4.9}{66}{Feature Embedding}{equation.203}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}Conditional Generative Adversarial Network}{66}{section.205}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Conditional Generative Adversarial Network}{66}{section.205}}
 \newlabel{DBM:cGAN}{{4.4}{66}{Conditional Generative Adversarial Network}{section.205}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Densities and Coordinates}{67}{subsection.206}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Adversarial Cost Function for Training on Sequences}{67}{subsection.209}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Autoregressive training. Starting from an atomistic configuration taken from training data (black) the predicted atoms (red) will be added to the local environment description for predicting the next atom in the sequence. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }}{68}{figure.caption.210}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Densities and Coordinates}{67}{subsection.206}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Adversarial Cost Function for Training on Sequences}{67}{subsection.209}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Autoregressive training. Starting from an atomistic configuration taken from training data (black) the predicted atoms (red) will be added to the local environment description for predicting the next atom in the sequence. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }}{68}{figure.caption.210}}
 \newlabel{fig_autoregressive}{{4.5}{68}{Autoregressive training. Starting from an atomistic configuration taken from training data (black) the predicted atoms (red) will be added to the local environment description for predicting the next atom in the sequence. Reprinted from \cite {stieffenhofer2020adversarial}.\relax }{figure.caption.210}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.5}Potential Energy as Regularizer}{69}{section.213}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Potential Energy as Regularizer}{69}{section.213}}
 \newlabel{SEC:DBM_regularization}{{4.5}{69}{Potential Energy as Regularizer}{section.213}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.6}Discussion}{70}{section.217}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.6}Discussion}{70}{section.217}}
 \@setckpt{Chapters/methology_of_deepBM}{
 \setcounter{page}{72}
 \setcounter{equation}{17}
@@ -56,7 +56,6 @@
 \setcounter{table}{0}
 \setcounter{LT@tables}{0}
 \setcounter{LT@chunks}{0}
-\setcounter{caption@flags}{0}
 \setcounter{ContinuedFloat}{0}
 \setcounter{float@type}{4}
 \setcounter{FBl@b}{0}
@@ -80,16 +79,12 @@
 \setcounter{maxitems}{3}
 \setcounter{minitems}{1}
 \setcounter{citecounter}{0}
-\setcounter{maxcitecounter}{0}
 \setcounter{savedcitecounter}{0}
 \setcounter{uniquelist}{0}
 \setcounter{uniquename}{0}
 \setcounter{refsection}{0}
 \setcounter{refsegment}{0}
-\setcounter{maxextratitle}{0}
-\setcounter{maxextratitleyear}{0}
-\setcounter{maxextraname}{0}
-\setcounter{maxextradate}{0}
+\setcounter{maxextrayear}{0}
 \setcounter{maxextraalpha}{0}
 \setcounter{abbrvpenalty}{50}
 \setcounter{highnamepenalty}{50}
@@ -99,16 +94,12 @@
 \setcounter{mincomprange}{10}
 \setcounter{maxcomprange}{100000}
 \setcounter{mincompwidth}{1}
-\setcounter{afterword}{0}
-\setcounter{savedafterword}{0}
-\setcounter{annotator}{0}
-\setcounter{savedannotator}{0}
+\setcounter{labelname}{0}
+\setcounter{savedlabelname}{0}
 \setcounter{author}{0}
 \setcounter{savedauthor}{0}
-\setcounter{bookauthor}{0}
-\setcounter{savedbookauthor}{0}
-\setcounter{commentator}{0}
-\setcounter{savedcommentator}{0}
+\setcounter{shortauthor}{0}
+\setcounter{savedshortauthor}{0}
 \setcounter{editor}{0}
 \setcounter{savededitor}{0}
 \setcounter{editora}{0}
@@ -117,28 +108,46 @@
 \setcounter{savededitorb}{0}
 \setcounter{editorc}{0}
 \setcounter{savededitorc}{0}
-\setcounter{foreword}{0}
-\setcounter{savedforeword}{0}
-\setcounter{holder}{0}
-\setcounter{savedholder}{0}
+\setcounter{shorteditor}{0}
+\setcounter{savedshorteditor}{0}
+\setcounter{bookauthor}{0}
+\setcounter{savedbookauthor}{0}
+\setcounter{translator}{0}
+\setcounter{savedtranslator}{0}
+\setcounter{annotator}{0}
+\setcounter{savedannotator}{0}
+\setcounter{commentator}{0}
+\setcounter{savedcommentator}{0}
 \setcounter{introduction}{0}
 \setcounter{savedintroduction}{0}
+\setcounter{foreword}{0}
+\setcounter{savedforeword}{0}
+\setcounter{afterword}{0}
+\setcounter{savedafterword}{0}
+\setcounter{holder}{0}
+\setcounter{savedholder}{0}
 \setcounter{namea}{0}
 \setcounter{savednamea}{0}
 \setcounter{nameb}{0}
 \setcounter{savednameb}{0}
 \setcounter{namec}{0}
 \setcounter{savednamec}{0}
-\setcounter{translator}{0}
-\setcounter{savedtranslator}{0}
-\setcounter{shortauthor}{0}
-\setcounter{savedshortauthor}{0}
-\setcounter{shorteditor}{0}
-\setcounter{savedshorteditor}{0}
-\setcounter{labelname}{0}
-\setcounter{savedlabelname}{0}
 \setcounter{institution}{0}
 \setcounter{savedinstitution}{0}
+\setcounter{language}{0}
+\setcounter{savedlanguage}{0}
+\setcounter{location}{0}
+\setcounter{savedlocation}{0}
+\setcounter{organization}{0}
+\setcounter{savedorganization}{0}
+\setcounter{origlocation}{0}
+\setcounter{savedoriglocation}{0}
+\setcounter{origpublisher}{0}
+\setcounter{savedorigpublisher}{0}
+\setcounter{pageref}{0}
+\setcounter{savedpageref}{0}
+\setcounter{publisher}{0}
+\setcounter{savedpublisher}{0}
 \setcounter{lista}{0}
 \setcounter{savedlista}{0}
 \setcounter{listb}{0}
@@ -151,22 +160,6 @@
 \setcounter{savedliste}{0}
 \setcounter{listf}{0}
 \setcounter{savedlistf}{0}
-\setcounter{location}{0}
-\setcounter{savedlocation}{0}
-\setcounter{organization}{0}
-\setcounter{savedorganization}{0}
-\setcounter{origlocation}{0}
-\setcounter{savedoriglocation}{0}
-\setcounter{origpublisher}{0}
-\setcounter{savedorigpublisher}{0}
-\setcounter{publisher}{0}
-\setcounter{savedpublisher}{0}
-\setcounter{language}{0}
-\setcounter{savedlanguage}{0}
-\setcounter{origlanguage}{0}
-\setcounter{savedoriglanguage}{0}
-\setcounter{pageref}{0}
-\setcounter{savedpageref}{0}
 \setcounter{textcitecount}{0}
 \setcounter{textcitetotal}{0}
 \setcounter{textcitemaxnames}{0}

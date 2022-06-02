@@ -10,13 +10,12 @@ In this chapter, backmapping is applied to assess the quality of structure-based
 This chapter summarizes insights obtained during the course of a collaboration with Dr. Scherer, Dr. May and Dr. Andrienko. While the underlying project explores organic materials as potential candidates for organic light emitting diodes deploying a multiscale approach, the interesting observations made with respect to the quality assessment of the CG models through backampping is recorded, as they might serve as a starting point for a stand-alone research project in the future. A research article of the presented work is in preparation and will soon be submitted for publication in a peer-reviewed journal.
 
 %For example, Májek and Elber parameterized a potential for protein simulations that consistently regenerates the targeted distributions of distances and internal coordinates, but also yields structures that are far from the native fold \cite{majek2009coarse}.
-\section{Method}
+%\section{Method}
 
-This section outlines the structure-based parameterization strategy for the CG models as well as the two deployed backmapping schemes.
+\section{Multiscale Modeling of Tris-Meta-Biphenyl-Triazine}
 
-\subsection{Multiscale Modeling of Tris-Meta-Biphenyl-Triazine}
 
-The proposed method is demonstrated at the example of Tris-Meta-Biphenyl-Triazine (TMBT), a host material for organic light emitting diodes \cite{mondal2021molecular}. TMBT is a star-shaped molecule consisting of a central triazine ring and three biphenyl side chains.
+This section outlines the structure-based parameterization strategy for the CG models as well as the two deployed backmapping schemes. The proposed method is demonstrated at the example of Tris-Meta-Biphenyl-Triazine (TMBT), a host material for organic light emitting diodes \cite{mondal2021molecular}. TMBT is a star-shaped molecule consisting of a central triazine ring and three biphenyl side chains.
 
 \begin{figure}
   \centering
@@ -25,7 +24,7 @@ The proposed method is demonstrated at the example of Tris-Meta-Biphenyl-Triazin
   \label{BMQM:tmbt_representation}
 \end{figure}
 
-\subsubsection{Mapping}
+\subsection{Mapping}
 
 The CG mapping for TMBT is illustrated in Fig.~\ref{BMQM:tmbt_representation}. In particular, two bead types are used for the CG representation: The central triazine ring is mapped to one bead of type A and all phenyl rings are mapped to beads of type B. The mapping $\mathbf{M}$ projects an atomistic configuration $\mathbf{r}$ to the CG resolution, such that each bead $I$ is positioned at the center of mass $\mathbf{R}_I$ of all atoms $i$ associated with it,
 %
@@ -35,11 +34,11 @@ The CG mapping for TMBT is illustrated in Fig.~\ref{BMQM:tmbt_representation}. I
 %
 where $\Psi_I$ is the set of atomic indices corresponding to bead $I$, $\mathbf{r}_i$ is the position and $m_i$ the mass of atom $i$, respectively.
 
-\subsubsection{All-atom simulation}
+\subsection{All-atom simulation}
 
 AA Simulations are performed using the GROMACS 2019.3 package \cite{hess2008gromacs}. The underlying force field is described in \cite{mondal2021molecular}. Equilibration runs are carried out for $60\,\text{ns}$ in the $NPT$ ensemble at $p=1.0\,\text{bar}$ using a Parrinello-Rahman barostat with a time step of $1$~fs. Production runs are carried out in the $NVT$ ensemble using a velocity rescaling thermostat at $450$~K. In particular, production runs are performed for $20\,\text{ns}$ at the mean density of preceding $NPT$ equilibration runs. Electrostatic interactions are treated with a smooth particle mesh Ewald method with fourth-order cubic interpolation, $0.12\,\text{nm}$ Fourier spacing and an Ewald accuracy parameter of $10^{-5}$. A short-range cutoff of $r_{\text{cut}}=1.3\,\text{nm}$ is used and long-range dispersion corrections for energy and pressure are applied. The simulation box contains $3000$ molecules. 
 
-\subsubsection{CG Force Field}
+\subsection{Coarse-grained Force Field}
 
 The CG force field for TMBT is parameterized based on the AA $NVT$ simulation data. In particular, bonded interactions are parameterized deploying DBI \cite{tschop1998simulation}, while non-bonded interactions are obtained using IBI \cite{muller2002coarse, reith2003deriving}. More information on the parameterization schemes can be found in Sec.~\ref{Theory_MS:cg_methods}.
 
@@ -61,9 +60,18 @@ After the non-bonded pair potentials are obtained, bonded interactions are resca
 
 Backmapping of CG TMBT is performed using the machine learning methodology deepbackmap (DBM), which is introduced in Sec.~\ref{methology} and thoroughly tested in Sec.~\ref{bm_ps}. In addition, a second method that relies on energy-minimization (EM) is applied.
 
+%\subsubsection{DBM}
+%\hfill \break
+%\noindent \textit{DBM}
+%\newline
 \subsubsection{DBM}
 
 DBM is trained for $40$ epochs with a batchsize of $64$ using the same specifications as described in Sec.~\ref{DBM_specifications}. The data set consists of four pairs of AA and corresponding CG snapshots, where each snapshot contains 3000 molecules. The energy minimizing regularization term $\mathcal{C}_1$ is used based on the force field of the AA MD simulation. 
+
+%\subsubsection{EM}
+%\hfill \break
+%\noindent \textit{EM}
+%\newline
 
 \subsubsection{EM}
 
@@ -73,7 +81,7 @@ The EM-based backmapping scheme uses the software package \textit{Versatile Obje
 
 Three different CG models are examined that differ in their bonded interactions: \textit{Model A} includes two angles (A-B-B, B-A-B), one proper (B-A-B-B) and one improper (A-B-B-B) dihedral, while bond lengths are constraint to the average bond length obtained for the reference data, \textit{model B} includes two bonds (A-B, B-B), two angles (A-B-B, B-A-B), one proper (B-A-B-B) and one improper (A-B-B-B) dihedral, and \textit{model C} only includes two bonds (A-B, B-B) and two angles (A-B-B, B-A-B). All models include the same non-bonded pair interactions between the beads of type A and B. The quality of all CG models is first evaluated in terms of structural distributions at the CG resolution. Afterwards, test sets are constructed for the backmapping task: (1) The in-distribution test set denotes a collection of AA snapshots projected onto the CG resolution. (2) In addition, data sets are constructed consisting of snapshots from MD simulations of the different CG models, which will be referred to as generalization test sets in the following. Both backmapping methods are deployed to all test sets. 
 
-\subsection{Evaluation at the CG Resolution}
+\subsection{Evaluation at the Coarse-grained Resolution}
 
 Structural distributions associated with the parameterized interaction potentials can be found in Fig. \ref{BMQM:CG_validation}. All CG models are able to reproduce the targeted structural distributions of the reference system with remarkable accuracy. However, model A yields a sharply peaked distribution for the bond lengths due to the applied constraints, as shown in panels (a) and (b). Moreover, model C does not recover the distribution functions for the proper and improper dihedrals in panels (e) and (f), which is expected since the corresponding interaction potentials are neglected for this model. In addition, small deviations from the reference system are observed for model C in terms of the pair correlation function $g(r)$ displayed in panels (g) and (h), as well as for the angle (B-A-B) displayed in panel (d). As such, model A and B clearly outperform model C in terms of structural accuracy.
 
@@ -84,7 +92,7 @@ Structural distributions associated with the parameterized interaction potential
   \label{BMQM:CG_validation}
 \end{figure}
 
-\subsection{Evaluation at the AA Resolution}
+\subsection{Evaluation at the All-atom Resolution}
 
 Backmapping is performed for configurations from two different sources: (1) An in-distribution test set, which denotes AA MD simulation data that is projected onto the CG resolution. This data is used to obtain the baseline accuracy of the backmapping method. (2) A generalization test set, which denotes snapshots obtained by MD simulations based on the CG force fields. To assess and compare the quality of backmapped snapshots for the in-distribution and the generalization test sets, atomistic pair correlation functions and force distributions are analyzed.
 

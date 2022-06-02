@@ -95,7 +95,7 @@ In this section, the general performance of DBM is probed. To this end, DBM is t
   \label{FIG:sPS_temp_trans_ff_dists}
 \end{figure}
 
-\subsection{Results}
+%\subsection{Results}
 
 Fig.~\ref{FIG:sPS_temp_trans_ff_dists} displays distribution functions for several structural and energetic properties of sPS. The distributions of intramolecular carbon backbone angle and dihedral, shown in panels (a) and (d), are in excellent agreement with the reference distributions. On the other hand, structures generated with the baseline method display distributions that are more compressed compared to the reference system, which is expectable from an approach based on energy minimization. As shown in panel (g), the distribution for the carbon improper dihedral of the phenyl group is slightly biased towards smaller angles for configurations generated with DBM. However, the small range of angles, imposed by the planarity of the ring, has to be emphasized. The distribution of the baseline method is even more peaked, i.e. fluctuations around the planar structure are significantly suppressed.
 
@@ -121,12 +121,12 @@ After successfully recovering the state point DBM was trained on, the ability of
   \label{FIG:sPS_polymorphs}
 \end{figure}
 
-\subsection{Results}
-\label{DBM:sPS_temp_trans}
+%\subsection{Results}
+%\label{DBM:sPS_temp_trans}
 
 The transferability of DBM to the crystalline phase of sPS is analyzed in terms of structural and energetic distributions. In addition, a higher-order investigation facilitated by the Sketch-map (SM) algorithm is performed to obtain a two-dimensional projection of configuration space \cite{ceriotti2011simplifying, tribello2012using}. Finally, AA MD simulations initialized from reference and backmapped structures are evaluated.
 
-\subsubsection{Distributions of Structural and Energetic Features}
+\subsection{Distributions of Structural and Energetic Features}
 
 Distributions of structural and energetic properties at $453$~K and $313$~K can be found in the middle and right column of Fig.~\ref{FIG:sPS_temp_trans_ff_dists}, respectively. The reference system displays a number of significant changes upon cooling: distributions of angles become more compressed, the side peak in the backbone dihedral vanishes, the distributions of Lennard-Jones energies are shifted towards lower energies and the pair correlation function of non-bonded carbon atoms is more peaked. 
 
@@ -134,7 +134,7 @@ The ML model adapts remarkably well to the crystalline phase in terms of the ang
 
 On the other hand, the baseline method does not adapt well to lower temperatures. Due to the energy minimization, similar distributions are obtained as for the high-temperature data, which becomes especially apparent for the side peak of the backbone dihedral in panels (e) and (f), as well as the flat pair correlation function in panels (n) and (o). 
 
-\subsubsection{Sketch-map}
+\subsection{Sketch-map}
 \label{temp_trans_SM}
 
 \begin{figure}[h]
@@ -159,7 +159,7 @@ Fig.~\ref{FIG:sPS_temp_trans_SM} displays the two-dimensional projection obtaine
 Structures obtained with DBM display a significant overlap with the reference points for all three data sets indicating closeness in configuration space and a high structural fidelity of the backmapped structures. This is in strong contrast to the energy-minimized structures obtained with the baseline method, which map to different areas in the two-dimensional projection of configuration space compared to the reference configurations. 
 
 %Moreover, the baseline method is not able to recover the correct number of clusters for all three temperatures highlighting a lack of temperature sensitivity.
-\subsubsection{MD Simulation}
+\subsection{MD Simulation}
 
 Backmapped structures that serve as a starting point for further MD simulations typically require lengthy preparations, such as energy minimization, temperature ramp up phase and thermostat/barostat equilibration. In the following, the high quality of backmapped structures obtained with DBM is demonstrated by running MD simulations \textit{without} any heat-up.
 
@@ -197,11 +197,11 @@ In this section, the transferability of DBM across chemical space is explored. I
   \label{FIG:chem_trans_intro}
 \end{figure}
 
-\subsection{Results}
+%\subsection{Results}
 
 The training set consists of 15 snapshots of the octane system and 8 snapshots of the cumene system in the liquid state. After training, DBM is applied to a test set consisting of 20 snapshots of the sPS melt. While octane and cumene liquids are simulated at $T = 350$~K, the sPS melt is simulated at $T = 568$~K. The discrepancy in the temperature between the training and test sets is a consequence of the different boiling and melting points of the molecules, as the model's transferability shall be probed in the liquid/melt state. However, as shown in Sec.~\ref{DBM:temp_trans}, the learned local correlations are weakly sensitive to changes in the temperature.
 
-\subsubsection{Distributions of Structural and Energetic Features}
+\subsection{Distributions of Structural and Energetic Features}
 
 Figs.~\ref{FIG:sPS_chem_trans_angles}-\ref{FIG:sPS_chem_trans_nb} display various distribution functions for structural and energetic properties of sPS derived for reference structures and structures generated with DBM. Results are shown for chemically-specific models (left), i.e. models trained directly on sPS, and chemically-transferred models (right), i.e. models trained solely on octane and cumene configurations.
 
@@ -254,7 +254,7 @@ The ramification of the applied regularization during training becomes most evid
 
 The pair correlation function obtained for pairs of non-bonded carbon atoms is shown in Fig.~\ref{FIG:sPS_chem_trans_nb} (e)-(f). All models are able to reproduce the pair correlation with high accuracy.
 
-\subsubsection{Sketch-map}
+\subsection{Sketch-map}
 
 Similarly to the analysis in the previous section, the SM algorithm is used to probe the accuracy of backmapped structures at higher order. In particular, SM is applied to project environments of sPS monomers onto a two-dimensional embedding. To this end, local environments of monomers are centered at backbone carbons that are connected with a phenyl group and the similarity between two environments is computed based on the SOAP representation. %. Each environment is encoded using the SOAP representation yielding a $N \times N$ similarity matrix for $N$ monomers. 
 
